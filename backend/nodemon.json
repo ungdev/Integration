@@ -1,0 +1,6 @@
+{
+    "watch": ["src"],
+    "ext": "ts",
+    "exec": "ts-node -r ts-node/register server.ts"
+  }
+  

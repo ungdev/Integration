@@ -5,6 +5,7 @@ const authRouter = Router();
 
 // Route d'inscription
 authRouter.post('/register', authController.register);
+authRouter.get('/handlecasticket', authController.handlecasticket)
 
 // Route de connexion
 authRouter.post('/login', authController.login);

@@ -35,3 +35,16 @@ export const createUser = async (firstName: string, lastName: string, email: str
 export const comparePassword = async (enteredPassword: string, storedPassword: string) => {
   return await bcrypt.compare(enteredPassword, storedPassword);
 };
+
+export const updateUserStudent = async(firstName: string, lastName: string, email: string) =>{
+    try {
+        const result = await db.query(
+            'UPDATE users SET first_name = $1, last_name = $2 WHERE email = $3 RETURNING *',
+            [firstName, lastName, email]
+        );
+        return result.rows[0];
+      } catch (err) {
+        console.error('Erreur lors de la récupération et de l\'update de l\'utilisateur par email:', err);
+        throw new Error('Erreur de base de données');
+      }
+}

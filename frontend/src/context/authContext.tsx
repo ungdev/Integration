@@ -1,39 +1,35 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-
-// Définir l'interface de l'utilisateur
-interface User {
-  email: string;
-  role: 'admin' | 'user';  // Exemple de rôles, tu peux étendre selon tes besoins
-}
+// src/context/AuthContext.tsx
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { getRole } from "src/services/auth/role.service";
 
 interface AuthContextType {
-  user: User | null;
-  login: (user: User) => void;
-  logout: () => void;
+  role: string | null;
+  setRole: (role: string) => void;
 }
 
-// Créer le contexte
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Provider pour envelopper l'application
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
 
-  const login = (user: User) => setUser(user);
-  const logout = () => setUser(null);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Si tu as une logique pour récupérer le rôle depuis un cookie, localStorage, ou API, c'est ici.
+    // Exemple : récupérer le rôle de l'utilisateur depuis localStorage
+    const storedRole = getRole()
+    setRole(storedRole ? storedRole : null); // Si pas de rôle, l'utilisateur est redirigé
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ role, setRole }}>
       {children}
     </AuthContext.Provider>
   );
-};
-
-// Hook pour accéder au contexte
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth doit être utilisé à l\'intérieur d\'AuthProvider');
-  }
-  return context;
 };

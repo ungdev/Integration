@@ -41,3 +41,13 @@ export const decodeToken = (token: string): DecodedToken => {
 export const logout = () => {
   localStorage.removeItem('token');
 };
+
+export const handleCASTicket = async (ticket: string)=>{
+    const response = await api.get('auth/handlecasticket/', {
+        params:{
+            "ticket" :ticket
+        }
+    });
+
+    return response?.data.data
+}

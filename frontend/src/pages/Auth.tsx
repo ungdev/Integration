@@ -6,8 +6,7 @@ import AuthForm from '../components/auth/authForm';
 const LoginPage = () => {
   return (
     <div>
-      <h1>Page de Connexion</h1>
-      <AuthForm />
+        <AuthForm />
     </div>
   );
 };

@@ -1,9 +1,13 @@
 const express = require('express');
 const cors = require('cors');
+
 import dotenv from 'dotenv';
 import authRoutes from './src/routes/auth.routes';
+import roleRoutes from './src/routes/role.routes';
+import userRoutes from './src/routes/user.routes';
 import { server_port } from './src/utils/secret';
-import { initDB } from './src/database/init';
+import { initRoles } from './src/database/initdb/initrole'
+//import { initDB } from './src/database/init';
 
 dotenv.config();
 
@@ -17,11 +21,13 @@ async function startServer() {
 
     try {
         // Initialisation de la base de données
-        await initDB();  // Assure-toi que l'initialisation est terminée avant de démarrer le serveur
+        await initRoles();  // Assure-toi que l'initialisation est terminée avant de démarrer le serveur
         console.log('Base de données initialisée avec succès');
         
         // Utilisation des routes d'authentification
         app.use('/api/auth', authRoutes);
+        app.use('/api/role', roleRoutes);
+        app.use('/api/user', userRoutes);
 
         // Démarrage du serveur
         app.listen(server_port, () => {

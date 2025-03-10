@@ -1,11 +1,13 @@
 import bcrypt from 'bcryptjs';
-import db from '../database/db';  // Import de la connexion PostgreSQL
+import { db } from '../database/db';  // Import de la connexion PostgreSQL
+import { User, userSchema } from '../schemas/Basic/user.schema';
+import { eq } from 'drizzle-orm';
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
   try {
-    const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
-    return result.rows[0];
+    const users = await db.select().from(userSchema).where(eq(userSchema.email, email));
+    return users[0]; 
   } catch (err) {
     console.error('Erreur lors de la récupération de l\'utilisateur par email:', err);
     throw new Error('Erreur de base de données');
@@ -13,18 +15,22 @@ export const getUserByEmail = async (email: string) => {
 };
 
 // Fonction pour enregistrer un nouvel utilisateur
-export const createUser = async (firstName: string, lastName: string, email: string, password: string) => {
+export const createUser = async (firstName: string, lastName: string, email: string, permission: string, password: string) => {
   try {
     // Hacher le mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const newUser: Partial<User> = {
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        password: hashedPassword,
+        permission: permission
+    };
     // Insérer un nouvel utilisateur dans la base de données
-    const newUser = await db.query(
-      'INSERT INTO users (first_name, last_name, email, password) VALUES ($1, $2, $3, $4) RETURNING *',
-      [firstName, lastName, email, hashedPassword]
-    );
+    const result = await db.insert(userSchema).values(newUser)
 
-    return newUser.rows[0];
+    return result.rows[0];
   } catch (err) {
     console.error('Erreur lors de la création de l\'utilisateur:', err);
     throw new Error('Erreur de base de données');
@@ -38,13 +44,33 @@ export const comparePassword = async (enteredPassword: string, storedPassword: s
 
 export const updateUserStudent = async(firstName: string, lastName: string, email: string) =>{
     try {
-        const result = await db.query(
-            'UPDATE users SET first_name = $1, last_name = $2 WHERE email = $3 RETURNING *',
-            [firstName, lastName, email]
-        );
+        const result = await db.update(userSchema)
+    .set({
+        first_name: firstName,
+        last_name: lastName
+    })
+    .where(eq(userSchema.email, email));
+    
         return result.rows[0];
       } catch (err) {
         console.error('Erreur lors de la récupération et de l\'update de l\'utilisateur par email:', err);
         throw new Error('Erreur de base de données');
       }
 }
+
+export const getUsers = async () => {
+  try {
+    const users = await db.select(
+      {
+        userId: userSchema.id,
+        firstName: userSchema.first_name,
+        lastName: userSchema.last_name,
+        email: userSchema.email
+      }
+    ).from(userSchema);
+    return users; 
+  } catch (err) {
+    console.error('Erreur lors de la récupération des utilisateurs ', err);
+    throw new Error('Erreur de base de données');
+  }
+};

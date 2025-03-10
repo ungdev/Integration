@@ -1,13 +1,29 @@
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { Card } from "../../styles/components/ui/card";  // Assure-toi que l'importation fonctionne bien
 import { Input } from "../../styles/components/ui/input"; // Idem
 import { Button } from "../../styles/components/ui/button"; // Idem
-import { handleCASTicket, loginUser, registerUser } from "src/services/auth/auth.service";
+import { handleCASTicket, loginUser, registerUser } from "src/services/requests/auth.service";
 
 export default function AuthPage() {
+
+    const userRef = useRef<HTMLInputElement>(null);
+    const errRef = useRef<HTMLInputElement>(null);
+
     const [isLogin, setIsLogin] = useState(true);  // Toggle pour Login/Signup
     const [formData, setFormData] = useState({ email: "", password: "", firstName: "", lastName: "" });
+
+
+    useEffect(() => {
+        const login = async () => {
+          if (localStorage.getItem("caslogin") === "true") {
+            await handleCASLogin();
+          }
+        };
+        if (userRef.current) userRef.current.focus();
+        login();
+    
+      }, []);
   
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -44,13 +60,18 @@ export default function AuthPage() {
       console.log("Register with", formData);
     };
 
-    const handleCASLogin = async() =>{
+    const UTT_Connexion = () =>{
 
         const SERVICE_URL = process.env.REACT_APP_SERVICE_URL || "default";
         const CAS_LOGIN_URL =  process.env.REACT_APP_CAS_LOGIN_URL || "default";
     
         const loginUrl = `${CAS_LOGIN_URL}?service=${encodeURIComponent(SERVICE_URL)}`;
         window.location.href = loginUrl;
+        localStorage.setItem("caslogin", "true");
+    
+    }
+
+    const handleCASLogin = async() =>{
 
         const urlParams = new URLSearchParams(window.location.search);
         const ticket = urlParams.get("ticket");
@@ -62,7 +83,7 @@ export default function AuthPage() {
           window.location.href = "/Home";
         }
     
-      }
+    }
   
     return (
       <div
@@ -146,7 +167,7 @@ export default function AuthPage() {
               <Button
                 type="button"
                 className="w-full py-2 bg-blue-900 text-white rounded-md hover:bg-gray-400 transition"
-                onClick={() => handleCASLogin()}
+                onClick={() => UTT_Connexion()}
               >
                 {"Etudiants UTT"}
               </Button>

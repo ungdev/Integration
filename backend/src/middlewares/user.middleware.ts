@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { jwtSecret } from '../utils/secret';
+import { Unauthorized } from '../utils/responses';
 
 // Middleware pour vérifier le rôle
 export const checkRole = (requiredRole: string) => {
@@ -8,17 +9,20 @@ export const checkRole = (requiredRole: string) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
-      return res.status(401).json({ message: 'Accès non autorisé' });
+       Unauthorized(res,{ msg: 'Accès non autorisé' });
+       return;
     }
 
     try {
       const decoded: any = jwt.verify(token, jwtSecret);
-      if (decoded.role !== requiredRole) {
-        return res.status(403).json({ message: 'Accès interdit, rôle insuffisant' });
+      if (decoded.userPermission !== requiredRole) {
+         Unauthorized(res,{ msg: 'Accès interdit, rôle insuffisant' });
+         return;
       }
       next();
     } catch (err) {
-      return res.status(401).json({ message: 'Token invalide ou expiré' });
+       Unauthorized(res,{ msg: 'Token invalide ou expiré' });
+       return;
     }
   };
 };

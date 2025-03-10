@@ -4,7 +4,7 @@ import { Infos } from "../components/home/infosSection";
 import {SocialLinks} from "../components/home/socialSection";
 import { useAuth } from "../context/authContext";
 
-export default function HomePage() {
+export const HomePage = () => {
 
   return (
     <div>

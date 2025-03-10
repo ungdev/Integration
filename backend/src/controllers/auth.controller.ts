@@ -1,20 +1,19 @@
 import { Request, Response } from 'express';
-import { loginUser, registerUser, validateCASTicket } from '../services/auth.service';
+import * as auth_service from '../services/auth.service';
 import * as user_service from '../services/user.service';
-import { jwtSecret } from '../utils/secret';
-import { sign, verify } from 'jsonwebtoken'
-import { randomInt } from 'crypto';
 import bigInt from 'big-integer';
+import { Error, Ok, Unauthorized } from '../utils/responses';
+import { decodeToken } from '../utils/token';
 
 // Fonction de connexion
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
-    const token = await loginUser(email, password);
-        res.json({ message: 'Connexion réussie', token });
+    const token = await auth_service.loginUser(email, password);
+        Ok(res, { data:{token}, msg: 'Connexion réussie' });
   } catch (err) {
-        res.status(400).json({ message: err.message });
+        Error(res, { msg: err.message });
   }
 };
 
@@ -23,13 +22,13 @@ export const register = async (req: Request, res: Response) => {
   const { firstName, lastName, email, password } = req.body;
 
   try {
-    const newUser = await registerUser(firstName, lastName, email, password);
+    const newUser = await auth_service.registerUser(firstName, lastName, email, password);
         res.status(201).json({
       message: 'Utilisateur inscrit avec succès',
       user: newUser,
     });
   } catch (err) {
-        res.status(400).json({ message: err.message });
+      Error(res, { msg: err.message });
   }
 };
 
@@ -39,14 +38,14 @@ export const handlecasticket = async (req: Request, res: Response) => {
         const ticket = req.query.ticket as string;
 
         if (ticket) {
-            const CASuser = await validateCASTicket(ticket);
+            const CASuser = await auth_service.validateCASTicket(ticket);
 
             if (CASuser && CASuser.email && CASuser.givenName && CASuser.sn) {
                 // Assurez-vous que user.email est un string
                 let user = await user_service.getUserByEmail(CASuser.email.toLowerCase());
                 if(!user){
                     const password = bigInt.randBetween(bigInt(2).pow(255),bigInt(2).pow(256).minus(1)).toString()
-                    await user_service.createUser(CASuser.givenName, CASuser.sn, CASuser.email, password)
+                    await user_service.createUser(CASuser.givenName, CASuser.sn, CASuser.email, "Student", password)
                     user = await user_service.getUserByEmail(CASuser.email.toLowerCase())
                 }
 
@@ -56,18 +55,61 @@ export const handlecasticket = async (req: Request, res: Response) => {
                     
                 await user_service.updateUserStudent( CASuser.givenName, CASuser.sn, CASuser.email);
                 
-                const token =  sign({ id, email }, jwtSecret, { expiresIn: '1h' })
+                const token = auth_service.generateToken(user);
+                
 
-                res.status(200).json({ data: { token } })
+                Ok(res, { data: { token } })
             
             
             } else {
-                res.status(501).json({ msg: 'Unauthorized: Invalid user email' });
+                Unauthorized(res, { msg: 'Unauthorized: Invalid user email' });
             }
         } else {
-            res.status(504).json({ msg: 'Unauthorized: No ticket provided' });
+            Unauthorized(res, { msg: 'Unauthorized: No ticket provided' });
         }
     } catch (error) {
-         res.status(504).json({ msg: 'Unauthorized: Invalid token' });
+         Unauthorized(res, { msg: 'Unauthorized: Invalid token' });
     }
 }
+
+
+export const isTokenValid = async (req: Request, res: Response) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+       Unauthorized(res, {
+        msg: "Unauthorized: Missing or malformed token",
+        data: false,
+      });
+      return;
+    }
+    
+    const token = authHeader.split(" ")[1];
+
+    // Décoder et valider le token
+    const decodedToken = decodeToken(token);
+    if (!decodedToken) {
+       Unauthorized(res, {
+        msg: "Unauthorized: Token has expired or is invalid",
+        data: false,
+      });
+      return
+    }
+
+
+    // Vérifier que l'email est bien présent dans le token
+    if (!decodedToken.userEmail) {
+       Unauthorized(res, {
+        msg: "Unauthorized: Invalid token content",
+        data: false,
+      });
+      return
+    }
+    // Répondre une seule fois
+     Ok(res, {data: true });
+     return
+  } catch (error) {
+     Error(res, { msg: "Unauthorized: Token validation failed" });
+     return
+  }
+};

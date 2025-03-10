@@ -1,11 +1,7 @@
 // src/services/auth.service.ts
-import api from '../utils';
+import { DecodedToken } from '../../interfaces/token.interfaces';
+import api from '../api';
 import { jwtDecode } from 'jwt-decode';
-
-interface DecodedToken {
-  userId: number;
-  role: string;
-}
 
 export const registerUser = async (firstName: string, lastName: string, email: string, password: string) => {
   try {
@@ -22,7 +18,7 @@ export const loginUser = async (email: string, password: string) => {
     const token = response.data.token;
 
     // Sauvegarder le token dans le localStorage pour le garder pendant la session
-    localStorage.setItem('token', token);
+    localStorage.setItem('authToken', token);
 
     return token;
   } catch (error: any) {
@@ -31,7 +27,7 @@ export const loginUser = async (email: string, password: string) => {
 };
 
 export const getToken = (): string | null => {
-  return localStorage.getItem('token');
+  return localStorage.getItem('authToken');
 };
 
 export const decodeToken = (token: string): DecodedToken => {
@@ -50,4 +46,13 @@ export const handleCASTicket = async (ticket: string)=>{
     });
 
     return response?.data.data
+}
+
+export const isTokenValid = async () =>{
+  
+  const response = await api.get('auth/istokenvalid/');
+
+  return response?.data.data
+
+  
 }

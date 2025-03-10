@@ -1,9 +1,11 @@
-import db from '../database/db'
+import { db } from '../database/db'
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { JSDOM } from 'jsdom';
 import { cas_validate_url, jwtSecret, service_url } from '../utils/secret';
 import * as userservice from './user.service';
+import { User, userSchema } from '../schemas/Basic/user.schema';
+import { permission } from 'process';
 
 
 // Fonction pour hacher le mot de passe
@@ -18,9 +20,9 @@ export const comparePassword = async (password: string, hashedPassword: string):
 };
 
 // Fonction pour générer un JWT
-export const generateToken = (userId: number, role: string): string => {
+export const generateToken = (user : User) => {
   return jwt.sign(
-    { userId, role },
+    { userId: user.id, userPermission: user.permission, userEmail: user.email },
     jwtSecret,
     { expiresIn: '1h' } // Le token expire après 1 heure
   );
@@ -28,43 +30,47 @@ export const generateToken = (userId: number, role: string): string => {
 
 // Fonction de connexion
 export const loginUser = async (email: string, password: string) => {
-  // Chercher l'utilisateur par email
-  const user = await userservice.getUserByEmail(email);
-  if (!user) {
-    throw new Error('Utilisateur non trouvé');
-  }
-
-  // Vérifier le mot de passe
-  const isMatch = await comparePassword(password, user.password);
-  if (!isMatch) {
-    throw new Error('Mot de passe incorrect');
-  }
-
-  // Générer un token JWT
-  const token = generateToken(user.id, user.role);
-  return token;
-};
+    // Chercher l'utilisateur par email
+    const user = await userservice.getUserByEmail(email);
+    if (!user) {
+      throw new Error('Utilisateur non trouvé');
+    }
+  
+    // Vérifier le mot de passe
+    const isMatch = await comparePassword(password, user.password);
+    if (!isMatch) {
+      throw new Error('Mot de passe incorrect');
+    }
+  
+    // Générer un token JWT
+    const token = generateToken(user);
+    return token;
+  };
 
 // Fonction d'inscription
 export const registerUser = async (firstName: string, lastName: string, email: string, password: string) => {
-  // Vérifier si l'email est déjà pris
-  const existingUser = await userservice.getUserByEmail(email);
-  if (existingUser) {
-    throw new Error('L\'email est déjà pris');
-  }
-
-  // Hacher le mot de passe avant de l'enregistrer
-  const hashedPassword = await hashPassword(password);
-
-  // Créer un nouvel utilisateur dans la base de données
-  const result = await db.query(
-    'INSERT INTO users (first_name, last_name, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-    [firstName, lastName, email, hashedPassword, 'user'] // Par défaut, le rôle est 'user'
-  );
-
-  const newUser = result.rows[0];
-  return newUser;
-};
+    // Vérifier si l'email est déjà pris
+    const existingUser = await userservice.getUserByEmail(email);
+    if (existingUser) {
+      throw new Error('L\'email est déjà pris');
+    }
+  
+    // Hacher le mot de passe avant de l'enregistrer
+    const hashedPassword = await hashPassword(password);
+  
+    // Créer un nouvel utilisateur dans la base de données
+    const result = await db.insert(userSchema).values({
+      first_name: firstName, 
+      last_name: lastName, 
+      email: email,
+      password: hashedPassword,
+      permission: 'Nouveau',
+    });
+  
+    // Retourner le nouvel utilisateur
+    const newUser = result[0];  // `result` est un tableau avec l'utilisateur inséré
+    return newUser;
+  };
 
 
 export const validateCASTicket = async (ticket : string) => {

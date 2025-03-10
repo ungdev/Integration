@@ -1,17 +1,23 @@
-// src/components/Navbar.tsx
 import { Link, useNavigate } from "react-router-dom"; // Utiliser react-router-dom
 import { useAuth } from "../context/authContext"; // Contexte pour gérer l'authentification
-import { getRole } from "src/services/auth/role.service";
+import { getPermission } from "src/services/requests/user.service";
 
 export const Navbar = () => {
-  const role  = getRole(); // Récupérer le rôle via le contexte
+  const permission  = getPermission(); 
   const navigate = useNavigate(); // Utiliser useNavigate pour la redirection
 
   // Si aucun rôle n'est défini, on redirige vers la page de login
-  if (!role) {
+  if (!permission) {
     navigate("/"); // Redirige vers la page de login
     return null; // Optionnel : Affiche rien pendant la redirection
   }
+
+  const handleLogout = () => {
+    // Supprimer le token authToken
+    localStorage.removeItem('authToken');
+    // Rediriger l'utilisateur vers la page de connexion ou une autre page appropriée
+    window.location.href = '/';
+}
 
   return (
     <nav className="bg-blue-600 p-4">
@@ -26,20 +32,16 @@ export const Navbar = () => {
           <Link to="#contact" className="text-white hover:text-gray-300">Contact</Link>
 
           {/* Navbar Role-Based */}
-          {role === "admin" && (
+          {permission === "admin" && (
             <Link to="/admin" className="text-white hover:text-gray-300">Admin Dashboard</Link>
           )}
 
-          {role === "student" && (
-            <Link to="/student" className="text-white hover:text-gray-300">Mon compte</Link>
+          {(permission === "Student" || permission === "admin") && (
+            <Link to="/Profil" className="text-white hover:text-gray-300">Mon compte</Link>
           )}
 
-          {/* Login/Logout */}
-          {role ? (
-            <Link to="/logout" className="text-white hover:text-gray-300">Logout</Link>
-          ) : (
-            <Link to="/login" className="text-white hover:text-gray-300">Login</Link>
-          )}
+          {<Link onClick={handleLogout} className="text-white hover:text-gray-300" to={""}>Déconnexion</Link>}
+
         </div>
       </div>
     </nav>

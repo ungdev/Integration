@@ -1,6 +1,6 @@
 // src/context/AuthContext.tsx
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { getRole } from "src/services/auth/role.service";
+import { getPermission } from "src/services/requests/user.service";
 
 interface AuthContextType {
   role: string | null;
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // Si tu as une logique pour récupérer le rôle depuis un cookie, localStorage, ou API, c'est ici.
     // Exemple : récupérer le rôle de l'utilisateur depuis localStorage
-    const storedRole = getRole()
+    const storedRole = getPermission()
     setRole(storedRole ? storedRole : null); // Si pas de rôle, l'utilisateur est redirigé
   }, []);
 

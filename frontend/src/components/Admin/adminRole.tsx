@@ -40,7 +40,7 @@ export const AdminRolePreferences = () => {
   };
 
   return (
-    <div className="flex justify-center items-center ">
+    <div className="flex justify-center items-center w-full ">
       <Card className="p-6 shadow-xl rounded-lg bg-white w-full">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-center">Gestion des Préférences de Rôle</CardTitle>
@@ -71,8 +71,10 @@ export const AdminRolePreferences = () => {
                 <table className="min-w-full table-auto">
                   <thead>
                     <tr>
+                    <th className="px-4 py-2 text-left">Prénom</th>
                       <th className="px-4 py-2 text-left">Nom</th>
                       <th className="px-4 py-2 text-left">Email</th>
+                      <th className="px-4 py-2 text-left">Contact</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -81,6 +83,7 @@ export const AdminRolePreferences = () => {
                         <td className="px-4 py-2">{user.firstName}</td>
                         <td className="px-4 py-2">{user.lastName}</td>
                         <td className="px-4 py-2">{user.email}</td>
+                        <td className="px-4 py-2">{user.contact}</td>
                       </tr>
                     ))}
                   </tbody>

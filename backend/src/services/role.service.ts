@@ -52,6 +52,7 @@ export const getUsersByRole = async (roleName: string) => {
           firstName: userSchema.first_name,
           lastName: userSchema.last_name,
           email: userSchema.email,
+          contact: userSchema.contact,
           roleName: roleSchema.name,
         })
         .from(userPreferencesSchema)

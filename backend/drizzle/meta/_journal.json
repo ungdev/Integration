@@ -15,6 +15,13 @@
       "when": 1741560562762,
       "tag": "0001_rich_dexter_bennett",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1741610327697,
+      "tag": "0002_strange_spectrum",
+      "breakpoints": true
     }
   ]
 }

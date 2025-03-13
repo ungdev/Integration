@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, integer } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, integer, date } from "drizzle-orm/pg-core";
 import { permission } from "process";
 
 // Définition de la table `users`
@@ -7,6 +7,9 @@ export const userSchema = pgTable("users", {
   first_name: text("first_name"),
   last_name: text("last_name"),
   email: text("email").unique(),
+  birthday: date("birthday"),
+  branch: text("branch"),
+  contact: text("contact"),
   password: text("password"),
   permission: text("permission").default("Nouveau"),  // Par défaut, le rôle sera "Nouveau"
   created_at: timestamp("created_at").defaultNow(),

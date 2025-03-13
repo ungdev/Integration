@@ -4,5 +4,8 @@ export interface User {
     lastName: string;
     email: string;
     permission : string;
+    birthday: Date;
+    branch: string;
+    contact: string;
     
 }

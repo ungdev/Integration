@@ -27,12 +27,12 @@ export const AdminPage: React.FC = () => {
     <div>
         <Navbar/>
         <div className="flex flex-col md:flex-row justify-between gap-6 p-6">
-            <div className="w-full md:w-1/2 h-full flex flex-col"> {/* 50% largeur, 100% hauteur, flex-col pour les enfants */}
+            <div className="w-full md:w-3/5 h-full flex flex-col"> {/* 50% largeur, 100% hauteur, flex-col pour les enfants */}
                 <div className="h-full">
                     <AdminRolePreferences />
                 </div>
             </div>
-            <div className="w-full md:w-1/2 h-full flex flex-col"> {/* 50% largeur, 100% hauteur, flex-col pour les enfants */}
+            <div className="w-full md:w-2/5 h-full flex flex-col"> {/* 50% largeur, 100% hauteur, flex-col pour les enfants */}
                 <div className="h-full">
                     <AdminRoleManagement />
                 </div>

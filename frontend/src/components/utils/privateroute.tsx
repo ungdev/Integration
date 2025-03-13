@@ -5,16 +5,16 @@ import { getToken } from '../../services/requests/auth.service';
 import { isAdmin } from '../../services/requests/user.service';
 
 interface PrivateRouteProps {
-  roleRequired?: string;
+  permissionRequired?: string;
 }
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ roleRequired }) => {
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ permissionRequired }) => {
   const token = getToken();
   if (!token) {
     return <Navigate to="/" />;
   }
 
-  if (roleRequired && !isAdmin()) {
+  if (permissionRequired && !isAdmin()) {
     return <Navigate to="/" />;
   }
 

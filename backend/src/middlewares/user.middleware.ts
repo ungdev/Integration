@@ -15,7 +15,7 @@ export const checkRole = (requiredRole: string) => {
 
     try {
       const decoded: any = jwt.verify(token, jwtSecret);
-      if (decoded.userPermission !== requiredRole) {
+      if (decoded.userPermission !== requiredRole && decoded.userPermission !== 'admin'){
          Unauthorized(res,{ msg: 'Accès interdit, rôle insuffisant' });
          return;
       }

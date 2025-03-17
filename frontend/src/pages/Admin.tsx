@@ -1,43 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { AdminRoleManagement, AdminRolePreferences } from 'src/components/Admin/adminRole';
-import { Navbar } from 'src/components/navbar';
-import { getPermission } from 'src/services/requests/user.service';
+import React, { useEffect, useState } from "react";
+import { AdminRoleManagement, AdminRolePreferences } from "src/components/Admin/adminRole";
+import { AdminShotgun } from "src/components/Admin/adminEvent";
+import { Navbar } from "src/components/navbar";
+import { getPermission } from "src/services/requests/user.service";
+import { Card, CardContent, CardHeader, CardTitle } from "../styles/components/ui/card";
 
 export const AdminPage: React.FC = () => {
+  const [role, setRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-    const [role, setRole] = useState<string | null >(null);
-    const [loading, setLoading] = useState<boolean>(true); // Gestion du loading
-
-    // Fonction pour récupérer et vérifier le rôle depuis le token
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const userRole = getPermission();
-            setRole(userRole);  // Met à jour le rôle de l'utilisateur
-        }
-        setLoading(false); // Arrêt du loading une fois l'opération terminée
-    }, []);
-    
-    // Rendu conditionnel pendant le chargement
-    if (loading) {
-        return <div>Chargement...</div>;
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const userRole = getPermission();
+      setRole(userRole);
     }
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return <div className="flex justify-center items-center min-h-screen">Chargement...</div>;
+  }
 
   return (
     <div>
-        <Navbar/>
-        <div className="flex flex-col md:flex-row justify-between gap-6 p-6">
-            <div className="w-full md:w-3/5 h-full flex flex-col"> {/* 50% largeur, 100% hauteur, flex-col pour les enfants */}
-                <div className="h-full">
-                    <AdminRolePreferences />
-                </div>
-            </div>
-            <div className="w-full md:w-2/5 h-full flex flex-col"> {/* 50% largeur, 100% hauteur, flex-col pour les enfants */}
-                <div className="h-full">
-                    <AdminRoleManagement />
-                </div>
-            </div>
-        </div>
+      <Navbar />
+      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Gestion des Rôles */}
+            <AdminRolePreferences />
+
+        
+            <AdminRoleManagement />
+
+        {/* Gestion du Shotgun */}
+            <AdminShotgun />
+      </div>
     </div>
   );
 };

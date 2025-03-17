@@ -5,8 +5,11 @@ import dotenv from 'dotenv';
 import authRoutes from './src/routes/auth.routes';
 import roleRoutes from './src/routes/role.routes';
 import userRoutes from './src/routes/user.routes';
+import teamRoutes from './src/routes/team.routes';
+import eventRoutes from './src/routes/event.routes';
 import { server_port } from './src/utils/secret';
 import { initRoles } from './src/database/initdb/initrole'
+import {initEvent} from './src/database/initdb/initevent'
 //import { initDB } from './src/database/init';
 
 dotenv.config();
@@ -22,12 +25,15 @@ async function startServer() {
     try {
         // Initialisation de la base de données
         await initRoles();  // Assure-toi que l'initialisation est terminée avant de démarrer le serveur
+        await initEvent();
         console.log('Base de données initialisée avec succès');
         
         // Utilisation des routes d'authentification
         app.use('/api/auth', authRoutes);
         app.use('/api/role', roleRoutes);
         app.use('/api/user', userRoutes);
+        app.use('/api/team', teamRoutes);
+        app.use('/api/event', eventRoutes);
 
         // Démarrage du serveur
         app.listen(server_port, () => {

@@ -1,5 +1,3 @@
-import { db } from "../database/db";
-import { userPreferencesSchema } from "../schemas/Relational/userroles.schema";
 import { Request, Response } from "express";
 import { Error, Ok } from "../utils/responses";
 import * as role_service from '../services/role.service'

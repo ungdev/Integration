@@ -7,4 +7,4 @@ export const teamSchema = pgTable("teams", {
   description: text("description"),  // Description de l'équipe
 });
 
-export type IntegrationTeam = typeof teamSchema.$inferSelect;
+export type Team = typeof teamSchema.$inferSelect;

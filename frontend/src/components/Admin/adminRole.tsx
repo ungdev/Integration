@@ -173,11 +173,12 @@ export const AdminRoleManagement = () => {
   };
 
   return (
-    <div className="flex justify-center items-center w-full">
-      <div className="p-6 shadow-xl rounded-lg bg-white w-full">
-        <h1 className="text-2xl font-semibold text-center mb-6 w-full">
-          Gestion des rôles d'un utilisateur
-        </h1>
+    <div className="flex justify-center items-center w-full ">
+    <Card className="p-6 shadow-xl rounded-lg bg-white w-full">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold text-center">Gestion des Rôle des utilisateurs</CardTitle>
+      </CardHeader>
+      <CardContent>
 
         {/* Message d'information */}
         {message && (
@@ -253,7 +254,9 @@ export const AdminRoleManagement = () => {
         {loading && (
           <div className="mt-4 text-center text-gray-500">Chargement...</div>
         )}
-      </div>
-    </div>
+
+      </CardContent>
+    </Card>
+  </div>
   );
 };

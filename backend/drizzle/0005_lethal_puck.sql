@@ -1,0 +1,1 @@
+ALTER TABLE "shotgun_settings" RENAME TO "events";

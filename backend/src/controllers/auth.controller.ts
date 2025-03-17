@@ -23,9 +23,9 @@ export const register = async (req: Request, res: Response) => {
 
   try {
     const newUser = await auth_service.registerUser(firstName, lastName, email, password);
-        res.status(201).json({
-      message: 'Utilisateur inscrit avec succès',
-      user: newUser,
+        Ok(res, {
+      msg: 'Utilisateur inscrit avec succès',
+      data: newUser,
     });
   } catch (err) {
       Error(res, { msg: err.message });

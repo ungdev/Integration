@@ -9,6 +9,7 @@ import {HomePage} from './pages/Home';
 import {ProfilPage} from './pages/Profil';
 import PrivateRoute from './components/utils/privateroute';
 import ProtectedRoute from './components/utils/protectedroute';
+import { ShotgunPage } from './pages/Shotgun';
 
 const App: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const App: React.FC = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/Home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/Profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
+        <Route path="/Shotgun" element={<ProtectedRoute><ShotgunPage /></ProtectedRoute>} />
         {/* Route protégée par rôle */}
         <Route element={<ProtectedRoute><PrivateRoute permissionRequired="admin" /></ProtectedRoute>}>
           <Route path="/admin" element={<AdminPage />} />

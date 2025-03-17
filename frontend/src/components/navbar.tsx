@@ -37,7 +37,10 @@ export const Navbar = () => {
           )}
 
           {(permission === "Student" || permission === "admin") && (
-            <Link to="/Profil" className="text-white hover:text-gray-300">Mon compte</Link>
+            <>
+              <Link to="/Profil" className="text-white hover:text-gray-300">Mon compte</Link>
+              <Link to="/Shotgun" className="text-white hover:text-gray-300">Shotgun</Link>
+            </>
           )}
 
           {<Link onClick={handleLogout} className="text-white hover:text-gray-300" to={""}>Déconnexion</Link>}

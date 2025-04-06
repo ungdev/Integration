@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Error, Ok, Unauthorized } from "../utils/responses";
 import * as team_service from "../services/team.service";
+import * as user_service from "../services/user.service";
 import * as faction_service from "../services/faction.service";
 import * as event_service from '../services/event.service'
 import { Event } from "../schemas/Basic/event.schema";
@@ -99,8 +100,8 @@ export const getTeamFaction = async (req: Request, res: Response) => {
 
     const {teamId} = req.query;
     try {
-        const teamFactionId = await team_service.getTeamUsers(teamId);
-        const teamFaction = await faction_service.getFaction(teamFactionId);
+        const {factionId} = await team_service.getTeamFaction(teamId);
+        const teamFaction = await faction_service.getFaction(factionId);
         Ok(res,{ data: teamFaction });
         return;
     } catch (error) {
@@ -127,5 +128,78 @@ export const deleteTeam = async (req: Request, res: Response) => {
         console.error(error);
         Error(res, { msg: "Erreur lors de la suppression de l'équipe." });
     }
-  };
+};
+
+export const teamDistribution = async (req: Request, res: Response) => {
+    try {
+        
+        const newStudents = await user_service.getUsersbyPermission("Nouveau");
+        const userswithteams = await (await team_service.getUsersWithTeam()).map((entry: any) => entry.userId);;
+        const teams = await team_service.getTeams();
+
+
+        // Filtrer les étudiants qui ne sont pas dans la liste RI et qui ne sont pas déjà assignés à une équipe
+        const filteredStudents = newStudents 
+                                  //.filter((student: any) => !RI_list.includes(student.email)) TO DO
+                                  .filter((student : any) => !userswithteams.includes(student.userId));
+
+        // Filtrer les utilisateurs en fonction de la spécialité
+        const tcStudents = filteredStudents
+          .filter((student: any) => student.branch === "TC")
+          .map((student: any) => ({
+            id: student.userId,
+            email: student.email,
+            branch: student.branch
+          }));
+  
+        const otherStudents = filteredStudents
+          .filter((student: any) => student.branch !== "TC" && student.branch !== "RI" && student.branch !== "MM")
+          .map((student: any) => ({
+            id: student.userId,
+            email: student.email,
+            branch: student.branch
+          }));
+  
+        // Filtrer les équipes en fonction de leur type
+        const tcTeams = teams.filter(team => team.type === "TC");
+        const otherTeams = teams.filter(team => team.type !== "TC" && team.type !== "RI" && team.type !== "PMOM");
+  
+        // Fonction pour assigner les utilisateurs à des équipes équilibrées
+        async function assignUsersToTeams(users: any, teams: any) {
+          // Calculer la taille actuelle des équipes
+          const teamSizes = await Promise.all(teams.map(async (team: any) => {
+            const members = await team_service.getTeamUsers(team.teamId);
+            return {
+              teamId: team.teamId,
+              size: members.length
+            };
+          }));
+  
+          // Trier les équipes par taille (ascendant)
+          teamSizes.sort((a: any, b: any) => a.size - b.size);
+  
+          for (const user of users) {
+            // Assigner l'utilisateur à l'équipe avec le moins de membres
+            const smallestTeam = teamSizes[0];
+            await team_service.addTeamMember(smallestTeam.teamId, user.id);
+  
+            // Mettre à jour la taille de l'équipe après l'ajout
+            smallestTeam.size += 1;
+  
+            // Réordonner les équipes pour garder la plus petite en premier
+            teamSizes.sort((a: any, b: any) => a.size - b.size);
+          }
+        }
+
+        // Assigner les utilisateurs TC aux équipes TC
+        await assignUsersToTeams(tcStudents, tcTeams);
+  
+        // Assigner les autres utilisateurs aux équipes non-TC
+        await assignUsersToTeams(otherStudents, otherTeams);
+  
+        Ok(res, { msg: "NewStudents distributed!" });
+    } catch (error) {
+        Error(res, { error });
+    }
+  }
   

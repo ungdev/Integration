@@ -1,6 +1,6 @@
 import { AdminRoleManagement, AdminRolePreferences } from "src/components/Admin/adminRole";
 import { AdminShotgun } from "src/components/Admin/adminEvent";
-import { AdminTeamManagement } from "src/components/Admin/adminTeam";  // Importer le composant
+import { AdminTeamManagement, DistributeTeam } from "src/components/Admin/adminTeam";  // Importer le composant
 import { Navbar } from "src/components/navbar";
 import { getPermission } from "src/services/requests/user.service";
 import { Card, CardContent, CardHeader, CardTitle } from "../styles/components/ui/card";
@@ -36,6 +36,7 @@ export const AdminPage: React.FC = () => {
 
         {/* Gestion des Équipes */}
         <AdminTeamManagement />
+        <DistributeTeam />
       </div>
     </div>
   );

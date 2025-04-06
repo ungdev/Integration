@@ -10,11 +10,6 @@ export const getAllTeams = async () => {
   return res.data.data;
 };
 
-export const getAllFactions = async () => {
-  const res = await api.get("/factions");
-  return res.data;
-};
-
 export const getTeamUsers = async (teamId: number) => {
   const res = await api.get(`/team/teamusers`, { params: { teamId } });
   return res.data.data;
@@ -23,13 +18,13 @@ export const getTeamUsers = async (teamId: number) => {
 export const getTeamFaction = async (teamId: number) => {
       const res = await api.get(`/team/teamfaction`, { params: { teamId } });
       return res.data.data;
-    };
+};
 
 export const updateTeam = async (payload: {
-  teamID: number;
-  teamName: string;
-  teamMembers: number[];
-  factionID: number;
+  teamID: number | null;
+  teamName: string | null;
+  factionID: number | null;
+  teamMembers: number[] | null;
 }) => {
   const res = await api.put("/team/modify", payload);
   return res.data;
@@ -40,8 +35,13 @@ export const deleteTeam = async (teamID: number) => {
   return res.data;
 };
 
-export const createTeamLight = async (payload: { teamName: string; factionId: number }) => {
+export const createTeamLight = async (payload: { teamName: string; factionId: number | null }) => {
   const res = await api.post("/team/createlight", payload);
   return res.data;
+};
+
+export const teamDistribution = async () => {
+      const response = await api.post("team/distributeteam");
+      return response.data
 };
 

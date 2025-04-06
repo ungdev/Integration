@@ -19,6 +19,6 @@ export const getFaction = async(factionId : any) => {
       name : factionSchema.name,
       description : factionSchema.description}).from(factionSchema).where(eq(factionSchema.id, factionId));
   
-    return faction
+    return faction[0]
 }
 

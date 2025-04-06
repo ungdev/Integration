@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { db } from '../database/db';  // Import de la connexion PostgreSQL
 import { User, userSchema } from '../schemas/Basic/user.schema';
 import { eq } from 'drizzle-orm';
+import { userTeamsSchema } from '../schemas/Relational/userteams.schema';
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
@@ -68,6 +69,24 @@ export const getUsers = async () => {
         email: userSchema.email
       }
     ).from(userSchema);
+    return users; 
+  } catch (err) {
+    console.error('Erreur lors de la récupération des utilisateurs ', err);
+    throw new Error('Erreur de base de données');
+  }
+};
+
+export const getUsersbyPermission = async (permission : string) => {
+  try {
+    const users = await db.select(
+      {
+        userId: userSchema.id,
+        firstName: userSchema.first_name,
+        lastName: userSchema.last_name,
+        email: userSchema.email,
+        branch: userSchema.branch
+      }
+    ).from(userSchema).where(eq(userSchema.permission, permission));
     return users; 
   } catch (err) {
     console.error('Erreur lors de la récupération des utilisateurs ', err);

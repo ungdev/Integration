@@ -12,6 +12,7 @@ teamRouter.get("/teamfaction",checkRole("Admin") ,teamController.getTeamFaction)
 teamRouter.put("/modify",checkRole("Admin") ,teamController.modifyTeam);
 teamRouter.get("/teamusers",checkRole("Admin") ,teamController.getTeamUsers);
 teamRouter.delete("/delete",checkRole("Admin") ,teamController.deleteTeam);
+teamRouter.post('/distributeteam',checkRole("Admin"), teamController.teamDistribution);
 
 
 export default teamRouter;

@@ -1,42 +1,59 @@
 import { useEffect, useState } from "react";
 import { Button } from "../../styles/components/ui/button";
 import { Input } from "../../styles/components/ui/input";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "../../styles/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../styles/components/ui/card";
+import Select from "react-select";  // Import de react-select
 import {
   getAllTeams,
   getTeamUsers,
   updateTeam,
   deleteTeam,
   createTeamLight,
+  teamDistribution,
 } from "../../services/requests/team.service";
 import { getAllFactions } from "src/services/requests/faction.service";
 import { getUsers } from "src/services/requests/user.service";
 import { Team } from "src/interfaces/team.interface";
 import { Faction } from "src/interfaces/faction.interface";
 import { User } from "src/interfaces/user.interface";
+import { getTeamFaction } from "src/services/requests/team.service";
 
 export const AdminTeamManagement = () => {
-  const [teams, setTeams] = useState<any[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [factions, setFactions] = useState<Faction[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
+
+  // States pour modification
+  const [editName, setEditName] = useState<string>("");
+  const [editFactionId, setEditFactionId] = useState<number | null>(null);
+  const [editMembers, setEditMembers] = useState<number[]>([]);
+
   const [newTeamName, setNewTeamName] = useState("");
   const [newFactionId, setNewFactionId] = useState<number | null>(null);
+
+  const selectedTeam = teams.find((t) => t.teamId === selectedTeamId);
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const loadTeamDetails = async () => {
+      if (!selectedTeamId) return;
+      const team = teams.find((t) => t.teamId === selectedTeamId);
+      if (team) {
+        const faction = team.faction_id ?? ((await getTeamFaction(team.teamId))?.factionId);
+        
+        const members = await getTeamUsers(team.teamId);
+
+        setEditName(team.name);
+        setEditFactionId(faction || null);
+        setEditMembers(members.map((member: User) => member.userId));
+      }
+    };
+
+    loadTeamDetails();
+  }, [selectedTeamId, teams]);
 
   const fetchData = async () => {
     try {
@@ -45,13 +62,7 @@ export const AdminTeamManagement = () => {
         getAllFactions(),
         getUsers(),
       ]);
-      const enrichedTeams = await Promise.all(
-        teamRes.map(async (team: Team) => {
-          const members = await getTeamUsers(team.teamId);
-          return { ...team, members };
-        })
-      );
-      setTeams(enrichedTeams);
+      setTeams(teamRes);
       setFactions(factionRes);
       setUsers(usersRes);
     } catch (err) {
@@ -59,33 +70,41 @@ export const AdminTeamManagement = () => {
     }
   };
 
-  const handleUpdate = async (team: any) => {
+  const handleUpdate = async () => {
+    if (!selectedTeamId) return;
     try {
-      const payload = {
-        teamID: team.teamId,
-        teamName: team.name,
-        teamMembers: team.members.map((m: User) => m.userId),
-        factionID: team.faction_id,
-      };
-      await updateTeam(payload);
+      await updateTeam({
+        teamID: selectedTeamId,
+        teamName: editName,
+        factionID: editFactionId,
+        teamMembers: editMembers,
+      });
       alert("Équipe mise à jour !");
+      fetchData();
     } catch (err) {
       console.error("Erreur lors de la mise à jour", err);
     }
   };
 
-  const handleDelete = async (teamId: number) => {
+  const handleDelete = async () => {
+    if (!selectedTeamId) return;
     try {
-      await deleteTeam(teamId);
-      setTeams(teams.filter((t) => t.teamId !== teamId));
+      await deleteTeam(selectedTeamId);
+      setTeams(teams.filter((t) => t.teamId !== selectedTeamId));
+      setSelectedTeamId(null);
     } catch (err) {
       console.error("Erreur lors de la suppression", err);
     }
   };
 
   const handleCreateTeam = async () => {
-    if (!newTeamName || !newFactionId) {
-      alert("Veuillez remplir tous les champs.");
+
+    if(teams.find((t)=> t.name === newTeamName)){
+      alert("Une équipe avec ce nom existe déjà");
+      return;
+    }
+    if (!newTeamName) {
+      alert("Veuillez remplir le nom de l'équipe");
       return;
     }
 
@@ -103,134 +122,113 @@ export const AdminTeamManagement = () => {
     }
   };
 
-  const toggleMember = (team: any, user: User) => {
-    const alreadyMember = team.members.find((m: User) => m.userId === user.userId);
-    if (alreadyMember) {
-      team.members = team.members.filter((m: User) => m.userId !== user.userId);
-    } else {
-      team.members.push(user);
-    }
-    setTeams([...teams]);
-  };
+    // Gestion du changement de sélection dans react-select
+  const handleMemberChange = (newValues: any) => {
+    // Extraire les IDs des utilisateurs sélectionnés
+    const selectedIds = newValues.map((val: any) => val.value);
 
-  const isMember = (team: any, userId: number) => {
-    return team.members.some((u: any) => u.id === userId);
+    // Mettre à jour l'état des membres sélectionnés avec les nouveaux IDs
+    setEditMembers(selectedIds);
   };
 
   return (
-    <Card className="p-6 shadow-lg mt-6 w-full">
-      <CardHeader>
-        <CardTitle>Gestion des Équipes</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-8">
+    <div className="space-y-8 mt-6">
+      {/* Création */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold">Créer une équipe</h2>
+        <div className="flex flex-col md:flex-row gap-4">
+          <Input
+            placeholder="Nom de l'équipe"
+            value={newTeamName}
+            onChange={(e) => setNewTeamName(e.target.value)}
+            className="w-full md:w-64"
+          />
+          <Select
+            onChange={(selectedOption: any) => setNewFactionId(selectedOption.value)}
+            options={factions.map(faction => ({ value: faction.factionId, label: faction.name }))}
+            className="w-full md:w-64"
+            placeholder="Sélectionner une faction"
+          />
+          <Button onClick={handleCreateTeam}>Créer</Button>
+        </div>
+      </div>
 
-        {/* Création */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Créer une nouvelle équipe</h2>
-          <div className="flex flex-col md:flex-row gap-4">
-            <Input
-              placeholder="Nom de l'équipe"
-              value={newTeamName}
-              onChange={(e) => setNewTeamName(e.target.value)}
-              className="w-full md:w-64"
-            />
+      {/* Sélection d'une équipe */}
+      <div className="space-y-2">
+        <h2 className="text-xl font-bold">Modifier une équipe</h2>
+        <Select
+          value={teams.find((team) => team.teamId === selectedTeamId) ? { value: selectedTeamId, label: teams.find((team) => team.teamId === selectedTeamId)?.name } : null}
+          onChange={(selectedOption: any) => setSelectedTeamId(selectedOption.value)}
+          options={teams.map((team) => ({ value: team.teamId, label: team.name }))}
+          className="w-full md:w-96"
+          placeholder="Sélectionner une équipe"
+        />
+      </div>
+
+      {/* Formulaire de modification */}
+      {selectedTeam && (
+        <div className="space-y-6 border-t pt-6">
+          <Input
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            className="w-full md:w-96"
+          />
+
+          <Select
+            value={factions.find(f => f.factionId === editFactionId) ? { value: editFactionId, label: factions.find(f => f.factionId === editFactionId)?.name } : null}
+            onChange={(selectedOption: any) => setEditFactionId(selectedOption.value)}
+            options={factions.map(faction => ({ value: faction.factionId, label: faction.name }))}
+            className="w-full md:w-96"
+            placeholder="Sélectionner une faction"
+          />
+
+          {/* Membres de l'équipe */}
+          <div>
+            <h3 className="font-semibold mb-2">Membres de l'équipe</h3>
             <Select
-              value={newFactionId?.toString() || ""}
-              onValueChange={(val) => setNewFactionId(parseInt(val))}
-            >
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="Sélectionner une faction" />
-              </SelectTrigger>
-              <SelectContent>
-                {factions.map((faction) => (
-                  <SelectItem key={faction.factionId} value={faction.factionId.toString()}>
-                    {faction.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button onClick={handleCreateTeam}>Créer</Button>
+            isMulti
+            value={editMembers.map((id) => {
+              const user = users.find((u) => u.userId === id);
+              return { value: id, label: user ? `${user.firstName} ${user.lastName}` : "" };
+            })}
+            onChange={handleMemberChange}
+            options={users
+              .filter((user) => !editMembers.includes(user.userId))  // Filtrer les utilisateurs déjà sélectionnés
+              .map((user) => ({ value: user.userId, label: `${user.firstName} ${user.lastName}` }))}
+            className="w-full md:w-96"
+            placeholder="Sélectionner des membres"
+          />
+          </div>
+
+          <div className="flex gap-4 pt-4">
+            <Button onClick={handleUpdate}>💾 Sauvegarder</Button>
+            <Button onClick={handleDelete}>
+              🗑️ Supprimer l'équipe
+            </Button>
           </div>
         </div>
-
-        {/* Liste des équipes */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Équipes existantes</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {teams.map((team) => (
-              <div key={team.id} className="border p-4 rounded-lg shadow space-y-4 bg-white">
-                <Input
-                  value={team.name}
-                  onChange={(e) => (team.name = e.target.value)}
-                  className="w-full"
-                />
-                <Select
-                  value={team.faction_id?.toString() || ""}
-                  onValueChange={(val) => (team.faction_id = parseInt(val))}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Faction" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {factions.map((faction) => (
-                      <SelectItem key={faction.factionId} value={faction.factionId.toString()}>
-                        {faction.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <div className="space-y-2">
-                <div className="text-sm font-semibold text-gray-600">Membres actuels :</div>
-                <div className="flex flex-wrap gap-2">
-                  {team.members.length > 0 ? (
-                    team.members.map((member: User) => (
-                      <div
-                        key={member.userId}
-                        className="bg-green-100 text-green-900 px-3 py-1 rounded-full flex items-center gap-2 text-sm"
-                      >
-                        {member.lastName}" "{member.firstName}
-                        <button
-                          className="text-red-500 font-bold"
-                          onClick={() => toggleMember(team, member)}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-sm text-gray-400">Aucun membre</div>
-                  )}
-                </div>
-
-                <div className="text-sm font-semibold text-gray-600">Ajouter un membre :</div>
-                <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-                  {users
-                    .filter((user) => !isMember(team, user.userId))
-                    .map((user) => (
-                      <button
-                        key={user.userId}
-                        className="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm"
-                        onClick={() => toggleMember(team, user)}
-                      >
-                        ➕ {user.lastName}" "{user.firstName}
-                      </button>
-                    ))}
-                </div>
-              </div>
+      )}
+    </div>
+  );
+};
 
 
-                <div className="flex justify-end gap-2 pt-2">
-                  <Button onClick={() => handleUpdate(team)}>💾 Sauvegarder</Button>
-                  <Button variant="destructive" onClick={() => handleDelete(team.teamId)}>
-                    🗑️ Supprimer
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+
+export const DistributeTeam = () => {
+
+  const Submit = async () => {
+    const response = await teamDistribution();
+    alert(response.message);
+  };
+
+  return (
+    <div>
+      <div className="input">
+        <label>Voulez-vous répartir aléatoirement les nouveaux dans leurs équipes ? </label>
+         <p><strong>(Effet que sur ceux qui n'ont toujours d'équipe)</strong></p>
+      </div>
+      
+      <Button className="submit-button" onClick={Submit}>Distribuer</Button>
+    </div>
   );
 };

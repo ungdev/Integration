@@ -124,6 +124,16 @@ export const getRoles = async()=>{
 
 }
 
+export const getUserRoles = async (userId : any) =>{
+
+    const userRoles = await db
+          .select({roleId: userRolesSchema.role_id})
+          .from(userRolesSchema)
+          .where(eq(userRolesSchema.user_id, userId));
+      
+      return userRoles;
+  };
+
 
 
   

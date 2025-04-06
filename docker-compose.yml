@@ -1,14 +1,14 @@
 services:
   db:
     image: postgres:latest
-    container_name: db-container
+    container_name: integration-db
     restart: always
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: integration_dev
+      POSTGRES_DB: integration-dev
     ports:
-      - "4321:5432"
+      - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks:
@@ -17,14 +17,14 @@ services:
   backend:
     build:
       context: ./backend
-    container_name: backend-container
+    container_name: integration-backend
     restart: always
     environment:
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: integration_dev
+      POSTGRES_DB: integration-dev
       PORT: 4001
     ports:
       - "4001:4001"
@@ -34,12 +34,12 @@ services:
       - db
     networks:
       - app-network
-    command: ["sh", "-c", "npm install && npm run dev"]
+    command: ["sh", "-c", "until pg_isready -h db -p 5432; do echo 'Waiting for DB...'; sleep 2; done && npx drizzle-kit migrate && npm run dev"]
 
   frontend:
     build:
       context: ./frontend
-    container_name: frontend-container
+    container_name: integration-frontend
     ports:
       - "4000:4000"
     volumes:

@@ -21,4 +21,4 @@ export const useAuth = () => {
       verifyToken();
     }, []);
     return isAuthenticated;
-  };
+};

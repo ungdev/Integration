@@ -1,9 +1,7 @@
 // src/App.tsx
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import {Navbar} from './components/navbar';
 import LoginPage from './pages/Auth';
-import RegisterPage from './pages/Auth';
 import {AdminPage} from './pages/Admin';
 import {HomePage} from './pages/Home';
 import {ProfilPage} from './pages/Profil';
@@ -20,8 +18,8 @@ const App: React.FC = () => {
         <Route path="/Profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
         <Route path="/Shotgun" element={<ProtectedRoute><ShotgunPage /></ProtectedRoute>} />
         {/* Route protégée par rôle */}
-        <Route element={<ProtectedRoute><PrivateRoute permissionRequired="admin" /></ProtectedRoute>}>
-          <Route path="/admin" element={<AdminPage />} />
+        <Route element={<ProtectedRoute><PrivateRoute permissionRequired="Admin" /></ProtectedRoute>}>
+          <Route path="/Admin" element={<AdminPage />} />
         </Route>
       </Routes>
     </Router>

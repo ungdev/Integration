@@ -6,16 +6,14 @@ import { Unauthorized } from '../utils/responses';
 // Middleware pour vérifier le rôle
 export const checkRole = (requiredRole: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
 
-    if (!token) {
+    if (!req.user) {
        Unauthorized(res,{ msg: 'Accès non autorisé' });
        return;
     }
-
+    const user = req.user
     try {
-      const decoded: any = jwt.verify(token, jwtSecret);
-      if (decoded.userPermission !== requiredRole && decoded.userPermission !== 'admin'){
+      if (user.userPermission !== requiredRole && user.userPermission !== 'Admin'){
          Unauthorized(res,{ msg: 'Accès interdit, rôle insuffisant' });
          return;
       }

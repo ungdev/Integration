@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../styles/components/ui/card"; // Composants UI
-import { addRolesToUser, deleteRolesToUser, getRoles, getUsersByRoleHandler, getUsersWithRoles } from "src/services/requests/role.service";
+import { addRolesToUser, deleteRolesToUser, getRoles, getUsersByRoleHandler, getUsersRoles, getUsersWithRoles } from "src/services/requests/role.service";
 import { User } from "src/interfaces/user.interface";
 import { Role } from "src/interfaces/role.interface";
 import { Button } from "../../styles/components/ui/button";
@@ -16,22 +16,22 @@ const roles = [
 ];
 
 export const AdminRolePreferences = () => {
-  const [selectedRole, setSelectedRole] = useState(""); // Rôle sélectionné
+  const [selectedPreference, setSelectedPreference] = useState(""); // Rôle sélectionné
   const [users, setUsers] = useState<User[]>([]); // Liste des utilisateurs ayant sélectionné ce rôle
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (selectedRole) {
-      fetchUsersByRole(selectedRole); // Appeler la fonction pour récupérer les utilisateurs à chaque changement de rôle
+    if (selectedPreference) {
+      fetchUsersByPreference(selectedPreference); // Appeler la fonction pour récupérer les utilisateurs à chaque changement de rôle
     }
-  }, [selectedRole]);
+  }, [selectedPreference]);
 
   // Fonction pour récupérer les utilisateurs par rôle
-  const fetchUsersByRole = async (roleName: string) => {
+  const fetchUsersByPreference = async (roleName: string) => {
     setLoading(true);
     try {
-      const usersByRole = await getUsersByRoleHandler(roleName)
-      setUsers(usersByRole); // Met à jour les utilisateurs dans le state
+      const usersByPreference = await getUsersByRoleHandler(roleName)
+      setUsers(usersByPreference); // Met à jour les utilisateurs dans le state
     } catch (error) {
       console.error("Erreur lors de la récupération des utilisateurs : ", error);
     } finally {
@@ -47,13 +47,13 @@ export const AdminRolePreferences = () => {
         </CardHeader>
         <CardContent>
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Sélectionner un rôle</label>
+            <label className="block text-sm font-medium mb-2">Sélectionner une préférence</label>
             <select 
               className="w-full p-2 border rounded-lg"
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}
+              value={selectedPreference}
+              onChange={(e) => setSelectedPreference(e.target.value)}
             >
-              <option value="">Choisir un rôle</option>
+              <option value="">Choisir une préférence</option>
               {roles.map((role) => (
                 <option key={role} value={role}>
                   {role}
@@ -66,7 +66,7 @@ export const AdminRolePreferences = () => {
             <p className="text-center">Chargement...</p>
           ) : (
             <div>
-              <h3 className="text-lg font-semibold mb-4">Utilisateurs ayant sélectionné "{selectedRole}"</h3>
+              <h3 className="text-lg font-semibold mb-4">Utilisateurs ayant sélectionné "{selectedPreference}"</h3>
               {users.length > 0 ? (
                 <table className="min-w-full table-auto">
                   <thead>
@@ -108,25 +108,39 @@ export const AdminRoleManagement = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  // Charger les utilisateurs et les rôles
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+    const fetchInitialData = async () => {
       try {
-        // Requête pour récupérer les utilisateurs et les rôles depuis le backend
         const users = await getUsers();
         setUsers(users);
-
         const roles = await getRoles();
         setRoles(roles);
       } catch (error) {
-        console.error("Erreur lors de la récupération des données", error);
+        console.error("Erreur initiale", error);
       }
-      setLoading(false);
     };
-
-    fetchData();
+  
+    fetchInitialData();
   }, []);
+  
+  // Mise à jour des rôles selon l'utilisateur sélectionné
+  useEffect(() => {
+    const fetchUserRoles = async () => {
+      try {
+        if (selectedUser) {
+          const usersRoles = await getUsersRoles(selectedUser);
+          const roleIds = usersRoles.map((role: { roleId: number }) => role.roleId);
+          setSelectedRoles(roleIds);
+        } else {
+          setSelectedRoles([]);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des rôles utilisateur", error);
+      }
+    };
+  
+    fetchUserRoles();
+  }, [selectedUser]);
 
   // Fonction pour ajouter plusieurs rôles à un utilisateur
   const handleAddRoles = async () => {

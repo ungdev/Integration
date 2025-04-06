@@ -34,5 +34,4 @@ export const initRoles = async () => {
     for (const role of roles) {
       await db.insert(roleSchema).values(role).onConflictDoNothing(); // Évite les doublons
     }
-    console.log("✅ Rôles ajoutés avec succès !");
   };

@@ -33,8 +33,8 @@ export const AdminShotgun = () => {
       await togglePreRegistration(!preRegistrationOpen);
       setPreRegistrationOpen(!preRegistrationOpen);
       alert("Pré-inscription mise à jour !");
-    } catch (error) {
-      alert("Erreur lors de la mise à jour de la pré-inscription.");
+    } catch (error : any) {
+      alert(error.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -46,8 +46,8 @@ export const AdminShotgun = () => {
       await toggleShotgun(!shotgunOpen);
       setShotgunOpen(!shotgunOpen);
       alert("Shotgun mis à jour !");
-    } catch (error) {
-      alert("Erreur lors de la mise à jour du shotgun.");
+    } catch (error : any) {
+      alert(error.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ export const AdminShotgun = () => {
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow">
-      <h2 className="text-xl font-semibold mb-4">Admin Panel - Shotgun CE</h2>
+      <h2 className="text-xl font-semibold mb-4">Shotgun CE</h2>
 
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between p-3 border rounded-lg">

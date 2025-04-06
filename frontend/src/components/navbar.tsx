@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom"; // Utiliser react-router-dom
-import { useAuth } from "../context/authContext"; // Contexte pour gérer l'authentification
 import { getPermission } from "src/services/requests/user.service";
 
 export const Navbar = () => {
@@ -28,15 +27,12 @@ export const Navbar = () => {
         <div className="flex space-x-6">
           {/* Liens de la Navbar */}
           <Link to="/Home" className="text-white hover:text-gray-300">Home</Link>
-          <Link to="#about" className="text-white hover:text-gray-300">L'intégration</Link>
-          <Link to="#contact" className="text-white hover:text-gray-300">Contact</Link>
-
           {/* Navbar Role-Based */}
-          {permission === "admin" && (
+          {permission === "Admin" && (
             <Link to="/admin" className="text-white hover:text-gray-300">Admin Dashboard</Link>
           )}
 
-          {(permission === "Student" || permission === "admin") && (
+          {(permission === "Student" || permission === "Admin") && (
             <>
               <Link to="/Profil" className="text-white hover:text-gray-300">Mon compte</Link>
               <Link to="/Shotgun" className="text-white hover:text-gray-300">Shotgun</Link>

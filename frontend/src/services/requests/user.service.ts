@@ -18,7 +18,7 @@ export const getPermission = (): string | null => {
   };
 
 export const isAdmin = (): boolean => {
-  return getPermission() === 'admin';
+  return getPermission() === 'Admin';
 };
 
 
@@ -31,7 +31,8 @@ export const getUsers = async () => {
   
   }
   catch(error){
-    throw new Error("Error while getting preferences" + error);
+    throw new Error("Error while getting Users" + error);
   }
 
 }
+

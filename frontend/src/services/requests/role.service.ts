@@ -13,7 +13,7 @@ export const getUserPrefrences = async () => {
   
 }
 
-export const updateUserPrefrences = async (selectedRoles : any) => {
+export const updateUserPreferences = async (selectedRoles : any) => {
   try{
     const response = await api.put("/role/updateuserpreferences", { roleIds: selectedRoles });
     const userPreferences = response.data.data;
@@ -88,7 +88,22 @@ export const getRoles  = async () => {
   
   }
   catch(error){
-    throw new Error("Error while getting preferences" + error);
+    throw new Error("Error while getting roles" + error);
+  }
+
+}
+
+export const getUsersRoles = async (userId : number) => {
+  try{
+    const response = await api.get('/role/getusersroles', {params: {userId}});
+    const userRoles = response.data.data;
+  
+    return userRoles;
+  
+  }
+  catch(error){
+    console.log(error);
+    throw new Error("Error while getting roles " + error);
   }
 
 }

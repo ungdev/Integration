@@ -1,11 +1,11 @@
 {
-  "id": "09b53efc-0340-4570-8836-9d396ab8475c",
-  "prevId": "274ef530-a2e2-4633-aa3e-dcdda5a56467",
+  "id": "d8a77ad4-db77-49fb-aba6-5ee4d8a0c9ed",
+  "prevId": "462d36c8-a295-493d-bc76-2e8b7f68d86e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.shotgun_settings": {
-      "name": "shotgun_settings",
+    "public.events": {
+      "name": "events",
       "schema": "",
       "columns": {
         "id": {
@@ -33,6 +33,45 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.factions": {
+      "name": "factions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "factions_name_unique": {
+          "name": "factions_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -198,8 +237,68 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.shotgun": {
-      "name": "shotgun",
+    "public.team_faction": {
+      "name": "team_faction",
+      "schema": "",
+      "columns": {
+        "faction_id": {
+          "name": "faction_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "team_id": {
+          "name": "team_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "team_faction_faction_id_teams_id_fk": {
+          "name": "team_faction_faction_id_teams_id_fk",
+          "tableFrom": "team_faction",
+          "tableTo": "teams",
+          "columnsFrom": [
+            "faction_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "team_faction_team_id_factions_id_fk": {
+          "name": "team_faction_team_id_factions_id_fk",
+          "tableFrom": "team_faction",
+          "tableTo": "factions",
+          "columnsFrom": [
+            "team_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "team_faction_faction_id_team_id_pk": {
+          "name": "team_faction_faction_id_team_id_pk",
+          "columns": [
+            "faction_id",
+            "team_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.team_shotgun": {
+      "name": "team_shotgun",
       "schema": "",
       "columns": {
         "id": {
@@ -224,9 +323,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "shotgun_team_id_teams_id_fk": {
-          "name": "shotgun_team_id_teams_id_fk",
-          "tableFrom": "shotgun",
+        "team_shotgun_team_id_teams_id_fk": {
+          "name": "team_shotgun_team_id_teams_id_fk",
+          "tableFrom": "team_shotgun",
           "tableTo": "teams",
           "columnsFrom": [
             "team_id"
@@ -402,7 +501,15 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "user_teams_user_id_team_id_pk": {
+          "name": "user_teams_user_id_team_id_pk",
+          "columns": [
+            "user_id",
+            "team_id"
+          ]
+        }
+      },
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},

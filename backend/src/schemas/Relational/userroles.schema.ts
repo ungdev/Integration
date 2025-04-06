@@ -13,8 +13,8 @@ export type UserRole = typeof userRolesSchema.$inferSelect;
 export const userPreferencesSchema = pgTable("user_preferences", {
   userId: integer("user_id").notNull().references(() => userSchema.id, { onDelete: "cascade" }),
   roleId: integer("role_id").notNull().references(() => roleSchema.id, { onDelete: "cascade" }),
-}, (table) => ({
-  pk: primaryKey({ columns: [table.userId, table.roleId] }),
-}));
+}, (table) => [
+  primaryKey({ columns: [table.userId, table.roleId]}) ],
+);
 
 export type UserPreference = typeof userPreferencesSchema.$inferSelect;

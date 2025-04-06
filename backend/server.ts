@@ -7,9 +7,11 @@ import roleRoutes from './src/routes/role.routes';
 import userRoutes from './src/routes/user.routes';
 import teamRoutes from './src/routes/team.routes';
 import eventRoutes from './src/routes/event.routes';
+import factionRoutes from './src/routes/faction.routes';
 import { server_port } from './src/utils/secret';
 import { initRoles } from './src/database/initdb/initrole'
 import {initEvent} from './src/database/initdb/initevent'
+import { authenticateUser } from './src/middlewares/auth.middleware';
 //import { initDB } from './src/database/init';
 
 dotenv.config();
@@ -30,10 +32,11 @@ async function startServer() {
         
         // Utilisation des routes d'authentification
         app.use('/api/auth', authRoutes);
-        app.use('/api/role', roleRoutes);
-        app.use('/api/user', userRoutes);
-        app.use('/api/team', teamRoutes);
-        app.use('/api/event', eventRoutes);
+        app.use('/api/role',authenticateUser, roleRoutes);
+        app.use('/api/user',authenticateUser, userRoutes);
+        app.use('/api/team',authenticateUser, teamRoutes);
+        app.use('/api/event',authenticateUser, eventRoutes);
+        app.use('/api/faction',authenticateUser, factionRoutes);
 
         // Démarrage du serveur
         app.listen(server_port, () => {

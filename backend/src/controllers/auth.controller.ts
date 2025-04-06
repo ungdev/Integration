@@ -105,6 +105,7 @@ export const isTokenValid = async (req: Request, res: Response) => {
       });
       return
     }
+
     // Répondre une seule fois
      Ok(res, {data: true });
      return

@@ -33,8 +33,8 @@ export const Shotgun = () => {
     try {
       const response = await attemptShotgun();
       setMessage(`Shotgun validé !`);
-    } catch (error) {
-      setMessage("Erreur lors du shotgun.");
+    } catch (error : any) {
+      setMessage(error.response.data.message);
     }
   };
 

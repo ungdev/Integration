@@ -124,6 +124,26 @@ export const getRoles = async (req: Request, res: Response) => {
       Error(res,{ msg: "Erreur serveur" });
       return;
     }
-  };
+};
+
+export const getUserRoles = async (req: Request, res: Response) => {
+  try {
+
+      const { userId } = req.query;
+
+      if (!userId) {
+        Error(res,{ msg: "userId is required" });
+        return;
+     }
+
+      const userRoles = await role_service.getUserRoles(userId);
+      Ok(res,{ data: userRoles });
+      return;
+    } catch (error) {
+      console.error(error);
+      Error(res,{ msg: "Erreur interne lors de la récupération des roles de l'utilisateur" });
+      return;
+    }
+};
   
   

@@ -46,10 +46,10 @@ export const TeamRegistration = () => {
     const memberIds = members.map((id) => parseInt(id)); // Convertir chaque ID en nombre
 
     try {
-      await createTeam(teamName, memberIds); // Appeler l'API pour créer l'équipe
+      const response = await createTeam(teamName, memberIds); // Appeler l'API pour créer l'équipe
       alert("Équipe enregistrée !");
-    } catch (error) {
-      alert("Erreur lors de l'enregistrement.");
+    } catch (error : any) {
+      alert(error.response.data.message);
     }
   };
 

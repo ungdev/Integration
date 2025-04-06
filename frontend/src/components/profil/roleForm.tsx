@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button } from "../../styles/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../styles/components/ui/card";
-import { getUserPrefrences, updateUserPrefrences } from "src/services/requests/role.service";
+import { getUserPrefrences, updateUserPreferences } from "src/services/requests/role.service";
 import { Checkbox } from "../../styles/components/ui/checkbox";
 
 const commissions = [
@@ -57,7 +57,7 @@ export const UserPreferences = () => {
 
 
     try {
-      await updateUserPrefrences(selectedRoleIds); // Envoie des `roleId`
+      await updateUserPreferences(selectedRoleIds); // Envoie des `roleId`
       alert("Préférences mises à jour !");
     } catch (error) {
       console.error("Erreur:", error);

@@ -74,8 +74,6 @@ export default function AuthPage() {
         const urlParams = new URLSearchParams(window.location.search);
         const ticket = urlParams.get("ticket");
 
-        console.log(ticket);
-
         if (ticket) {
             try {
                 const { token } = await handleCASTicket(ticket);

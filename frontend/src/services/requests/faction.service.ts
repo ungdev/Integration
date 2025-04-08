@@ -5,3 +5,9 @@ export const getAllFactions = async () => {
 
   return res.data.data;
 };
+
+export const createFaction = async (factionName : string) => {
+  const res = await api.post("faction/createfaction", {factionName});
+
+  return res.data;
+};

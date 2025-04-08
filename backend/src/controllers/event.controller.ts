@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Error, Ok, Unauthorized } from "../utils/responses";
+import { Accepted, Error, Ok, Unauthorized } from "../utils/responses";
 import * as event_service from "../services/event.service";
 import * as team_service from "../services/team.service";
 import { Event } from "../schemas/Basic/event.schema";
@@ -36,12 +36,12 @@ export const shotgunAttempt = async (req: Request, res: Response) => {
       return;
     }
     try{
-        const userTeam = (await team_service.getUserTeam(userId)).userTeam
+        const userTeam = await team_service.getUserTeam(userId)
 
         const alreadyShotgun = await event_service.alreadyShotgun(userTeam)
 
         if(alreadyShotgun){
-            Error(res, { msg: "Votre équipe est déjà dasn le shotgun." });
+            Accepted(res, { msg: "Votre équipe est déjà dans le shotgun." });
             return;
         }
 

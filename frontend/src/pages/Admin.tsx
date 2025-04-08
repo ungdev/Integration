@@ -1,43 +1,88 @@
 import { AdminRoleManagement, AdminRolePreferences } from "src/components/Admin/adminRole";
 import { AdminShotgun } from "src/components/Admin/adminEvent";
 import { AdminTeamManagement, DistributeTeam } from "src/components/Admin/adminTeam";  // Importer le composant
-import { Navbar } from "src/components/navbar";
-import { getPermission } from "src/services/requests/user.service";
-import { Card, CardContent, CardHeader, CardTitle } from "../styles/components/ui/card";
-import { useEffect, useState } from "react";
+import { AdminLayout } from "src/components/Admin/adminLayout";
+import { AdminExportConnect } from "src/components/Admin/adminExport";
+import { AdminFactionManagement } from "src/components/Admin/adminFaction";
+import { AdminPermanence } from "src/components/Admin/adminPerm";
 
-export const AdminPage: React.FC = () => {
-  const [role, setRole] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const userRole = getPermission();
-      setRole(userRole);
-    }
-    setLoading(false);
-  }, []);
 
-  if (loading) {
-    return <div className="flex justify-center items-center min-h-screen">Chargement...</div>;
-  }
-
+export const AdminPageTeam: React.FC = () => {
   return (
-    <div>
-      <Navbar />
-      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Gestion des Rôles */}
-        <AdminRolePreferences />
-        <AdminRoleManagement />
-
-        {/* Gestion du Shotgun */}
-        <AdminShotgun />
-
-        {/* Gestion des Équipes */}
-        <AdminTeamManagement />
-        <DistributeTeam />
+    <AdminLayout>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl bg-white shadow p-6">
+          <AdminTeamManagement />
+        </section>
+        <section className="rounded-2xl bg-white shadow p-6">
+          <DistributeTeam />
+        </section>
       </div>
-    </div>
+    </AdminLayout>
+  );
+};
+
+export const AdminPageFaction: React.FC = () => {
+  return (
+    <AdminLayout>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl bg-white shadow p-6">
+          <AdminFactionManagement />
+        </section>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export const AdminPageUser: React.FC = () => {
+  return (
+    <AdminLayout>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl bg-white shadow p-6">
+          <AdminRolePreferences />
+        </section>
+        <section className="rounded-2xl bg-white shadow p-6">
+          <AdminRoleManagement />
+        </section>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export const AdminPageShotgun: React.FC = () => {
+  return (
+    <AdminLayout>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl bg-white shadow p-6">
+          <AdminShotgun />
+        </section>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export const AdminPageExport: React.FC = () => {
+  return (
+    <AdminLayout>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl bg-white shadow p-6">
+          <AdminExportConnect />
+        </section>
+      </div>
+    </AdminLayout>
+  );
+};
+
+
+export const AdminPagePerm: React.FC = () => {
+  return (
+    <AdminLayout>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl bg-white shadow p-6">
+          <AdminPermanence />
+        </section>
+      </div>
+    </AdminLayout>
   );
 };

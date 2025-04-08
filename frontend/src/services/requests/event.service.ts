@@ -23,13 +23,9 @@ export const checkPreRegisterStatus = async () => {
 
 export const attemptShotgun = async () => {
 
-    try{
-        const response = await api.post("event/shotgunattempt");
-        return response.data;
-    }
-    catch(error){
-        throw new Error("Error while attempting shotgun" + error);
-    }
+    const response = await api.post("event/shotgunattempt");
+    return response.data;
+
 };
 
 export const toggleShotgun = async (shotgunOpen: boolean) => {

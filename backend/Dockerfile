@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y postgresql-client
 # Copier le package.json et package-lock.json pour installer les dépendances
 COPY package.json package-lock.json ./
 
-RUN npm install
+RUN npm install -g npm@latest
 
 # Copier tous les autres fichiers du backend
 COPY . .

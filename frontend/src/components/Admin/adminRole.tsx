@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../styles/components/ui/card"; // Composants UI
-import { addRolesToUser, deleteRolesToUser, getRoles, getUsersByRoleHandler, getUsersRoles, getUsersWithRoles } from "src/services/requests/role.service";
+import Select from "react-select"; // Importer react-select
+import { addRolesToUser, deleteRolesToUser, getRoles, getUsersByRoleHandler, getUsersRoles } from "src/services/requests/role.service";
 import { User } from "src/interfaces/user.interface";
 import { Role } from "src/interfaces/role.interface";
-import { Button } from "../../styles/components/ui/button";
 import { getUsers } from "src/services/requests/user.service";
 
 // Liste des rôles disponibles
@@ -30,7 +30,7 @@ export const AdminRolePreferences = () => {
   const fetchUsersByPreference = async (roleName: string) => {
     setLoading(true);
     try {
-      const usersByPreference = await getUsersByRoleHandler(roleName)
+      const usersByPreference = await getUsersByRoleHandler(roleName);
       setUsers(usersByPreference); // Met à jour les utilisateurs dans le state
     } catch (error) {
       console.error("Erreur lors de la récupération des utilisateurs : ", error);
@@ -38,6 +38,8 @@ export const AdminRolePreferences = () => {
       setLoading(false);
     }
   };
+
+  const roleOptions = roles.map(role => ({ value: role, label: role }));
 
   return (
     <div className="flex justify-center items-center w-full ">
@@ -48,18 +50,13 @@ export const AdminRolePreferences = () => {
         <CardContent>
           <div className="mb-6">
             <label className="block text-sm font-medium mb-2">Sélectionner une préférence</label>
-            <select 
-              className="w-full p-2 border rounded-lg"
-              value={selectedPreference}
-              onChange={(e) => setSelectedPreference(e.target.value)}
-            >
-              <option value="">Choisir une préférence</option>
-              {roles.map((role) => (
-                <option key={role} value={role}>
-                  {role}
-                </option>
-              ))}
-            </select>
+            <Select
+              options={roleOptions}
+              value={selectedPreference ? { value: selectedPreference, label: selectedPreference } : null}
+              onChange={(selectedOption: any) => setSelectedPreference(selectedOption?.value || "")}
+              placeholder="Choisir une préférence"
+              className="w-full"
+            />
           </div>
 
           {loading ? (
@@ -71,7 +68,7 @@ export const AdminRolePreferences = () => {
                 <table className="min-w-full table-auto">
                   <thead>
                     <tr>
-                    <th className="px-4 py-2 text-left">Prénom</th>
+                      <th className="px-4 py-2 text-left">Prénom</th>
                       <th className="px-4 py-2 text-left">Nom</th>
                       <th className="px-4 py-2 text-left">Email</th>
                       <th className="px-4 py-2 text-left">Contact</th>
@@ -99,13 +96,13 @@ export const AdminRolePreferences = () => {
   );
 };
 
+
 export const AdminRoleManagement = () => {
-  // États pour stocker les données et les sélections
   const [users, setUsers] = useState<User[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
-  const [selectedRoles, setSelectedRoles] = useState<number[]>([]); // Sélectionner plusieurs rôles
-  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -119,11 +116,10 @@ export const AdminRoleManagement = () => {
         console.error("Erreur initiale", error);
       }
     };
-  
+
     fetchInitialData();
   }, []);
-  
-  // Mise à jour des rôles selon l'utilisateur sélectionné
+
   useEffect(() => {
     const fetchUserRoles = async () => {
       try {
@@ -138,11 +134,10 @@ export const AdminRoleManagement = () => {
         console.error("Erreur lors de la récupération des rôles utilisateur", error);
       }
     };
-  
+
     fetchUserRoles();
   }, [selectedUser]);
 
-  // Fonction pour ajouter plusieurs rôles à un utilisateur
   const handleAddRoles = async () => {
     if (!selectedUser || selectedRoles.length === 0) {
       setMessage("Veuillez sélectionner un utilisateur et un ou plusieurs rôles.");
@@ -150,12 +145,8 @@ export const AdminRoleManagement = () => {
     }
 
     try {
-      await addRolesToUser(
-        selectedUser,
-        selectedRoles, // Envoi d'un tableau de rôle(s)
-      );
+      await addRolesToUser(selectedUser, selectedRoles);
       setMessage("Rôles ajoutés avec succès.");
-      // Réinitialiser les sélections après succès
       setSelectedUser(null);
       setSelectedRoles([]);
     } catch (error) {
@@ -164,7 +155,6 @@ export const AdminRoleManagement = () => {
     }
   };
 
-  // Fonction pour supprimer plusieurs rôles d'un utilisateur
   const handleRemoveRoles = async () => {
     if (!selectedUser || selectedRoles.length === 0) {
       setMessage("Veuillez sélectionner un utilisateur et un ou plusieurs rôles à supprimer.");
@@ -172,12 +162,8 @@ export const AdminRoleManagement = () => {
     }
 
     try {
-      await deleteRolesToUser(
-        selectedUser,
-        selectedRoles, // Envoi d'un tableau de rôle(s)
-      );
+      await deleteRolesToUser(selectedUser, selectedRoles);
       setMessage("Rôles supprimés avec succès.");
-      // Réinitialiser les sélections après succès
       setSelectedUser(null);
       setSelectedRoles([]);
     } catch (error) {
@@ -186,91 +172,84 @@ export const AdminRoleManagement = () => {
     }
   };
 
+  const userOptions = users.map((user) => ({
+    value: user.userId,
+    label: `${user.firstName} ${user.lastName}`,
+  }));
+
+  const roleOptions = roles.map((role) => ({
+    value: role.roleId,
+    label: role.name,
+  }));
+
   return (
     <div className="flex justify-center items-center w-full ">
-    <Card className="p-6 shadow-xl rounded-lg bg-white w-full">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold text-center">Gestion des Rôle des utilisateurs</CardTitle>
-      </CardHeader>
-      <CardContent>
+      <Card className="p-6 shadow-xl rounded-lg bg-white w-full">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold text-center">Gestion des Rôles des utilisateurs</CardTitle>
+        </CardHeader>
+        <CardContent>
 
-        {/* Message d'information */}
-        {message && (
-          <div
-            className={`mb-4 p-4 rounded-lg ${
-              message.includes("succès") ? "bg-green-200" : "bg-red-200"
-            }`}
-          >
-            <p className="text-center">{message}</p>
+          {message && (
+            <div
+              className={`mb-4 p-4 rounded-lg ${
+                message.includes("succès") ? "bg-green-200" : "bg-red-200"
+              }`}
+            >
+              <p className="text-center">{message}</p>
+            </div>
+          )}
+
+          {/* Sélectionner un utilisateur */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium mb-2">Sélectionner un utilisateur</label>
+            <Select
+              options={userOptions}
+              value={selectedUser ? { value: selectedUser, label: userOptions.find(u => u.value === selectedUser)?.label } : null}
+              onChange={(selectedOption: any) => setSelectedUser(selectedOption?.value ?? null)}
+              placeholder="Sélectionner un utilisateur"
+              className="w-full"
+            />
           </div>
-        )}
 
-        {/* Sélecteur d'utilisateur */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Sélectionner un utilisateur</label>
-          <select
-            className="w-full p-2 border rounded-lg"
-            value={selectedUser ?? ""}
-            onChange={(e) => setSelectedUser(Number(e.target.value))}
-          >
-            <option value="">Sélectionner un utilisateur</option>
-            {users.map((user) => (
-              <option key={user.userId} value={user.userId}>
-                {user.firstName} {user.lastName}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Sélectionner des rôles */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium mb-2">Sélectionner un ou plusieurs rôles</label>
+            <Select
+              isMulti
+              options={roleOptions}
+              value={roleOptions.filter(option => selectedRoles.includes(option.value))}
+              onChange={(selectedOptions: any) =>
+                setSelectedRoles(selectedOptions.map((option: any) => option.value))
+              }
+              placeholder="Sélectionner des rôles"
+              className="w-full"
+            />
+          </div>
 
-        {/* Sélecteur de rôles (plusieurs rôles sélectionnables) */}
-        <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">Sélectionner un ou plusieurs rôles</label>
-        <select
-          multiple
-          className="w-full p-2 border rounded-lg"
-          value={selectedRoles.map(String)} // Convertir les éléments en string
-          onChange={(e) => {
-            // Convertir les valeurs sélectionnées en number (en utilisant `Number()` pour chaque valeur)
-            const options = Array.from(e.target.selectedOptions, (option) => Number(option.value));
-            setSelectedRoles(options); // Mettre à jour l'état avec les rôles sélectionnés
-          }}
-        >
-          {roles.map((role) => (
-            <option key={role.roleId} value={role.roleId}>
-              {role.name}
-            </option>
-          ))}
-        </select>
-      </div>
+          <div className="mt-4">
+            <button
+              className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
+              onClick={handleAddRoles}
+            >
+              Ajouter des rôles
+            </button>
+          </div>
 
-        {/* Espacement entre le bouton ajouter et supprimer */}
-        <div className="mt-4">
-          <button
-            className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
-            onClick={handleAddRoles}
-          >
-            Ajouter un rôle
-          </button>
-        </div>
+          <div className="mt-4">
+            <button
+              className="w-full bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
+              onClick={handleRemoveRoles}
+            >
+              Supprimer des rôles
+            </button>
+          </div>
 
-        {/* Ajouter un espacement ici pour le bouton Supprimer */}
-        <div className="mt-4">
-          <button
-            className="w-full bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
-            onClick={handleRemoveRoles}
-          >
-            Supprimer un rôle
-          </button>
-        </div>
-
-
-        {/* Affichage du message de chargement */}
-        {loading && (
-          <div className="mt-4 text-center text-gray-500">Chargement...</div>
-        )}
-
-      </CardContent>
-    </Card>
-  </div>
+          {loading && (
+            <div className="mt-4 text-center text-gray-500">Chargement...</div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };

@@ -6,7 +6,7 @@ export const AdminShotgun = () => {
   const [preRegistrationOpen, setPreRegistrationOpen] = useState(false);
   const [shotgunOpen, setShotgunOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadingStatuses, setLoadingStatuses] = useState(true); // Ajout d'un état de chargement pour les statuts
+  const [loadingStatuses, setLoadingStatuses] = useState(true);
 
   // Récupérer les statuts de pré-inscription et de shotgun au montage du composant
   useEffect(() => {
@@ -15,13 +15,12 @@ export const AdminShotgun = () => {
         const preRegStatus = await checkPreRegisterStatus();
         const shotgunStatus = await checkShotgunStatus();
         
-        // Mettre à jour les états avec les résultats récupérés
         setPreRegistrationOpen(preRegStatus);
         setShotgunOpen(shotgunStatus);
       } catch (error) {
         alert("Erreur lors de la récupération des statuts.");
       } finally {
-        setLoadingStatuses(false); // Fin du chargement des statuts
+        setLoadingStatuses(false);
       }
     };
     fetchStatuses();
@@ -55,39 +54,43 @@ export const AdminShotgun = () => {
 
   // Si les statuts sont en cours de chargement, on affiche un indicateur
   if (loadingStatuses) {
-    return <div>Chargement des statuts...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="text-xl font-semibold text-gray-600">Chargement des statuts...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow">
-      <h2 className="text-xl font-semibold mb-4">Shotgun CE</h2>
+    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Gestion des Événements Shotgun</h2>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between p-3 border rounded-lg">
-          <span className="text-sm">Pré-inscription</span>
+      <div className="space-y-4">
+        {/* Pré-inscription */}
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
+          <span className="text-sm text-gray-600">Pré-inscription</span>
           <Button 
             variant={preRegistrationOpen ? "destructive" : "default"} 
             onClick={handleTogglePreRegistration}
             disabled={loading}
-            style={{
-              color: preRegistrationOpen ? 'white' : '', // Assure une couleur de texte visible pour "Activer"
-              backgroundColor: preRegistrationOpen ? '#dc2626' : '', // Choix de couleur pour "Désactiver"
-            }}
+            className={`transition-colors duration-300 ${
+              preRegistrationOpen ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-blue-500 text-white hover:bg-blue-600'
+            } p-2 rounded-md`}
           >
             {preRegistrationOpen ? "Désactiver" : "Activer"}
           </Button>
         </div>
 
-        <div className="flex items-center justify-between p-3 border rounded-lg">
-          <span className="text-sm">Shotgun</span>
+        {/* Shotgun */}
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
+          <span className="text-sm text-gray-600">Shotgun</span>
           <Button 
             variant={shotgunOpen ? "destructive" : "default"} 
             onClick={handleToggleShotgun}
             disabled={loading}
-            style={{
-              color: shotgunOpen ? 'white' : '', // Assure une couleur de texte visible pour "Activer"
-              backgroundColor: shotgunOpen ? '#dc2626' : '', // Choix de couleur pour "Désactiver"
-            }}
+            className={`transition-colors duration-300 ${
+              shotgunOpen ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-blue-500 text-white hover:bg-blue-600'
+            } p-2 rounded-md`}
           >
             {shotgunOpen ? "Désactiver" : "Activer"}
           </Button>

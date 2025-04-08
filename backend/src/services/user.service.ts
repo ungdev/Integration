@@ -3,6 +3,8 @@ import { db } from '../database/db';  // Import de la connexion PostgreSQL
 import { User, userSchema } from '../schemas/Basic/user.schema';
 import { eq } from 'drizzle-orm';
 import { userTeamsSchema } from '../schemas/Relational/userteams.schema';
+import { getTeam, getTeamFaction, getUserTeam } from './team.service';
+import { getFaction } from './faction.service';
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
@@ -70,6 +72,31 @@ export const getUsers = async () => {
       }
     ).from(userSchema);
     return users; 
+  } catch (err) {
+    console.error('Erreur lors de la récupération des utilisateurs ', err);
+    throw new Error('Erreur de base de données');
+  }
+};
+
+export const getUsersAll = async () => {
+  try {
+    const users = await db.select().from(userSchema);
+
+    const userWithTeam = await Promise.all(
+        users.map(async (user) => {
+          const teamId = await getUserTeam(user.id);
+          const teamName = (await getTeam(teamId)).teamName;
+          const factionId = await getTeamFaction(teamId);
+          const factionName = (await getFaction(factionId)).name;
+          return {
+            ...user,
+            teamName,
+            factionName
+          };
+        })
+      );
+
+    return userWithTeam; 
   } catch (err) {
     console.error('Erreur lors de la récupération des utilisateurs ', err);
     throw new Error('Erreur de base de données');

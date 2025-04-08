@@ -65,7 +65,7 @@ export const TeamRegistration = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-8 bg-gradient-to-r from-red-100 via-red-200 to-red-300 rounded-xl shadow-xl">
+    <div className="max-w-4xl mx-auto p-8 bg-gradient-to-r from-blue-100 via-blue-200 to-blue-300 rounded-xl shadow-lg">
       <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Pré-inscription de l'équipe</h2>
 
       {/* Afficher le formulaire uniquement si la pré-inscription est ouverte */}
@@ -77,7 +77,7 @@ export const TeamRegistration = () => {
             placeholder="Nom de l'équipe"
             value={teamName}
             onChange={(e) => setTeamName(e.target.value)}
-            className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 transition duration-300"
+            className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition duration-300"
           />
 
           {/* Sélection des membres avec react-select */}
@@ -90,12 +90,31 @@ export const TeamRegistration = () => {
               value={userOptions.filter(option => members.includes(option.value))} // Valeur des membres sélectionnés
               onChange={handleSelectChange} // Fonction de gestion du changement
               placeholder="Rechercher et sélectionner les membres"
-              className="w-full p-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+              className="w-full p-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              styles={{
+                control: (provided: any) => ({
+                  ...provided,
+                  borderColor: '#E5E7EB',
+                  borderRadius: '0.375rem',
+                  padding: '0.5rem',
+                  boxShadow: 'none',
+                  '&:hover': { borderColor: '#60A5FA' },
+                }),
+                multiValue: (provided: any) => ({
+                  ...provided,
+                  backgroundColor: '#60A5FA',
+                  color: 'white',
+                }),
+                multiValueLabel: (provided: any) => ({
+                  ...provided,
+                  color: 'white',
+                }),
+              }}
             />
           </div>
 
           {/* Bouton pour enregistrer l'équipe */}
-          <Button type="submit" className="w-full py-3 text-lg bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300">
+          <Button type="submit" className="w-full py-3 text-lg bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">
             Enregistrer l'équipe
           </Button>
         </form>

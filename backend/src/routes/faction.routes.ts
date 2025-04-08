@@ -6,6 +6,7 @@ const factionRouter = express.Router();
 
 factionRouter.get("/factions",checkRole("Admin") ,factionController.getFactions);
 factionRouter.get("/faction",checkRole("Admin") ,factionController.getFaction);
+factionRouter.post("/createfaction",checkRole("Admin") ,factionController.createFaction);
 
 
 export default factionRouter;

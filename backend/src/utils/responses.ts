@@ -18,6 +18,11 @@ export const Ok = (res: Response, details: { data?: any, msg?: string }) => {
   res.status(Code.OK).json(new HttpResponse(Code.OK, msg, details.data));
 };
 
+export const Accepted = (res: Response, details: { data?: any, msg?: string }) => {
+  const msg = details.msg || 'Accepted';
+  res.status(Code.OK).json(new HttpResponse(Code.ACCEPTED, msg, details.data));
+};
+
 export const Unauthorized = (res: Response, details: { data?: any, msg?: string }) => {
   const msg = details.msg || 'Ok';
   res.status(Code.UNAUTHORIZED).json(new HttpResponse(Code.OK, msg, details.data));
@@ -25,6 +30,7 @@ export const Unauthorized = (res: Response, details: { data?: any, msg?: string 
 
 export enum Code {
   OK = 200,
+  ACCEPTED = 202,
   NOT_FOUND = 404,
   BAD_REQUEST = 400,
   UNAUTHORIZED = 401,

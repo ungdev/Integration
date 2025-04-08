@@ -8,6 +8,8 @@ import userRoutes from './src/routes/user.routes';
 import teamRoutes from './src/routes/team.routes';
 import eventRoutes from './src/routes/event.routes';
 import factionRoutes from './src/routes/faction.routes';
+import exportRoutes from './src/routes/export.routes';
+import permanenceRoutes from './src/routes/permanences.routes';
 import { server_port } from './src/utils/secret';
 import { initRoles } from './src/database/initdb/initrole'
 import {initEvent} from './src/database/initdb/initevent'
@@ -37,6 +39,8 @@ async function startServer() {
         app.use('/api/team',authenticateUser, teamRoutes);
         app.use('/api/event',authenticateUser, eventRoutes);
         app.use('/api/faction',authenticateUser, factionRoutes);
+        app.use('/api/export',authenticateUser, exportRoutes);
+        app.use('/api/permanence',authenticateUser, permanenceRoutes);
 
         // Démarrage du serveur
         app.listen(server_port, () => {

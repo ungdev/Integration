@@ -4,6 +4,7 @@ import { teamSchema } from "../schemas/Basic/team.schema";
 import { userTeamsSchema } from "../schemas/Relational/userteams.schema";
 import { teamFactionSchema } from "../schemas/Relational/teamfaction.schema";
 import { userSchema } from "../schemas/Basic/user.schema";
+import { getFaction } from "./faction.service";
 
 export const createTeam = async (teamName: string, members: number[]) => {
 
@@ -29,9 +30,9 @@ export const createTeamLight = async (teamName: string, factionId: number) => {
 
 export const getUserTeam = async(userId : number) => {
 
-    const userTeam = await db.select({userTeam: userTeamsSchema.team_id}).from(userTeamsSchema).where(eq(userTeamsSchema.user_id, userId));
+    const userTeam = await db.select({userTeamId: userTeamsSchema.team_id}).from(userTeamsSchema).where(eq(userTeamsSchema.user_id, userId));
 
-    return userTeam[0]
+    return userTeam[0].userTeamId
 }
 
 export const getTeams = async() => {
@@ -44,6 +45,24 @@ export const getTeams = async() => {
     type : teamSchema.type}).from(teamSchema);
 
   return teams
+}
+
+export const getTeamsAll = async() => {
+
+  const teams = await db.select().from(teamSchema);
+
+  const teamsWithFaction = await Promise.all(
+    teams.map(async (team) => {
+      const teamFactionId = await getTeamFaction(team.id);
+      const teamFaction = await getFaction(teamFactionId);
+      return {
+        ...team,
+        teamFaction
+      };
+    })
+  );
+  return teamsWithFaction;
+
 }
 
 export const modifyTeam = async ( teamID: number, teamMembers: number[], factionID:number, name? :string) => {
@@ -74,6 +93,8 @@ export const modifyTeam = async ( teamID: number, teamMembers: number[], faction
         );
       }
     }
+  }else{
+    await db.delete(userTeamsSchema).where(eq(userTeamsSchema.team_id, teamID));
   }
 
   // 3. Mise à jour de la faction (remplace la relation précédente)
@@ -116,15 +137,16 @@ export const getTeamUsers = async (teamId: any) => {
 };
 
 export const getTeamFaction = async (teamId: any) => {
-
   const teamFactionId = await db
-    .select({
-      factionId: teamFactionSchema.faction_id,
-    })
+    .select({faction_id : teamFactionSchema.faction_id})
     .from(teamFactionSchema)
     .where(eq(teamFactionSchema.team_id, teamId));
 
-  return teamFactionId[0];
+  if (teamFactionId.length > 0 && teamFactionId[0].faction_id) {
+    return teamFactionId[0].faction_id;
+  } else {
+    return 0;
+  }
 };
 
 export const deleteTeam = async (teamID: number) => {
@@ -165,6 +187,23 @@ export const getUsersWithTeam = async () => {
       }
     ).from(userTeamsSchema);
     return userswithteam; 
+  } catch (err) {
+    console.error('Erreur lors de la récupération des utilisateurs possédant une team ', err);
+    throw new Error('Erreur de base de données');
+  }
+};
+
+export const getTeam = async (teamId: any) => {
+  try {
+    const team = await db.select(
+      {
+        teamId : teamSchema.id,
+        teamName: teamSchema.name
+      }
+    ).from(teamSchema).where(eq(teamSchema.id, teamId));
+
+    return team[0];
+
   } catch (err) {
     console.error('Erreur lors de la récupération des utilisateurs possédant une team ', err);
     throw new Error('Erreur de base de données');

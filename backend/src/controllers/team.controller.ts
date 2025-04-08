@@ -100,7 +100,7 @@ export const getTeamFaction = async (req: Request, res: Response) => {
 
     const {teamId} = req.query;
     try {
-        const {factionId} = await team_service.getTeamFaction(teamId);
+        const factionId = await team_service.getTeamFaction(teamId);
         const teamFaction = await faction_service.getFaction(factionId);
         Ok(res,{ data: teamFaction });
         return;
@@ -201,5 +201,5 @@ export const teamDistribution = async (req: Request, res: Response) => {
     } catch (error) {
         Error(res, { error });
     }
-  }
+}
   

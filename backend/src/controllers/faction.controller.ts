@@ -27,3 +27,17 @@ export const getFaction = async (req: Request, res: Response) => {
         Error(res, { msg: "Erreur lors de la récupération des factions" });
     }
 };
+
+export const createFaction = async (req: Request, res: Response) => {
+
+    
+    const {factionName} = req.body
+    try {
+        const faction = await faction_service.createFaction(factionName);
+        Ok(res, { msg: "Faction crée avec succès !" });
+        return;
+
+    } catch (error) {
+        Error(res, { msg: "Erreur lors de la création de la faction" });
+    }
+};

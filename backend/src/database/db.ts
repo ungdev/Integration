@@ -9,12 +9,14 @@ import * as perm from '../schemas/Basic/permanence.schema';
 import * as event from '../schemas/Basic/event.schema';
 import * as faction from '../schemas/Basic/faction.schema';
 import * as role from '../schemas/Basic/role.schema';
+import * as challenge from '../schemas/Basic/challenge.schema';
 
 import * as userTeam from '../schemas/Relational/userteams.schema';
 import * as teamFaction from '../schemas/Relational/teamfaction.schema';
 import * as teamShotgun from '../schemas/Relational/teamshotgun.schema';
 import * as userPermanence from '../schemas/Relational/userpermanences.schema';
 import * as userRole from '../schemas/Relational/userroles.schema';
+import * as challengValidation from '../schemas/Relational/challengevalidation.schema';
 
 
 const client = new Client({
@@ -31,12 +33,14 @@ export const db = drizzle(client, {
     ...faction,
     ...role,
     ...perm,
+    ...challenge,
 
     ...userTeam,
     ...teamFaction,
     ...teamShotgun,
     ...userPermanence,
-    ...userRole
+    ...userRole,
+    ...challengValidation,
 
   },
 });

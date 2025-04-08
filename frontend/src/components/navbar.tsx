@@ -48,16 +48,35 @@ export const Navbar = () => {
             Home
           </Link>
 
-          {(permission === "Student" || permission === "Admin") && (
-            <>
-              <Link
+          <Link
+                to="/Parrainnage"
+                className={clsx("text-white hover:text-gray-300", {
+                  "font-bold underline": isActive("/Parrainnage"),
+                })}
+              >
+                Parrainnage
+          </Link>
+
+          <Link
                 to="/Profil"
                 className={clsx("text-white hover:text-gray-300", {
                   "font-bold underline": isActive("/Profil"),
                 })}
               >
                 Mon compte
-              </Link>
+          </Link>
+
+          <Link
+                to="/Challenges"
+                className={clsx("text-white hover:text-gray-300", {
+                  "font-bold underline": isActive("/Challenges"),
+                })}
+              >
+                Challenges
+          </Link>
+
+          {(permission === "Student" || permission === "Admin") && (
+            <>
               <Link
                 to="/Shotgun"
                 className={clsx("text-white hover:text-gray-300", {
@@ -126,6 +145,14 @@ export const Navbar = () => {
                     })}
                   >
                     Permanences
+                  </Link>
+                  <Link
+                    to="/admin/challenge"
+                    className={clsx("block px-4 py-2 text-gray-800 hover:bg-gray-100", {
+                      "font-semibold bg-gray-100": isActive("/admin/challenge"),
+                    })}
+                  >
+                    Challenge
                   </Link>
                   <Link
                     to="/admin/export"

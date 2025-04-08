@@ -30,3 +30,8 @@ export const createFaction = async(factionName : string) => {
   return faction
 }
 
+export const deleteFaction = async(factionId: number) => {
+
+  await db.delete(factionSchema).where(eq(factionSchema.id, factionId));
+
+}

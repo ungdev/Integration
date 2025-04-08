@@ -296,7 +296,7 @@ export const AdminPermanence: React.FC = () => {
   
               <div className="flex flex-wrap gap-2 mt-4">
                 {perm.is_open ? (
-                  <Button onClick={() => handleClosePermanence(perm.id)} className="bg-orange-600 hover:bg-red-700 text-white">
+                  <Button onClick={() => handleClosePermanence(perm.id)} className="bg-orange-600 hover:bg-orange-700 text-white">
                     Fermer
                   </Button>
                 ) : (
@@ -310,7 +310,7 @@ export const AdminPermanence: React.FC = () => {
                 <Button onClick={() => fetchMembers(perm.id)} className="bg-indigo-600 hover:bg-indigo-700 text-white">
                   👥 Voir membres
                 </Button>
-                <Button onClick={() => handleDeletePermanence(perm.id)} className="bg-red-600 hover:bg-indigo-700 text-white">
+                <Button onClick={() => handleDeletePermanence(perm.id)} className="bg-red-600 hover:bg-red-700 text-white">
                   🗑️ Supprimer
                 </Button>
               </div>

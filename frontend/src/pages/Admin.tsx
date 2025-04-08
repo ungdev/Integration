@@ -5,6 +5,7 @@ import { AdminLayout } from "src/components/Admin/adminLayout";
 import { AdminExportConnect } from "src/components/Admin/adminExport";
 import { AdminFactionManagement } from "src/components/Admin/adminFaction";
 import { AdminPermanence } from "src/components/Admin/adminPerm";
+import { AdminChallengeAddPointsForm, AdminChallengeForm, AdminValidatedChallengesList } from "src/components/Admin/adminChallenge";
 
 
 
@@ -81,6 +82,20 @@ export const AdminPagePerm: React.FC = () => {
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl bg-white shadow p-6">
           <AdminPermanence />
+        </section>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export const AdminPageChall: React.FC = () => {
+  return (
+    <AdminLayout>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl bg-white shadow p-6">
+          < AdminChallengeForm/>
+          < AdminChallengeAddPointsForm/>
+          <AdminValidatedChallengesList/>
         </section>
       </div>
     </AdminLayout>

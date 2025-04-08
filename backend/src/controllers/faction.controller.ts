@@ -41,3 +41,17 @@ export const createFaction = async (req: Request, res: Response) => {
         Error(res, { msg: "Erreur lors de la création de la faction" });
     }
 };
+
+export const deleteFaction = async (req: Request, res: Response) => {
+
+    const {factionId} = req.query
+
+    try {
+        await faction_service.deleteFaction(Number(factionId));
+        Ok(res, { msg: "Faction supprimée avec succès !" });
+        return;
+
+    } catch (error) {
+        Error(res, { msg: "Erreur lors de la suppression de la faction" });
+    }
+};

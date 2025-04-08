@@ -19,6 +19,10 @@ export const createNewTeam = async (req: Request, res: Response) => {
             Error(res, { msg: "Il n'y a pas assez de membre dans l'équipe." });
             return;
         }
+        if(members.length >= 5){
+            Error(res, { msg: "Il y a trop de membre dans l'équipe." });
+            return;
+        }
 
         // Check if any member already belongs to a team
         for (const userId of members) {
@@ -65,13 +69,13 @@ export const getTeams = async (req: Request, res: Response) => {
 
 export const modifyTeam = async (req: Request, res: Response) => {
     try {
-        const { teamID, teamName, teamMembers, factionID } = req.body;
+        const { teamID, teamName, teamMembers, factionID, type } = req.body;
 
         if (!teamID) {
             Error(res, { msg: "teamID est requis pour la mise à jour." });
         }
 
-        const updatedTeam = await team_service.modifyTeam(teamID, teamMembers, factionID, teamName );
+        const updatedTeam = await team_service.modifyTeam(teamID, teamMembers, factionID, teamName, type );
         Ok(res, { data: updatedTeam });
 
     } catch (error) {

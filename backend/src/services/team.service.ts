@@ -65,7 +65,7 @@ export const getTeamsAll = async() => {
 
 }
 
-export const modifyTeam = async ( teamID: number, teamMembers: number[], factionID:number, name? :string) => {
+export const modifyTeam = async ( teamID: number, teamMembers: number[], factionID:number, name? :string, type?: string) => {
 
   // 1. Mise à jour des champs de l'équipe
 
@@ -74,6 +74,12 @@ export const modifyTeam = async ( teamID: number, teamMembers: number[], faction
     await db
       .update(teamSchema)
       .set({name: name})
+      .where(eq(teamSchema.id, teamID));
+  }
+  if (type !== undefined) {
+    await db
+      .update(teamSchema)
+      .set({type: type})
       .where(eq(teamSchema.id, teamID));
   }
 

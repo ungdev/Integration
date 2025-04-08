@@ -6,11 +6,13 @@ import LoginPage from './pages/Auth';
 import { HomePage } from './pages/Home';
 import { ProfilPage } from './pages/Profil';
 import { ShotgunPage } from './pages/Shotgun';
-import { AdminPageUser, AdminPageTeam, AdminPageShotgun, AdminPageExport, AdminPageFaction, AdminPagePerm } from './pages/Admin';
+import { AdminPageUser, AdminPageTeam, AdminPageShotgun, AdminPageExport, AdminPageFaction, AdminPagePerm, AdminPageChall } from './pages/Admin';
 
 import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
 import { PermPage } from './pages/Perm';
+import { ChallPage } from './pages/Challenge';
+import { ParrainnagePage } from './pages/Parrainnage';
 
 const App: React.FC = () => {
   return (
@@ -24,6 +26,8 @@ const App: React.FC = () => {
         <Route path="/Profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
         <Route path="/Shotgun" element={<ProtectedRoute><ShotgunPage /></ProtectedRoute>} />
         <Route path="/Permanences" element={<ProtectedRoute><PermPage /></ProtectedRoute>} />
+        <Route path="/Challenges" element={<ProtectedRoute><ChallPage /></ProtectedRoute>} />
+        <Route path="/Parrainnage" element={<ProtectedRoute><ParrainnagePage /></ProtectedRoute>} />
 
         {/* Admin uniquement */}
         <Route path="/admin/users" element={<AdminRoute><AdminPageUser /></AdminRoute>} />
@@ -32,6 +36,7 @@ const App: React.FC = () => {
         <Route path="/admin/shotgun" element={<AdminRoute><AdminPageShotgun /></AdminRoute>} />
         <Route path="/admin/export" element={<AdminRoute><AdminPageExport /></AdminRoute>} />
         <Route path="/admin/permanences" element={<AdminRoute><AdminPagePerm /></AdminRoute>} />
+        <Route path="/admin/challenge" element={<AdminRoute><AdminPageChall /></AdminRoute>} />
       </Routes>
     </Router>
   );

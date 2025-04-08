@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "../../styles/components/ui/button";
 import { Input } from "../../styles/components/ui/input";
 import { Card } from "../../styles/components/ui/card";
-import { getAllFactions, createFaction } from "src/services/requests/faction.service";
+import { getAllFactions, createFaction, deleteFaction } from "src/services/requests/faction.service";
 import { Faction } from "src/interfaces/faction.interface";
 
 export const AdminFactionManagement = () => {
@@ -34,9 +34,20 @@ export const AdminFactionManagement = () => {
     }
 
     try {
-      await createFaction(newFactionName);
-      alert("✅ Faction créée !");
+      const response = await createFaction(newFactionName);
+      alert(response.message);
       setNewFactionName("");
+      fetchFactions();
+    } catch (err) {
+      console.error("Erreur lors de la création de la faction", err);
+    }
+  };
+
+  const handleDeleteFaction = async (factionId : number) => {
+
+    try {
+      const response = await deleteFaction(factionId);
+      alert(response.message);
       fetchFactions();
     } catch (err) {
       console.error("Erreur lors de la création de la faction", err);
@@ -68,12 +79,18 @@ export const AdminFactionManagement = () => {
         ) : (
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-700 text-center">
             {factions.map((faction) => (
-              <li
+            <li
                 key={faction.factionId}
                 className="bg-gray-100 py-2 px-4 rounded-xl border border-gray-300 shadow-sm hover:bg-gray-200 transition"
-              >
+            >
                 {faction.name}
-              </li>
+                <Button
+                onClick={() => handleDeleteFaction(faction.factionId)}
+                className="bg-red-300 hover:bg-red-500 text-white text-xs px-2 py-1 rounded-md ml-2"
+                >
+                🗑️
+                </Button>
+            </li>
             ))}
           </ul>
         )}

@@ -145,8 +145,8 @@ export const AdminRoleManagement = () => {
     }
 
     try {
-      await addRolesToUser(selectedUser, selectedRoles);
-      setMessage("Rôles ajoutés avec succès.");
+      const response = await addRolesToUser(selectedUser, selectedRoles);
+      setMessage(response.message);
       setSelectedUser(null);
       setSelectedRoles([]);
     } catch (error) {
@@ -162,8 +162,8 @@ export const AdminRoleManagement = () => {
     }
 
     try {
-      await deleteRolesToUser(selectedUser, selectedRoles);
-      setMessage("Rôles supprimés avec succès.");
+      const response = await deleteRolesToUser(selectedUser, selectedRoles);
+      setMessage(response.message);
       setSelectedUser(null);
       setSelectedRoles([]);
     } catch (error) {

@@ -10,9 +10,12 @@ import eventRoutes from './src/routes/event.routes';
 import factionRoutes from './src/routes/faction.routes';
 import exportRoutes from './src/routes/export.routes';
 import permanenceRoutes from './src/routes/permanences.routes';
+import challengeRoutes from './src/routes/challenge.routes';
 import { server_port } from './src/utils/secret';
+import { initUser } from './src/database/initdb/initUser'
 import { initRoles } from './src/database/initdb/initrole'
 import {initEvent} from './src/database/initdb/initevent'
+import {initChallenge} from './src/database/initdb/initChallenge'
 import { authenticateUser } from './src/middlewares/auth.middleware';
 //import { initDB } from './src/database/init';
 
@@ -28,8 +31,10 @@ async function startServer() {
 
     try {
         // Initialisation de la base de données
-        await initRoles();  // Assure-toi que l'initialisation est terminée avant de démarrer le serveur
+        await initUser();
+        await initRoles();
         await initEvent();
+        await initChallenge();
         console.log('Base de données initialisée avec succès');
         
         // Utilisation des routes d'authentification
@@ -41,6 +46,7 @@ async function startServer() {
         app.use('/api/faction',authenticateUser, factionRoutes);
         app.use('/api/export',authenticateUser, exportRoutes);
         app.use('/api/permanence',authenticateUser, permanenceRoutes);
+        app.use('/api/challenge',authenticateUser, challengeRoutes);
 
         // Démarrage du serveur
         app.listen(server_port, () => {

@@ -25,6 +25,7 @@ export const updateTeam = async (payload: {
   teamName: string | null;
   factionID: number | null;
   teamMembers: number[] | null;
+  type: string | null;
 }) => {
   const res = await api.put("/team/modify", payload);
   return res.data;

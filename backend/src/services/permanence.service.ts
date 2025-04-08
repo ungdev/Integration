@@ -3,7 +3,6 @@ import { userSchema } from "../schemas/Basic/user.schema";
 import { permanenceSchema } from "../schemas/Basic/permanence.schema";
 import { db } from "../database/db";
 import { userPermanenceSchema } from "../schemas/Relational/userpermanences.schema";
-import { PgTransaction } from "drizzle-orm/pg-core";
 
 // Classes d'erreurs personnalisées
 class UnauthorizedError extends Error {}
@@ -82,14 +81,6 @@ export const unregisterUserFromPermanence = async (userId: number, permId: numbe
   );
 
   await modifyPermCap(permId, 1);
-};
-
-// Vérifier si l'inscription ou la désinscription est possible
-const isUnregisterable = (perm: any): boolean => {
-  const now = new Date();
-  const deadline = new Date(perm.start_at);
-  deadline.setDate(deadline.getDate() - 1);
-  return now > deadline;
 };
 
 // 🔎 Voir toutes les permanences ouvertes

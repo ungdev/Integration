@@ -26,6 +26,7 @@ export const AdminTeamManagement = () => {
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
 
   const [editName, setEditName] = useState<string>("");
+  const [editType, setEditType] = useState<string>("");
   const [editFactionId, setEditFactionId] = useState<number | null>(null);
   const [editMembers, setEditMembers] = useState<number[]>([]);
 
@@ -33,6 +34,13 @@ export const AdminTeamManagement = () => {
   const [newFactionId, setNewFactionId] = useState<number | null>(null);
 
   const selectedTeam = teams.find((t) => t.teamId === selectedTeamId);
+
+  const typeOptions = [
+    { value: "TC", label: "TC" },
+    { value: "RI", label: "RI" },
+    { value: "MM", label: "MM" },
+    { value: "Branch", label: "Branch" },
+  ];
 
   useEffect(() => {
     fetchData();
@@ -46,6 +54,7 @@ export const AdminTeamManagement = () => {
         const faction = team.faction_id ?? ((await getTeamFaction(team.teamId))?.factionId);
         const members = await getTeamUsers(team.teamId);
         setEditName(team.name);
+        setEditType(team.type);
         setEditFactionId(faction || null);
         setEditMembers(members.map((member: User) => member.userId));
       }
@@ -76,6 +85,7 @@ export const AdminTeamManagement = () => {
         teamName: editName,
         factionID: editFactionId,
         teamMembers: editMembers,
+        type: editType,
       });
       alert("✅ Équipe mise à jour !");
       fetchData();
@@ -174,7 +184,13 @@ export const AdminTeamManagement = () => {
               className="w-full md:w-96"
               placeholder="Nom de l’équipe"
             />
-
+            <Select
+              options={typeOptions}
+              value={typeOptions.find(option => option.value === editType)}
+              onChange={(selectedOption) => setEditType(selectedOption?.value || "")}
+              className="w-full md:w-96"
+              placeholder="Type d'équipe"
+            />
             <Select
               value={editFactionId
                 ? {

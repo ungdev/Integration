@@ -13,6 +13,8 @@ export const exportAllDataToSheets = async (req: Request, res: Response) => {
   const userList = await user_service.getUsersAll();
   const teamList = await team_service.getTeamsAll();
 
+  console.log(teamList);
+
   // 2. Mapping -> format pour Google Sheets (array de array)
   const usersValues = [
     ["ID", "Prénom", "Nom", "Email", "Branche", "Permission", "Birthday", "Contact", "Team", "Faction"],
@@ -33,10 +35,15 @@ export const exportAllDataToSheets = async (req: Request, res: Response) => {
         u.userWishes ?? "No wishes"*/
         ])];
 
-  const teamsValues = [
-    ["ID", "Nom", "Faction"],
-    ...teamList.map(t => [t.id, t.name, t.teamFaction.name])
-  ];
+        const teamsValues = [
+            ["ID", "Nom", "Type", "Faction"],
+            ...teamList.map(t => [
+              t.id,
+              t.name ?? "No name",
+              t.type ?? "No type",
+              t.teamFaction?.name ?? "No faction" // use optional chaining
+            ])
+          ];
 
 
   // 3. Envoi vers les différentes feuilles

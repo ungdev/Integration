@@ -11,3 +11,9 @@ export const createFaction = async (factionName : string) => {
 
   return res.data;
 };
+
+export const deleteFaction = async (factionId : number) => {
+  const res = await api.delete("faction/deletefaction", {params : {factionId}});
+
+  return res.data;
+};

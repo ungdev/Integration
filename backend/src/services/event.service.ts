@@ -13,7 +13,9 @@ export const getEventsStatus = async () => {
   };
 
 export const validateShotgun = async (teamId: number) => {
-  return await db.insert(teamShotgunSchema).values({ team_id: teamId }).returning();
+  await db.transaction(async (tx) => {
+    return await tx.insert(teamShotgunSchema).values({ team_id: teamId }).returning();
+  })
 };
 
 export const alreadyShotgun = async (teamId: number) => {

@@ -186,7 +186,7 @@ export const leavePermanence = async (req: Request, res: Response) => {
   }
 
   try {
-    await permanence_service.unregisterUserFromPermanence(Number(permId), Number(userId));
+    await permanence_service.unregisterUserFromPermanence(Number(userId), Number(permId),);
     Ok(res, { msg: "Désinscription réussie" });
     return;
   } catch (err) {

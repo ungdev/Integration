@@ -1,8 +1,9 @@
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, sql } from "drizzle-orm";
 import { userSchema } from "../schemas/Basic/user.schema";
 import { permanenceSchema } from "../schemas/Basic/permanence.schema";
 import { db } from "../database/db";
 import { userPermanenceSchema } from "../schemas/Relational/userpermanences.schema";
+import { PgTransaction } from "drizzle-orm/pg-core";
 
 // Classes d'erreurs personnalisées
 class UnauthorizedError extends Error {}
@@ -23,36 +24,44 @@ export const getPermanenceById = async (permId: number) => {
 // ➕ S'inscrire à une permanence
 export const registerUserToPermanence = async (userId: number, permId: number) => {
 
-  const user = await db.query.userSchema.findFirst({ where: eq(userSchema.id, userId) });
-  if (!user || (user.permission !== "Student" && user.permission !== "Admin")) throw new UnauthorizedError("Unauthorized");
+    const user = await db.query.userSchema.findFirst({ where: eq(userSchema.id, userId) });
+    if (!user || (user.permission !== "Student" && user.permission !== "Admin")) {
+      throw new UnauthorizedError("Unauthorized");
+    }
+    
+      const permanence = await getPermanenceById(permId);
+  
+      if (!permanence) throw new Error("Permanence not found");
+      if (!permanence.is_open) throw new PermanenceClosedError("Permanence not open");
 
-  const permanence = await getPermanenceById(permId);
-  if (!permanence.is_open) throw new PermanenceClosedError("Permanence not open");
+      
+      const existing = await db.query.userPermanenceSchema.findFirst({
+        where: and(
+          eq(userPermanenceSchema.user_id, userId),
+          eq(userPermanenceSchema.permanence_id, permId)
+        ),
+      });
+      if (existing) throw new AlreadyRegisteredError("Already registered");
+  
+      const currentCount = await db
+        .select({ count: count() })
+        .from(userPermanenceSchema)
+        .where(eq(userPermanenceSchema.permanence_id, permId))
+        .then((r) => r[0].count);
+  
+      if (currentCount >= permanence.capacity) throw new PermanenceFullError("Permanence full");
 
-  const existing = await db.query.userPermanenceSchema.findFirst({
-    where: and(
-      eq(userPermanenceSchema.user_id, userId),
-      eq(userPermanenceSchema.permanence_id, permId)
-    ),
-  });
-  if (existing) throw new AlreadyRegisteredError("Already registered");
-
-  const currentCount = await db
-    .select({ count: count() })
-    .from(userPermanenceSchema)
-    .where(eq(userPermanenceSchema.permanence_id, permId))
-    .then((r) => r[0].count);
-
-  if (currentCount >= permanence.capacity) throw new PermanenceFullError("Permanence full");
-
-  // Inscrire l'utilisateur
-  await db.insert(userPermanenceSchema).values({
-    user_id: userId,
-    permanence_id: permId,
-  });
-
-  await modifyPermCap(permId, -1);
-};
+      await db.transaction(async (tx) => {
+      // Verrouille la permanence pendant la transaction
+        await tx.insert(userPermanenceSchema).values({
+            user_id: userId,
+            permanence_id: permId,
+        });
+        })
+  
+      await modifyPermCap(permId, -1);
+  };
+  
 
 // ❌ Se désinscrire d'une permanence
 export const unregisterUserFromPermanence = async (userId: number, permId: number) => {
@@ -111,6 +120,11 @@ export const createPermanence = async (
   });
 };
 
+export const deletePermanence = async (permId : number) => {
+    await db.delete(userPermanenceSchema).where(eq(userPermanenceSchema.permanence_id, permId));
+    await db.delete(permanenceSchema).where(eq(permanenceSchema.id, permId));
+};
+
 export const updatePermanence = async (
     permId: number,
     name: string,
@@ -147,14 +161,15 @@ export const closePermanence = async (permId: number) => {
 
 // Modifier la capacité de la permanence
 export const modifyPermCap = async (permId: number, factor: number) => {
-  const perm = await getPermanenceById(permId);
-  const newPermCap = Number(perm.capacity) + factor;
-
-  if (newPermCap < 0) throw new Error("Invalid capacity");
+    const perm = await getPermanenceById(permId);
+    const newPermCap = Number(perm.capacity) + factor;
   
-  await db.update(permanenceSchema).set({ capacity: newPermCap }).where(eq(permanenceSchema.id, permId));
-};
-
+    if (newPermCap < 0) throw new Error("Invalid capacity");
+    
+    await db.update(permanenceSchema).set({ capacity: newPermCap }).where(eq(permanenceSchema.id, permId));
+  };
+  
+  
 // Voir ses permanences
 export const getMyPermanences = async (userId: number) => {
     return await db

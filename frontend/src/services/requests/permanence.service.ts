@@ -138,6 +138,7 @@ export const addUserToPermanence = async(permId: number, userId: number) => {
         return error.response.data;
     }
 };
+
 export const removeUserFromPermanence = async(permId: number, userId: number) => {
     try{
         const response = await api.post(`/permanence/admin/remove`, { userId, permId });
@@ -146,4 +147,14 @@ export const removeUserFromPermanence = async(permId: number, userId: number) =>
         return error.response.data;
     }
 }
+
+export const deletePermanence = async(permId: number) =>{ 
+    try{
+        const response =  await api.delete(`/permanence/admin/permanence`, {params : {permId}});
+        return response.data;
+    }catch( error : any ){
+        console.log(error);
+        return error.response.data;
+    }
+};
 

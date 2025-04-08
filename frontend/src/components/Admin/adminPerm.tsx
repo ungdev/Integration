@@ -4,7 +4,16 @@ import { Textarea } from "src/styles/components/ui/textarea";
 import { Card } from "src/styles/components/ui/card";
 import Select from "react-select";
 import { useState, useEffect } from "react";
-import { createPermanence, getAllPermanences, openPermanence, closePermanence, updatePermanence, getUsersByPermanence, addUserToPermanence, removeUserFromPermanence } from "../../services/requests/permanence.service"; // ton service
+import { 
+    createPermanence, 
+    getAllPermanences, 
+    openPermanence, 
+    closePermanence, 
+    updatePermanence, 
+    getUsersByPermanence, 
+    addUserToPermanence, 
+    removeUserFromPermanence, 
+    deletePermanence } from "../../services/requests/permanence.service"; // ton service
 import { formatDateForDisplay, formatDateForInput } from "../utils/datetime_utils";
 import { User } from "src/interfaces/user.interface";
 import { getUsers } from "src/services/requests/user.service";
@@ -225,6 +234,16 @@ export const AdminPermanence: React.FC = () => {
     }
   };
 
+  const handleDeletePermanence = async (permId: number) => {
+    try {
+      const response = await deletePermanence(permId);
+      alert(response.message);
+      fetchPermanences();
+    } catch (err) {
+      console.error("Erreur lors de la suppression du membre", err);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center gap-10 px-4 py-8 mx-auto max-w-6xl">
       {/* Formulaire */}
@@ -277,7 +296,7 @@ export const AdminPermanence: React.FC = () => {
   
               <div className="flex flex-wrap gap-2 mt-4">
                 {perm.is_open ? (
-                  <Button onClick={() => handleClosePermanence(perm.id)} className="bg-red-600 hover:bg-red-700 text-white">
+                  <Button onClick={() => handleClosePermanence(perm.id)} className="bg-orange-600 hover:bg-red-700 text-white">
                     Fermer
                   </Button>
                 ) : (
@@ -290,6 +309,9 @@ export const AdminPermanence: React.FC = () => {
                 </Button>
                 <Button onClick={() => fetchMembers(perm.id)} className="bg-indigo-600 hover:bg-indigo-700 text-white">
                   👥 Voir membres
+                </Button>
+                <Button onClick={() => handleDeletePermanence(perm.id)} className="bg-red-600 hover:bg-indigo-700 text-white">
+                  🗑️ Supprimer
                 </Button>
               </div>
   

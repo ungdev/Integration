@@ -78,7 +78,22 @@ export const updatePermanence = async (req: Request, res: Response) => {
       Ok(res, { msg: "Permanence mis à jour avec succès" });
     } catch (err) {
       console.error(err);
-      Error(res, { msg: "Erreur lors de la création de la permanence" });
+      Error(res, { msg: "Erreur lors de la mis à jour de la permanence" });
+    }
+};
+
+// ➕ Créer une permanence
+export const deletePermanence = async (req: Request, res: Response) => {
+
+    const { permId } = req.query;
+
+    try {
+      await permanence_service.deletePermanence(Number(permId));
+      Ok(res, { msg: "Permanence supprimée avec succès" });
+      return;
+    } catch (err) {
+      console.error(err);
+      Error(res, { msg: "Erreur lors de la suppression de la permanence" });
     }
   };
 

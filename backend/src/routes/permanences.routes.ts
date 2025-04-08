@@ -6,6 +6,7 @@ const permanenceRouter = express.Router();
 
 // Admin routes
 permanenceRouter.post("/admin/permanence", checkRole("Admin"), permanenceController.createPermanence);
+permanenceRouter.delete("/admin/permanence", checkRole("Admin"), permanenceController.deletePermanence);
 permanenceRouter.post("/admin/updatepermanence", checkRole("Admin"), permanenceController.updatePermanence);
 permanenceRouter.post("/admin/open", checkRole("Admin"), permanenceController.openPermanence);
 permanenceRouter.post("/admin/close", checkRole("Admin"), permanenceController.closePermanence);
@@ -13,6 +14,7 @@ permanenceRouter.get("/admin/permanences", checkRole("Admin"), permanenceControl
 permanenceRouter.get("/admin/users", checkRole("Admin"), permanenceController.getUsersInPermanence);
 permanenceRouter.post("/admin/add", checkRole("Admin"), permanenceController.addUserToPermanence);
 permanenceRouter.post("/admin/remove", checkRole("Admin"), permanenceController.removeUserToPermanence);
+
 
 // Student routes
 permanenceRouter.get("/student/permanences", checkRole("Student"), permanenceController.getOpenPermanences);

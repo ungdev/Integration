@@ -64,6 +64,27 @@
       "when": 1744215076184,
       "tag": "0008_striped_bushwacker",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1744241202940,
+      "tag": "0009_previous_mystique",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1744241242502,
+      "tag": "0010_fair_mulholland_black",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1744241259194,
+      "tag": "0011_fearless_nextwave",
+      "breakpoints": true
     }
   ]
 }

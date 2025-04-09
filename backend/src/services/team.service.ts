@@ -32,7 +32,7 @@ export const getUserTeam = async(userId : number) => {
 
     const userTeam = await db.select({userTeamId: userTeamsSchema.team_id}).from(userTeamsSchema).where(eq(userTeamsSchema.user_id, userId));
 
-    return userTeam[0].userTeamId
+    return userTeam[0]?.userTeamId
 }
 
 export const getTeams = async() => {

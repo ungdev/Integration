@@ -25,7 +25,7 @@ export const getUserById = async (userId: number) => {
         firstName: userSchema.first_name,
         lastName: userSchema.last_name,
         email: userSchema.email,
-        birthday: userSchema.birthday,
+        majeur: userSchema.majeur,
         branch : userSchema.branch,
         contact : userSchema.contact,
         permission : userSchema.permission
@@ -43,7 +43,7 @@ export const createUser = async (
   firstName: string, 
   lastName: string, 
   email: string, 
-  birthday: string, 
+  majeur: boolean, 
   permission: string, 
   branch: string,
   password: string) => {
@@ -55,7 +55,7 @@ export const createUser = async (
         first_name: firstName,
         last_name: lastName,
         email: email,
-        birthday: birthday,
+        majeur: majeur,
         password: hashedPassword,
         permission: permission
     };
@@ -98,7 +98,7 @@ export const getUsers = async () => {
         firstName: userSchema.first_name,
         lastName: userSchema.last_name,
         email: userSchema.email,
-        birthday: userSchema.birthday,
+        majeur: userSchema.majeur,
         branch : userSchema.branch,
         contact : userSchema.contact,
         permission : userSchema.permission
@@ -118,9 +118,9 @@ export const getUsersAll = async () => {
     const userWithTeam = await Promise.all(
         users.map(async (user) => {
           const teamId = await getUserTeam(user.id);
-          const teamName = (await getTeam(teamId)).teamName;
+          const teamName = (await getTeam(teamId))?.teamName;
           const factionId = await getTeamFaction(teamId);
-          const factionName = (await getFaction(factionId)).name;
+          const factionName = (await getFaction(factionId))?.name;
           return {
             ...user,
             teamName,

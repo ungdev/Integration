@@ -4,7 +4,7 @@ export interface User {
     lastName: string;
     email: string;
     permission : string;
-    birthday: Date;
+    majeur: boolean;
     branch: string;
     contact: string;
     

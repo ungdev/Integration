@@ -1,4 +1,4 @@
-import { api_utt_admis_url, api_utt_auth_url, api_utt_password, api_utt_username } from "./secret";
+import { api_utt_admis_url_ismajor, api_utt_auth_url, api_utt_password, api_utt_username } from "./secret";
 import axios from 'axios';
 
 export const getTokenUTTAPI = async() => {
@@ -20,7 +20,7 @@ export const getTokenUTTAPI = async() => {
 
 export const getNewStudentsFromUTTAPI = async(token: string) => {
     try {
-      const response = await axios.get(api_utt_admis_url, {
+      const response = await axios.get(api_utt_admis_url_ismajor, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

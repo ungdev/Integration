@@ -23,6 +23,11 @@ const branchOptions = [
   { value: "RI", label: "Ressources International" },
 ];
 
+const majeurOptions = [
+    { value: true, label: "Majeur" },
+    { value: false, label: "Mineur" },
+  ];
+
 export const AdminUser = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -50,6 +55,10 @@ export const AdminUser = () => {
 
   const handlePermissionChange = (option: any) => {
     setFormData((prev) => ({ ...prev, permission: option?.value || null }));
+  };
+
+  const handleMajeurChange = (option: any) => {
+    setFormData((prev) => ({ ...prev, mejeur: option?.value || null }));
   };
 
   const handleBranchChange = (option: any) => {
@@ -111,6 +120,18 @@ export const AdminUser = () => {
               value={formData.email || ""}
               disabled
               placeholder="Email"
+            />
+            <p className="text-s text-red-500 underline mt-4" ><strong>Attention : la donnée récupérée est à partir du 01/09/2025</strong></p>
+            <Select
+              placeholder="Majeur?"
+              options={majeurOptions}
+              value={
+                formData.permission
+                  ? majeurOptions.find((opt) => opt.value === formData.majeur)
+                  : null
+              }
+              onChange={handleMajeurChange}
+              isClearable
             />
 
             <Select

@@ -51,7 +51,7 @@ export const handlecasticket = async (req: Request, res: Response) => {
                 let user = await user_service.getUserByEmail(CASuser.email.toLowerCase());
                 if(!user){
                     const password = bigInt.randBetween(bigInt(2).pow(255),bigInt(2).pow(256).minus(1)).toString()
-                    await user_service.createUser(CASuser.givenName, CASuser.sn, CASuser.email, "", "Student", " " , password)
+                    await user_service.createUser(CASuser.givenName, CASuser.sn, CASuser.email, true, "Student", " " , password)
                     user = await user_service.getUserByEmail(CASuser.email.toLowerCase())
                 }
 

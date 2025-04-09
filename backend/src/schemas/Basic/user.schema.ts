@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, integer, date } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, integer, date, boolean } from "drizzle-orm/pg-core";
 import { permission } from "process";
 
 // Définition de la table `users`
@@ -7,7 +7,7 @@ export const userSchema = pgTable("users", {
   first_name: text("first_name"),
   last_name: text("last_name"),
   email: text("email").unique(),
-  birthday: text("birthday"),
+  majeur: boolean("majeur"),
   branch: text("branch"),
   contact: text("contact"),
   password: text("password"),

@@ -13,6 +13,7 @@ export const initUser = async () => {
             first_name: "Integration UTT", 
             last_name: "Integration UTT", 
             email: "integration@utt.fr",
+            majeur: true,
             password: hashedPassword,
             permission: 'Admin',
           });

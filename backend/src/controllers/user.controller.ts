@@ -50,7 +50,7 @@ export const syncNewstudent = async (req: Request, res: Response) => {
                 element.prenom, 
                 element.nom, 
                 element.email,
-                "" ,
+                element.Majeur ,
                 "Nouveau", 
                 element.diplome === "MA" ? "Master" : element.specialite, 
                 tmpPassword);

@@ -216,3 +216,27 @@ export const removeUserToPermanence = async (userId: number, permId: number) => 
       await modifyPermCap(permId, 1);
 };
 
+export const getAllPermanencesWithUsers = async () => {
+    // Récupère toutes les permanences
+    const permanences = await db.select().from(permanenceSchema);
+  
+    // Pour chaque permanence, on récupère les users associés
+    const results = await Promise.all(
+      permanences.map(async (permanence) => {
+        const userRelations = await db
+          .select({
+            user: userSchema,
+          })
+          .from(userPermanenceSchema)
+          .innerJoin(userSchema, eq(userSchema.id, userPermanenceSchema.user_id))
+          .where(eq(userPermanenceSchema.permanence_id, permanence.id));
+  
+        return {
+          ...permanence,
+          users: userRelations.map((entry) => entry.user),
+        };
+      })
+    );
+  
+    return results;
+  };

@@ -19,8 +19,19 @@ export const getUserByEmail = async (email: string) => {
 
 export const getUserById = async (userId: number) => {
   try {
-    const users = await db.select().from(userSchema).where(eq(userSchema.id, userId));
-    return users[0]; 
+    const user = await db.select(
+      {
+        userId: userSchema.id,
+        firstName: userSchema.first_name,
+        lastName: userSchema.last_name,
+        email: userSchema.email,
+        birthday: userSchema.birthday,
+        branch : userSchema.branch,
+        contact : userSchema.contact,
+        permission : userSchema.permission
+      }
+    ).from(userSchema).where(eq(userSchema.id, userId));
+    return user[0]; 
   } catch (err) {
     console.error('Erreur lors de la récupération de l\'utilisateur par email:', err);
     throw new Error('Erreur de base de données');
@@ -86,7 +97,11 @@ export const getUsers = async () => {
         userId: userSchema.id,
         firstName: userSchema.first_name,
         lastName: userSchema.last_name,
-        email: userSchema.email
+        email: userSchema.email,
+        birthday: userSchema.birthday,
+        branch : userSchema.branch,
+        contact : userSchema.contact,
+        permission : userSchema.permission
       }
     ).from(userSchema);
     return users; 
@@ -153,3 +168,56 @@ export const updateUserPassword = async(userId: number, password: string) =>{
       throw new Error('Erreur de base de données');
     }
 }
+
+export const updateUserInfoByUserId = async (
+  userId: number,
+  branch?: string,
+  contact?: string
+) => {
+  try {
+    const result = await db.update(userSchema)
+      .set({
+        branch : branch,
+        contact : contact })
+      .where(eq(userSchema.id, userId));
+
+    return result;
+  } catch (err) {
+    console.error('Erreur lors de la mise à jour des infos utilisateur:', err);
+    throw new Error('Erreur de base de données');
+  }
+};
+
+export const updateUserByAdmin = async (
+  userId: number,
+  updates: Partial<User>
+) => {
+  try {
+
+    if (Object.keys(updates).length === 0) {
+      throw new Error('Aucune donnée à mettre à jour');
+    }
+
+    const result = await db.update(userSchema)
+      .set(
+        updates
+      )
+      .where(eq(userSchema.id, userId));
+
+    return result;
+  } catch (err) {
+    console.error('Erreur lors de la mise à jour par l\'admin:', err);
+    throw new Error('Erreur de base de données');
+  }
+};
+
+export const deleteUserById = async (userId: number) => {
+  try {
+    const result = await db.delete(userSchema).where(eq(userSchema.id, userId));
+    return result;
+  } catch (err) {
+    console.error('Erreur lors de la suppression de l\'utilisateur:', err);
+    throw new Error('Erreur de base de données');
+  }
+};
+

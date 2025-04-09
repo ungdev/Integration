@@ -19,9 +19,9 @@ export interface EmailOptions {
 const generateEmailHtml = (templateName: string, data: any)  => {
   switch (templateName) {
     case 'templateNotebook':
-      return template.compileTemplate({ notebook: 'lien vers note book' }, template.templateNotebook);
+      return template.compileTemplate({ notebook: data.notebook }, template.templateNotebook);
     case 'templateAttributionBus':
-      return template.compileTemplate({ bus:  'bus', time: 'time' }, template.templateAttributionBus);
+      return template.compileTemplate({ bus:  data.bus, time: data.tim }, template.templateAttributionBus);
     case 'templateWelcome':
       return template.compileTemplate({ token: data.token }, template.templateWelcome);
     default:
@@ -64,7 +64,15 @@ export const handleSendEmail = async (req: Request, res: Response) => {
         // Générer le contenu HTML du mail
         htmlEmail = generateEmailHtml(templateName, {token : token});
         
-
+      if(templateName === "templateWelcome"){
+        htmlEmail = generateEmailHtml(templateName, {notebook : 'link'});
+      }
+      if(templateName === "templateNotebook"){
+        htmlEmail = generateEmailHtml(templateName, {notebook : 'link'});
+      }
+      if(templateName === "templateAttributionBus"){
+        htmlEmail = generateEmailHtml(templateName, {bus : 'bus', time: '09h00'});
+      }
       // Préparer les options d'email
       const emailOptions: EmailOptions = {
         from: "integration@utt.fr",
@@ -75,6 +83,8 @@ export const handleSendEmail = async (req: Request, res: Response) => {
         text,
         html: htmlEmail,
       };
+      
+
 
       // Envoi de l'email
       await sendEmail(emailOptions);

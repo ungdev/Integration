@@ -68,8 +68,8 @@ export const UserPreferences = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <Card className="p-6 shadow-xl rounded-lg bg-white">
+    <div className="flex flex-col items-center px-4 py-10 space-y-10 max-w-5xl mx-auto">
+      <Card className="w-full p-6 rounded-2xl shadow space-y-6">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-center">Préférences de commission</CardTitle>
         </CardHeader>

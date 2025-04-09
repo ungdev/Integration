@@ -203,7 +203,7 @@ export const resetPasswordUser = async (req: Request, res: Response) => {
           const hashedPassword = await bcrypt.hash(password, 10);
   
           // Mettez à jour le mot de passe de l'utilisateur
-          await user_service.updateUserPassword(Number(user.id), hashedPassword);
+          await user_service.updateUserPassword(Number(user.userId), hashedPassword);
           Ok(res, {msg: 'Mot de passe réinitialisé avec succès'});
           return
       } catch (error) {

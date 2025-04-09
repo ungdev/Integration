@@ -13,7 +13,7 @@ export const ParrainnagePage = () => {
     if (!permission) {
         navigate("/");
         return null;
-    }
+}
   return(
     <div>
         <Navbar />
@@ -27,6 +27,9 @@ export const ParrainnagePage = () => {
                 <ParrainageStudent />)}
             </div>
         </div>
+        <footer className="bg-gray-800 text-white p-4 text-center">
+        <p>&copy; 2025 Semaine d'Intégration UTT</p>
+      </footer>
     </div>
     );
 }

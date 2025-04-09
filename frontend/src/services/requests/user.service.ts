@@ -1,4 +1,5 @@
 // src/services/role.service.ts
+import { User } from 'src/interfaces/user.interface';
 import api from '../api';
 import { decodeToken, getToken } from './auth.service';
 
@@ -49,3 +50,42 @@ export const getUsersByPermission = async () => {
   }
 
 }
+
+export const getCurrentUser = async () => {
+  const res = await api.get("/user/user/me"); 
+
+  return res.data.data;
+};
+
+export const updateCurrentUser = async (data: Partial<User>) => {
+  try{
+  
+    const response = await api.patch("/user/user/me", data);
+    return response.data
+
+  }catch(error : any){
+    return error.response.data;
+  }
+};
+
+export const updateUserByAdmin = async (id: number, data: Partial<User>) => {
+  try{
+    
+    const response = await api.patch(`/user/admin/user/${id}`, data);
+    return response.data
+
+  }catch(error : any){
+    return error.response.data;
+  }
+};
+
+export const deleteUserByAdmin = async (id: number) => {
+
+  try{
+    const response = await api.delete(`/user/admin/user/${id}`);
+    return response.data
+
+  }catch(error : any){
+    return error.response.data;
+  }
+};

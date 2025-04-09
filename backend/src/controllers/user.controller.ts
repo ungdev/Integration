@@ -66,3 +66,53 @@ export const syncNewstudent = async (req: Request, res: Response) => {
       Error(res, { error })
   }
 }
+
+export const getCurrentUser = async (req: Request, res: Response) => {
+  const userId = req.user?.userId;
+  try {
+    const user = await user_service.getUserById(userId);
+    Ok(res, { data : user });
+  } catch (err) {
+    Error(res, { msg: "Erreur lors de la mise à jour du profil." });
+  }
+};
+
+export const updateProfile = async (req: Request, res: Response) => {
+  const userId = req.user?.userId;
+  const { branch, contact } = req.body;
+
+  try {
+    const result = await user_service.updateUserInfoByUserId(userId, branch, contact);
+    Ok(res, { msg: "Profil mis à jour", data : result });
+  } catch (err) {
+    Error(res, { msg: "Erreur lors de la mise à jour du profil." });
+  }
+};
+
+
+export const adminUpdateUser = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const updates = req.body;
+
+
+  try {
+    const result = await user_service.updateUserByAdmin(parseInt(userId), updates);
+    Ok(res, { msg: "Utilisateur mis à jour", data : result });
+  } catch (err) {
+    Error(res, { msg: "Erreur lors de la mise à jour de l'utilisateur." });
+  }
+};
+
+export const adminDeleteUser = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await user_service.deleteUserById(parseInt(userId));
+    Ok(res, { msg: "Utilisateur supprimé", data :result });
+  } catch (err) {
+    Error(res, { msg: "Erreur lors de la suppression de l'utilisateur." });
+  }
+};
+
+
+

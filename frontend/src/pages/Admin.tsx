@@ -7,6 +7,7 @@ import { AdminFactionManagement } from "src/components/Admin/adminFaction";
 import { AdminPermanence } from "src/components/Admin/adminPerm";
 import { AdminChallengeAddPointsForm, AdminChallengeForm, AdminValidatedChallengesList } from "src/components/Admin/adminChallenge";
 import { AdminEmail } from "src/components/Admin/adminEmail";
+import { AdminUser } from "src/components/Admin/adminUser";
 
 
 
@@ -37,7 +38,7 @@ export const AdminPageFaction: React.FC = () => {
   );
 };
 
-export const AdminPageUser: React.FC = () => {
+export const AdminPageRole: React.FC = () => {
   return (
     <AdminLayout>
       <div className="flex flex-col gap-6">
@@ -109,6 +110,18 @@ export const AdminPageEmail: React.FC = () => {
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl bg-white shadow p-6">
           < AdminEmail/>
+        </section>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export const AdminPageUser: React.FC = () => {
+  return (
+    <AdminLayout>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl bg-white shadow p-6">
+          < AdminUser/>
         </section>
       </div>
     </AdminLayout>

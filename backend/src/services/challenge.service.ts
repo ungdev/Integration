@@ -117,7 +117,7 @@ export const modifyFactionPoints = async ({
 
 
     const newChallengeValidationPoints = {
-        challenge_id: 5,//TO CHANGE TO 1 IN PROD
+        challenge_id: 1,//TO CHANGE TO 1 IN PROD
         validated_by_admin_id: adminId,
         validated_at: new Date(),
         points: points,

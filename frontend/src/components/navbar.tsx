@@ -58,15 +58,6 @@ export const Navbar = () => {
           </Link>
 
           <Link
-                to="/Profil"
-                className={clsx("text-white hover:text-gray-300", {
-                  "font-bold underline": isActive("/Profil"),
-                })}
-              >
-                Mon compte
-          </Link>
-
-          <Link
                 to="/Challenges"
                 className={clsx("text-white hover:text-gray-300", {
                   "font-bold underline": isActive("/Challenges"),
@@ -162,10 +153,26 @@ export const Navbar = () => {
                   >
                     Export
                   </Link>
+                  <Link
+                    to="/admin/email"
+                    className={clsx("block px-4 py-2 text-gray-800 hover:bg-gray-100", {
+                      "font-semibold bg-gray-100": isActive("/admin/email"),
+                    })}
+                  >
+                    Email
+                  </Link>
                 </div>
               )}
             </div>
           )}
+          <Link
+                to="/Profil"
+                className={clsx("text-white hover:text-gray-300", {
+                  "font-bold underline": isActive("/Profil"),
+                })}
+              >
+                Mon compte
+          </Link>
           <Link
             onClick={handleLogout}
             className="text-white hover:text-gray-300 cursor-pointer"

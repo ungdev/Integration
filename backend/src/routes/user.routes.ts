@@ -6,7 +6,11 @@ import { checkRole } from '../middlewares/user.middleware';
 const userRouter = express.Router();
 
 
-userRouter.get('/getusers', checkRole("Student"), userController.getUsers)
+userRouter.get('/user/getusers', checkRole("Student"), userController.getUsers);
+
+
+userRouter.get('/admin/getusersbypermission', checkRole("Admin"), userController.getUsersByPermission);
+userRouter.post('/user/syncnewstudent', checkRole("Admin"), userController.syncNewstudent);
 
 
 

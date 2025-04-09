@@ -1,9 +1,15 @@
 import { Request, Response } from 'express';
 import * as auth_service from '../services/auth.service';
 import * as user_service from '../services/user.service';
+import * as email_service from '../services/email.service';
 import bigInt from 'big-integer';
 import { Error, Ok, Unauthorized } from '../utils/responses';
 import { decodeToken } from '../utils/token';
+import { sign, verify } from 'jsonwebtoken';
+import { jwtSecret, service_url } from '../utils/secret';
+import { EmailOptions } from './email.controller';
+import * as template from '../utils/emailtemplates';
+import bcrypt from 'bcryptjs';
 
 // Fonction de connexion
 export const login = async (req: Request, res: Response) => {
@@ -45,13 +51,13 @@ export const handlecasticket = async (req: Request, res: Response) => {
                 let user = await user_service.getUserByEmail(CASuser.email.toLowerCase());
                 if(!user){
                     const password = bigInt.randBetween(bigInt(2).pow(255),bigInt(2).pow(256).minus(1)).toString()
-                    await user_service.createUser(CASuser.givenName, CASuser.sn, CASuser.email, "Student", password)
+                    await user_service.createUser(CASuser.givenName, CASuser.sn, CASuser.email, "", "Student", " " , password)
                     user = await user_service.getUserByEmail(CASuser.email.toLowerCase())
                 }
 
                 const id = user?.id
-                const email = CASuser.email
-                if (!id) res.status(400).json({ message: "Pas d'id" });
+
+                if (!id){ Error(res,{ msg: "Pas d'id" }); return;}
                     
                 await user_service.updateUserStudent( CASuser.givenName, CASuser.sn, CASuser.email);
                 
@@ -114,3 +120,95 @@ export const isTokenValid = async (req: Request, res: Response) => {
      return
   }
 };
+
+
+export const completeRegistration = async(req : Request, res : Response) => {
+
+  const { token, password } = req.body;
+
+  try{
+
+    auth_service.completeRegistration(token, password)
+    Ok(res, {msg: "Inscription complétée avec succès.", data: true})
+
+  }catch(error
+  ){
+    Error(res, {msg : error.data.message})
+  }
+}
+
+export const requestPasswordUser = async (req: Request, res: Response) => {
+
+  const {user_email} = req.body
+  const user = await user_service.getUserByEmail(user_email);
+
+  if (!user) {
+    Error(res, { msg: 'User not found' });
+    return
+  }
+
+  // Générer un token JWT
+  const token = sign({ userId: user.id }, jwtSecret, { expiresIn: '1h' });
+
+  // Créer le lien de réinitialisation
+  const resetLink = `${service_url}ResetPassword?token=${token}`;
+
+  
+  // Générer le contenu HTML du mail
+  const htmlEmail = template.compileTemplate({ resetLink: resetLink}, template.templateResetPassword);
+  
+  if (!htmlEmail) {
+    Error(res, { msg: "Nom de template invalide" });
+    return;
+  }
+  
+  // Préparer les options d'email
+  const emailOptions: EmailOptions = {
+    from: "integration@utt.fr",
+    to: [user_email],
+    cc: [],
+    bcc: [],
+    subject : '[INTEGRATION UTT] - Réinitialisation de votre mot de passe',
+    html: htmlEmail,
+  };
+
+  try{
+      // Envoyer l'e-mail
+      await email_service.sendEmail(emailOptions);
+      Ok(res, {msg:'Email for password reste sent !'})
+      return
+  }catch(error){
+      Error(res, { msg: 'Error when reseting password' });
+      return
+  }
+
+}
+
+export const resetPasswordUser = async (req: Request, res: Response) => {
+      const {token, password} = req.body;
+
+    
+      try {
+          // Vérifiez et décodez le token
+          const decoded: any = verify(token, jwtSecret);
+
+          // Trouvez l'utilisateur par ID
+          const user = await user_service.getUserById(decoded.userId);
+          if (!user) {
+              Error(res, {msg :'Utilisateur non trouvé'});
+              return
+          }
+  
+          // Hash du nouveau mot de passe
+          const hashedPassword = await bcrypt.hash(password, 10);
+  
+          // Mettez à jour le mot de passe de l'utilisateur
+          await user_service.updateUserPassword(Number(user.id), hashedPassword);
+          Ok(res, {msg: 'Mot de passe réinitialisé avec succès'});
+          return
+      } catch (error) {
+        console.log(error);
+          Error(res, { msg: 'Token invalid or expire' });
+          return
+      }
+}

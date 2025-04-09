@@ -50,6 +50,20 @@
       "when": 1744126517418,
       "tag": "0006_bright_boomerang",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1744212319949,
+      "tag": "0007_striped_mulholland_black",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1744215076184,
+      "tag": "0008_striped_bushwacker",
+      "breakpoints": true
     }
   ]
 }

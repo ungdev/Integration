@@ -24,7 +24,7 @@ export const isAdmin = (): boolean => {
 
 export const getUsers = async () => {
   try{
-    const response = await api.get("/user/getusers");
+    const response = await api.get("/user/user/getusers");
     const users = response.data.data;
   
     return users;
@@ -36,3 +36,16 @@ export const getUsers = async () => {
 
 }
 
+export const getUsersByPermission = async () => {
+  try{
+    const response = await api.get("/user/admin/getusersbypermission");
+    const users = response.data.data;
+  
+    return users;
+  
+  }
+  catch(error){
+    throw new Error("Error while getting Users" + error);
+  }
+
+}

@@ -7,7 +7,7 @@ export const userSchema = pgTable("users", {
   first_name: text("first_name"),
   last_name: text("last_name"),
   email: text("email").unique(),
-  birthday: date("birthday"),
+  birthday: text("birthday"),
   branch: text("branch"),
   contact: text("contact"),
   password: text("password"),

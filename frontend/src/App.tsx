@@ -6,13 +6,15 @@ import LoginPage from './pages/Auth';
 import { HomePage } from './pages/Home';
 import { ProfilPage } from './pages/Profil';
 import { ShotgunPage } from './pages/Shotgun';
-import { AdminPageUser, AdminPageTeam, AdminPageShotgun, AdminPageExport, AdminPageFaction, AdminPagePerm, AdminPageChall } from './pages/Admin';
+import { AdminPageUser, AdminPageTeam, AdminPageShotgun, AdminPageExport, AdminPageFaction, AdminPagePerm, AdminPageChall, AdminPageEmail } from './pages/Admin';
 
 import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
 import { PermPage } from './pages/Perm';
 import { ChallPage } from './pages/Challenge';
 import { ParrainnagePage } from './pages/Parrainnage';
+import { RegisterPage } from './pages/Register';
+import { ResetPasswordPage } from './pages/ResetPassword'
 
 const App: React.FC = () => {
   return (
@@ -20,6 +22,8 @@ const App: React.FC = () => {
       <Routes>
         {/* Public */}
         <Route path="/" element={<LoginPage />} />
+        <Route path="/Register" element={<RegisterPage />} />
+        <Route path="/ResetPassword" element={<ResetPasswordPage />} />
 
         {/* Utilisateurs connectés */}
         <Route path="/Home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
@@ -37,6 +41,7 @@ const App: React.FC = () => {
         <Route path="/admin/export" element={<AdminRoute><AdminPageExport /></AdminRoute>} />
         <Route path="/admin/permanences" element={<AdminRoute><AdminPagePerm /></AdminRoute>} />
         <Route path="/admin/challenge" element={<AdminRoute><AdminPageChall /></AdminRoute>} />
+        <Route path="/admin/email" element={<AdminRoute><AdminPageEmail /></AdminRoute>} />
       </Routes>
     </Router>
   );

@@ -1,4 +1,4 @@
-FROM node:22 AS builder
+FROM node:23-slim AS builder
 WORKDIR /app
 
 ENV REACT_APP_API_URL=https://inetgration.utt.fr/api
@@ -9,7 +9,7 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-FROM node:22 AS runner
+FROM node:23-slim AS runner
 WORKDIR /app
 
 RUN npm install -g serve

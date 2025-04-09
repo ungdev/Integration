@@ -1,11 +1,13 @@
 import { db } from '../database/db'
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from "crypto";
 import { JSDOM } from 'jsdom';
 import { cas_validate_url, jwtSecret, service_url } from '../utils/secret';
 import * as userservice from './user.service';
 import { User, userSchema } from '../schemas/Basic/user.schema';
-import { permission } from 'process';
+import { and, desc, eq, isNotNull, isNull, sum } from "drizzle-orm";
+import { registrationSchema } from '../schemas/Relational/registration.schema';
 
 
 // Fonction pour hacher le mot de passe
@@ -113,3 +115,39 @@ export const parseUsernameFromCASResponse = async(response: string) => {
         }
     }
 }
+
+
+/*================================================================================================================*/
+
+export const completeRegistration = async(token : string, password : string) => {
+
+  const [tokenRow] = await db.select().from(registrationSchema).where(eq(registrationSchema.token, token));
+
+  if (!tokenRow || new Date(tokenRow.expires_at) < new Date()) {
+    throw new Error ( "Token invalide ou expiré." );
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  await db.update(userSchema)
+    .set({ password: hashedPassword, permission: "Nouveau" })
+    .where(eq(userSchema.id, tokenRow.user_id));
+
+  // Supprimer le token
+  await db.delete(registrationSchema).where(eq(registrationSchema.id, tokenRow.id));
+
+}
+
+export const createRegistrationToken = async(userId: number) => {
+  const token = crypto.randomBytes(32).toString("hex"); // Jeton bien sécurisé
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 90); // 90Jours
+
+  await db.insert(registrationSchema).values({
+    user_id: userId,
+    token,
+    expires_at: expiresAt,
+  });
+
+  return token;
+}
+

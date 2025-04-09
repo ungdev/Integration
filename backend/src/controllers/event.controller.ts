@@ -45,8 +45,8 @@ export const shotgunAttempt = async (req: Request, res: Response) => {
             return;
         }
 
-        const shotgunEntry = await event_service.validateShotgun(userTeam);
-        Ok(res, { msg: "Shotgun validé !", data :{timestamp: shotgunEntry[0].timestamp }});
+        await event_service.validateShotgun(userTeam);
+        Ok(res, { msg: "Shotgun validé !"});
         return;
     }catch(error){
         Error(res, {msg :"Error while shotguning : "+ error});

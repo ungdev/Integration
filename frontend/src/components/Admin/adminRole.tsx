@@ -79,8 +79,8 @@ export const AdminRolePreferences = () => {
                       <tr key={user.userId}>
                         <td className="px-4 py-2">{user.firstName}</td>
                         <td className="px-4 py-2">{user.lastName}</td>
-                        <td className="px-4 py-2">{user.email}</td>
-                        <td className="px-4 py-2">{user.contact}</td>
+                        <td className="px-4 py-2">{user.email ?? "Pas d'email enregitré"}</td>
+                        <td className="px-4 py-2">{user.contact ?? "Pas de contact enregitré"}</td>
                       </tr>
                     ))}
                   </tbody>

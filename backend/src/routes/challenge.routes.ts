@@ -16,7 +16,7 @@ challengeRouter.post("/admin/assignpoints", checkRole("Admin"), challengeControl
 
 
 // User routes
-challengeRouter.get("/user/challenges", checkRole("Student"), challengeController.getAllChallenges);
-challengeRouter.get("/user/factionpoints", checkRole("Student"), challengeController.getTotalFactionPoints); // Liste des challenges disponibles pour un étudiant
+challengeRouter.get("/user/challenges", challengeController.getAllChallenges);
+challengeRouter.get("/user/factionpoints", challengeController.getTotalFactionPoints); // Liste des challenges disponibles pour un étudiant
 
 export default challengeRouter;

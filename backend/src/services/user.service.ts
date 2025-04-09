@@ -17,8 +17,25 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
+export const getUserById = async (userId: number) => {
+  try {
+    const users = await db.select().from(userSchema).where(eq(userSchema.id, userId));
+    return users[0]; 
+  } catch (err) {
+    console.error('Erreur lors de la récupération de l\'utilisateur par email:', err);
+    throw new Error('Erreur de base de données');
+  }
+};
+
 // Fonction pour enregistrer un nouvel utilisateur
-export const createUser = async (firstName: string, lastName: string, email: string, permission: string, password: string) => {
+export const createUser = async (
+  firstName: string, 
+  lastName: string, 
+  email: string, 
+  birthday: string, 
+  permission: string, 
+  branch: string,
+  password: string) => {
   try {
     // Hacher le mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -27,13 +44,14 @@ export const createUser = async (firstName: string, lastName: string, email: str
         first_name: firstName,
         last_name: lastName,
         email: email,
+        birthday: birthday,
         password: hashedPassword,
         permission: permission
     };
     // Insérer un nouvel utilisateur dans la base de données
-    const result = await db.insert(userSchema).values(newUser)
+    const result = await db.insert(userSchema).values(newUser).returning()
 
-    return result.rows[0];
+    return result[0];
   } catch (err) {
     console.error('Erreur lors de la création de l\'utilisateur:', err);
     throw new Error('Erreur de base de données');
@@ -120,3 +138,18 @@ export const getUsersbyPermission = async (permission : string) => {
     throw new Error('Erreur de base de données');
   }
 };
+
+export const updateUserPassword = async(userId: number, password: string) =>{
+  try {
+      const result = await db.update(userSchema)
+  .set({
+      password: password
+  })
+  .where(eq(userSchema.id, userId));
+  
+      return result.rows[0];
+    } catch (err) {
+      console.error('Erreur lors de la récupération et de l\'update de l\'utilisateur par email:', err);
+      throw new Error('Erreur de base de données');
+    }
+}

@@ -63,10 +63,7 @@ export const handleSendEmail = async (req: Request, res: Response) => {
         if(!token) return;
         // Générer le contenu HTML du mail
         htmlEmail = generateEmailHtml(templateName, {token : token});
-        
-      if(templateName === "templateWelcome"){
-        htmlEmail = generateEmailHtml(templateName, {notebook : 'link'});
-      }
+
       if(templateName === "templateNotebook"){
         htmlEmail = generateEmailHtml(templateName, {notebook : 'link'});
       }

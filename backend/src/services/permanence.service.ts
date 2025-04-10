@@ -36,9 +36,12 @@ export const registerUserToPermanence = async (userId: number, permId: number) =
       if (!permanence) throw new Error("Permanence not found");
       if (!permanence.is_open) throw new PermanenceClosedError("Permanence not open");
 
-      const limitDate = new Date(permanence.start_at);
+      const limitDate = new Date(String(permanence.start_at).replace(/Z$/, ''));
       const now = new Date();
-      if (now > limitDate) throw new RegisterDeadlineError("Too late to register");
+
+      if (now > limitDate) {
+        throw new RegisterDeadlineError("Too late to register");
+}
 
       
       

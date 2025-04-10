@@ -18,4 +18,4 @@ COPY --from=builder /app/build ./build
 
 EXPOSE 4000
 
-CMD ["serve", "-s", "build", "-l", "5002"]
+CMD ["serve", "-s", "build", "-l", "4000"]

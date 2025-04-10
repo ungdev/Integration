@@ -100,6 +100,7 @@ export const AdminChallengeForm = () => {
       });
       alert(response.message);
       fetchChallenges();
+      fetchAllTargets();
       resetForm();
     } catch (err) {
       console.error("Erreur lors de la mise à jour du challenge", err);
@@ -119,6 +120,7 @@ export const AdminChallengeForm = () => {
       setValidationType(null);
       setSelectedTargetId(null);
       fetchChallenges();
+      fetchAllTargets();
     } catch (err) {
       console.error("Erreur lors de la validation du challenge", err);
     }
@@ -129,6 +131,7 @@ export const AdminChallengeForm = () => {
         const response = await deleteChallenge(challengeId);
       alert(response.message);
       fetchChallenges();
+      
     } catch (err) {
       console.error("Erreur lors de la suppression du challenge", err);
     }
@@ -210,7 +213,7 @@ export const AdminChallengeForm = () => {
                   Modifier
                 </Button>
               </div>
-              {showValidationFormForId && (
+              {showValidationFormForId && showValidationFormForId === challenge.id && (
                 <div className="mt-6 bg-white p-4 border rounded-xl shadow-inner space-y-4">
                     <h4 className="font-bold text-lg">✅ Valider le challenge</h4>
 

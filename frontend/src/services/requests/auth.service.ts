@@ -1,7 +1,9 @@
 // src/services/auth.service.ts
+import { X, XCircle } from 'lucide-react';
 import { DecodedToken } from '../../interfaces/token.interfaces';
 import api from '../api';
 import { jwtDecode } from 'jwt-decode';
+import { error } from 'console';
 
 export const registerUser = async (firstName: string, lastName: string, email: string, password: string) => {
   try {
@@ -49,10 +51,17 @@ export const handleCASTicket = async (ticket: string)=>{
 }
 
 export const isTokenValid = async () =>{
-  
-  const response = await api.get('auth/istokenvalid/');
 
-  return response?.data.data
+  try{
+  
+    const response = await api.get('auth/istokenvalid/');
+
+    if(response.data === null) throw new Error
+    return response?.data.data
+
+  }catch(error : any){
+    return error.response.data;
+  }
 
   
 }

@@ -11,6 +11,7 @@ class PermanenceNotFoundError extends Error {}
 class PermanenceClosedError extends Error {}
 class PermanenceFullError extends Error {}
 class UnregisterDeadlineError extends Error {}
+class RegisterDeadlineError extends Error {}
 
 export const getPermanenceById = async (permId: number) => {
   const permanence = await db.query.permanenceSchema.findFirst({
@@ -23,6 +24,8 @@ export const getPermanenceById = async (permId: number) => {
 // ➕ S'inscrire à une permanence
 export const registerUserToPermanence = async (userId: number, permId: number) => {
 
+
+
     const user = await db.query.userSchema.findFirst({ where: eq(userSchema.id, userId) });
     if (!user || (user.permission !== "Student" && user.permission !== "Admin")) {
       throw new UnauthorizedError("Unauthorized");
@@ -33,6 +36,11 @@ export const registerUserToPermanence = async (userId: number, permId: number) =
       if (!permanence) throw new Error("Permanence not found");
       if (!permanence.is_open) throw new PermanenceClosedError("Permanence not open");
 
+      const limitDate = new Date(permanence.start_at);
+      const now = new Date();
+      if (now > limitDate) throw new RegisterDeadlineError("Too late to register");
+
+      
       
       const existing = await db.query.userPermanenceSchema.findFirst({
         where: and(

@@ -83,7 +83,6 @@ export const updateProfile = async (req: Request, res: Response) => {
 
   try {
     const result = await user_service.updateUserInfoByUserId(userId, branch, contact);
-    console.log(result);
     Ok(res, { msg: "Profil mis à jour", data : result });
   } catch (err) {
     Error(res, { msg: "Erreur lors de la mise à jour du profil." });

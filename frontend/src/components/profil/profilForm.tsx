@@ -35,15 +35,9 @@ export const ProfilForm = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    try {
-      await updateCurrentUser({ branch, contact });
-      alert("Profil mis à jour !");
-    } catch (err) {
-      console.error("Erreur de mise à jour", err);
-      alert("Une erreur est survenue.");
-    } finally {
-      setLoading(false);
-    }
+    const response = await updateCurrentUser({ branch : branch, contact : contact });
+    alert(response.message);
+    setLoading(false);
   };
 
   if (!user) return null;

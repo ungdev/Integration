@@ -59,7 +59,6 @@ export const getCurrentUser = async () => {
 
 export const updateCurrentUser = async (data: Partial<User>) => {
   try{
-  
     const response = await api.patch("/user/user/me", data);
     return response.data
 

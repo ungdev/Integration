@@ -18,15 +18,35 @@ export const getTokenUTTAPI = async() => {
       }
 }
 
-export const getNewStudentsFromUTTAPI = async(token: string) => {
-    try {
-      const response = await axios.get(api_utt_admis_url_ismajor, {
+export const getNewStudentsFromUTTAPI = async (token: string) => {
+  const allNewStudents: any[] = [];
+  let currentPage = 1;
+  let hasNextPage = true;
+
+  try {
+    while (hasNextPage) {
+      const response = await axios.get(`${api_utt_admis_url_ismajor}?page=${currentPage}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data["hydra:member"];
-    } catch (error) {
-      console.error('Error during GET request:', error);
+
+      const data = response.data;
+      const students = data['hydra:member'];
+      const nextPage = data['hydra:view']?.['hydra:next'];
+
+      allNewStudents.push(...students);
+
+      if (nextPage) {
+        currentPage++;
+      } else {
+        hasNextPage = false;
+      }
     }
+
+    return allNewStudents;
+  } catch (error) {
+    console.error('Error during GET request:', error);
+    return [];
   }
+};

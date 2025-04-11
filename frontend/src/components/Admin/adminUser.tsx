@@ -162,10 +162,10 @@ export const AdminUser = () => {
             />
 
             <div className="flex gap-4 mt-4">
-              <Button type="button" onClick={handleSave}>
+              <Button type="button" onClick={handleSave} className="bg-green-600 hover:bg-green-700 text-white">
                 💾 Sauvegarder
               </Button>
-              <Button type="button" onClick={handleDelete} variant="destructive">
+              <Button type="button" onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white">
                 🗑 Supprimer
               </Button>
             </div>

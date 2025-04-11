@@ -42,6 +42,15 @@ export const AdminChallengeForm = () => {
     { value: "faction", label: "Faction" },
   ];
 
+
+  const categoryOptions: { value: string; label: string }[] = [
+    { value: "Team", label: "Team" },
+    { value: "Faction", label: "Faction" },
+    { value: "User", label: "User" },
+    { value: "Autre", label: "Autre" },
+  ];
+
+
   useEffect(() => {
     fetchChallenges();
     fetchAllTargets();
@@ -165,10 +174,13 @@ export const AdminChallengeForm = () => {
             value={newChallenge.description}
             onChange={(e) => setNewChallenge({ ...newChallenge, description: e.target.value })}
           />
-          <Input
-            placeholder="Catégorie"
-            value={newChallenge.category}
-            onChange={(e) => setNewChallenge({ ...newChallenge, category: e.target.value })}
+          <Select
+            placeholder="Catégorie ?"
+            options={categoryOptions}
+            value={categoryOptions.find(option => option.value === newChallenge.category)}
+            onChange={(selectedOption) =>
+              setNewChallenge({ ...newChallenge, category: selectedOption?.value || '' })
+            }
           />
           <Input
             placeholder="Points"

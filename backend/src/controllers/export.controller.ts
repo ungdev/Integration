@@ -44,14 +44,15 @@ export const exportAllDataToSheets = async (req: Request, res: Response) => {
     ];
 
     const permanenceValues = [
-      ["ID", "Nom", "Début", "Fin", "Lieu", "Inscrits (noms+emails)"],
+      ["ID", "Nom", "Début", "Fin", "Lieu", "Inscrits (noms)","Inscrits (emails)"],
       ...permanenceList.map(p => [
         p.id,
         p.name ?? "Sans nom",
         p.start_at?.toISOString() ?? "N/A",
         p.end_at?.toISOString() ?? "N/A",
         p.location ?? "Sans lieu",
-        p.users.map(u => `${u.first_name} ${u.last_name} (${u.email})`).join(" ; ") || "Aucun inscrit"
+        p.users.map(u => `${u.first_name} ${u.last_name}`).join(" ; ") || "Aucun inscrit",
+        p.users.map(u => (u.email)).join(" ; ") || "Aucun inscrit"
       ])
     ];
     

@@ -1,13 +1,13 @@
 import { useRef, useEffect, useState } from "react";
-import { Input } from "../../styles/components/ui/input";
-import { Button } from "../../styles/components/ui/button";
-import { handleCASTicket, loginUser, requestPasswordUser, resetPasswordUser } from "src/services/requests/auth.service";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { handleCASTicket, loginUser, requestPasswordUser } from "../../services/requests/auth.service";
 
 export const AuthForm = () => {
     const userRef = useRef<HTMLInputElement>(null);
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [error, setError] = useState<string | null>(null);
-    const [casProcessed, setCasProcessed] = useState(() => {
+    const [casProcessed] = useState(() => {
         return localStorage.getItem("casProcessed") === "true";
     });
 
@@ -39,8 +39,8 @@ export const AuthForm = () => {
     };
 
     const UTT_Connexion = () => {
-        const SERVICE_URL = process.env.REACT_APP_SERVICE_URL;
-        const CAS_LOGIN_URL = process.env.REACT_APP_CAS_LOGIN_URL;
+        const SERVICE_URL = import.meta.env.VITE_SERVICE_URL;
+        const CAS_LOGIN_URL = import.meta.env.VITE_CAS_LOGIN_URL;
         const loginUrl = `${CAS_LOGIN_URL}?service=${encodeURIComponent(SERVICE_URL as string)}`;
         window.location.href = loginUrl;
         localStorage.setItem("casProcessed", "false");

@@ -1,6 +1,6 @@
 // src/components/PrivateRoute.tsx
 import React from 'react';
-import { Route, Navigate, Outlet } from 'react-router-dom';
+import {  Navigate } from 'react-router-dom';
 import { getToken } from '../../services/requests/auth.service';
 import { isAdmin } from '../../services/requests/user.service';
 

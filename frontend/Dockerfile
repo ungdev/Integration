@@ -1,10 +1,12 @@
 FROM node:23-slim AS builder
 WORKDIR /app
 
-ENV REACT_APP_API_URL=https://inetgration.utt.fr/api
+ENV VITE_API_URL="https://integration.utt.fr/api"
+ENV VITE_CAS_LOGIN_URL="https://cas.utt.fr/cas/login"
+ENV VITE_SERVICE_URL="https://integration.utt.fr/"
 
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install --force
 
 COPY . .
 RUN npm run build
@@ -14,8 +16,10 @@ WORKDIR /app
 
 RUN npm install -g serve
 
-COPY --from=builder /app/build ./build
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 4000
 
-CMD ["serve", "-s", "build", "-l", "4000"]
+CMD ["serve", "-s", "dist", "-l", "4000"]
+
+

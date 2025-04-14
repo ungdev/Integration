@@ -1,7 +1,5 @@
-import { Navbar } from "src/components/navbar";
-import { useNavigate } from "react-router-dom";
-import { WeiSection } from "src/components/WEI/weiSection";
-import { getPermission } from "src/services/requests/user.service";
+import { Navbar } from "../components/navbar";
+import { WeiSection } from "../components/WEI/weiSection";
 
 
 export const WeiPage = () => {

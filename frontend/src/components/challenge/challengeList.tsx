@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card } from "../../styles/components/ui/card";
+import { Card } from "../ui/card";
 import { getAllChallenges, getFactionsPoints } from "../../services/requests/challenge.service";
 import { Challenge } from "../../interfaces/challenge.interface";
 

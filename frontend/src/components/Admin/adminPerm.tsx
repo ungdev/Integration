@@ -1,7 +1,7 @@
-import { Button } from "src/styles/components/ui/button";
-import { Input } from "src/styles/components/ui/input";
-import { Textarea } from "src/styles/components/ui/textarea";
-import { Card } from "src/styles/components/ui/card";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Card } from "../ui/card";
 import Select from "react-select";
 import { useState, useEffect } from "react";
 import { 
@@ -15,8 +15,8 @@ import {
     removeUserFromPermanence, 
     deletePermanence } from "../../services/requests/permanence.service"; // ton service
 import { formatDateForDisplay, formatDateForInput } from "../utils/datetime_utils";
-import { User } from "src/interfaces/user.interface";
-import { getUsers } from "src/services/requests/user.service";
+import { User } from "../../interfaces/user.interface";
+import { getUsers } from "../../services/requests/user.service";
 
 export const AdminPermanence: React.FC = () => {
 

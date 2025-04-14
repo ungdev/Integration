@@ -1,6 +1,4 @@
 // src/components/SocialLinks.tsx
-import React from 'react';
-
 export const SocialLinks = () => {
   return (
     <div className="container mx-auto my-10 px-4">

@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { emailPreview, sendEmail } from '../../services/requests/email.service';
-import { Card } from '../../styles/components/ui/card';
-import { Button } from '../../styles/components/ui/button';
-import { Input } from '../../styles/components/ui/input';
-import { User } from 'src/interfaces/user.interface';
-import { getUsers } from 'src/services/requests/user.service';
+import { Card } from '../ui/card';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { User } from '../../interfaces/user.interface';
+import { getUsers } from '../../services/requests/user.service';
 
 export const AdminEmail = () => {
 
   const [subject, setSubject] = useState('');
   const [templateName, setTemplateName] = useState('');
-  const [format, setFormat] = useState<'html' | 'txt'>('html');
+  const [format] = useState<'html' | 'txt'>('html');
   const [permission, setPermission] = useState<string | null>(null);
   const [sendTo, setSendTo] = useState<any[]>([]);
   const [preview, setPreview] = useState('');

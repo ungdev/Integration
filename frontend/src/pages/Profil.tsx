@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "../components/navbar";
 import { UserPreferences } from "../components/profil/roleForm";
-import { getPermission } from "src/services/requests/user.service";
-import { ProfilForm } from "src/components/profil/profilForm";
+import { getPermission } from "../services/requests/user.service";
+import { ProfilForm } from "../components/profil/profilForm";
 
 export const ProfilPage = () => {
 

@@ -1,13 +1,13 @@
-import { AdminRoleManagement, AdminRolePreferences } from "src/components/Admin/adminRole";
-import { AdminShotgun } from "src/components/Admin/adminEvent";
-import { AdminTeamManagement, DistributeTeam } from "src/components/Admin/adminTeam";  // Importer le composant
-import { AdminLayout } from "src/components/Admin/adminLayout";
-import { AdminExportConnect } from "src/components/Admin/adminExport";
-import { AdminFactionManagement } from "src/components/Admin/adminFaction";
-import { AdminPermanence } from "src/components/Admin/adminPerm";
-import { AdminChallengeAddPointsForm, AdminChallengeForm, AdminValidatedChallengesList } from "src/components/Admin/adminChallenge";
-import { AdminEmail } from "src/components/Admin/adminEmail";
-import { AdminUser } from "src/components/Admin/adminUser";
+import { AdminRoleManagement, AdminRolePreferences } from "../components/Admin/adminRole";
+import { AdminShotgun } from "../components/Admin/adminEvent";
+import { AdminTeamManagement, DistributeTeam } from "../components/Admin/adminTeam";  // Importer le composant
+import { AdminLayout } from "../components/Admin/adminLayout";
+import { AdminExportConnect } from "../components/Admin/adminExport";
+import { AdminFactionManagement } from "../components/Admin/adminFaction";
+import { AdminPermanence } from "../components/Admin/adminPerm";
+import { AdminChallengeAddPointsForm, AdminChallengeForm, AdminValidatedChallengesList } from "../components/Admin/adminChallenge";
+import { AdminEmail } from "../components/Admin/adminEmail";
+import { AdminSyncNewStudent, AdminUser } from "../components/Admin/adminUser";
 
 
 
@@ -120,9 +120,12 @@ export const AdminPageUser: React.FC = () => {
   return (
     <AdminLayout>
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl bg-white shadow p-6">
+      <section className="rounded-2xl bg-white shadow p-6">
           < AdminUser/>
-        </section>
+      </section>
+      <section className="rounded-2xl bg-white shadow p-6">
+          < AdminSyncNewStudent/>
+      </section>
       </div>
     </AdminLayout>
   );

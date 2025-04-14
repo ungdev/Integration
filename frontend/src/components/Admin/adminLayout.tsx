@@ -1,7 +1,7 @@
 // src/components/Admin/AdminLayout.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPermission } from "src/services/requests/user.service";
+import { getPermission } from "../../services/requests/user.service";
 import { Navbar } from "../navbar";
 
 interface AdminLayoutProps {
@@ -9,7 +9,7 @@ interface AdminLayoutProps {
 }
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const [role, setRole] = useState<string | null>(null);
+  const [,setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 

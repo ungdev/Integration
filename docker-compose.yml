@@ -30,6 +30,7 @@ services:
       - "4001:4001"
     volumes:
       - ./backend:/app
+      - /app/node_modules
     depends_on:
       - db
     networks:
@@ -42,13 +43,10 @@ services:
     container_name: integration-frontend
     ports:
       - "4000:4000"
-    volumes:
-      - ./frontend:/app
     networks:
       - app-network
     depends_on:
       - backend
-    command: npm run start
 
 networks:
   app-network:

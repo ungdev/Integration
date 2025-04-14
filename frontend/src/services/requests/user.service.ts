@@ -1,7 +1,6 @@
 // src/services/role.service.ts
-import { User } from 'src/interfaces/user.interface';
+import { User } from '../../interfaces/user.interface';
 import api from '../api';
-import { decodeToken, getToken } from './auth.service';
 
 export const getPermission = (): string | null => {
     const token = localStorage.getItem('authToken');
@@ -82,6 +81,17 @@ export const deleteUserByAdmin = async (id: number) => {
 
   try{
     const response = await api.delete(`/user/admin/user/${id}`);
+    return response.data
+
+  }catch(error : any){
+    return error.response.data;
+  }
+};
+
+export const syncnewStudent = async () => {
+
+  try{
+    const response = await api.post(`/user/admin/syncnewstudent/`);
     return response.data
 
   }catch(error : any){

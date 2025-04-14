@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button } from "../../styles/components/ui/button";
-import { Input } from "../../styles/components/ui/input";
-import { Card } from "../../styles/components/ui/card";
-import { getAllFactions, createFaction, deleteFaction } from "src/services/requests/faction.service";
-import { Faction } from "src/interfaces/faction.interface";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Card } from "../ui/card";
+import { getAllFactions, createFaction, deleteFaction } from "../../services/requests/faction.service";
+import { Faction } from "../../interfaces/faction.interface";
 
 export const AdminFactionManagement = () => {
   const [factions, setFactions] = useState<Faction[]>([]);

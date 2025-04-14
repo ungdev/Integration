@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Button } from "../../styles/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../../styles/components/ui/card";
-import { getUserPrefrences, updateUserPreferences } from "src/services/requests/role.service";
-import { Checkbox } from "../../styles/components/ui/checkbox";
+import { useForm } from "react-hook-form";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { getUserPrefrences, updateUserPreferences } from "../../services/requests/role.service";
 
 const commissions = [
   { id: 1, name: "Animation", description: "Animer et divertir les CE et nouveaux étudiants." },

@@ -10,7 +10,7 @@ userRouter.get('/admin/getusersbypermission', checkRole("Admin"), userController
 userRouter.patch('/admin/user/:userId', checkRole("Admin"), userController.adminUpdateUser);
 userRouter.delete('/admin/user/:userId', checkRole("Admin"), userController.adminDeleteUser);
 userRouter.get('/user/getusers', checkRole("Student"), userController.getUsers);
-userRouter.post('/user/syncnewstudent', checkRole("Admin"), userController.syncNewstudent);
+userRouter.post('/admin/syncnewstudent', checkRole("Admin"), userController.syncNewstudent);
 
 
 // User routes

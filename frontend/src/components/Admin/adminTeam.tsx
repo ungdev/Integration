@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Button } from "../../styles/components/ui/button";
-import { Input } from "../../styles/components/ui/input";
-import { Card } from "../../styles/components/ui/card";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Card } from "../ui/card";
 import Select from "react-select";
 
 import {
@@ -13,11 +13,11 @@ import {
   teamDistribution,
   getTeamFaction,
 } from "../../services/requests/team.service";
-import { getAllFactions } from "src/services/requests/faction.service";
-import { getUsers } from "src/services/requests/user.service";
-import { Team } from "src/interfaces/team.interface";
-import { Faction } from "src/interfaces/faction.interface";
-import { User } from "src/interfaces/user.interface";
+import { getAllFactions } from "../../services/requests/faction.service";
+import { getUsers } from "../../services/requests/user.service";
+import { Team } from "../../interfaces/team.interface";
+import { Faction } from "../../interfaces/faction.interface";
+import { User } from "../../interfaces/user.interface";
 
 export const AdminTeamManagement = () => {
   const [teams, setTeams] = useState<Team[]>([]);

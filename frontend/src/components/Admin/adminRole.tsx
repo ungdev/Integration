@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../../styles/components/ui/card"; // Composants UI
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"; // Composants UI
 import Select from "react-select"; // Importer react-select
-import { addRolesToUser, deleteRolesToUser, getRoles, getUsersByRoleHandler, getUsersRoles } from "src/services/requests/role.service";
-import { User } from "src/interfaces/user.interface";
-import { Role } from "src/interfaces/role.interface";
-import { getUsers } from "src/services/requests/user.service";
+import { addRolesToUser, deleteRolesToUser, getRoles, getUsersByRoleHandler, getUsersRoles } from "../../services/requests/role.service";
+import { User } from "../../interfaces/user.interface";
+import { Role } from "../../interfaces/role.interface";
+import { getUsers } from "../../services/requests/user.service";
 
 // Liste des rôles disponibles
 const roles = [
@@ -102,7 +102,7 @@ export const AdminRoleManagement = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {

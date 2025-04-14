@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { toggleShotgun, togglePreRegistration, checkShotgunStatus, checkPreRegisterStatus } from "../../services/requests/event.service";
-import { Button } from "../../styles/components/ui/button";
+import { Button } from "../ui/button";
 
 export const AdminShotgun = () => {
   const [preRegistrationOpen, setPreRegistrationOpen] = useState(false);

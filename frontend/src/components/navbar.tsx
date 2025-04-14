@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { getPermission } from "src/services/requests/user.service";
+import { getPermission } from "../services/requests/user.service";
 import { useState, useEffect } from "react";
 import clsx from "clsx"; // optionnel mais pratique
 

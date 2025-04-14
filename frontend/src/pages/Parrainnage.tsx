@@ -1,8 +1,7 @@
-import { Navbar } from "src/components/navbar";
+import { Navbar } from "../components/navbar";
 import { useNavigate } from "react-router-dom";
-import { ParrainageNewStudent, ParrainageStudent } from "src/components/Parrainnage/parrainnageForm";
-import PrivateRoute from "src/components/utils/privateroute";
-import { getPermission } from "src/services/requests/user.service";
+import { ParrainageNewStudent, ParrainageStudent } from "../components/Parrainnage/parrainnageForm";
+import { getPermission } from "../services/requests/user.service";
 
 
 export const ParrainnagePage = () => {

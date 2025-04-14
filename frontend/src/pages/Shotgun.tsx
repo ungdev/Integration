@@ -1,4 +1,4 @@
-import { Navbar } from "src/components/navbar";
+import { Navbar } from "../components/navbar";
 import { TeamRegistration } from "../components/shotgun/preregisterSection";
 import { Shotgun } from "../components/shotgun/shotgunSection";
 

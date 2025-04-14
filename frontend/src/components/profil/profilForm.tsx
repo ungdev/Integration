@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { getCurrentUser, updateCurrentUser } from "src/services/requests/user.service";
-import { Input } from "../../styles/components/ui/input";
-import { Card, CardHeader, CardTitle, CardContent } from "../../styles/components/ui/card";
-import { Button } from "../../styles/components/ui/button";
-import { User } from "src/interfaces/user.interface";
+import { getCurrentUser, updateCurrentUser } from "../../services/requests/user.service";
+import { Input } from "../ui/input";
+import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
+import { Button } from "../ui/button";
+import { User } from "../../interfaces/user.interface";
 import Select from "react-select";
 
 const branchOptions = [

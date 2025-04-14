@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createTeam } from "../../services/requests/team.service";
-import { Button } from "../../styles/components/ui/button";
-import { Input } from "../../styles/components/ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { checkPreRegisterStatus } from "../../services/requests/event.service";
 import { getUsers } from "../../services/requests/user.service";
 import Select from "react-select"; // Importer react-select
@@ -47,7 +47,7 @@ export const TeamRegistration = () => {
 
     try {
       const response = await createTeam(teamName, memberIds); // Appeler l'API pour créer l'équipe
-      alert("Équipe enregistrée !");
+      alert(response.message);
     } catch (error : any) {
       alert(error.response.data.message);
     }

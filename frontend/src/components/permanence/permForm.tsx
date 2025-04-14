@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button } from "src/styles/components/ui/button";
+import { Button } from "../ui/button";
 import {
   getOpenPermanences,
   getMyPermanences,
   applyToPermanence,
   cancelPermanence,
 } from "../../services/requests/permanence.service";
-import { Permanence } from "src/interfaces/permanence.interface";
+import { Permanence } from "../../interfaces/permanence.interface";
 import { formatDateForDisplay } from "../utils/datetime_utils";
 
 export const PagePermanence: React.FC = () => {

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Input } from "../../styles/components/ui/input";
-import { Button } from "../../styles/components/ui/button";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
-import { completeRegistration } from "src/services/requests/auth.service";
+import { completeRegistration } from "../../services/requests/auth.service";
 
 export const RegistrationForm = () => {
     const navigate = useNavigate();
@@ -33,7 +33,7 @@ export const RegistrationForm = () => {
         }
 
         try {
-            const response = await completeRegistration(token, password);
+            await completeRegistration(token, password);
             setSuccess(true);
             setTimeout(() => navigate("/"), 2000);
         } catch (err) {

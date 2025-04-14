@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { checkShotgunStatus, attemptShotgun } from "../../services/requests/event.service";
-import { Button } from "../../styles/components/ui/button";
-import { Input } from "../../styles/components/ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 export const Shotgun = () => {
   const [status, setStatus] = useState(false); // Statut du shotgun
-  const [teamId, setTeamId] = useState(""); // ID de l'équipe (si nécessaire pour l'enregistrement)
   const [message, setMessage] = useState(""); // Message de retour
   const [inputValue, setInputValue] = useState(""); // Valeur de l'entrée de l'utilisateur
   

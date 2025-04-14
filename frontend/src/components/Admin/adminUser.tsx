@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
-import { Card, CardHeader, CardTitle, CardContent } from "../../styles/components/ui/card";
-import { Input } from "../../styles/components/ui/input";
-import { Button } from "../../styles/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import {
   getUsers,
   updateUserByAdmin,
   deleteUserByAdmin,
-} from "src/services/requests/user.service";
-import { User } from "src/interfaces/user.interface";
+  syncnewStudent,
+} from "../../services/requests/user.service";
+import { User } from "../../interfaces/user.interface";
 
 const permissionOptions = [
   { value: "Admin", label: "Admin" },
@@ -175,3 +176,49 @@ export const AdminUser = () => {
     </Card>
   );
 };
+
+
+export const AdminSyncNewStudent = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [message, setMessage] = useState<string>(""); // État pour vérifier si l'utilisateur est authentifié
+
+  
+  
+    const handleSync = async () => {
+      setLoading(true);
+      try {
+        // Appel au backend pour récupérer l'URL d'authentification
+        const response = await syncnewStudent();
+        setMessage(response.message);
+      } catch (error) {
+        console.error("Erreur de connexion à Google", error);
+        setError("Erreur lors de la tentative de connexion.");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    if (loading) {
+      return <div>Chargement...</div>;
+    }
+  
+    return (
+      <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg">
+        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Synchro API SIEP</h2>
+          <>
+            <div className="flex justify-center">
+              <Button 
+                onClick={handleSync}
+                disabled={loading}
+                className="bg-blue-500 text-white hover:bg-blue-600 p-3 rounded-md"
+              >
+                {loading ? 'Chargement...' : 'Synchro SIEP'}
+              </Button>
+            </div>
+          </>
+        {error && <div className="text-red-500 text-center">{error}</div>}
+        {message && <div className="text-green-500 text-center">{message}</div>}
+      </div>
+    );
+  };

@@ -1,5 +1,5 @@
-import { Navbar } from "src/components/navbar";
-import { PagePermanence } from "src/components/permanence/permForm";
+import { Navbar } from "../components/navbar";
+import { PagePermanence } from "../components/permanence/permForm";
 
 export const PermPage = () => (
     

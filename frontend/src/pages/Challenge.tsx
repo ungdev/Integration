@@ -1,5 +1,5 @@
-import { ChallengeList } from "src/components/challenge/challengeList";
-import { Navbar } from "src/components/navbar";
+import { ChallengeList } from "../components/challenge/challengeList";
+import { Navbar } from "../components/navbar";
 
 
 export const ChallPage = () => (

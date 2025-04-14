@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Button } from "../../styles/components/ui/button";
-import { Input } from "../../styles/components/ui/input";
-import { Card } from "../../styles/components/ui/card";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Card } from "../ui/card";
 import {
   getAllChallenges,
   createChallenge,

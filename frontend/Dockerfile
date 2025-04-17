@@ -6,6 +6,7 @@ ENV VITE_CAS_LOGIN_URL="https://cas.utt.fr/cas/login"
 ENV VITE_SERVICE_URL="https://integration.utt.fr/"
 
 COPY package.json package-lock.json ./
+RUN npm install -g npm@latest
 RUN npm install --force
 
 COPY . .

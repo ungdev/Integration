@@ -12,4 +12,4 @@ done
 
 # Run migrations and start the app
 npm run migrate
-npm run start
+npm run build

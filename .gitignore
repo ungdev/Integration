@@ -8,5 +8,5 @@ backend/node_modules/
 .DS_Store
 *.log
 *.env
-google_creditentials.json
+google_credentials.json
 

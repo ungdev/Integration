@@ -21,6 +21,7 @@ const branchOptions = [
   { value: "TC", label: "Tronc Commun" },
   { value: "Branch", label: "Branche" },
   { value: "MM", label: "Mécanique et Matériaux" },
+  { valeu : "Master", label: "Master"},
   { value: "RI", label: "Ressources International" },
 ];
 

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec ts-node ./server.ts",
     "migrate": "npx drizzle-kit generate && npx drizzle-kit migrate",
-    "start": "nodemon --watch src --ext && ts-node server.ts --verbose"
+    "start": "nodemon --watch src --ext && ts-node server.ts --verbose",
+    "build": "ts-node server.ts --verbose"
   },
   "browser": {
     "fs": false,

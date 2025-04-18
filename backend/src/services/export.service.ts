@@ -3,7 +3,7 @@ import { google } from 'googleapis';
 import { JWT } from 'google-auth-library';
 
 const path = require('path');
-const keyFilePath = path.resolve(__dirname, '../utils/google_creditentials.json');
+const keyFilePath = path.resolve(__dirname, '../utils/google_credentials.json');
 
 // Crée une instance JWT en utilisant la clé du service account
 const jwtClient = new JWT({

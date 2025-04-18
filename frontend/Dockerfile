@@ -1,9 +1,7 @@
 FROM node:23-slim AS builder
 WORKDIR /app
 
-ENV VITE_API_URL="https://integration.utt.fr/api"
 ENV VITE_CAS_LOGIN_URL="https://cas.utt.fr/cas/login"
-ENV VITE_SERVICE_URL="https://integration.utt.fr/"
 
 COPY package.json package-lock.json ./
 RUN npm install -g npm@latest

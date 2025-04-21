@@ -1,8 +1,10 @@
 import express from "express";
+import multer from "multer";
 import * as permanenceController from "../controllers/permanence.controller";
 import { checkRole } from "../middlewares/user.middleware";
 
 const permanenceRouter = express.Router();
+const upload = multer({ dest: "uploads/" });
 
 // Admin routes
 permanenceRouter.post("/admin/permanence", checkRole("Admin"), permanenceController.createPermanence);
@@ -14,6 +16,7 @@ permanenceRouter.get("/admin/permanences", checkRole("Admin"), permanenceControl
 permanenceRouter.get("/admin/users", checkRole("Admin"), permanenceController.getUsersInPermanence);
 permanenceRouter.post("/admin/add", checkRole("Admin"), permanenceController.addUserToPermanence);
 permanenceRouter.post("/admin/remove", checkRole("Admin"), permanenceController.removeUserToPermanence);
+permanenceRouter.post("/admin/importpermanences", upload.single("file"), permanenceController.uploadPermanencesCSV);
 
 
 // Student routes

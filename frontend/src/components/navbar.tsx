@@ -152,7 +152,7 @@ export const Navbar = () => {
                       ["Shotgun", "/admin/shotgun"],
                       ["Permanences", "/admin/permanences"],
                       ["Challenge", "/admin/challenge"],
-                      ["Export", "/admin/export"],
+                      ["Export / Import", "/admin/export-import"],
                       ["Email", "/admin/email"],
                     ].map(([label, path]) => (
                       <Link
@@ -205,7 +205,7 @@ export const Navbar = () => {
                   <MenuItem to="/admin/shotgun" label="Shotgun" />
                   <MenuItem to="/admin/permanences" label="Permanences" />
                   <MenuItem to="/admin/challenge" label="Challenge" />
-                  <MenuItem to="/admin/export" label="Export" />
+                  <MenuItem to="/admin/export-import" label="Export / Import" />
                   <MenuItem to="/admin/email" label="Email" />
                 </>
               )}

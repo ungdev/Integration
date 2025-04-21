@@ -8,7 +8,7 @@ export const Shotgun = () => {
   const [message, setMessage] = useState("");
   const [inputValue, setInputValue] = useState("");
 
-  const predefinedShotgunPhrase = "Scooby"; // Tu peux personnaliser ça évidemment !
+  const predefinedShotgunPhrase = "A venir !"; // Tu peux personnaliser ça évidemment !
 
   useEffect(() => {
     const fetchStatus = async () => {

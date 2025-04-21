@@ -1,6 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { jwtSecret } from '../utils/secret';
 import { Unauthorized } from '../utils/responses';
 
 // Middleware pour vérifier le rôle

@@ -158,3 +158,15 @@ export const deletePermanence = async(permId: number) =>{
     }
 };
 
+export const importPermanenceCSV = async(formData : FormData) => {
+  try{
+      const response = await api.post(`/permanence/admin/importpermanences`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },});
+      return response.data;
+  }catch(error :any){
+      return error.response.data;
+  }
+}
+

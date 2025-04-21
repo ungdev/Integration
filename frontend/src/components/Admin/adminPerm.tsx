@@ -13,7 +13,8 @@ import {
     getUsersByPermanence, 
     addUserToPermanence, 
     removeUserFromPermanence, 
-    deletePermanence } from "../../services/requests/permanence.service"; // ton service
+    deletePermanence, 
+  } from "../../services/requests/permanence.service"; // ton service
 import { formatDateForDisplay, formatDateForInput } from "../utils/datetime_utils";
 import { User } from "../../interfaces/user.interface";
 import { getUsers } from "../../services/requests/user.service";

@@ -67,7 +67,7 @@ export const Infos = () => {
               La petite histoire
             </h3>
             <p className="text-center sm:text-lg leading-relaxed text-gray-700 max-w-3xl mx-auto">
-              Chaque année, deux factions composées d'une multitude d'équipes s'affrontent. Le thème de cette année : <strong>Vilains vs Justificers</strong>.
+              Chaque année, deux factions composées d'une multitude d'équipes s'affrontent. Le thème de cette année : <strong>Vilains vs Justiciers</strong>.
             </p>
           </section>
 

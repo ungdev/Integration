@@ -34,10 +34,13 @@ export const getUsersByPermission = async (req: Request, res: Response) => {
 
 
 export const syncNewstudent = async (req: Request, res: Response) => {
+
+  const {date} = req.body;
+
   try {
       
       const token = await SIEP_Utils.getTokenUTTAPI();
-      const newStudents = await SIEP_Utils.getNewStudentsFromUTTAPI(token);
+      const newStudents = await SIEP_Utils.getNewStudentsFromUTTAPI(token, date);
       //const newStudentfiltered = newStudents.filter((student : any) => !noSyncEmails.includes(student.email));
 
       newStudents.forEach( async (element: any) => {

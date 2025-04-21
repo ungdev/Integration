@@ -1,8 +1,20 @@
+import fs from "fs";
+import Papa from "papaparse";
 import { and, count, eq, sql } from "drizzle-orm";
 import { userSchema } from "../schemas/Basic/user.schema";
 import { permanenceSchema } from "../schemas/Basic/permanence.schema";
 import { db } from "../database/db";
 import { userPermanenceSchema } from "../schemas/Relational/userpermanences.schema";
+
+type CsvPermanence = {
+  name: string;
+  description: string;
+  location: string;
+  start_at: string; // ISO string
+  end_at: string;
+  capacity: string;
+  is_open: string; // 'true' or 'false'
+};
 
 // Classes d'erreurs personnalisées
 class UnauthorizedError extends Error {}
@@ -250,4 +262,30 @@ export const getAllPermanencesWithUsers = async () => {
     );
   
     return results;
-  };
+};
+
+export const importPermanencesFromCSV = async (filePath: string): Promise<void> => {
+  const fileContent = fs.readFileSync(filePath, "utf8");
+
+  const { data, errors } = Papa.parse<CsvPermanence>(fileContent, {
+    header: true,
+    skipEmptyLines: true,
+  });
+
+  if (errors.length > 0) {
+    console.error("CSV parsing errors:", errors);
+    throw new Error("Erreur lors du parsing du CSV.");
+  }
+
+  const parsedData = data.map((r) => ({
+    name: r.name,
+    description: r.description,
+    location: r.location,
+    start_at: new Date(r.start_at),
+    end_at: new Date(r.end_at),
+    capacity: parseInt(r.capacity, 10),
+    is_open: r.is_open?.toLowerCase() === "true",
+  }));
+
+  await db.insert(permanenceSchema).values(parsedData);
+};

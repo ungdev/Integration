@@ -88,10 +88,10 @@ export const deleteUserByAdmin = async (id: number) => {
   }
 };
 
-export const syncnewStudent = async () => {
+export const syncnewStudent = async (date: string) => {
 
   try{
-    const response = await api.post(`/user/admin/syncnewstudent/`);
+    const response = await api.post(`/user/admin/syncnewstudent/`,{date});
     return response.data
 
   }catch(error : any){

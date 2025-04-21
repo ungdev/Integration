@@ -11,7 +11,7 @@ export const SocialLinks = () => {
         <div className="flex flex-wrap justify-center gap-4">
           {/* Facebook */}
           <a
-            href="https://www.facebook.com"
+            href="https://www.facebook.com/bde.utt"
             target="_blank"
             rel="noopener noreferrer"
             className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-800 transition"
@@ -21,7 +21,7 @@ export const SocialLinks = () => {
 
           {/* Instagram */}
           <a
-            href="https://www.instagram.com"
+            href="https://www.instagram.com/bdeutt/"
             target="_blank"
             rel="noopener noreferrer"
             className="px-6 py-2 bg-pink-600 text-white rounded-full hover:bg-pink-800 transition"
@@ -31,7 +31,7 @@ export const SocialLinks = () => {
 
           {/* Twitter */}
           <a
-            href="https://www.twitter.com"
+            href="https://x.com/BDEUTT/"
             target="_blank"
             rel="noopener noreferrer"
             className="px-6 py-2 bg-blue-400 text-white rounded-full hover:bg-blue-600 transition"
@@ -41,7 +41,7 @@ export const SocialLinks = () => {
 
           {/* LinkedIn */}
           <a
-            href="https://www.linkedin.com"
+            href="hhttps://www.linkedin.com/school/universit-de-technologie-de-troyes/"
             target="_blank"
             rel="noopener noreferrer"
             className="px-6 py-2 bg-blue-700 text-white rounded-full hover:bg-blue-900 transition"

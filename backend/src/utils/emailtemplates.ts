@@ -11,7 +11,7 @@ export const templateResetPassword = `
 </head>
 <body style="font-family: 'Comic Sans MS', 'Comic Sans', sans-serif; font-size: 12pt; margin: 0; padding: 0; background-color: #ffffff; text-align: center;">
     <div class="header">
-        <img src="https://integration.utt.fr/ressources/logo_original.png" alt="Integration UTT Logo" style="width: 100px;">
+        <img src="https://integration.utt.fr/img/logo_original.png" alt="Integration UTT Logo" style="width: 100px;">
         <h1 style="font-size: 21px; font-weight: bold; margin: 10px 0;">INTEGRATION UTT</h1>
     </div>
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
@@ -105,7 +105,7 @@ export const templateNotebook = `
 <body>
     <div class="container">
         <div class="header">
-            <img src="https://integration.utt.fr/ressources/logo_original.png" alt="Integration UTT Logo" style="width: 100px;">
+            <img src="https://integration.utt.fr/img/logo_original.png" alt="Integration UTT Logo" style="width: 100px;">
             <h1 style="font-size: 21px; font-weight: bold; margin: 10px 0;">INTEGRATION UTT</h1>
         </div>
         <div class="content">
@@ -168,7 +168,7 @@ export const templateAttributionBus = `
                 <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 100%; margin: 0 auto;">
                     <tr>
                         <td align="center" style="padding: 10px;">
-                            <img src="https://integration.utt.fr/ressources/logo_original.png" alt="Logo Comic" style="width: 18%; max-width: 104.4px; height: auto;">
+                            <img src="https://integration.utt.fr/img/logo_original.png" alt="Logo Comic" style="width: 18%; max-width: 104.4px; height: auto;">
                         </td>
                     </tr>
                     <tr>
@@ -232,7 +232,7 @@ export const templateWelcome = `
                 <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 100%; margin: 0 auto;">
                     <tr>
                         <td align="center" style="padding: 10px;">
-                            <img src="https://integration.utt.fr/ressources/logo_original.png" alt="Logo Comic" style="width: 18%; max-width: 104.4px; height: auto;">
+                            <img src="https://integration.utt.fr/img/logo_original.png" alt="Logo Comic" style="width: 18%; max-width: 104.4px; height: auto;">
                         </td>
                     </tr>
                     <tr>

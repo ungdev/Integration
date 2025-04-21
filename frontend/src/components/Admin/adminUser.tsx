@@ -180,46 +180,68 @@ export const AdminUser = () => {
 
 
 export const AdminSyncNewStudent = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [message, setMessage] = useState<string>(""); // État pour vérifier si l'utilisateur est authentifié
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>("");
 
-  
-  
-    const handleSync = async () => {
-      setLoading(true);
-      try {
-        // Appel au backend pour récupérer l'URL d'authentification
-        const response = await syncnewStudent();
-        setMessage(response.message);
-      } catch (error) {
-        console.error("Erreur de connexion à Google", error);
-        setError("Erreur lors de la tentative de connexion.");
-      } finally {
-        setLoading(false);
+  const handleSync = async () => {
+    setLoading(true);
+    setError(null);
+    setMessage("");
+
+    try {
+
+      // Conversion directe de la date : '2025-09-01' → '2025.0901'
+      let formattedDate = "";
+      if (selectedDate) {
+        const [year, month, day] = selectedDate.split("-");
+        formattedDate = `${year}.${month}${day}`;
       }
-    };
-  
-    if (loading) {
-      return <div>Chargement...</div>;
+
+      // Appel au backend avec la date sélectionnée
+      const response = await syncnewStudent(formattedDate);
+      setMessage(response.message);
+    } catch (error) {
+      console.error("Erreur de connexion à Google", error);
+      setError("Erreur lors de la tentative de connexion.");
+    } finally {
+      setLoading(false);
     }
-  
-    return (
-      <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Synchro API SIEP</h2>
-          <>
-            <div className="flex justify-center">
-              <Button 
-                onClick={handleSync}
-                disabled={loading}
-                className="bg-blue-500 text-white hover:bg-blue-600 p-3 rounded-md"
-              >
-                {loading ? 'Chargement...' : 'Synchro SIEP'}
-              </Button>
-            </div>
-          </>
-        {error && <div className="text-red-500 text-center">{error}</div>}
-        {message && <div className="text-green-500 text-center">{message}</div>}
-      </div>
-    );
   };
+
+  return (
+    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+        Synchro API SIEP
+      </h2>
+
+      <div className="mb-4">
+        <label htmlFor="date" className="block text-gray-700 font-medium mb-2">
+          Choisir une date de vérification de majorité :
+        </label>
+        <input
+          type="date"
+          id="date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+      </div>
+
+      <div className="flex justify-center">
+        <Button
+          onClick={handleSync}
+          disabled={loading || !selectedDate}
+          className="bg-blue-500 text-white hover:bg-blue-600 p-3 rounded-md"
+        >
+          {loading ? "Chargement..." : "Synchro SIEP"}
+        </Button>
+      </div>
+
+      {error && <div className="text-red-500 text-center mt-4">{error}</div>}
+      {message && <div className="text-green-500 text-center mt-4">{message}</div>}
+    </div>
+  );
+};
+

@@ -2,6 +2,10 @@ import { Request, Response } from "express";
 import * as permanence_service from "../services/permanence.service";
 import { Ok, Error } from "../utils/responses";
 
+interface MulterRequest extends Request {
+  file?: Express.Multer.File;
+}
+
 // Validation des données de permanence
 const validatePermanenceData = (start_at: string, end_at: string) => {
   const startDate = new Date(start_at);
@@ -293,6 +297,21 @@ export const removeUserToPermanence = async (req: Request, res: Response) => {
       Error(res, { msg: err.message || "Erreur pendant la désinscription" });
       return;
     }
+};
+
+export const uploadPermanencesCSV = async (req: MulterRequest, res: Response) => {
+  try {
+    const file = req.file;
+    if (!file) {
+      Error(res, { msg: "Fichier CSV manquant." });
+    }
+
+    await permanence_service.importPermanencesFromCSV(file.path);
+    Ok(res,{ msg: "Importation réalisée avec succès." });
+  } catch (error) {
+    console.error("Erreur import CSV :", error);
+    Error(res, { msg: "Échec de l'importation." });
+  }
 };
 
 

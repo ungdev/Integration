@@ -19,7 +19,7 @@ export const createNewTeam = async (req: Request, res: Response) => {
             Error(res, { msg: "Il n'y a pas assez de membre dans l'équipe." });
             return;
         }
-        if(members.length >= 5){
+        if(members.length > 5){
             Error(res, { msg: "Il y a trop de membre dans l'équipe." });
             return;
         }

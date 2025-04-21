@@ -40,7 +40,7 @@ const App: React.FC = () => {
         <Route path="/admin/teams" element={<AdminRoute><AdminPageTeam /></AdminRoute>} />
         <Route path="/admin/factions" element={<AdminRoute><AdminPageFaction /></AdminRoute>} />
         <Route path="/admin/shotgun" element={<AdminRoute><AdminPageShotgun /></AdminRoute>} />
-        <Route path="/admin/export" element={<AdminRoute><AdminPageExport /></AdminRoute>} />
+        <Route path="/admin/export-import" element={<AdminRoute><AdminPageExport /></AdminRoute>} />
         <Route path="/admin/permanences" element={<AdminRoute><AdminPagePerm /></AdminRoute>} />
         <Route path="/admin/challenge" element={<AdminRoute><AdminPageChall /></AdminRoute>} />
         <Route path="/admin/email" element={<AdminRoute><AdminPageEmail /></AdminRoute>} />

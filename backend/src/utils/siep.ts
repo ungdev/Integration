@@ -18,14 +18,14 @@ export const getTokenUTTAPI = async() => {
       }
 }
 
-export const getNewStudentsFromUTTAPI = async (token: string) => {
+export const getNewStudentsFromUTTAPI = async (token: string, date : string) => {
   const allNewStudents: any[] = [];
   let currentPage = 1;
   let hasNextPage = true;
 
   try {
     while (hasNextPage) {
-      const response = await axios.get(`${api_utt_admis_url_ismajor}?page=${currentPage}`, {
+      const response = await axios.get(api_utt_admis_url_ismajor+date+"?page="+currentPage, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

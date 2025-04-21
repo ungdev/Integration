@@ -1,7 +1,7 @@
 import { db } from '../database/db'
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import crypto from "crypto";
+import rdmb from "randombytes";
 import { JSDOM } from 'jsdom';
 import { cas_validate_url, jwtSecret, service_url } from '../utils/secret';
 import * as userservice from './user.service';
@@ -139,7 +139,7 @@ export const completeRegistration = async(token : string, password : string) => 
 }
 
 export const createRegistrationToken = async(userId: number) => {
-  const token = crypto.randomBytes(32).toString("hex"); // Jeton bien sécurisé
+  const token = rdmb.randomBytes(32).toString("hex"); // Jeton bien sécurisé
   const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 90); // 90Jours
 
   await db.insert(registrationSchema).values({

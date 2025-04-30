@@ -277,11 +277,22 @@ export const templateWelcome = `
         </tr>
     </table>
 </body>
-</html>
+</html>`;
 
-
-
+export const templateNotifyNews = `
+  <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #f9f9f9; padding: 20px; border-radius: 8px;">
+    <h2 style="color: #e74160; font-size: 20px; margin-bottom: 10px;">📢 Nouvelle actu disponible !</h2>
+    <h3 style="margin: 10px 0; font-size: 18px;">{{title}}</h3>
+    <p style="margin: 10px 0; line-height: 1.6;">{{description}}</p>
+    <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;" />
+    <p style="margin: 0; color: #555;">📍 Pour plus d'infos, rends-toi sur le site dans l'onglet <strong>Mes actus</strong>.</p>
+    <p style="margin-top: 20px;">
+      <a href="https://integration.utt.fr" style="display: inline-block; padding: 10px 16px; background-color: #e74160; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold;">Voir le site</a>
+    </p>
+  </div>
 `;
+
+
 // Fonction pour compiler le template
 export const compileTemplate = (data: any, templateName: string) => {
   const compiledTemplate = Handlebars.compile(templateName);

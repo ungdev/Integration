@@ -6,7 +6,7 @@ import LoginPage from './pages/Auth';
 import { HomePage } from './pages/Home';
 import { ProfilPage } from './pages/Profil';
 import { ShotgunPage } from './pages/Shotgun';
-import { AdminPageRole, AdminPageTeam, AdminPageShotgun, AdminPageExport, AdminPageFaction, AdminPagePerm, AdminPageChall, AdminPageEmail, AdminPageUser } from './pages/Admin';
+import { AdminPageRole, AdminPageTeam, AdminPageShotgun, AdminPageExport, AdminPageFaction, AdminPagePerm, AdminPageChall, AdminPageEmail, AdminPageUser, AdminPageNews } from './pages/Admin';
 
 import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
@@ -16,6 +16,7 @@ import { ParrainnagePage } from './pages/Parrainnage';
 import { RegisterPage } from './pages/Register';
 import { ResetPasswordPage } from './pages/ResetPassword'
 import { WeiPage } from './pages/Wei';
+import { NewsPage } from './pages/News';
 
 const App: React.FC = () => {
   return (
@@ -34,6 +35,7 @@ const App: React.FC = () => {
         <Route path="/Challenges" element={<ProtectedRoute><ChallPage /></ProtectedRoute>} />
         <Route path="/Parrainnage" element={<ProtectedRoute><ParrainnagePage /></ProtectedRoute>} />
         <Route path="/WEI" element={<ProtectedRoute><WeiPage /></ProtectedRoute>} />
+        <Route path="/News" element={<ProtectedRoute><NewsPage /></ProtectedRoute>} />
 
         {/* Admin uniquement */}
         <Route path="/admin/roles" element={<AdminRoute><AdminPageRole /></AdminRoute>} />
@@ -45,6 +47,7 @@ const App: React.FC = () => {
         <Route path="/admin/challenge" element={<AdminRoute><AdminPageChall /></AdminRoute>} />
         <Route path="/admin/email" element={<AdminRoute><AdminPageEmail /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminPageUser /></AdminRoute>} />
+        <Route path="/admin/news" element={<AdminRoute><AdminPageNews /></AdminRoute>} />
       </Routes>
     </Router>
     

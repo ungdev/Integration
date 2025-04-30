@@ -12,6 +12,7 @@ import exportRoutes from './src/routes/export.routes';
 import permanenceRoutes from './src/routes/permanences.routes';
 import challengeRoutes from './src/routes/challenge.routes';
 import emailRoutes from './src/routes/email.routes';
+import newsRoutes from './src/routes/news.routes';
 import { server_port } from './src/utils/secret';
 import { initUser } from './src/database/initdb/initUser'
 import { initRoles } from './src/database/initdb/initrole'
@@ -49,6 +50,7 @@ async function startServer() {
         app.use('/api/permanence',authenticateUser, permanenceRoutes);
         app.use('/api/challenge',authenticateUser, challengeRoutes);
         app.use('/api/email',authenticateUser, emailRoutes);
+        app.use('/api/news',authenticateUser, newsRoutes);
 
         // Démarrage du serveur
         app.listen(server_port, () => {

@@ -8,6 +8,7 @@ import { AdminPermanence } from "../components/Admin/adminPerm";
 import { AdminChallengeAddPointsForm, AdminChallengeForm, AdminValidatedChallengesList } from "../components/Admin/adminChallenge";
 import { AdminEmail } from "../components/Admin/adminEmail";
 import { AdminSyncNewStudent, AdminUser } from "../components/Admin/adminUser";
+import { AdminNews } from "../components/Admin/adminNews";
 
 
 
@@ -127,6 +128,18 @@ export const AdminPageUser: React.FC = () => {
       <section className="rounded-2xl bg-white shadow p-6">
           < AdminSyncNewStudent/>
       </section>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export const AdminPageNews: React.FC = () => {
+  return (
+    <AdminLayout>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl bg-white shadow p-6">
+          < AdminNews/>
+        </section>
       </div>
     </AdminLayout>
   );

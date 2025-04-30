@@ -1,4 +1,5 @@
 import { Navbar } from "../components/navbar";
+import { PreregisterGform } from "../components/shotgun/preregisterGForm";
 import { TeamRegistration } from "../components/shotgun/preregisterSection";
 import { Shotgun } from "../components/shotgun/shotgunSection";
 
@@ -12,6 +13,7 @@ export const ShotgunPage = () => (
 
         {/* Ajout d'un espacement entre les composants */}
         <TeamRegistration />
+        <PreregisterGform/>
         <Shotgun />
         </div>
     </div>

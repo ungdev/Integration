@@ -16,7 +16,7 @@ export interface EmailOptions {
 }
 
 // Fonction pour générer l'HTML à partir du template
-const generateEmailHtml = (templateName: string, data: any)  => {
+export const generateEmailHtml = (templateName: string, data: any)  => {
   switch (templateName) {
     case 'templateNotebook':
       return template.compileTemplate({ notebook: data.notebook }, template.templateNotebook);
@@ -24,6 +24,8 @@ const generateEmailHtml = (templateName: string, data: any)  => {
       return template.compileTemplate({ bus:  data.bus, time: data.tim }, template.templateAttributionBus);
     case 'templateWelcome':
       return template.compileTemplate({ token: data.token }, template.templateWelcome);
+    case 'templateNotifyNews':
+      return template.compileTemplate({title: data.title, description: data.description,}, template.templateNotifyNews);
     default:
       return null;
   }

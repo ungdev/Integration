@@ -92,6 +92,7 @@ export const Navbar = () => {
           <MenuItem to="/Home" label="Home" />
           <MenuItem to="/Parrainnage" label="Parrainnage" />
           <MenuItem to="/Challenges" label="Challenges" />
+          <MenuItem to="/News" label="Mes Actus" />
           {(permission === "Student" || permission === "Admin") && (
             <MenuItem to="/Permanences" label="Permanences" />
           )}
@@ -154,6 +155,7 @@ export const Navbar = () => {
                       ["Challenge", "/admin/challenge"],
                       ["Export / Import", "/admin/export-import"],
                       ["Email", "/admin/email"],
+                      ["News", "/admin/news"],
                     ].map(([label, path]) => (
                       <Link
                         key={path}
@@ -190,6 +192,7 @@ export const Navbar = () => {
               <MenuItem to="/Home" label="Home" />
               <MenuItem to="/Parrainnage" label="Parrainnage" />
               <MenuItem to="/Challenges" label="Challenges" />
+              <MenuItem to="/News" label="Mes Actus" />
               {(permission === "Student" || permission === "Admin") && (
                 <MenuItem to="/Permanences" label="Permanences" />
               )}
@@ -207,6 +210,7 @@ export const Navbar = () => {
                   <MenuItem to="/admin/challenge" label="Challenge" />
                   <MenuItem to="/admin/export-import" label="Export / Import" />
                   <MenuItem to="/admin/email" label="Email" />
+                  <MenuItem to="/admin/news" label="News" />
                 </>
               )}
               <MenuItem to="/Profil" label="Mon compte" />

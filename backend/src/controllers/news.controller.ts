@@ -70,11 +70,11 @@ export const publishNews = async (req: Request, res: Response) => {
 
     const email = {
       from: "integration@utt.fr",
-      to: recipients,
+      to: [],
       subject: `[INTEGRATION UTT] Nouvelle actu : ${title}`,
       html : html,
       cc: [],
-      bcc: [],
+      bcc: recipients,
     };
 
     await email_service.sendEmail(email);

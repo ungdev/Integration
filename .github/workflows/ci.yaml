@@ -31,14 +31,14 @@ jobs:
           push: true
           tags: |
             ${{ secrets.REGISTRY_URL }}/integration/api:${{ github.ref == 'refs/heads/prod' && 'prod' || 'dev' }}
-        env:
-          VITE_API_URL: ${{ github.ref == 'refs/heads/prod' && 'https://integration.utt.fr/api' || 'https://integration.dev.uttnetgroup.fr/api' }}
-          VITE_SERVICE_URL: ${{ github.ref == 'refs/heads/prod' && 'https://integration.utt.fr' || 'https://integration.dev.uttnetgroup.fr' }}
 
       - name: Front- Build and push
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
           push: true
+          build-args: |
+            VITE_API_URL=${{ github.ref == 'refs/heads/prod' && 'https://integration.utt.fr/api' || 'https://integration.dev.uttnetgroup.fr/api' }}
+            VITE_SERVICE_URL=${{ github.ref == 'refs/heads/prod' && 'https://integration.utt.fr' || 'https://integration.dev.uttnetgroup.fr' }}
           tags: |
             ${{ secrets.REGISTRY_URL }}/integration/front:${{ github.ref == 'refs/heads/prod' && 'prod' || 'dev' }}

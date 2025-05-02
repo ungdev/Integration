@@ -1,9 +1,13 @@
 FROM node:23-slim AS builder
 WORKDIR /app
 
-ENV VITE_CAS_LOGIN_URL="https://cas.utt.fr/cas/login"
-ENV VITE_SERVICE_URL="https://integration.utt.fr/"
-ENV VITE_API_URL="https://integration.utt.fr/api" 
+ARG VITE_CAS_LOGIN_URL="https://cas.utt.fr/cas/login"
+ARG VITE_SERVICE_URL="https://integration.utt.fr/"
+ARG VITE_API_URL="https://integration.utt.fr/api"
+
+ENV VITE_CAS_LOGIN_URL=${VITE_CAS_LOGIN_URL}
+ENV VITE_SERVICE_URL=${VITE_SERVICE_URL}
+ENV VITE_API_URL=${VITE_API_URL}
 #localhost:4001 in local version
 
 COPY package.json package-lock.json ./
@@ -23,5 +27,4 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 4000
 
 CMD ["serve", "-s", "dist", "-l", "4000"]
-
 

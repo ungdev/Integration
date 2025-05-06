@@ -38,7 +38,11 @@ export const PreregisterGform = () => {
               Chargement…
             </iframe>
           </div>
+          <p className="text-center text-sm text-gray-">
+              Bar pour l'équipe 4 : 3 Brasseurs
+          </p>
         </>
+        
       ) : (
         <p className="text-center text-red-500 text-lg font-semibold">
           La pré-inscription est actuellement fermée.

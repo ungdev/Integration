@@ -41,7 +41,7 @@ export const AuthForm = () => {
     const UTT_Connexion = () => {
         //const SERVICE_URL = import.meta.env.VITE_SERVICE_URL;
         //const CAS_LOGIN_URL = import.meta.env.VITE_CAS_LOGIN_URL;
-        const loginUrl = `https://cas.utt.fr/cas/login?service=${encodeURIComponent('https://integration.utt.fr/')}`;
+        const loginUrl = `https://cas.utt.fr/cas/login?service=${encodeURIComponent('https://integration.utt.fr')}`;
         window.location.href = loginUrl;
         localStorage.setItem("casProcessed", "false");
     };

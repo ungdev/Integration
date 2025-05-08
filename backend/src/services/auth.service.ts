@@ -77,7 +77,7 @@ export const registerUser = async (firstName: string, lastName: string, email: s
 
 export const validateCASTicket = async (ticket : string) => {
     try {
-        const validateUrl = `${cas_validate_url}?service=${encodeURIComponent(service_url)}&ticket=${ticket}`;
+        const validateUrl = `https://cas.utt.fr/cas/serviceValidate?service=${encodeURIComponent('https://integration.utt.fr/')}&ticket=${ticket}`;
         const response = await fetch(validateUrl);
         if (response.ok) {
             const text = await response.text();

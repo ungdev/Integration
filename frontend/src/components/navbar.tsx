@@ -14,7 +14,6 @@ export const Navbar = () => {
   const [isEventsOpen, setIsEventsOpen] = useState(false);
 
   useEffect(() => {
-    // Fermeture automatique des menus quand on change de page
     setMobileMenuOpen(false);
     setIsAdminOpen(false);
     setIsEventsOpen(false);
@@ -36,8 +35,9 @@ export const Navbar = () => {
     <Link
       to={to}
       className={clsx(
-        "text-white hover:text-gray-300 px-2 py-1",
-        isActive(to) && "font-bold underline"
+        "relative px-3 py-2 text-sm text-white hover:text-gray-200 transition-all duration-150",
+        isActive(to) &&
+          "after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-6 after:h-[2px] after:bg-white after:rounded"
       )}
     >
       {label}
@@ -53,8 +53,8 @@ export const Navbar = () => {
     <nav className="bg-blue-600 text-white shadow-md w-full z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/Home" className="text-2xl font-semibold">
-          UTT Integration
+        <Link to="/Home" className="text-xl font-semibold whitespace-nowrap text-white">
+          UTT <span className="font-normal">Integration</span>
         </Link>
 
         {/* Hamburger */}
@@ -63,32 +63,17 @@ export const Navbar = () => {
           onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle menu"
         >
-          <svg
-            className="w-6 h-6 transition-transform duration-300"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {isMobileMenuOpen ? (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             ) : (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
             )}
           </svg>
         </button>
 
         {/* Desktop Menu */}
-        <div className="hidden lg:flex items-center space-x-6 relative">
+        <div className="hidden lg:flex items-center gap-x-4 relative">
           <MenuItem to="/Home" label="Home" />
           <MenuItem to="/Parrainnage" label="Parrainnage" />
           <MenuItem to="/Challenges" label="Challenges" />
@@ -101,7 +86,7 @@ export const Navbar = () => {
           <div className="relative">
             <button
               onClick={() => setIsEventsOpen((prev) => !prev)}
-              className="hover:text-gray-300"
+              className="px-3 py-2 text-sm hover:text-gray-200"
             >
               Events ▾
             </button>
@@ -112,7 +97,7 @@ export const Navbar = () => {
                   animate="visible"
                   exit="hidden"
                   variants={dropdownVariants}
-                  className="absolute top-full mt-2 bg-white text-black rounded shadow-md min-w-[180px] z-50"
+                  className="absolute top-full mt-2 bg-white text-black rounded shadow-md min-w-[160px] z-50"
                 >
                   {(permission === "Student" || permission === "Admin") && (
                     <Link to="/Shotgun" className="block px-4 py-2 hover:bg-gray-100">
@@ -132,7 +117,7 @@ export const Navbar = () => {
             <div className="relative">
               <button
                 onClick={() => setIsAdminOpen((prev) => !prev)}
-                className="hover:text-gray-300"
+                className="px-3 py-2 text-sm hover:text-gray-200"
               >
                 Admin ▾
               </button>
@@ -172,7 +157,10 @@ export const Navbar = () => {
           )}
 
           <MenuItem to="/Profil" label="Mon compte" />
-          <button onClick={handleLogout} className="hover:text-gray-300">
+          <button
+            onClick={handleLogout}
+            className="px-3 py-2 text-sm hover:text-gray-200 transition-all duration-150"
+          >
             Déconnexion
           </button>
         </div>
@@ -200,21 +188,25 @@ export const Navbar = () => {
               <MenuItem to="/Wei" label="WEI" />
               {permission === "Admin" && (
                 <>
-                  <span className="mt-2 font-bold">Admin</span>
-                  <MenuItem to="/admin/users" label="Users" />
-                  <MenuItem to="/admin/roles" label="Roles" />
-                  <MenuItem to="/admin/teams" label="Teams" />
-                  <MenuItem to="/admin/factions" label="Factions" />
-                  <MenuItem to="/admin/shotgun" label="Shotgun" />
-                  <MenuItem to="/admin/permanences" label="Permanences" />
-                  <MenuItem to="/admin/challenge" label="Challenge" />
-                  <MenuItem to="/admin/export-import" label="Export / Import" />
-                  <MenuItem to="/admin/email" label="Email" />
-                  <MenuItem to="/admin/news" label="News" />
+                  <span className="mt-2 font-semibold text-white">Admin</span>
+                  {[
+                    ["Users", "/admin/users"],
+                    ["Roles", "/admin/roles"],
+                    ["Teams", "/admin/teams"],
+                    ["Factions", "/admin/factions"],
+                    ["Shotgun", "/admin/shotgun"],
+                    ["Permanences", "/admin/permanences"],
+                    ["Challenge", "/admin/challenge"],
+                    ["Export / Import", "/admin/export-import"],
+                    ["Email", "/admin/email"],
+                    ["News", "/admin/news"],
+                  ].map(([label, path]) => (
+                    <MenuItem key={path} to={path} label={label} />
+                  ))}
                 </>
               )}
               <MenuItem to="/Profil" label="Mon compte" />
-              <button onClick={handleLogout} className="text-left hover:text-gray-300">
+              <button onClick={handleLogout} className="text-left text-sm text-white hover:text-gray-200">
                 Déconnexion
               </button>
             </div>

@@ -81,9 +81,9 @@ export const validateCASTicket = async (ticket : string) => {
         const response = await fetch(validateUrl);
         if (response.ok) {
             const text = await response.text();
-            console.log("====================validateCASTicket")
+            /*console.log("====================validateCASTicket")
             console.log(text)
-            console.log("validateCASTicket====================")
+            console.log("validateCASTicket====================")*/
             const isValid = text.includes("authenticationSuccess");
             if (isValid) {
               // User is authenticated

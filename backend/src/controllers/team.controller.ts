@@ -10,6 +10,11 @@ export const createNewTeam = async (req: Request, res: Response) => {
     const { teamName, members } = req.body;
 
     try {
+
+        if(!teamName){
+            Error(res, { msg: "Il n'y a pas de nom d'équipe" });
+            return;
+        }
         const status: Event = await event_service.getEventsStatus();
         if (!status?.pre_registration_open) {
             Error(res, { msg: "L'enregistrement d'équipe est fermé." });

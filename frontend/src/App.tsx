@@ -19,8 +19,11 @@ import { WeiPage } from './pages/Wei';
 import { NewsPage } from './pages/News';
 
 const App: React.FC = () => {
+  const VITE_ANALYTICS_WEBSITE_ID = import.meta.env.VITE_ANALYTICS_WEBSITE_ID;
+
   return (
     <Router>
+      <script defer src="/js/analytics.js" data-website-id={VITE_ANALYTICS_WEBSITE_ID}></script>
       <Routes>
         {/* Public */}
         <Route path="/" element={<LoginPage />} />
@@ -50,7 +53,7 @@ const App: React.FC = () => {
         <Route path="/admin/news" element={<AdminRoute><AdminPageNews /></AdminRoute>} />
       </Routes>
     </Router>
-    
+
   );
 };
 

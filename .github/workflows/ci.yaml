@@ -58,5 +58,6 @@ jobs:
           build-args: |
             VITE_API_URL=${{ github.ref == 'refs/heads/prod' && 'https://integration.utt.fr/api' || 'https://integration.dev.uttnetgroup.fr/api' }}
             VITE_SERVICE_URL=${{ github.ref == 'refs/heads/prod' && 'https://integration.utt.fr/' || 'https://integration.dev.uttnetgroup.fr/' }}
+            VITE_ANALYTICS_WEBSITE_ID=${{ github.ref == 'refs/heads/prod' && secrets.ANALYTICS_WEBSITE_ID_PROD || secrets.ANALYTICS_WEBSITE_ID_DEV }}
           tags: |
             ${{ secrets.REGISTRY_URL }}/integration/front:${{ github.ref == 'refs/heads/prod' && 'prod' || 'dev' }}

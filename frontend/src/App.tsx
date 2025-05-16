@@ -19,6 +19,21 @@ import { WeiPage } from './pages/Wei';
 import { NewsPage } from './pages/News';
 
 const App: React.FC = () => {
+  const VITE_ANALYTICS_WEBSITE_ID = import.meta.env.VITE_ANALYTICS_WEBSITE_ID;
+
+  React.useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "https://analytics.uttnetgroup.fr/script.js";
+    script.defer = true;
+    if (VITE_ANALYTICS_WEBSITE_ID) {
+      script.setAttribute('data-website-id', VITE_ANALYTICS_WEBSITE_ID);
+    }
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, [VITE_ANALYTICS_WEBSITE_ID]);
+
   return (
     <Router>
       <Routes>
@@ -50,7 +65,7 @@ const App: React.FC = () => {
         <Route path="/admin/news" element={<AdminRoute><AdminPageNews /></AdminRoute>} />
       </Routes>
     </Router>
-    
+
   );
 };
 

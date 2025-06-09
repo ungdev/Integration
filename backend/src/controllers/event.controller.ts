@@ -38,6 +38,11 @@ export const shotgunAttempt = async (req: Request, res: Response) => {
     try{
         const userTeam = await team_service.getUserTeam(userId)
 
+        if(!userTeam){
+            Error(res, { msg: "Erreur : Tu n'as pas d'équipe !" });
+            return;
+        }
+
         const alreadyShotgun = await event_service.alreadyShotgun(userTeam)
 
         if(alreadyShotgun){
@@ -49,7 +54,7 @@ export const shotgunAttempt = async (req: Request, res: Response) => {
         Ok(res, { msg: "Shotgun validé !"});
         return;
     }catch(error){
-        Error(res, {msg :"Error while shotguning : "+ error});
+        Error(res, {msg :"Erreur pendant le shotguns : "+ error});
         return;
     }
 };

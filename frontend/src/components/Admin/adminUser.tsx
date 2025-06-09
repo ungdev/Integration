@@ -123,7 +123,7 @@ export const AdminUser = () => {
               disabled
               placeholder="Email"
             />
-            <p className="text-s text-red-500 underline mt-4" ><strong>Attention : la donnée récupérée est à partir du 01/09/2025</strong></p>
+            <p className="text-s text-red-500 underline mt-4" ><strong>Attention : la donnée récupérée est à partir de la date de synchro choisie</strong></p>
             <Select
               placeholder="Majeur?"
               options={majeurOptions}

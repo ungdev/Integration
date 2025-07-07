@@ -11,7 +11,7 @@ export const ParrainageNewStudent = () => {
 
         <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
           <iframe
-            src="https://docs.google.com/forms/d/e/1FAIpQLScRSe2IMVGRA9jMhifQTJiGWbyPJIh6f5g-Spzel9dwhGmMFA/viewform?embedded=true"
+            src="https://docs.google.com/forms/d/e/1FAIpQLScThti-8I0ceHVb8RBYPzLcGhXNo2KPMg_nQHshrb6hC8EG_w/viewform?embedded=true"
             className="absolute inset-0 w-full h-full border-none"
             title="Formulaire Parrainage Nouvel Étudiant"
             loading="lazy"
@@ -37,7 +37,7 @@ export const ParrainageStudent = () => {
 
         <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
           <iframe
-            src="https://docs.google.com/forms/d/e/1FAIpQLScNenNR2mnFXLj9SHkZSGvPlC7u0eH6o9i97Vv30M_BqXGhiQ/viewform?embedded=true"
+            src="https://docs.google.com/forms/d/e/1FAIpQLScM8LTorRrysnWNGKAX31Snqo2QQz02032m-CK7lUA0MpBaQQ/viewform?embedded=true"
             className="absolute inset-0 w-full h-full border-none"
             title="Formulaire Parrainage Étudiant Actuel"
             loading="lazy"

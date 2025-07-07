@@ -40,7 +40,9 @@ export const UserPreferences = () => {
     const fetchPreferences = async () => {
       try {
         const userPreferences = await getUserPrefrences();
-        userPreferences.forEach((roleId: number) => setValue(roleId.toString(), true));  // Marque les cases comme cochées
+        userPreferences.forEach((roleId: number) =>
+          setValue(roleId.toString(), true)
+        );
       } catch (error) {
         console.error("Erreur lors du chargement des préférences", error);
       }
@@ -49,14 +51,13 @@ export const UserPreferences = () => {
   }, [setValue]);
 
   const onSubmit = async (data: Record<string, boolean>) => {
-    
     setLoading(true);
-    // Extraire les `roleId` des cases à cocher qui sont sélectionnées
-    const selectedRoleIds = Object.keys(data).filter((key) => data[key]).map((key) => parseInt(key)); 
-
+    const selectedRoleIds = Object.keys(data)
+      .filter((key) => data[key])
+      .map((key) => parseInt(key));
 
     try {
-      await updateUserPreferences(selectedRoleIds); // Envoie des `roleId`
+      await updateUserPreferences(selectedRoleIds);
       alert("Préférences mises à jour !");
     } catch (error) {
       console.error("Erreur:", error);
@@ -70,27 +71,36 @@ export const UserPreferences = () => {
     <div className="flex flex-col items-center px-4 py-10 space-y-10 max-w-5xl mx-auto">
       <Card className="w-full p-6 rounded-2xl shadow space-y-6">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold text-center">Préférences de commission</CardTitle>
+          <CardTitle className="text-xl font-semibold text-center">
+            Préférences de commission
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {commissions.map(({ id, name, description }) => (
                 <div key={id} className="flex flex-col">
                   <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
                       id={name}
-                      {...register(id.toString())} // Enregistrer l'ID comme nom dans le formulaire
+                      {...register(id.toString())}
+                      className="accent-blue-600"
                     />
-                    <label htmlFor={name} className="text-sm font-medium">{name}</label>
+                    <label htmlFor={name} className="text-sm font-medium">
+                      {name}
+                    </label>
                   </div>
                   <p className="text-xs text-gray-500">{description}</p>
                 </div>
               ))}
             </div>
 
-            <Button type="submit" className="mt-6 w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="mt-6 w-full sm:w-auto"
+              disabled={loading}
+            >
               {loading ? "Enregistrement..." : "Enregistrer"}
             </Button>
           </form>

@@ -4,10 +4,12 @@ import { checkRole } from '../middlewares/user.middleware';
 
 const factionRouter = express.Router();
 
-factionRouter.get("/factions",checkRole("Admin") ,factionController.getFactions);
-factionRouter.get("/faction",checkRole("Admin") ,factionController.getFaction);
-factionRouter.post("/createfaction",checkRole("Admin") ,factionController.createFaction);
-factionRouter.delete("/deletefaction",checkRole("Admin") ,factionController.deleteFaction);
+
+// Admin routes
+factionRouter.get("/admin/factions",checkRole("Admin") ,factionController.getFactions);
+factionRouter.get("/admin/faction",checkRole("Admin") ,factionController.getFaction);
+factionRouter.post("/admin/createfaction",checkRole("Admin") ,factionController.createFaction);
+factionRouter.delete("/admin/deletefaction",checkRole("Admin") ,factionController.deleteFaction);
 
 
 export default factionRouter;

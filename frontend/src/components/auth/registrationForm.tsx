@@ -36,8 +36,8 @@ export const RegistrationForm = () => {
             await completeRegistration(token, password);
             setSuccess(true);
             setTimeout(() => navigate("/"), 2000);
-        } catch (err) {
-            setError("Erreur lors de la validation. Le lien est peut-être expiré ou invalide.");
+        } catch (err : any) {
+            setError("Erreur lors de la validation : "+ err.response.data.message);
         }
     };
 

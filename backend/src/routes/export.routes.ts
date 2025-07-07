@@ -5,7 +5,7 @@ import { checkRole } from '../middlewares/user.middleware';
 const exportRouter = express.Router();
 
 // Route d'inscription
-exportRouter.post('/export',checkRole("Admin"), exportController.exportAllDataToSheets)
+exportRouter.post('/admin/export',checkRole("Admin"), exportController.exportAllDataToSheets)
 
 
 

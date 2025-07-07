@@ -17,6 +17,7 @@ import { RegisterPage } from './pages/Register';
 import { ResetPasswordPage } from './pages/ResetPassword'
 import { WeiPage } from './pages/Wei';
 import { NewsPage } from './pages/News';
+import PrivateRoute from './components/utils/privateroute';
 
 const App: React.FC = () => {
   const VITE_ANALYTICS_WEBSITE_ID = import.meta.env.VITE_ANALYTICS_WEBSITE_ID;
@@ -45,12 +46,14 @@ const App: React.FC = () => {
         {/* Utilisateurs connectés */}
         <Route path="/Home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/Profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
-        <Route path="/Shotgun" element={<ProtectedRoute><ShotgunPage /></ProtectedRoute>} />
-        <Route path="/Permanences" element={<ProtectedRoute><PermPage /></ProtectedRoute>} />
         <Route path="/Challenges" element={<ProtectedRoute><ChallPage /></ProtectedRoute>} />
         <Route path="/Parrainnage" element={<ProtectedRoute><ParrainnagePage /></ProtectedRoute>} />
         <Route path="/WEI" element={<ProtectedRoute><WeiPage /></ProtectedRoute>} />
         <Route path="/News" element={<ProtectedRoute><NewsPage /></ProtectedRoute>} />
+
+        {/* Etudiant et Admin */}
+        <Route path="/Shotgun" element={<PrivateRoute permissionRequired={'Student'}><ShotgunPage /></PrivateRoute>} />
+        <Route path="/Permanences" element={<PrivateRoute permissionRequired={'Student'}><PermPage /></PrivateRoute>} />
 
         {/* Admin uniquement */}
         <Route path="/admin/roles" element={<AdminRoute><AdminPageRole /></AdminRoute>} />

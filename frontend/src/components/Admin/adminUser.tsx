@@ -19,6 +19,16 @@ const permissionOptions = [
 
 const branchOptions = [
   { value: "TC", label: "Tronc Commun" },
+  { value: "RT", label: "Réseaux et Télcommunications" },
+  { value: "ISI", label: "Informatique et Systèmes d'Information" },
+  { value: "GM", label: "Génie Mécanique" },
+  { value: "GI", label: "Génie Industriel" },
+  { value: "MTE", label: "Matériaux : Technologie et Economie" },
+  { value: "A2I", label: "Automatique & Informatique Industrielle" },
+  { value: "GI_APPR", label: "Génie Industriel en Apprentissage" },
+  { value: "GM_APPR", label: "Génie Mécanique en Apprentissage" },
+  { value: "SN_APPR", label: "Systeme Numérique en Apprentissage" },
+  { value: "CV_ING", label: "CV ING (Trouvez moi ce que c'est svp)" },
   { value: "Branch", label: "Branche" },
   { value: "MM", label: "Mécanique et Matériaux" },
   { valeu : "Master", label: "Master"},

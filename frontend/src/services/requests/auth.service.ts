@@ -67,7 +67,6 @@ export const isTokenValid = async () =>{
 export const completeRegistration = async (token : string, password : string) =>{
   
   const response = await api.post('auth/completeregistration/', {token, password});
-
   return response?.data.data
 
   

@@ -20,9 +20,9 @@ permanenceRouter.post("/admin/importpermanences", upload.single("file"), permane
 
 
 // Student routes
-permanenceRouter.get("/student/permanences", checkRole("Student"), permanenceController.getOpenPermanences);
-permanenceRouter.post("/student/apply", checkRole("Student"), permanenceController.applyToPermanence);
-permanenceRouter.post("/student/leave", checkRole("Student"), permanenceController.leavePermanence);
-permanenceRouter.get("/student/me", checkRole("Student"), permanenceController.getMyPermanences );
+permanenceRouter.get("/user/permanences", checkRole("Student"), permanenceController.getOpenPermanences);
+permanenceRouter.post("/user/apply", checkRole("Student"), permanenceController.applyToPermanence);
+permanenceRouter.post("/user/leave", checkRole("Student"), permanenceController.leavePermanence);
+permanenceRouter.get("/user/me", checkRole("Student"), permanenceController.getMyPermanences );
 
 export default permanenceRouter;

@@ -82,15 +82,13 @@ export const addRoleToUser = async (req: Request, res: Response) => {
 
 export const deleteRoleToUser = async (req: Request, res: Response) => {
     try {
-        const { userId, roleIds } = req.body;
+        const { userId, roleId } = req.body;
 
-        if (!userId || !roleIds) {
+        if (!userId || !roleId) {
            Error(res,{ msg: "userId and roleIds are required" });
            return;
         }
-        for (const roleId of roleIds) {
           await role_service.removeRoleFromUser(userId, roleId); // Fonction qui supprime un rôle
-        }
           Ok(res,{ msg: "Rôle supprimé avec succès." });
           return;
 

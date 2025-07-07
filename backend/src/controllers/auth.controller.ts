@@ -128,13 +128,13 @@ export const completeRegistration = async(req : Request, res : Response) => {
 
   try{
 
-    auth_service.completeRegistration(token, password)
+    await auth_service.completeRegistration(token, password)
     Ok(res, {msg: "Inscription complétée avec succès.", data: true})
 
-  }catch(error
-  ){
-    Error(res, {msg : error.data.message})
+  }catch(error){
+    Error(res, { msg: error.message || "Une erreur est survenue." });
   }
+  
 }
 
 export const requestPasswordUser = async (req: Request, res: Response) => {

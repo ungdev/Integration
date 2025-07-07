@@ -184,7 +184,9 @@ export const Navbar = () => {
               {(permission === "Student" || permission === "Admin") && (
                 <MenuItem to="/Permanences" label="Permanences" />
               )}
-              <MenuItem to="/Shotgun" label="Shotgun" />
+              {(permission === "Student" || permission === "Admin") && (
+                <MenuItem to="/Shotgun" label="Shotgun" />
+              )}
               <MenuItem to="/Wei" label="WEI" />
               {permission === "Admin" && (
                 <>

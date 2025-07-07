@@ -2,7 +2,7 @@ import api from '../api';
 
 export const getUserPrefrences = async () => {
   try{
-    const response = await api.get("/role/userpreferences");
+    const response = await api.get("/role/user/userpreferences");
     const userPreferences = response.data.data;
 
     return userPreferences;
@@ -15,7 +15,7 @@ export const getUserPrefrences = async () => {
 
 export const updateUserPreferences = async (selectedRoles : any) => {
   try{
-    const response = await api.put("/role/updateuserpreferences", { roleIds: selectedRoles });
+    const response = await api.put("/role/user/updateuserpreferences", { roleIds: selectedRoles });
     const userPreferences = response.data.data;
 
     return userPreferences;
@@ -28,7 +28,7 @@ export const updateUserPreferences = async (selectedRoles : any) => {
 
 export const getUsersByRoleHandler  = async (roleName: string) => {
   try{
-    const response = await api.get("/role/userbyrolehandler/"+roleName);
+    const response = await api.get("/role/admin/userbyrolehandler/"+roleName);
     const userbyRole = response.data.data;
   
     return userbyRole;
@@ -42,7 +42,7 @@ export const getUsersByRoleHandler  = async (roleName: string) => {
 
 export const addRolesToUser  = async (selectedUser: number, selectedRoles: number[]) => {
   try{
-    const response = await api.post("/role/addroletouser", { userId: selectedUser, roleIds: selectedRoles});
+    const response = await api.post("/role/admin/addroletouser", { userId: selectedUser, roleIds: selectedRoles});
 
     return response.data
   
@@ -53,9 +53,9 @@ export const addRolesToUser  = async (selectedUser: number, selectedRoles: numbe
 
 }
 
-export const deleteRolesToUser = async (selectedUser: number, selectedRoles: number[])=>{
+export const deleteRolesToUser = async (selectedUser: number, selectedRole: number)=>{
   try{
-    const response = await api.delete("/role/deleteroletouser", {data: { userId: selectedUser, roleIds: selectedRoles}});
+    const response = await api.delete("/role/admin/deleteroletouser", {data: { userId: selectedUser, roleId: selectedRole}});
 
     return response.data
 
@@ -67,7 +67,7 @@ export const deleteRolesToUser = async (selectedUser: number, selectedRoles: num
 
 export const getUsersWithRoles  = async () => {
   try{
-    const response = await api.get("/role/userswithroles");
+    const response = await api.get("/role/admin/userswithroles");
     const usersWithRoles = response.data.data;
   
     return usersWithRoles;
@@ -81,7 +81,7 @@ export const getUsersWithRoles  = async () => {
 
 export const getRoles  = async () => {
   try{
-    const response = await api.get("/role/getroles");
+    const response = await api.get("/role/admin/getroles");
     const roles = response.data.data;
   
     return roles;
@@ -95,7 +95,7 @@ export const getRoles  = async () => {
 
 export const getUsersRoles = async (userId : number) => {
   try{
-    const response = await api.get('/role/getusersroles', {params: {userId}});
+    const response = await api.get('/role/admin/getusersroles', {params: {userId}});
     const userRoles = response.data.data;
   
     return userRoles;

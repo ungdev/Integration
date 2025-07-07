@@ -101,155 +101,157 @@ export const AdminRoleManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
-  const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
-  const [loading] = useState(false);
+  const [userRoles, setUserRoles] = useState<Role[]>([]);
+  const [newRoles, setNewRoles] = useState<number[]>([]);
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const users = await getUsers();
+        const allRoles = await getRoles();
         setUsers(users);
-        const roles = await getRoles();
-        setRoles(roles);
+        setRoles(allRoles);
       } catch (error) {
-        console.error("Erreur initiale", error);
+        console.error("Erreur lors du chargement des données :", error);
       }
     };
-
     fetchInitialData();
   }, []);
 
   useEffect(() => {
     const fetchUserRoles = async () => {
+      if (!selectedUser) {
+        setUserRoles([]);
+        return;
+      }
       try {
-        if (selectedUser) {
-          const usersRoles = await getUsersRoles(selectedUser);
-          const roleIds = usersRoles.map((role: { roleId: number }) => role.roleId);
-          setSelectedRoles(roleIds);
-        } else {
-          setSelectedRoles([]);
-        }
+        const rawUserRoles = await getUsersRoles(selectedUser); // [{ roleId: 1 }, ...]
+        const completeUserRoles = roles.filter((role: { roleId: number; }) =>
+          rawUserRoles.some((ur: { roleId: number }) => ur.roleId === role.roleId)
+        );
+        setUserRoles(completeUserRoles);
       } catch (error) {
-        console.error("Erreur lors de la récupération des rôles utilisateur", error);
+        console.error("Erreur récupération rôles :", error);
       }
     };
-
     fetchUserRoles();
   }, [selectedUser]);
 
   const handleAddRoles = async () => {
-    if (!selectedUser || selectedRoles.length === 0) {
-      setMessage("Veuillez sélectionner un utilisateur et un ou plusieurs rôles.");
-      return;
-    }
-
+    if (!selectedUser || newRoles.length === 0) return;
     try {
-      const response = await addRolesToUser(selectedUser, selectedRoles);
-      setMessage(response.message);
-      setSelectedUser(null);
-      setSelectedRoles([]);
-    } catch (error) {
-      console.error("Erreur lors de l'ajout des rôles", error);
-      setMessage("Une erreur est survenue lors de l'ajout des rôles.");
+      await addRolesToUser(selectedUser, newRoles);
+      setMessage("Rôles ajoutés avec succès !");
+      setSelectedUser(null); // Reset
+    } catch {
+      setMessage("Erreur lors de l'ajout des rôles.");
     }
   };
 
-  const handleRemoveRoles = async () => {
-    if (!selectedUser || selectedRoles.length === 0) {
-      setMessage("Veuillez sélectionner un utilisateur et un ou plusieurs rôles à supprimer.");
-      return;
-    }
-
+  const handleRemoveRole = async (roleId: number) => {
+    if (!selectedUser) return;
     try {
-      const response = await deleteRolesToUser(selectedUser, selectedRoles);
-      setMessage(response.message);
-      setSelectedUser(null);
-      setSelectedRoles([]);
-    } catch (error) {
-      console.error("Erreur lors de la suppression des rôles", error);
-      setMessage("Une erreur est survenue lors de la suppression des rôles.");
+      await deleteRolesToUser(selectedUser, roleId);
+      setMessage("Rôle supprimé avec succès !");
+      setUserRoles(prev => prev.filter(r => r.roleId !== roleId));
+    } catch {
+      setMessage("Erreur lors de la suppression.");
     }
   };
-
-  const userOptions = users.map((user) => ({
-    value: user.userId,
-    label: `${user.firstName} ${user.lastName}`,
-  }));
-
-  const roleOptions = roles.map((role) => ({
-    value: role.roleId,
-    label: role.name,
-  }));
 
   return (
-    <div className="flex justify-center items-center w-full ">
-      <Card className="p-6 shadow-xl rounded-lg bg-white w-full">
+    <div className="flex justify-center w-full">
+      <Card className="p-6 shadow-xl bg-white w-full max-w-4xl">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold text-center">Gestion des Rôles des utilisateurs</CardTitle>
+          <CardTitle className="text-xl font-semibold text-center">Gestion des rôles</CardTitle>
         </CardHeader>
         <CardContent>
-
           {message && (
-            <div
-              className={`mb-4 p-4 rounded-lg ${
-                message.includes("succès") ? "bg-green-200" : "bg-red-200"
-              }`}
-            >
-              <p className="text-center">{message}</p>
+            <div className="mb-4 p-4 rounded bg-blue-100 text-center">
+              {message}
             </div>
           )}
 
-          {/* Sélectionner un utilisateur */}
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Sélectionner un utilisateur</label>
+            <label className="block text-sm font-medium mb-2">Utilisateur</label>
             <Select
-              options={userOptions}
-              value={selectedUser ? { value: selectedUser, label: userOptions.find(u => u.value === selectedUser)?.label } : null}
-              onChange={(selectedOption: any) => setSelectedUser(selectedOption?.value ?? null)}
-              placeholder="Sélectionner un utilisateur"
-              className="w-full"
-            />
-          </div>
-
-          {/* Sélectionner des rôles */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Sélectionner un ou plusieurs rôles</label>
-            <Select
-              isMulti
-              options={roleOptions}
-              value={roleOptions.filter(option => selectedRoles.includes(option.value))}
-              onChange={(selectedOptions: any) =>
-                setSelectedRoles(selectedOptions.map((option: any) => option.value))
+              options={users.map(user => ({
+                value: user.userId,
+                label: `${user.firstName} ${user.lastName}`,
+              }))}
+              value={
+                selectedUser
+                  ? {
+                      value: selectedUser,
+                      label: users.find(u => u.userId === selectedUser)?.firstName +
+                        " " +
+                        users.find(u => u.userId === selectedUser)?.lastName,
+                    }
+                  : null
               }
-              placeholder="Sélectionner des rôles"
+              onChange={(option: any) => setSelectedUser(option?.value ?? null)}
+              placeholder="Choisir un utilisateur"
               className="w-full"
             />
           </div>
 
-          <div className="mt-4">
-            <button
-              className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
-              onClick={handleAddRoles}
-            >
-              Ajouter des rôles
-            </button>
-          </div>
+          {selectedUser && (
+            <>
+              <h3 className="text-md font-semibold mb-2">Rôles actuels :</h3>
+              <ul className="mb-4 space-y-2">
+                {userRoles.length > 0 ? (
+                  userRoles.map(role => (
+                    <li key={role.roleId} className="flex justify-between items-center bg-gray-100 p-2 rounded">
+                      <span>{role.name}</span>
+                      <button
+                        className="text-sm text-red-600 hover:underline"
+                        onClick={() => handleRemoveRole(role.roleId)}
+                      >
+                        Supprimer
+                      </button>
+                    </li>
+                  ))
+                ) : (
+                  <p className="text-gray-500">Aucun rôle attribué</p>
+                )}
+              </ul>
 
-          <div className="mt-4">
-            <button
-              className="w-full bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
-              onClick={handleRemoveRoles}
-            >
-              Supprimer des rôles
-            </button>
-          </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">Ajouter des rôles</label>
+                <Select
+                  isMulti
+                  options={roles
+                    .filter(r => !userRoles.some(ur => ur.roleId === r.roleId))
+                    .map(role => ({
+                      value: role.roleId,
+                      label: role.name,
+                    }))}
+                  value={roles
+                    .filter(r => newRoles.includes(r.roleId))
+                    .map(role => ({
+                      value: role.roleId,
+                      label: role.name,
+                    }))}
+                  onChange={(selected: any) => {
+                    setNewRoles(selected.map((s: any) => s.value));
+                  }}
+                  placeholder="Sélectionner des rôles à ajouter"
+                  className="w-full"
+                />
+              </div>
 
-          {loading && (
-            <div className="mt-4 text-center text-gray-500">Chargement...</div>
+              <button
+                onClick={handleAddRoles}
+                className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
+              >
+                Ajouter les rôles sélectionnés
+              </button>
+            </>
           )}
         </CardContent>
       </Card>
     </div>
   );
 };
+

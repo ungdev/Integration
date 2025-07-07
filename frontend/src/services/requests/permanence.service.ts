@@ -3,7 +3,7 @@ import api from "../api"; // ton instance axios ou une autre bibliothèque pour 
 // Fonction pour récupérer toutes les permanences ouvertes
 export const getOpenPermanences = async () => {
   try {
-    const response = await api.get("/permanence/student/permanences");
+    const response = await api.get("/permanence/user/permanences");
     return response.data.data; // La réponse est de type PermanenceResponse
   } catch (error : any) {
     return error.response.data;
@@ -23,7 +23,7 @@ export const getAllPermanences = async () => {
 // Fonction pour s'inscrire à une permanence (étudiant)
 export const applyToPermanence = async (permId: number) => {
   try {
-    const response = await api.post(`/permanence/student/apply`, {permId});
+    const response = await api.post(`/permanence/user/apply`, {permId});
     return response.data; // La réponse est de type ApplyPermanenceResponse
   } catch (error : any) {
     return error.response.data;
@@ -79,7 +79,7 @@ export const closePermanence = async (permId: number) => {
 
 export const cancelPermanence = async (permId: number) => {
     try {
-      const response = await api.post(`/permanence/student/leave`, { permId });
+      const response = await api.post(`/permanence/user/leave`, { permId });
       return response.data;
     } catch (error : any) {
       return error.response.data;
@@ -88,7 +88,7 @@ export const cancelPermanence = async (permId: number) => {
 
   export const getMyPermanences = async () => {
     try {
-      const response = await api.get(`/permanence/student/me`);
+      const response = await api.get(`/permanence/user/me`);
       return response.data.data; 
     } catch (error : any) {
         return error.response.data;

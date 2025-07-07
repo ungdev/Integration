@@ -5,10 +5,13 @@ import { authenticateUser } from '../middlewares/auth.middleware';
 
 const eventRouter = express.Router();
 
-eventRouter.get("/shotgunstatus",checkRole("Student"), eventController.checkShotgunStatus);
-eventRouter.get("/preregisterstatus",checkRole("Student"), eventController.checkPreRegisterStatus);
-eventRouter.post("/shotgunattempt",checkRole("Student"), eventController.shotgunAttempt);
-eventRouter.post("/shotguntoggle",checkRole("Admin"),eventController.toggleShotgun);
-eventRouter.post("/preregistrationtoggle",checkRole("Admin"), eventController.togglePreRegistration);
+// User routes
+eventRouter.get("/user/shotgunstatus",checkRole("Student"), eventController.checkShotgunStatus);
+eventRouter.get("/user/preregisterstatus",checkRole("Student"), eventController.checkPreRegisterStatus);
+eventRouter.post("/user/shotgunattempt",checkRole("Student"), eventController.shotgunAttempt);
+
+// Admin routes
+eventRouter.post("/admin/shotguntoggle",checkRole("Admin"),eventController.toggleShotgun);
+eventRouter.post("/admin/preregistrationtoggle",checkRole("Admin"), eventController.togglePreRegistration);
 
 export default eventRouter;

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import sanitizeHtml from 'sanitize-html';
 import { sendEmail } from '../services/email.service';
 import * as user_service from '../services/user.service';
 import * as registration_service from '../services/registration.service';
@@ -42,23 +43,23 @@ const getRecipients = async (permission: string | undefined, sendTo: string[] | 
 };
 
 export const handleSendEmail = async (req: Request, res: Response) => {
-  const { subject, templateName, format, permission, sendTo, text } = req.body.payload;
+  const { subject, templateName, format, permission, sendTo, text, html } = req.body.payload;
 
   try {
     // Récupérer les destinataires
     const recipients = await getRecipients(permission, sendTo);
 
-    if (!recipients.length) {
+  if (!recipients.length) {
       Error(res, { msg: 'Aucun destinataire trouvé.' });
       return;
-    }
+  }
 
-    recipients.forEach(async (recp) => {
+  for (const recp of recipients) {
+    let htmlEmail = '';
 
-      let htmlEmail
+    if(templateName !== 'custom'){
 
-      if(templateName === "templateWelcome"){
-
+      if(templateName === "templateWelcome" ){
         let token;
         let user = await user_service.getUserByEmail(recp)
         token = await registration_service.getRegistrationByUserId(user.id)
@@ -67,28 +68,30 @@ export const handleSendEmail = async (req: Request, res: Response) => {
         htmlEmail = generateEmailHtml(templateName, {token : token});
 
       if(templateName === "templateNotebook"){
-        htmlEmail = generateEmailHtml(templateName, {notebook : 'link'});
+          htmlEmail = generateEmailHtml(templateName, {notebook : 'link'});
       }
       if(templateName === "templateAttributionBus"){
-        htmlEmail = generateEmailHtml(templateName, {bus : 'bus', time: '09h00'});
+          htmlEmail = generateEmailHtml(templateName, {bus : 'bus', time: '09h00'});
       }
-      // Préparer les options d'email
-      const emailOptions: EmailOptions = {
-        from: "integration@utt.fr",
-        to: [recp],
-        cc: [],
-        bcc: [],
-        subject,
-        text,
-        html: htmlEmail,
-      };
-      
+    }
 
+    } else {
+      htmlEmail = sanitizeHtml(html || '');
+    }
 
-      // Envoi de l'email
-      await sendEmail(emailOptions);
-      }
-    })
+    const emailOptions: EmailOptions = {
+      from: "integration@utt.fr",
+      to: [recp],
+      cc: [],
+      bcc: [],
+      subject,
+      text: req.body.payload.text || '',
+      html: htmlEmail,
+    };
+
+    await sendEmail(emailOptions);
+  }
+
     
     Ok(res, { msg: 'Email envoyé avec succès !' });
     return;

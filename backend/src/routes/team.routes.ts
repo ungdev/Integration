@@ -5,14 +5,18 @@ import { authenticateUser } from '../middlewares/auth.middleware';
 
 const teamRouter = express.Router();
 
-teamRouter.post("/create",checkRole("Student") ,teamController.createNewTeam);
-teamRouter.post("/createlight",checkRole("Admin") ,teamController.createNewTeamLight);
-teamRouter.get("/teams",checkRole("Admin") ,teamController.getTeams);
-teamRouter.get("/teamfaction",checkRole("Admin") ,teamController.getTeamFaction);
-teamRouter.put("/modify",checkRole("Admin") ,teamController.modifyTeam);
-teamRouter.get("/teamusers",checkRole("Admin") ,teamController.getTeamUsers);
-teamRouter.delete("/delete",checkRole("Admin") ,teamController.deleteTeam);
-teamRouter.post('/distributeteam',checkRole("Admin"), teamController.teamDistribution);
+
+//User routes
+teamRouter.post("/user/create",checkRole("Student") ,teamController.createNewTeam);
+
+//Admin Routes
+teamRouter.post("/admin/createlight",checkRole("Admin") ,teamController.createNewTeamLight);
+teamRouter.get("/admin/teams",checkRole("Admin") ,teamController.getTeams);
+teamRouter.get("/admin/teamfaction",checkRole("Admin") ,teamController.getTeamFaction);
+teamRouter.put("/admin/modify",checkRole("Admin") ,teamController.modifyTeam);
+teamRouter.get("/admin/teamusers",checkRole("Admin") ,teamController.getTeamUsers);
+teamRouter.delete("/admin/delete",checkRole("Admin") ,teamController.deleteTeam);
+teamRouter.post('/admin/distributeteam',checkRole("Admin"), teamController.teamDistribution);
 
 
 export default teamRouter;

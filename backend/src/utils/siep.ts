@@ -18,7 +18,7 @@ export const getTokenUTTAPI = async() => {
       }
 }
 
-export const getNewStudentsFromUTTAPI = async (token: string, date : string) => {
+export const getNewStudentsFromUTTAPI_PAGE = async (token: string, date : string) => {
   const allNewStudents: any[] = [];
   let currentPage = 1;
   let hasNextPage = true;
@@ -43,6 +43,29 @@ export const getNewStudentsFromUTTAPI = async (token: string, date : string) => 
         hasNextPage = false;
       }
     }
+    console.log(allNewStudents);
+    return allNewStudents;
+  } catch (error) {
+    console.error('Error during GET request:', error);
+    return [];
+  }
+};
+
+export const getNewStudentsFromUTTAPI_NOPAGE = async (token: string, date : string) => {
+  const allNewStudents: any[] = [];
+
+  try {
+
+    const response = await axios.get(api_utt_admis_url_ismajor+date, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = response.data;
+    const students = data['hydra:member'];
+
+    allNewStudents.push(...students);
 
     return allNewStudents;
   } catch (error) {

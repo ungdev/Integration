@@ -12,6 +12,8 @@ export const AdminEmail = () => {
   const [subject, setSubject] = useState('');
   const [templateName, setTemplateName] = useState('');
   const [format] = useState<'html' | 'txt'>('html');
+  const [isCustom, setIsCustom] = useState(false);
+  const [customContent, setCustomContent] = useState('');
   const [permission, setPermission] = useState<string | null>(null);
   const [sendTo, setSendTo] = useState<any[]>([]);
   const [preview, setPreview] = useState('');
@@ -46,8 +48,12 @@ export const AdminEmail = () => {
 
   const handlePreview = async () => {
     try {
-      const html = await emailPreview(templateName);
-      setPreview(html);
+      if (isCustom) {
+        setPreview(customContent);
+      } else {
+        const html = await emailPreview(templateName);
+        setPreview(html);
+      }
     } catch (err) {
       alert('Erreur dans les données JSON');
     }
@@ -56,10 +62,11 @@ export const AdminEmail = () => {
   const handleSend = async () => {
     const payload = {
       subject,
-      templateName,
+      templateName: isCustom ? 'custom' : templateName,
       format,
       permission,
       sendTo: permission ? null : sendTo.map((u) => u.value),
+      html: isCustom ? customContent : undefined,
     };
     const res = await sendEmail(payload);
     alert(res.message);
@@ -69,17 +76,32 @@ export const AdminEmail = () => {
     <Card className="space-y-4 p-6">
       <h2 className="text-2xl font-bold">📬 Envoi d'e-mail</h2>
       <Input placeholder="Sujet" value={subject} onChange={(e) => setSubject(e.target.value)} />
-      <Select
-        placeholder="Nom du template"
-        isClearable
-        options={templateOptions}
-        onChange={(opt) => {
-            if (opt) {
-              setTemplateName(opt.value); // Si opt n'est pas null, on définit le template
-            } else {
-              setTemplateName(''); // Ou une autre valeur par défaut si opt est null
-            }}}
-      />
+      <div className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          checked={isCustom}
+          onChange={(e) => {
+            setIsCustom(e.target.checked);
+            if (e.target.checked) setTemplateName('');
+          }}
+        />
+        <label>✏️ Rédiger un mail personnalisé</label>
+      </div>
+      {!isCustom ? (
+        <Select
+          placeholder="Nom du template"
+          isClearable
+          options={templateOptions}
+          onChange={(opt) => setTemplateName(opt?.value || '')}
+        />
+      ) : (
+        <textarea
+          placeholder="Contenu HTML de l'email"
+          value={customContent}
+          onChange={(e) => setCustomContent(e.target.value)}
+          className="w-full h-40 p-2 border rounded"
+        />
+      )}
       <Button onClick={handlePreview}>👁️ Aperçu</Button>
       {preview && (
         <div><div className="border p-4 rounded bg-gray-50" dangerouslySetInnerHTML={{ __html: preview }}></div></div>

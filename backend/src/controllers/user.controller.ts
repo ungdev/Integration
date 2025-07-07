@@ -40,27 +40,28 @@ export const syncNewstudent = async (req: Request, res: Response) => {
   try {
       
       const token = await SIEP_Utils.getTokenUTTAPI();
-      const newStudents = await SIEP_Utils.getNewStudentsFromUTTAPI(token, date);
+      const newStudents = await SIEP_Utils.getNewStudentsFromUTTAPI_NOPAGE(token, date);
       //const newStudentfiltered = newStudents.filter((student : any) => !noSyncEmails.includes(student.email));
 
-      newStudents.forEach( async (element: any) => {
-
+      for (const element of newStudents) {
+          
           let userInDb = await user_service.getUserByEmail(element.email.toLowerCase());
-          if(!userInDb){
+          if(userInDb === undefined){
 
               let tmpPassword =  await bcrypt.hash(randomstring.generate(48), 10);
               const newUser = await user_service.createUser(
                 element.prenom, 
                 element.nom, 
-                element.email,
+                element.email.toLowerCase(),
                 element.Majeur ,
                 "Nouveau", 
                 element.diplome === "MA" ? "Master" : element.specialite, 
                 tmpPassword);
-
+                
                 await auth_service.createRegistrationToken(newUser.id)
+
           }
-        })
+        }
 
       Ok(res, { msg:"All NewStudent created and synced" })
 

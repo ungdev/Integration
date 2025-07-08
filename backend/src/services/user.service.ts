@@ -55,7 +55,7 @@ export const createUser = async (
         first_name: firstName,
         last_name: lastName,
         email: email,
-        branch : branch,
+        branch : branch === "CV_ING" ? "RI" : branch,
         majeur: majeur,
         password: hashedPassword,
         permission: permission

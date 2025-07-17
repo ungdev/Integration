@@ -12,6 +12,7 @@ export const userSchema = pgTable("users", {
   contact: text("contact"),
   password: text("password"),
   permission: text("permission").default("Nouveau"),  // Par défaut, le rôle sera "Nouveau"
+  discord_id: text("discord_id"),
   created_at: timestamp("created_at").defaultNow(),
 });
 

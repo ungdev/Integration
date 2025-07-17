@@ -41,7 +41,7 @@ export const SocialLinks = () => {
 
           {/* LinkedIn */}
           <a
-            href="hhttps://www.linkedin.com/school/universit-de-technologie-de-troyes/"
+            href="https://www.linkedin.com/school/universit-de-technologie-de-troyes/"
             target="_blank"
             rel="noopener noreferrer"
             className="px-6 py-2 bg-blue-700 text-white rounded-full hover:bg-blue-900 transition"

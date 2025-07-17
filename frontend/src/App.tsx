@@ -18,6 +18,7 @@ import { ResetPasswordPage } from './pages/ResetPassword'
 import { WeiPage } from './pages/Wei';
 import { NewsPage } from './pages/News';
 import PrivateRoute from './components/utils/privateroute';
+import DiscordPage from './pages/Discord';
 
 const App: React.FC = () => {
   const VITE_ANALYTICS_WEBSITE_ID = import.meta.env.VITE_ANALYTICS_WEBSITE_ID;
@@ -50,6 +51,7 @@ const App: React.FC = () => {
         <Route path="/Parrainnage" element={<ProtectedRoute><ParrainnagePage /></ProtectedRoute>} />
         <Route path="/WEI" element={<ProtectedRoute><WeiPage /></ProtectedRoute>} />
         <Route path="/News" element={<ProtectedRoute><NewsPage /></ProtectedRoute>} />
+        <Route path="/Discord" element={<ProtectedRoute><DiscordPage /></ProtectedRoute>} />
 
         {/* Etudiant et Admin */}
         <Route path="/Shotgun" element={<PrivateRoute permissionRequired={'Student'}><ShotgunPage /></PrivateRoute>} />

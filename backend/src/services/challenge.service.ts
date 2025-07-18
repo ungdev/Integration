@@ -1,7 +1,7 @@
 import { db } from "../database/db";
 import { challengeSchema } from "../schemas/Basic/challenge.schema";
 import { challengeValidationSchema } from "../schemas/Relational/challengevalidation.schema"; // Schéma combiné
-import { and, desc, eq, isNotNull, isNull, sum } from "drizzle-orm";
+import { and, desc, eq, isNotNull, isNull, sum, not } from "drizzle-orm";
 import * as team_service from "./team.service";
 import * as faction_service from "./faction.service";
 import { userSchema } from "../schemas/Basic/user.schema";
@@ -42,9 +42,9 @@ export const deleteChallenge = async (challengeId: number) => {
     return { message: `Challenge avec ID ${challengeId} supprimé` };
 };
 
-// 3. Récupérer tous les challenges
+// 3. Récupérer tous les challenges sauf le free
 export const getAllChallenges = async () => {
-    return await db.select().from(challengeSchema);
+    return await db.select().from(challengeSchema).where(not(eq(challengeSchema.id, 1)));
 };
 
 // 4. Valider un challenge et attribuer des points
@@ -235,7 +235,7 @@ export const getTotalFactionPoints = async (factionId: number): Promise<number> 
     try {
       const result = await db
         .select({
-          totalPoints: sum(challengeValidationSchema.points) // Somme des points
+            totalPoints: sum(challengeValidationSchema.points) // Somme des points
            , // Filtre par l'ID de la faction
         })
         .from(challengeValidationSchema).where(eq(challengeValidationSchema.target_faction_id, factionId));

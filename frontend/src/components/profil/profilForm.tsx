@@ -5,12 +5,22 @@ import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { User } from "../../interfaces/user.interface";
 import Select from "react-select";
+import { FaDiscord } from "react-icons/fa";
 
 const branchOptions = [
   { value: "TC", label: "Tronc Commun" },
+  { value: "RT", label: "Réseaux et Télcommunications" },
+  { value: "ISI", label: "Informatique et Systèmes d'Information" },
+  { value: "GM", label: "Génie Mécanique" },
+  { value: "GI", label: "Génie Industriel" },
+  { value: "MTE", label: "Matériaux : Technologie et Economie" },
+  { value: "A2I", label: "Automatique & Informatique Industrielle" },
+  { value: "GI_APPR", label: "Génie Industriel en Apprentissage" },
+  { value: "GM_APPR", label: "Génie Mécanique en Apprentissage" },
+  { value: "SN_APPR", label: "Systeme Numérique en Apprentissage" },
   { value: "Branch", label: "Branche" },
   { value: "MM", label: "Mécanique et Matériaux" },
-  { value: "Master", label: "Master" },
+  { value : "MA", label: "Master"},
   { value: "RI", label: "Ressources International" },
 ];
 
@@ -89,6 +99,24 @@ export const ProfilForm = () => {
           <Button onClick={handleSubmit} disabled={loading} className="w-full">
             {loading ? "Enregistrement..." : "💾 Sauvegarder"}
           </Button>
+           <>
+          {user.discord_id ? (
+            <div className="w-full p-4 bg-green-100 text-green-800 rounded text-center">
+              ✅ Ton compte Discord est bien lié !
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                window.location.href =
+                  "https://discord.com/oauth2/authorize?client_id=1392214539868705029&response_type=code&redirect_uri=https%3A%2F%2Fintegration.utt.fr%2Fdiscord&scope=identify";
+              }}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2 text-white py-2 rounded"
+            >
+              <FaDiscord size={20} />
+              Lier mon compte Discord
+            </button>
+          )}
+        </>
         </CardContent>
       </Card>
     </div>

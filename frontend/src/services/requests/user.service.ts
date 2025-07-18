@@ -98,3 +98,13 @@ export const syncnewStudent = async (date: string) => {
     return error.response.data;
   }
 };
+
+export const syncDiscordUser = async(code : string) =>{
+  try{
+    const response = await api.post(`/discord/user/callback/`,{code});
+    return response.data
+
+  }catch(error : any){
+    return error.response.data;
+  }
+}

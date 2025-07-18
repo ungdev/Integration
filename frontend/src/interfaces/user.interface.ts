@@ -7,5 +7,6 @@ export interface User {
     majeur: boolean;
     branch: string;
     contact: string;
+    discord_id : string;
     
 }

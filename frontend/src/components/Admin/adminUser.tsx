@@ -28,10 +28,9 @@ const branchOptions = [
   { value: "GI_APPR", label: "Génie Industriel en Apprentissage" },
   { value: "GM_APPR", label: "Génie Mécanique en Apprentissage" },
   { value: "SN_APPR", label: "Systeme Numérique en Apprentissage" },
-  { value: "CV_ING", label: "CV ING (Trouvez moi ce que c'est svp)" },
   { value: "Branch", label: "Branche" },
   { value: "MM", label: "Mécanique et Matériaux" },
-  { valeu : "Master", label: "Master"},
+  { value : "MA", label: "Master"},
   { value: "RI", label: "Ressources International" },
 ];
 

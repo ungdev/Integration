@@ -28,7 +28,8 @@ export const getUserById = async (userId: number) => {
         majeur: userSchema.majeur,
         branch : userSchema.branch,
         contact : userSchema.contact,
-        permission : userSchema.permission
+        permission : userSchema.permission,
+        discord_id : userSchema.discord_id
       }
     ).from(userSchema).where(eq(userSchema.id, userId));
     return user[0]; 
@@ -102,7 +103,8 @@ export const getUsers = async () => {
         majeur: userSchema.majeur,
         branch : userSchema.branch,
         contact : userSchema.contact,
-        permission : userSchema.permission
+        permission : userSchema.permission,
+        discord_id : userSchema.discord_id
       }
     ).from(userSchema);
     return users; 
@@ -221,4 +223,6 @@ export const deleteUserById = async (userId: number) => {
     throw new Error('Erreur de base de données');
   }
 };
+
+
 

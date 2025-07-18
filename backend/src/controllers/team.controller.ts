@@ -149,7 +149,7 @@ export const teamDistribution = async (req: Request, res: Response) => {
 
         // Filtrer les étudiants qui ne sont pas dans la liste RI et qui ne sont pas déjà assignés à une équipe
         const filteredStudents = newStudents 
-                                  //.filter((student: any) => !RI_list.includes(student.email)) TO DO
+                                  .filter((student: any) => student.branch !== "RI") //RI
                                   .filter((student : any) => !userswithteams.includes(student.userId));
 
         // Filtrer les utilisateurs en fonction de la spécialité

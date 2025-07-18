@@ -25,3 +25,6 @@ export const api_utt_admis_url_ismajor = process.env.API_UTT_ADMIS_URL_ISMAJOR |
 export const zimbra_host = process.env.ZIMBRA_HOST || "default";
 export const zimbra_user = process.env.ZIMBRA_USER || "default";
 export const zimbra_password = process.env.ZIMBRA_PASSWORD || "default";
+export const discord_client_id = process.env.DISCORD_CLIENT_ID || "default";
+export const discord_client_secret = process.env.DISCORD_CLIENT_SECRET || "default";
+export const discord_redirect_uri = process.env.DISCORD_REDIRECT_URI || "default";

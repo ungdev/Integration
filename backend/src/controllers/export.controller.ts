@@ -18,7 +18,7 @@ export const exportAllDataToSheets = async (req: Request, res: Response) => {
 
     // 2. Mapping -> format pour Google Sheets (array de array)
     const usersValues = [
-      ["ID", "Prénom", "Nom", "Email", "Branche", "Permission", "Majeur", "Contact", "Team", "Faction"],
+      ["ID", "Prénom", "Nom", "Email", "Branche", "Permission", "Majeur", "Contact","Discord", "Team", "Faction"],
       ...userList.map(u => [
         u.id ?? 0,
         u.first_name ?? "No first name",
@@ -28,6 +28,7 @@ export const exportAllDataToSheets = async (req: Request, res: Response) => {
         u.permission ?? "No permissions",
         u.majeur ?? "Pas de données",
         u.contact ?? "No contact",
+        u.discord_id ?? "No discord ID",
         u.teamName ?? "No Team",
         u.factionName ?? "No faction"
       ])

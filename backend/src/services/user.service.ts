@@ -92,7 +92,7 @@ export const updateUserStudent = async(firstName: string, lastName: string, emai
       }
 }
 
-export const getUsers = async () => {
+export const getUsersAdmin = async () => {
   try {
     const users = await db.select(
       {
@@ -105,6 +105,22 @@ export const getUsers = async () => {
         contact : userSchema.contact,
         permission : userSchema.permission,
         discord_id : userSchema.discord_id
+      }
+    ).from(userSchema);
+    return users; 
+  } catch (err) {
+    console.error('Erreur lors de la récupération des utilisateurs ', err);
+    throw new Error('Erreur de base de données');
+  }
+};
+
+export const getUsers = async () => {
+  try {
+    const users = await db.select(
+      {
+        userId: userSchema.id,
+        firstName: userSchema.first_name,
+        lastName: userSchema.last_name,
       }
     ).from(userSchema);
     return users; 

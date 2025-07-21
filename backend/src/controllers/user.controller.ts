@@ -6,6 +6,18 @@ import bcrypt from 'bcryptjs';
 import * as randomstring from 'randomstring';
 import * as auth_service from "../services/auth.service"
 
+export const getUsersAdmin = async (req: Request, res: Response) => {
+    try {
+        const users = await user_service.getUsersAdmin();
+        Ok(res,{ data: users });
+        return;
+      } catch (error) {
+        console.error(error);
+        Error(res,{ msg: "Erreur interne lors de la récupération des utilisateurs avec leurs rôles." });
+        return;
+      }
+};
+
 export const getUsers = async (req: Request, res: Response) => {
     try {
         const users = await user_service.getUsers();

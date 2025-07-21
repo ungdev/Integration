@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import {
-  getUsers,
+  getUsersAdmin,
   updateUserByAdmin,
   deleteUserByAdmin,
   syncnewStudent,
@@ -46,7 +46,7 @@ export const AdminUser = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await getUsers();
+      const res = await getUsersAdmin();
       setUsers(res);
     };
     fetchUsers();

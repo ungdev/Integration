@@ -36,6 +36,20 @@ export const getUsers = async () => {
 
 }
 
+export const getUsersAdmin = async () => {
+  try{
+    const response = await api.get("/user/admin/getusers");
+    const users = response.data.data;
+  
+    return users;
+  
+  }
+  catch(error){
+    throw new Error("Error while getting Users" + error);
+  }
+
+}
+
 export const getUsersByPermission = async () => {
   try{
     const response = await api.get("/user/admin/getusersbypermission");

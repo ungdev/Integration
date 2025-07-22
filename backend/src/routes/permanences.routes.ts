@@ -16,7 +16,7 @@ permanenceRouter.get("/admin/permanences", checkRole("Admin"), permanenceControl
 permanenceRouter.get("/admin/users", checkRole("Admin"), permanenceController.getUsersInPermanence);
 permanenceRouter.post("/admin/add", checkRole("Admin"), permanenceController.addUserToPermanence);
 permanenceRouter.post("/admin/remove", checkRole("Admin"), permanenceController.removeUserToPermanence);
-permanenceRouter.post("/admin/importpermanences", upload.single("file"), permanenceController.uploadPermanencesCSV);
+permanenceRouter.post("/admin/importpermanences",checkRole("Admin"), upload.single("file"), permanenceController.uploadPermanencesCSV);
 
 
 // Student routes

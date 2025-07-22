@@ -1,7 +1,13 @@
 import api from '../api';
 
-export const getAllFactions = async () => {
+export const getAllFactionsAdmin = async () => {
   const res = await api.get("faction/admin/factions");
+
+  return res.data.data;
+};
+
+export const getAllFactionsUser = async () => {
+  const res = await api.get("faction/user/factions");
 
   return res.data.data;
 };

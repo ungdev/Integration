@@ -16,7 +16,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ permissionRequired, childre
     return <Navigate to="/" />;
   }
 
-  if (permissionRequired && !isAdmin()) {
+  if (!permissionRequired && !isAdmin()) {
     return <Navigate to="/" />;
   }
 

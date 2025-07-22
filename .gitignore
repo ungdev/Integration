@@ -10,4 +10,4 @@ backend/uploads/
 *.log
 *.env
 google_credentials.json
-
+package-lock.json

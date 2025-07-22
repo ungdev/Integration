@@ -11,7 +11,7 @@ export const Infos = () => {
           modules={[Pagination, Autoplay]}
           spaceBetween={0}
           pagination={{ clickable: true }}
-          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          autoplay={{ delay: 4000, disableOnInteraction: true }}
           loop={true}
           className="w-full"
           style={{ height: "100%", maxHeight: "600px" }}
@@ -80,6 +80,42 @@ export const Infos = () => {
             </p>
           </section>
         </div>
+      </div>
+
+      {/* Roulette des partenaires */}
+      <div className="bg-gray-100 py-12">
+        <h3 className="text-2xl sm:text-3xl font-bold text-center text-blue-700 mb-8">
+          Nos Partenaires
+        </h3>
+        <Swiper
+          modules={[Autoplay]}
+          spaceBetween={30}
+          slidesPerView={2}
+          breakpoints={{
+            640: { slidesPerView: 3 },
+            1024: { slidesPerView: 5 },
+          }}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          loop={true}
+          className="px-4"
+        >
+          {[
+            { logo: "CIC.jpg", name: "CIC", link: "https://www.cic.fr/fr/particuliers.html" },
+            { logo: "CVEC.jpg", name: "CVEC", link: "https://www.crous-reims.fr/le-crous/la-contribution-vie-etudiante-et-de-campus-cvec-une-demarche-obligatoire-et-utile-pour-les-etudiants/" },
+            { logo: "DAMONTE.jpg", name: "DAMONTE", link: "https://www.yves-damonte.fr/" },
+            { logo: "FONDATIONUTT.jpg", name: "Partenaire D", link: "https://partenaire-d.fr" }
+          ].map((partner, i) => (
+            <SwiperSlide key={i} className="flex items-center justify-center">
+              <a href={partner.link} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={`/img/${partner.logo}`}
+                  alt={`Logo ${partner.name}`}
+                  className="h-20 sm:h-24 object-contain grayscale hover:grayscale-0 transition duration-300"
+                />
+              </a>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </div>
   );

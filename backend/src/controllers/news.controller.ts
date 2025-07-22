@@ -60,7 +60,7 @@ export const publishNews = async (req: Request, res: Response) => {
     const html = template.compileTemplate({ title, description }, template.templateNotifyNews);
 
     const recipients = target === "Tous"
-      ? (await user_service.getUsers()).map(u => u.email)
+      ? (await user_service.getUsersAdmin()).map(u => u.email)
       : (await user_service.getUsersbyPermission(target)).map(u => u.email);
 
     if(recipients.length === 0){ 

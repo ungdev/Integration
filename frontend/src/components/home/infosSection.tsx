@@ -87,35 +87,47 @@ export const Infos = () => {
         <h3 className="text-2xl sm:text-3xl font-bold text-center text-blue-700 mb-8">
           Nos Partenaires
         </h3>
-        <Swiper
-          modules={[Autoplay]}
-          spaceBetween={30}
-          slidesPerView={2}
-          breakpoints={{
-            640: { slidesPerView: 3 },
-            1024: { slidesPerView: 5 },
-          }}
-          autoplay={{ delay: 3000, disableOnInteraction: false }}
-          loop={true}
-          className="px-4"
-        >
-          {[
-            { logo: "CIC.jpg", name: "CIC", link: "https://www.cic.fr/fr/particuliers.html" },
-            { logo: "CVEC.jpg", name: "CVEC", link: "https://www.crous-reims.fr/le-crous/la-contribution-vie-etudiante-et-de-campus-cvec-une-demarche-obligatoire-et-utile-pour-les-etudiants/" },
-            { logo: "DAMONTE.jpg", name: "DAMONTE", link: "https://www.yves-damonte.fr/" },
-            { logo: "FONDATIONUTT.jpg", name: "Partenaire D", link: "https://partenaire-d.fr" }
-          ].map((partner, i) => (
-            <SwiperSlide key={i} className="flex items-center justify-center">
-              <a href={partner.link} target="_blank" rel="noopener noreferrer">
-                <img
-                  src={`/img/${partner.logo}`}
-                  alt={`Logo ${partner.name}`}
-                  className="h-20 sm:h-24 object-contain grayscale hover:grayscale-0 transition duration-300"
-                />
-              </a>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+
+        <div className="max-w-screen-xl mx-auto px-4">
+          <Swiper
+            modules={[Autoplay]}
+            spaceBetween={30}
+            slidesPerView={2}
+            breakpoints={{
+              640: { slidesPerView: 3 },
+              1024: { slidesPerView: 5 },
+            }}
+            autoplay={{ delay: 3000, disableOnInteraction: false }}
+            loop={true}
+            className="px-4"
+          >
+            {[
+              { logo: "CIC.png", name: "CIC", link: "https://www.cic.fr/fr/particuliers.html" },
+              { logo: "CVEC.png", name: "CVEC", link: "https://www.crous-reims.fr/le-crous/la-contribution-vie-etudiante-et-de-campus-cvec-une-demarche-obligatoire-et-utile-pour-les-etudiants/" },
+              { logo: "DAMONTE.png", name: "DAMONTE", link: "https://www.yves-damonte.fr/" },
+              { logo: "FONDATIONUTT.png", name: "Fondation UTT", link: "https://fondation.utt.fr/" },
+              { logo: "POPEYE.png", name: "POPEYE", link: "https://popeye-troyes.fr/" },
+              { logo: "GRANDEST.png", name: "GRANDEST", link: "https://www.grandest.fr/vos-aides-regionales/jeunest-15-29-ans/" },
+              { logo: "UTT.png", name: "UTT", link: "https://utt.fr/" },
+              { logo: "SECUTT.png", name: "SECUTT", link: "https://ffssaube.fr/secutt/" },
+            ].map((partner, i) => (
+              <SwiperSlide key={i} className="flex items-center justify-center">
+                <a
+                  href={partner.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white rounded-xl shadow-md p-4 flex items-center justify-center w-40 h-28 sm:w-48 sm:h-32 transition-transform duration-300 hover:scale-105"
+                >
+                  <img
+                    src={`/img/${partner.logo}`}
+                    alt={`Logo ${partner.name}`}
+                    className="max-h-full max-w-full object-contain"
+                  />
+                </a>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
     </div>
   );

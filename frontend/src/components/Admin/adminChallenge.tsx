@@ -15,7 +15,7 @@ import {
 import { Challenge } from "../../interfaces/challenge.interface";
 import Select from "react-select";
 import { getAllTeams } from "../../services/requests/team.service";
-import { getAllFactions } from "../../services/requests/faction.service";
+import { getAllFactionsAdmin } from "../../services/requests/faction.service";
 import { getUsers } from "../../services/requests/user.service";
 import { Team } from "../../interfaces/team.interface";
 import { Faction } from "../../interfaces/faction.interface";
@@ -69,7 +69,7 @@ export const AdminChallengeForm = () => {
     try {
       const [teamRes, factionRes, userRes] = await Promise.all([
         getAllTeams(),
-        getAllFactions(),
+        getAllFactionsAdmin(),
         getUsers(),
       ]);
       setTeams(teamRes);
@@ -310,7 +310,7 @@ export const AdminChallengeAddPointsForm = () => {
     useEffect(() => {
       const fetchFactions = async () => {
         try {
-          const response = await getAllFactions();
+          const response = await getAllFactionsAdmin();
           setFactions(response);
         } catch (error) {
           console.error("Erreur lors de la récupération des factions", error);

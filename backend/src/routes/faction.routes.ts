@@ -11,5 +11,8 @@ factionRouter.get("/admin/faction",checkRole("Admin") ,factionController.getFact
 factionRouter.post("/admin/createfaction",checkRole("Admin") ,factionController.createFaction);
 factionRouter.delete("/admin/deletefaction",checkRole("Admin") ,factionController.deleteFaction);
 
+//Student Routes
+factionRouter.get("/user/factions",factionController.getFactions);
+
 
 export default factionRouter;

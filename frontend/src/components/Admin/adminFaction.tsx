@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Card } from "../ui/card";
-import { getAllFactions, createFaction, deleteFaction } from "../../services/requests/faction.service";
+import { getAllFactionsAdmin, createFaction, deleteFaction } from "../../services/requests/faction.service";
 import { Faction } from "../../interfaces/faction.interface";
 
 export const AdminFactionManagement = () => {
@@ -15,7 +15,7 @@ export const AdminFactionManagement = () => {
 
   const fetchFactions = async () => {
     try {
-      const factionList = await getAllFactions();
+      const factionList = await getAllFactionsAdmin();
       setFactions(factionList);
     } catch (err) {
       console.error("Erreur lors du chargement des factions", err);

@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Card } from "../ui/card";
 import { getAllChallenges, getFactionsPoints } from "../../services/requests/challenge.service";
 import { Challenge } from "../../interfaces/challenge.interface";
-import { getAllFactions } from "../../services/requests/faction.service";
+import { getAllFactionsUser } from "../../services/requests/faction.service";
 import { Faction } from "../../interfaces/faction.interface";
 
 export const ChallengeList = () => {
@@ -32,7 +32,7 @@ export const ChallengeList = () => {
 
   const fetchFactions = async () => {
     try {
-      const data = await getAllFactions();
+      const data = await getAllFactionsUser();
       setFactions(data);
     } catch (err) {
       console.error("Erreur lors du chargement des factions", err);
@@ -42,7 +42,7 @@ export const ChallengeList = () => {
   const fetchFactionPoints = async () => {
     try {
       const points: { [key: number]: number } = {};
-      const fetchedFactions = await getAllFactions();
+      const fetchedFactions = await getAllFactionsUser();
       await Promise.all(
         fetchedFactions.map(async (faction : Faction) => {
           const res = await getFactionsPoints(faction.factionId);

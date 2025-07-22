@@ -13,7 +13,7 @@ import {
   teamDistribution,
   getTeamFaction,
 } from "../../services/requests/team.service";
-import { getAllFactions } from "../../services/requests/faction.service";
+import { getAllFactionsAdmin } from "../../services/requests/faction.service";
 import { getUsers } from "../../services/requests/user.service";
 import { Team } from "../../interfaces/team.interface";
 import { Faction } from "../../interfaces/faction.interface";
@@ -66,7 +66,7 @@ export const AdminTeamManagement = () => {
     try {
       const [teamRes, factionRes, usersRes] = await Promise.all([
         getAllTeams(),
-        getAllFactions(),
+        getAllFactionsAdmin(),
         getUsers(),
       ]);
       setTeams(teamRes);

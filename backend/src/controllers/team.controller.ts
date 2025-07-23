@@ -72,6 +72,18 @@ export const getTeams = async (req: Request, res: Response) => {
     }
 };
 
+export const getTeamsWithfactions = async (req: Request, res: Response) => {
+
+    try {
+        const teams = await team_service.getTeamsAll();
+        Ok(res, { data: teams });
+        return;
+
+    } catch (error) {
+        Error(res, { msg: "Erreur lors de la récupération des équipes et de leur faction." });
+    }
+};
+
 export const modifyTeam = async (req: Request, res: Response) => {
     try {
         const { teamID, teamName, teamMembers, factionID, type } = req.body;

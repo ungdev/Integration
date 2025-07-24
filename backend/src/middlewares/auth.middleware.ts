@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
 import { Unauthorized } from "../utils/responses"; // Assurez-vous que cette fonction est bien définie
-import { jwtSecret } from "../utils/secret";
 import { decodeToken } from "../utils/token";
 
 

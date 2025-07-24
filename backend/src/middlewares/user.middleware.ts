@@ -1,24 +1,41 @@
-import { Request, Response, NextFunction } from 'express';
-import { Unauthorized } from '../utils/responses';
+import { Request, Response, NextFunction } from "express";
+import { Unauthorized } from "../utils/responses"; // adapte selon ton projet
 
-// Middleware pour vérifier le rôle
-export const checkRole = (requiredRole: string) => {
+export const checkRole = (
+  requiredPermission?: string,
+  requiredRoles?: string[]
+) => {
   return (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
 
-    if (!req.user) {
-       Unauthorized(res,{ msg: 'Accès non autorisé' });
-       return;
+    if (!user) {
+      Unauthorized(res, { msg: "Accès non autorisé" });
+      return;
     }
-    const user = req.user
+
     try {
-      if (user.userPermission !== requiredRole && user.userPermission !== 'Admin'){
-         Unauthorized(res,{ msg: 'Accès interdit, rôle insuffisant' });
-         return;
+      const isAdmin = user.userPermission === "Admin";
+
+      const hasPermission =
+        !requiredPermission || user.userPermission === requiredPermission;
+
+      const hasRole =
+        !requiredRoles ||
+        (Array.isArray(user.userRoles) &&
+          user.userRoles.some((role: { roleName: string }) =>
+            requiredRoles.includes(role.roleName)
+          ));
+
+      if (!isAdmin && !(hasPermission || hasRole)) {
+        Unauthorized(res, {
+          msg: "Accès interdit, rôle ou permission insuffisants",
+        });
+        return;
       }
+
       next();
     } catch (err) {
-       Unauthorized(res,{ msg: 'Token invalide ou expiré' });
-       return;
+      Unauthorized(res, { msg: "Token invalide ou expiré" });
     }
   };
 };

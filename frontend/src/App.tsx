@@ -53,18 +53,21 @@ const App: React.FC = () => {
         <Route path="/News" element={<ProtectedRoute><NewsPage /></ProtectedRoute>} />
         <Route path="/Discord" element={<ProtectedRoute><DiscordPage /></ProtectedRoute>} />
 
-        {/* Etudiant et Admin */}
-        <Route path="/Shotgun" element={<PrivateRoute permissionRequired={'Student'}><ShotgunPage /></PrivateRoute>} />
-        <Route path="/Permanences" element={<PrivateRoute permissionRequired={'Student'}><PermPage /></PrivateRoute>} />
+        {/* Étudiant et Admin */}
+        <Route path="/Shotgun" element={<PrivateRoute permissionRequired="Student"><ShotgunPage /></PrivateRoute>} />
+        <Route path="/Permanences" element={<PrivateRoute permissionRequired="Student"><PermPage /></PrivateRoute>} />
 
+        {/* ResposCE et Admin */}
+        <Route path="/admin/teams" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageTeam /></PrivateRoute>} />
+        <Route path="/admin/factions" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageFaction /></PrivateRoute>} />
+
+        {/* Arbitre et Admin*/}
+        <Route path="/admin/challenge" element={<PrivateRoute permissionRequired="Admin" roleRequired="Arbitre"><AdminPageChall /></PrivateRoute>} />
         {/* Admin uniquement */}
         <Route path="/admin/roles" element={<AdminRoute><AdminPageRole /></AdminRoute>} />
-        <Route path="/admin/teams" element={<AdminRoute><AdminPageTeam /></AdminRoute>} />
-        <Route path="/admin/factions" element={<AdminRoute><AdminPageFaction /></AdminRoute>} />
         <Route path="/admin/shotgun" element={<AdminRoute><AdminPageShotgun /></AdminRoute>} />
         <Route path="/admin/export-import" element={<AdminRoute><AdminPageExport /></AdminRoute>} />
         <Route path="/admin/permanences" element={<AdminRoute><AdminPagePerm /></AdminRoute>} />
-        <Route path="/admin/challenge" element={<AdminRoute><AdminPageChall /></AdminRoute>} />
         <Route path="/admin/email" element={<AdminRoute><AdminPageEmail /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminPageUser /></AdminRoute>} />
         <Route path="/admin/news" element={<AdminRoute><AdminPageNews /></AdminRoute>} />

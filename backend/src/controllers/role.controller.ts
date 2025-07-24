@@ -134,7 +134,7 @@ export const getUserRoles = async (req: Request, res: Response) => {
         return;
      }
 
-      const userRoles = await role_service.getUserRoles(userId);
+      const userRoles = await role_service.getUserRoles(Number(userId));
       Ok(res,{ data: userRoles });
       return;
     } catch (error) {

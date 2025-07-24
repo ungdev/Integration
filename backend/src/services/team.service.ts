@@ -5,6 +5,7 @@ import { userTeamsSchema } from "../schemas/Relational/userteams.schema";
 import { teamFactionSchema } from "../schemas/Relational/teamfaction.schema";
 import { userSchema } from "../schemas/Basic/user.schema";
 import { getFaction } from "./faction.service";
+import { factionSchema } from "../schemas/Basic/faction.schema";
 
 export const createTeam = async (teamName: string, members: number[]) => {
 
@@ -146,24 +147,30 @@ export const getAllTeamsWithUsers = async () => {
       teamId: teamSchema.id,
       teamName: teamSchema.name,
       teamType: teamSchema.type,
+      teamFaction : factionSchema.name,
       userId: userSchema.id,
       firstName: userSchema.first_name,
       lastName: userSchema.last_name,
       discordId: userSchema.discord_id,
+      permission: userSchema.permission,
     })
     .from(teamSchema)
     .innerJoin(userTeamsSchema, eq(teamSchema.id, userTeamsSchema.team_id))
-    .innerJoin(userSchema, eq(userSchema.id, userTeamsSchema.user_id));
+    .innerJoin(userSchema, eq(userSchema.id, userTeamsSchema.user_id))
+    .innerJoin(teamFactionSchema, eq(teamSchema.id, teamFactionSchema.team_id)) 
+    .innerJoin(factionSchema, eq(factionSchema.id, teamFactionSchema.faction_id)); 
 
   const teamsMap = new Map<number, {
     id: number;
     name: string;
     type: string;
+    faction : string;
     users: Array<{
       id: number;
       firstName: string;
       lastName: string;
       discordId: string;
+      permission: string;
     }>;
   }>();
 
@@ -173,6 +180,7 @@ export const getAllTeamsWithUsers = async () => {
         id: row.teamId,
         name: row.teamName,
         type: row.teamType,
+        faction: row.teamName,
         users: [],
       });
     }
@@ -182,6 +190,7 @@ export const getAllTeamsWithUsers = async () => {
       firstName: row.firstName,
       lastName: row.lastName,
       discordId: row.discordId,
+      permission: row.permission
     });
   }
 

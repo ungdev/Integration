@@ -8,7 +8,7 @@ import { getUsers } from "../../services/requests/user.service";
 
 // Liste des rôles disponibles
 const roles = [
-  "Animation", "Bouffe", "Cahier de vacances", "Communication & Graphisme", 
+  "Animation", "Arbitre", "Bouffe", "Cahier de vacances", "Communication & Graphisme", 
   "Dev / Info", "Déco", "Défis TC", "Faux amphi", "Faux discours de rentrée", 
   "Logistique", "Médiatik", "Parrainage", "Partenariat", "Prévention", 
   "Rallye", "Respo CE", "Son et lumière", "Soutenabilité", 
@@ -101,7 +101,7 @@ export const AdminRoleManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
-  const [userRoles, setUserRoles] = useState<Role[]>([]);
+  const [userRoles, setUserRoles] = useState<{ roleId: number; roleName: string }[]>([]);
   const [newRoles, setNewRoles] = useState<number[]>([]);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -126,11 +126,8 @@ export const AdminRoleManagement = () => {
         return;
       }
       try {
-        const rawUserRoles = await getUsersRoles(selectedUser); // [{ roleId: 1 }, ...]
-        const completeUserRoles = roles.filter((role: { roleId: number; }) =>
-          rawUserRoles.some((ur: { roleId: number }) => ur.roleId === role.roleId)
-        );
-        setUserRoles(completeUserRoles);
+        const rawUserRoles = await getUsersRoles(selectedUser); // [{ roleId, roleName }]
+        setUserRoles(rawUserRoles);
       } catch (error) {
         console.error("Erreur récupération rôles :", error);
       }
@@ -144,6 +141,7 @@ export const AdminRoleManagement = () => {
       await addRolesToUser(selectedUser, newRoles);
       setMessage("Rôles ajoutés avec succès !");
       setSelectedUser(null); // Reset
+      setNewRoles([]);
     } catch {
       setMessage("Erreur lors de l'ajout des rôles.");
     }
@@ -176,7 +174,7 @@ export const AdminRoleManagement = () => {
           <div className="mb-6">
             <label className="block text-sm font-medium mb-2">Utilisateur</label>
             <Select
-              options={users.map(user => ({
+              options={users.map(user  => ({
                 value: user.userId,
                 label: `${user.firstName} ${user.lastName}`,
               }))}
@@ -203,7 +201,7 @@ export const AdminRoleManagement = () => {
                 {userRoles.length > 0 ? (
                   userRoles.map(role => (
                     <li key={role.roleId} className="flex justify-between items-center bg-gray-100 p-2 rounded">
-                      <span>{role.name}</span>
+                      <span>{role.roleName}</span>
                       <button
                         className="text-sm text-red-600 hover:underline"
                         onClick={() => handleRemoveRole(role.roleId)}
@@ -254,4 +252,3 @@ export const AdminRoleManagement = () => {
     </div>
   );
 };
-

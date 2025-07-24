@@ -1,4 +1,6 @@
 export interface DecodedToken {
     userId: number;
-    userRole: string;
+    userEmail : String;
+    userPermission?: string;
+    userRoles?: { roleName: string }[];
   }

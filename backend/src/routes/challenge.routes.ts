@@ -5,14 +5,14 @@ import { checkRole } from "../middlewares/user.middleware";
 const challengeRouter = express.Router();
 
 // Admin routes
-challengeRouter.post("/admin/challenge", checkRole("Admin"), challengeController.createChallenge);
-challengeRouter.delete("/admin/delete", checkRole("Admin"), challengeController.deleteChallenge);
-challengeRouter.put("/admin/updatechallenge", checkRole("Admin"), challengeController.updateChallenge);
-challengeRouter.post("/admin/validate", checkRole("Admin"), challengeController.validateChallenge);
-challengeRouter.post("/admin/unvalidate", checkRole("Admin"), challengeController.unvalidateChallenge);
-challengeRouter.get("/admin/challenges", checkRole("Admin"), challengeController.getAllChallenges);
-challengeRouter.get("/admin/validatedchallenges", checkRole("Admin"), challengeController.getValidatedChallenges);
-challengeRouter.post("/admin/assignpoints", checkRole("Admin"), challengeController.addPointsToFaction); 
+challengeRouter.post("/admin/challenge", checkRole("Admin", ["Arbitre"]), challengeController.createChallenge);
+challengeRouter.delete("/admin/delete", checkRole("Admin", ["Arbitre"]), challengeController.deleteChallenge);
+challengeRouter.put("/admin/updatechallenge", checkRole("Admin",["Arbitre"]), challengeController.updateChallenge);
+challengeRouter.post("/admin/validate", checkRole("Admin", ["Arbitre"]), challengeController.validateChallenge);
+challengeRouter.post("/admin/unvalidate",checkRole("Admin", ["Arbitre"]), challengeController.unvalidateChallenge);
+challengeRouter.get("/admin/challenges", checkRole("Admin", ["Arbitre"]), challengeController.getAllChallenges);
+challengeRouter.get("/admin/validatedchallenges", checkRole("Admin", ["Arbitre"]), challengeController.getValidatedChallenges);
+challengeRouter.post("/admin/assignpoints", checkRole("Admin", ["Arbitre"]), challengeController.addPointsToFaction); 
 
 
 // User routes

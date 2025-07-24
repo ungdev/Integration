@@ -117,6 +117,21 @@ export const getTeamUsers = async (req: Request, res: Response) => {
 
 }
 
+export const getAllTeamsWithUsers = async (req: Request, res: Response) => {
+
+    try {
+        const teamUsers = await team_service.getAllTeamsWithUsers();
+        Ok(res,{ data: teamUsers });
+        return;
+        } catch (error) {
+        console.error(error);
+        Error(res,{ msg: "Erreur interne lors de la récupération des utilisateurs avec leurs rôles." });
+        return;
+    
+    }
+
+}
+
 export const getTeamFaction = async (req: Request, res: Response) => {
 
     const {teamId} = req.query;

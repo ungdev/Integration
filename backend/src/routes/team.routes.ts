@@ -7,7 +7,7 @@ const teamRouter = express.Router();
 
 
 //User routes
-teamRouter.post("/user/create",checkRole("Student") ,teamController.createNewTeam);
+teamRouter.post("/user/create",checkRole("Student", []) ,teamController.createNewTeam);
 
 //Admin Routes
 teamRouter.post("/admin/createlight",checkRole("Admin", ["Respo CE"]) ,teamController.createNewTeamLight);
@@ -18,7 +18,7 @@ teamRouter.get("/admin/teamswithusers",checkRole("Admin", ["Respo CE"]) ,teamCon
 teamRouter.put("/admin/modify",checkRole("Admin", ["Respo CE"]) ,teamController.modifyTeam);
 teamRouter.get("/admin/teamusers",checkRole("Admin", ["Respo CE"]) ,teamController.getTeamUsers);
 teamRouter.delete("/admin/delete",checkRole("Admin", ["Respo CE"]) ,teamController.deleteTeam);
-teamRouter.post('/admin/distributeteam',checkRole("Admin"), teamController.teamDistribution);
+teamRouter.post('/admin/distributeteam',checkRole("Admin", []), teamController.teamDistribution);
 
 
 export default teamRouter;

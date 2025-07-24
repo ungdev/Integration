@@ -15,7 +15,7 @@ export const checkRole = (
 
     try {
       const isAdmin = user.userPermission === "Admin";
-
+      
       const hasPermission =
         !requiredPermission || user.userPermission === requiredPermission;
 

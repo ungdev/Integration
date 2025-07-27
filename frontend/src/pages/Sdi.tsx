@@ -3,7 +3,7 @@ import { SdiSection  } from "../components/WEI_SDI/sdiSection";
 
 
 export const SdiPage = () => {
-
+    
   return(
     <div>
         <Navbar />

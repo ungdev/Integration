@@ -25,7 +25,7 @@ import { ParrainnagePage } from './pages/Parrainnage';
 import { RegisterPage } from './pages/Register';
 import { ResetPasswordPage } from './pages/ResetPassword'
 import { WeiPage } from './pages/Wei';
-import { SdiPage } from './pages/SDI';
+import { SdiPage } from './pages/Sdi';
 import { NewsPage } from './pages/News';
 import {DiscordPage} from './pages/Discord';
 import PrivateRoute from './components/utils/privateroute';

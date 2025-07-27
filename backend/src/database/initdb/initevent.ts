@@ -6,6 +6,6 @@ export const initEvent = async () => {
   
     // Si il n'y a pas de ligne existante, insérer une nouvelle ligne
     if (existingEvent.length === 0) {
-      await db.insert(eventSchema).values({ pre_registration_open: false, shotgun_open: false }).onConflictDoNothing();
+      await db.insert(eventSchema).values({ pre_registration_open: false, shotgun_open: false, sdi_open: false, wei_open: false }).onConflictDoNothing();
     }
   };

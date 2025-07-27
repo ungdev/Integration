@@ -8,7 +8,7 @@ export const checkShotgunStatus = async () => {
     }catch(error){
         throw new Error("Error while fecthing Shotgun Statut" + error);
     }
-  };
+};
 
 
 export const checkPreRegisterStatus = async () => {
@@ -18,6 +18,26 @@ export const checkPreRegisterStatus = async () => {
         return response.data.data;
     }catch(error){
         throw new Error("Error while fecthing Pre-Registration Statut" + error);
+    }
+};
+
+export const checkSDIStatus = async () => {
+
+    try{
+        const response = await api.get("/event/user/sdistatus");
+        return response.data.data;
+    }catch(error){
+        throw new Error("Error while fecthing Shotgun Statut" + error);
+    }
+};
+
+export const checkWEIStatus = async () => {
+
+    try{
+        const response = await api.get("/event/user/weistatus");
+        return response.data.data;
+    }catch(error){
+        throw new Error("Error while fecthing Shotgun Statut" + error);
     }
 };
 
@@ -40,7 +60,7 @@ export const toggleShotgun = async (shotgunOpen: boolean) => {
     
 };
 
-  export const togglePreRegistration = async (preRegistrationOpen: boolean) => {
+export const togglePreRegistration = async (preRegistrationOpen: boolean) => {
 
     try{
         const response = await api.post(`event/admin/preregistrationtoggle`, { preRegistrationOpen});
@@ -48,6 +68,30 @@ export const toggleShotgun = async (shotgunOpen: boolean) => {
     }
     catch(error){
         throw new Error("Error while toggle Pre-Resgitration" + error);
+    }
+    
+};
+
+export const toggleSDI = async (sdiOpen: boolean) => {
+
+    try{
+        const response = await api.post(`event/admin/sditoggle`, { sdiOpen});
+        return response.data;
+    }
+    catch(error){
+        throw new Error("Error while toggle SDI" + error);
+    }
+    
+};
+
+export const toggleWEI = async (weiOpen: boolean) => {
+
+    try{
+        const response = await api.post(`event/admin/weitoggle`, { weiOpen});
+        return response.data;
+    }
+    catch(error){
+        throw new Error("Error while toggle WEI" + error);
     }
     
 };

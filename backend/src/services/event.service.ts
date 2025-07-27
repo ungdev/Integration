@@ -55,3 +55,15 @@ export const getAllTeamShotguns = async () => {
       .from(teamShotgunSchema)
       .leftJoin(teamSchema, eq(teamShotgunSchema.team_id, teamSchema.id));
 };
+
+export const updateSDIStatus = async ( sdiOpen: boolean) => {
+    return await db.update(eventSchema)
+      .set({ sdi_open: sdiOpen })
+      .returning();
+};
+
+export const updateWEIStatus = async ( weiOpen: boolean) => {
+    return await db.update(eventSchema)
+      .set({ wei_open: weiOpen })
+      .returning();
+};

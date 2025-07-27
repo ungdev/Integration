@@ -8,8 +8,8 @@ const eventRouter = express.Router();
 // User routes
 eventRouter.get("/user/shotgunstatus",checkRole("Student",[]), eventController.checkShotgunStatus);
 eventRouter.get("/user/preregisterstatus",checkRole("Student",[]), eventController.checkPreRegisterStatus);
-eventRouter.get("/user/sdistatus",checkRole("Student",[]), eventController.checkSDIStatus);
-eventRouter.get("/user/weistatus",checkRole("Student",[]), eventController.checkWEIStatus);
+eventRouter.get("/user/sdistatus", eventController.checkSDIStatus);
+eventRouter.get("/user/weistatus", eventController.checkWEIStatus);
 eventRouter.post("/user/shotgunattempt",checkRole("Student",[]), eventController.shotgunAttempt);
 
 

@@ -1,5 +1,5 @@
 import { AdminRoleManagement, AdminRolePreferences } from "../components/Admin/adminRole";
-import { AdminShotgun } from "../components/Admin/adminEvent";
+import { AdminEvents } from "../components/Admin/adminEvent";
 import { AdminTeamManagement, DistributeTeam } from "../components/Admin/adminTeam";  // Importer le composant
 import { AdminLayout } from "../components/Admin/adminLayout";
 import { AdminExportConnect, ImportPermCSV } from "../components/Admin/adminExportImport";
@@ -54,12 +54,12 @@ export const AdminPageRole: React.FC = () => {
   );
 };
 
-export const AdminPageShotgun: React.FC = () => {
+export const AdminPageEvents: React.FC = () => {
   return (
     <AdminLayout allowedRoles={["Admin"]}>
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl bg-white shadow p-6">
-          <AdminShotgun />
+          <AdminEvents />
         </section>
       </div>
     </AdminLayout>

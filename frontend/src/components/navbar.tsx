@@ -75,7 +75,7 @@ export const Navbar = () => {
     ["Roles", "/admin/roles"],
     ["Teams", "/admin/teams"],
     ["Factions", "/admin/factions"],
-    ["Shotgun", "/admin/shotgun"],
+    ["Events", "/admin/events"],
     ["Permanences", "/admin/permanences"],
     ["Challenge", "/admin/challenge"],
     ["Export / Import", "/admin/export-import"],
@@ -146,6 +146,9 @@ export const Navbar = () => {
                   <Link to="/Wei" className="block px-4 py-2 hover:bg-gray-100">
                     WEI
                   </Link>
+                  <Link to="/SDI" className="block px-4 py-2 hover:bg-gray-100">
+                    SDI
+                  </Link>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -209,7 +212,8 @@ export const Navbar = () => {
               <MenuItem to="/News" label="Mes Actus" />
               {(isStudent || isAdmin) && <MenuItem to="/Permanences" label="Permanences" />}
               {(isStudent || isAdmin) && <MenuItem to="/Shotgun" label="Shotgun" />}
-              <MenuItem to="/Wei" label="WEI" />
+              <MenuItem to="/WEI" label="WEI" />
+              <MenuItem to="/SDI" label="SDI" />
               {(isAdmin || isRespoCE || isArbitre) && (
                 <>
                   <span className="mt-2 font-semibold text-white">Admin</span>

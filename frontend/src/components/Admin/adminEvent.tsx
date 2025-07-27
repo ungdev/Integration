@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { toggleShotgun, togglePreRegistration, checkShotgunStatus, checkPreRegisterStatus } from "../../services/requests/event.service";
+import { toggleShotgun, togglePreRegistration, checkShotgunStatus, checkPreRegisterStatus, checkSDIStatus, checkWEIStatus, toggleSDI, toggleWEI } from "../../services/requests/event.service";
 import { Button } from "../ui/button";
 
-export const AdminShotgun = () => {
+export const AdminEvents = () => {
   const [preRegistrationOpen, setPreRegistrationOpen] = useState(false);
   const [shotgunOpen, setShotgunOpen] = useState(false);
+  const [sdiOpen, setSdiOpen] = useState(false);
+  const [weiOpen, setWeiOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingStatuses, setLoadingStatuses] = useState(true);
 
@@ -14,9 +16,14 @@ export const AdminShotgun = () => {
       try {
         const preRegStatus = await checkPreRegisterStatus();
         const shotgunStatus = await checkShotgunStatus();
-        
+        const sdiStatus = await checkSDIStatus();
+        const weiStatus = await checkWEIStatus();
+
         setPreRegistrationOpen(preRegStatus);
         setShotgunOpen(shotgunStatus);
+        setSdiOpen(sdiStatus);
+        setWeiOpen(weiStatus);
+
       } catch (error) {
         alert("Erreur lors de la récupération des statuts.");
       } finally {
@@ -45,6 +52,32 @@ export const AdminShotgun = () => {
       await toggleShotgun(!shotgunOpen);
       setShotgunOpen(!shotgunOpen);
       alert("Shotgun mis à jour !");
+    } catch (error : any) {
+      alert(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggleSDI = async () => {
+    setLoading(true);
+    try {
+      await toggleSDI(!sdiOpen);
+      setSdiOpen(!sdiOpen);
+      alert("SDI mis à jour !");
+    } catch (error : any) {
+      alert(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggleWEI = async () => {
+    setLoading(true);
+    try {
+      await toggleWEI(!weiOpen);
+      setWeiOpen(!weiOpen);
+      alert("WEI mis à jour !");
     } catch (error : any) {
       alert(error.response.data.message);
     } finally {
@@ -93,6 +126,36 @@ export const AdminShotgun = () => {
             } p-2 rounded-md`}
           >
             {shotgunOpen ? "Désactiver" : "Activer"}
+          </Button>
+        </div>
+
+        {/* SDI */}
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
+          <span className="text-sm text-gray-600">SDI</span>
+          <Button 
+            variant={sdiOpen ? "destructive" : "default"} 
+            onClick={handleToggleSDI}
+            disabled={loading}
+            className={`transition-colors duration-300 ${
+              sdiOpen ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-blue-500 text-white hover:bg-blue-600'
+            } p-2 rounded-md`}
+          >
+            {sdiOpen ? "Désactiver" : "Activer"}
+          </Button>
+        </div>
+
+        {/* WEI */}
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
+          <span className="text-sm text-gray-600">WEI</span>
+          <Button 
+            variant={weiOpen ? "destructive" : "default"} 
+            onClick={handleToggleWEI}
+            disabled={loading}
+            className={`transition-colors duration-300 ${
+              weiOpen ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-blue-500 text-white hover:bg-blue-600'
+            } p-2 rounded-md`}
+          >
+            {weiOpen ? "Désactiver" : "Activer"}
           </Button>
         </div>
       </div>

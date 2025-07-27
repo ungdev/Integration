@@ -83,8 +83,8 @@ export const AuthForm = () => {
 
     return (
         <div
-            className="relative min-h-screen flex items-center justify-center bg-cover bg-center"
-            style={{ backgroundImage: "url('img/background.png')" }}
+            className="relative min-h-screen flex items-center justify-center bg-no-repeat bg-cover bg-center"
+            style={{ backgroundImage: "url('img/bg_25.jpg')" }}
         >
             <div className="absolute inset-0 bg-black opacity-50"></div>
             <div className="z-10 w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg">

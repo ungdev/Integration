@@ -280,17 +280,28 @@ export const templateWelcome = `
 </html>`;
 
 export const templateNotifyNews = `
-  <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #f9f9f9; padding: 20px; border-radius: 8px;">
-    <h2 style="color: #e74160; font-size: 20px; margin-bottom: 10px;">📢 Nouvelle actu disponible !</h2>
-    <h3 style="margin: 10px 0; font-size: 18px;">{{title}}</h3>
-    <p style="margin: 10px 0; line-height: 1.6;">{{description}}</p>
-    <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;" />
-    <p style="margin: 0; color: #555;">📍 Pour plus d'infos, rends-toi sur le site dans l'onglet <strong>Mes actus</strong>.</p>
-    <p style="margin-top: 20px;">
-      <a href="https://integration.utt.fr" style="display: inline-block; padding: 10px 16px; background-color: #e74160; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold;">Voir le site</a>
-    </p>
+  <div style="background-color: #f0f0f0; padding: 30px;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 30px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; color: #333; text-align: center;">
+      
+      <!-- Logo centré -->
+      <div style="margin-bottom: 20px;">
+        <img src="https://integration.utt.fr/img/logo_original.png" alt="Logo Intégration UTT" style="width: 120px; height: auto; margin: 0 auto; display: block;">
+        <h1 style="font-size: 24px; color: #e74160; margin-top: 10px;">Intégration UTT</h1>
+      </div>
+
+      <!-- Contenu -->
+      <h2 style="color: #e74160; font-size: 20px; margin-bottom: 10px;">🗞️ Nouvelle actu !</h2>
+      <h3 style="margin: 10px 0; font-size: 18px;">{{title}}</h3>
+      <p style="margin: 10px 0; color: #555;">👉 Rendez-vous sur le site de l'inté dans l'onglet <strong>News</strong> pour en savoir plus.</p>
+
+      <!-- Bouton -->
+      <p style="margin-top: 20px;">
+        <a href="https://integration.utt.fr" style="display: inline-block; padding: 12px 20px; background-color: #e74160; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold;">Accéder au site</a>
+      </p>
+    </div>
   </div>
 `;
+
 
 
 // Fonction pour compiler le template

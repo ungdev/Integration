@@ -5,6 +5,7 @@ import { decodeToken } from "../utils/token";
 
 export const authenticateUser = (req: Request, res: Response, next: NextFunction) => {
     try {
+        
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {

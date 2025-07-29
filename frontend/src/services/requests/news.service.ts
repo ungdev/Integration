@@ -6,10 +6,17 @@ export const getAllNews = async () => {
   return res.data.data;
 };
 
-export const createNews = async (formData : any) => {
-    const res = await api.post("/news/admin/createnews", formData);
-  
-    return res.data;
+export const createNews = async (formData: FormData) => {
+
+  const response = await api.post("/news/admin/createnews", formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log(response.data)
+  return response.data;
 };
 
 export const publishNews = async (news : any) => {
@@ -36,16 +43,15 @@ export const deleteNews = async (newsId : number) => {
   return res.data;
 };
 
-export const updateNews = async (data: {
-    id: number;
-    title: string;
-    description: string;
-    type: string;
-    target: string;
-  }) => {
-    const res = await api.put("/news/admin/updatenews", data);
-    return res.data;
-  };
+export const updateNews = async (formData: FormData) => {
+  const response = await api.post("/news/admin/updatenews", formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  return response.data;
+};
   
 
 

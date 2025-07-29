@@ -16,7 +16,7 @@ export const MyNews = () => {
 
   const fetchNews = async () => {
     try {
-      const response = await getAllPublished()
+      const response = await getAllPublished();
       setActus(response.data);
     } catch (err) {
       alert("Erreur lors du chargement des actus." + err);
@@ -67,6 +67,13 @@ export const MyNews = () => {
               key={news.id}
               className={`border rounded-lg p-5 shadow-sm ${typeColors[news.type] || "bg-gray-100 text-gray-800"}`}
             >
+              {news.image_url && (
+                <img
+                  src={news.image_url}
+                  alt={news.title}
+                  className="w-full h-auto rounded mb-4"
+                />
+              )}
               <h3 className="text-xl font-bold mb-2">{news.title}</h3>
               <p className="text-sm mb-2">{news.description}</p>
               <p className="text-xs text-gray-500 italic">
@@ -79,3 +86,4 @@ export const MyNews = () => {
     </div>
   );
 };
+

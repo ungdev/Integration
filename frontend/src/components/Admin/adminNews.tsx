@@ -15,6 +15,8 @@ export const AdminNews = () => {
   const [newsList, setNewsList] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -47,27 +49,53 @@ export const AdminNews = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleCreateOrUpdate = async () => {
-    try {
-      if (editingId) {
-        const response = await updateNews({ id: editingId, ...formData });
-        alert(response.message);
-      } else {
-        const response = await createNews(formData);
-        alert(response.message);
-      }
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  }
+};
 
-      resetForm();
-      fetchNews();
-    } catch (err: any) {
-      alert(err.response?.data?.msg || "Erreur lors de la sauvegarde");
+const handleCreateOrUpdate = async () => {
+  try {
+    const formDataToSend = new FormData();
+
+    if (selectedFile) {
+      formDataToSend.append("file", selectedFile);
     }
-  };
+
+    formDataToSend.append("title", formData.title);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("type", formData.type);
+    formDataToSend.append("published", String(formData.published));
+    formDataToSend.append("target", formData.target);
+
+    if (editingId) {
+      formDataToSend.append("id", String(editingId));
+      const response = await updateNews(formDataToSend); // ← doit accepter FormData
+      alert(response.message);
+    } else {
+      const response = await createNews(formDataToSend); // ← doit accepter FormData
+      alert(response.message);
+    }
+
+    resetForm();
+    fetchNews();
+  } catch (err: any) {
+    console.log(err);
+    alert(err.response?.data?.msg || "Erreur lors de la sauvegarde");
+  }
+};
 
   const handleDeleteNews = async (newsId: number) => {
+    const confirmDelete = window.confirm("⚠️ Es-tu sûr de vouloir supprimer cette actu ?");
+    if (!confirmDelete) return;
+
     try {
       const response = await deleteNews(newsId);
       alert(response.message);
+      resetForm();
       fetchNews();
     } catch (err) {
       console.error("Erreur lors de la suppression de l'actu", err);
@@ -75,6 +103,9 @@ export const AdminNews = () => {
   };
 
   const handlePublish = async (news: News) => {
+    const confirmPublish = window.confirm("✅ Confirmer la publication de cette actu ?");
+    if (!confirmPublish) return;
+
     try {
       const response = await publishNews(news);
       alert(response.message);
@@ -104,7 +135,13 @@ export const AdminNews = () => {
       published: false,
       target: "Tous",
     });
+    setSelectedFile(null);
+    setPreviewUrl(null);
     setEditingId(null);
+  };
+
+  const handleRemoveImage = () => {
+  setPreviewUrl(null);
   };
 
   return (
@@ -127,6 +164,50 @@ export const AdminNews = () => {
           onChange={handleInputChange}
           placeholder="Contenu de l'actu"
         />
+
+        {/* Image upload amélioré */}
+        <div className="flex flex-col items-start gap-2">
+          <Button
+            type="button"
+            onClick={() => document.getElementById("fileInput")?.click()}
+            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold"
+          >
+            Choisir une image
+          </Button>
+
+          <input
+            id="fileInput"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="hidden"
+          />
+
+          {selectedFile && (
+            <p className="text-sm text-gray-600">{selectedFile.name}</p>
+          )}
+
+          {previewUrl && (
+            <div className="flex flex-col items-center mt-2">
+              <div className="w-48 h-48 rounded-xl overflow-hidden shadow-lg border border-gray-300">
+                <img
+                  src={previewUrl}
+                  alt="Aperçu"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleRemoveImage}
+                className="mt-2"
+              >
+                Retirer l’image
+              </Button>
+            </div>
+          )}
+        </div>
+
         <select
           name="type"
           value={formData.type}
@@ -137,6 +218,7 @@ export const AdminNews = () => {
           <option value="warning">Avertissement</option>
           <option value="event">Événement</option>
         </select>
+
         <select
           name="target"
           value={formData.target}
@@ -145,9 +227,10 @@ export const AdminNews = () => {
         >
           <option value="Tous">Tous</option>
           <option value="Nouveau">Nouveau</option>
-          <option value="Student">Student</option>
+          <option value="Student">Étudiant</option>
           <option value="Admin">Admin</option>
         </select>
+
         <div className="flex gap-2">
           <Button onClick={handleCreateOrUpdate}>
             {editingId ? "Valider la modification" : "Créer l'actu"}
@@ -176,6 +259,13 @@ export const AdminNews = () => {
                 <div>
                   <p className="font-bold">{news.title}</p>
                   <p className="text-sm text-gray-600">{news.description}</p>
+                  {news.image_url && (
+                  <img
+                    src={news.image_url}
+                    alt={news.title}
+                    className="w-32 h-auto rounded mb-2"
+                  />
+                )}
                   <p className="text-xs text-gray-400">
                     Type : {news.type} | Cible : {news.target} | Publiée :{" "}
                     {news.published ? "✅" : "❌"}
@@ -184,17 +274,14 @@ export const AdminNews = () => {
                 <div className="flex gap-2">
                   {!news.published && (
                     <Button variant="default" onClick={() => handlePublish(news)}>
-                      Publier
+                      📢 Publier
                     </Button>
                   )}
                   <Button variant="secondary" onClick={() => handleEdit(news)}>
-                    Modifier
+                    ✏️ Modifier
                   </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => handleDeleteNews(news.id)}
-                  >
-                    Supprimer
+                  <Button variant="destructive" onClick={() => handleDeleteNews(news.id)}>
+                    🗑️ Supprimer
                   </Button>
                 </div>
               </div>

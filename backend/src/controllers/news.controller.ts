@@ -24,6 +24,7 @@ export const createNews = async (req: Request, res: Response) => {
       target,
       image_url);
     Ok(res, { msg: "Actu créée avec succès", data: news });
+    return;
   } catch (err) {
     console.error(err);
     Error(res, { msg: "Erreur lors de la création de l'actu" });
@@ -149,6 +150,7 @@ export const updateNews = async (req: Request, res: Response) => {
     const updated = await news_service.updateNews(Number(id), updates);
 
     Ok(res, { msg: "Actu mise à jour avec succès", data: updated });
+    return;
   } catch (err) {
     console.error(err);
     Error(res, { msg: "Erreur lors de la mise à jour de l'actu" });

@@ -50,10 +50,9 @@ export const ResetPasswordForm = () => {
 
     return (
         <div
-        className="relative min-h-screen flex items-center justify-center bg-cover bg-center"
-        style={{ backgroundImage: "url('img/background.png')" }}
+            className="relative min-h-screen flex items-center justify-center bg-no-repeat bg-cover bg-center"
+            style={{ backgroundImage: "url('img/bg_25.jpg')" }}
         >
-        <div className="formNouveau login active min-h-screen flex items-center justify-center bg-gray-100">
             <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md">
                 <h1 className="text-2xl font-bold text-center mb-6">Réinitialiser le mot de passe</h1>
 
@@ -88,6 +87,5 @@ export const ResetPasswordForm = () => {
                 </button>
             </form>
         </div>
-    </div>
     );
 };

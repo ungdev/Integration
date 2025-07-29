@@ -4,7 +4,7 @@ import * as permanenceController from "../controllers/permanence.controller";
 import { checkRole } from "../middlewares/user.middleware";
 
 const permanenceRouter = express.Router();
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "uploads/permcsv/" });
 
 // Admin routes
 permanenceRouter.post("/admin/permanence", checkRole("Admin",[]), permanenceController.createPermanence);

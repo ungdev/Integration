@@ -180,7 +180,7 @@ export const getAllTeamsWithUsers = async () => {
         id: row.teamId,
         name: row.teamName,
         type: row.teamType,
-        faction: row.teamName,
+        faction: row.teamFaction,
         users: [],
       });
     }

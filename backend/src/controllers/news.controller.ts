@@ -65,7 +65,7 @@ export const listPublishedNewsByType = async (req: Request, res: Response) => {
 };
 
 export const publishNews = async (req: Request, res: Response) => {
-  const { id} = req.body;
+  const { id } = req.body;
 
   try {
     await news_service.publishNewsandNotify(id);

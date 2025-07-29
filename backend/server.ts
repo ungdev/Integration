@@ -30,7 +30,7 @@ dotenv.config();
 async function startServer() {
     const app = express();
 
-    // Configuration des middlewares    
+    // Configuration des middlewares
     app.use(cors({ origin: "*" }));
     app.use(bodyParser.json());
     app.use(express.urlencoded({ extended: true }));

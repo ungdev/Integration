@@ -1,7 +1,7 @@
 import express from "express";
 import * as newsController from "../controllers/news.controller";
 import { checkRole } from "../middlewares/user.middleware";
-import upload from "../middlewares/multer.middleware"; //
+import upload from "../middlewares/multer.middleware";
 
 const newsRouter = express.Router();
 

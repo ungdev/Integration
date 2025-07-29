@@ -15,7 +15,7 @@ export const createNews = async (req: Request, res: Response) => {
 
   try {
 
-    const image_url = file ? `/uploads/imgnews/${file.filename}` : undefined;
+    const image_url = file ? `/api/uploads/imgnews/${file.filename}` : undefined;
     const news = await news_service.createNews(
       title, 
       description, 
@@ -128,7 +128,7 @@ export const deleteNews = async (req: Request, res: Response) => {
 export const updateNews = async (req: Request, res: Response) => {
   const { id, title, description, type, target } = req.body;
   const file = req.file;
-  const image_url = file ? `/uploads/imgnews/${file.filename}` : undefined;
+  const image_url = file ? `/api/uploads/imgnews/${file.filename}` : undefined;
 
   try {
     const existing = await news_service.getNewsById(Number(id));

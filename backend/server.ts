@@ -57,7 +57,7 @@ async function startServer() {
         app.use('/api/email',authenticateUser, emailRoutes);
         app.use('/api/news',authenticateUser, newsRoutes);
         app.use('/api/discord',authenticateUser, discordRoutes);
-        app.use("/api/uploads/imgnews", authenticateUser, express.static(path.join(__dirname, "/uploads/imgnews")));
+        app.use("/api/uploads/imgnews", express.static(path.join(__dirname, "/uploads/imgnews")));
 
         // Démarrage du serveur
         app.listen(server_port, () => {

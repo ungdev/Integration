@@ -34,74 +34,96 @@ export const getPermanenceById = async (permId: number) => {
 };
 
 // ➕ S'inscrire à une permanence
-export const registerUserToPermanence = async (userId: number, permId: number) => {
-
-
-
-    const user = await db.query.userSchema.findFirst({ where: eq(userSchema.id, userId) });
-    if (!user || (user.permission !== "Student" && user.permission !== "Admin")) {
+export const registerUserToPermanence = async (
+  userId: number,
+  permId: number
+) => {
+  try {
+    // Vérifications légères (sans verrouillage)
+    const user = await db.query.userSchema.findFirst({
+      where: eq(userSchema.id, userId),
+    });
+    if (
+      !user ||
+      (user.permission !== "Student" && user.permission !== "Admin")
+    ) {
       throw new UnauthorizedError("Unauthorized");
     }
-    
-      const permanence = await getPermanenceById(permId);
-  
-      if (!permanence) throw new Error("Permanence not found");
-      if (!permanence.is_open) throw new PermanenceClosedError("Permanence not open");
 
-      const limitDate = new Date(String(permanence.start_at).replace(/Z$/, ''));
-      const now = new Date();
+    const permanence = await getPermanenceById(permId);
 
-      if (now > limitDate) {
-        throw new RegisterDeadlineError("Too late to register");
-}
+    if (!permanence.is_open)
+      throw new PermanenceClosedError("Permanence not open");
 
-      
-      
-      const existing = await db.query.userPermanenceSchema.findFirst({
-        where: and(
-          eq(userPermanenceSchema.user_id, userId),
-          eq(userPermanenceSchema.permanence_id, permId)
-        ),
+    const limitDate = new Date(String(permanence.start_at).replace(/Z$/, ""));
+    const now = new Date();
+
+    if (now > limitDate) {
+      throw new RegisterDeadlineError("Too late to register");
+    }
+
+    if (permanence.capacity == 0) {
+      throw new PermanenceFullError("Permanence full");
+    }
+
+    // Transaction avec insertion directe et vérification post-insertion
+    await db.transaction(async (tx) => {
+      // Tentative d'insertion directe
+      await tx.insert(userPermanenceSchema).values({
+        user_id: userId,
+        permanence_id: permId,
       });
-      if (existing) throw new AlreadyRegisteredError("Already registered");
-  
-      const currentCount = await db
-        .select({ count: count() })
-        .from(userPermanenceSchema)
-        .where(eq(userPermanenceSchema.permanence_id, permId))
-        .then((r) => r[0].count);
-  
-      if (currentCount >= permanence.capacity) throw new PermanenceFullError("Permanence full");
 
-      await db.transaction(async (tx) => {
-      // Verrouille la permanence pendant la transaction
-        await tx.insert(userPermanenceSchema).values({
-            user_id: userId,
-            permanence_id: permId,
-        });
-        })
-  
+      // Vérification post-insertion de la capacité
+      const currentCapacity = await tx
+        .select({ capacity: permanenceSchema.capacity })
+        .from(permanenceSchema)
+        .where(eq(permanenceSchema.id, permId));
+
+      if (currentCapacity == 0) {
+        throw new PermanenceFullError("Permanence full");
+      }
+
       await modifyPermCap(permId, -1);
-  };
-  
+    });
+  } catch (error: any) {
+    // Gestion des erreurs de contraintes de base de données
+    if (
+      error.code === "23505" || // Contrainte unique PostgreSQL
+      error.code === "23000" || // Contrainte d'intégrité générale
+      error.message?.includes("UNIQUE constraint") ||
+      error.message?.includes("duplicate key") ||
+      error.message?.includes("PRIMARY KEY constraint")
+    ) {
+      throw new AlreadyRegisteredError("Already registered");
+    }
+    // Re-lancer les autres erreurs
+    throw error;
+  }
+};
 
 // ❌ Se désinscrire d'une permanence
-export const unregisterUserFromPermanence = async (userId: number, permId: number) => {
-
+export const unregisterUserFromPermanence = async (
+  userId: number,
+  permId: number
+) => {
   const permanence = await getPermanenceById(permId);
   const now = new Date();
   const limitDate = new Date(permanence.start_at);
   limitDate.setDate(limitDate.getDate() - 1);
 
-  if (now > limitDate) throw new UnregisterDeadlineError("Too late to unregister");
+  if (now > limitDate)
+    throw new UnregisterDeadlineError("Too late to unregister");
 
   // Désinscrire l'utilisateur
-  await db.delete(userPermanenceSchema).where(
-    and(
-      eq(userPermanenceSchema.user_id, userId),
-      eq(userPermanenceSchema.permanence_id, permId)
-    )
-  );
+  await db
+    .delete(userPermanenceSchema)
+    .where(
+      and(
+        eq(userPermanenceSchema.user_id, userId),
+        eq(userPermanenceSchema.permanence_id, permId)
+      )
+    );
 
   await modifyPermCap(permId, 1);
 };
@@ -134,21 +156,25 @@ export const createPermanence = async (
   });
 };
 
-export const deletePermanence = async (permId : number) => {
-    await db.delete(userPermanenceSchema).where(eq(userPermanenceSchema.permanence_id, permId));
-    await db.delete(permanenceSchema).where(eq(permanenceSchema.id, permId));
+export const deletePermanence = async (permId: number) => {
+  await db
+    .delete(userPermanenceSchema)
+    .where(eq(userPermanenceSchema.permanence_id, permId));
+  await db.delete(permanenceSchema).where(eq(permanenceSchema.id, permId));
 };
 
 export const updatePermanence = async (
-    permId: number,
-    name: string,
-    description: string,
-    location: string,
-    start_at: Date,
-    end_at: Date,
-    capacity: number
-  ) => {
-    await db.update(permanenceSchema).set({
+  permId: number,
+  name: string,
+  description: string,
+  location: string,
+  start_at: Date,
+  end_at: Date,
+  capacity: number
+) => {
+  await db
+    .update(permanenceSchema)
+    .set({
       name,
       description,
       location,
@@ -156,37 +182,42 @@ export const updatePermanence = async (
       end_at,
       capacity,
       is_open: false, // pas ouverte à la création
-    }).where(eq(permanenceSchema.id, permId));
-  };
+    })
+    .where(eq(permanenceSchema.id, permId));
+};
 
 // Ouvrir une permanence (Admin action)
 export const openPermanence = async (permId: number) => {
-  await db.update(permanenceSchema)
+  await db
+    .update(permanenceSchema)
     .set({ is_open: true })
     .where(eq(permanenceSchema.id, permId));
 };
 
 // Fermer une permanence
 export const closePermanence = async (permId: number) => {
-  await db.update(permanenceSchema)
+  await db
+    .update(permanenceSchema)
     .set({ is_open: false })
     .where(eq(permanenceSchema.id, permId));
 };
 
 // Modifier la capacité de la permanence
 export const modifyPermCap = async (permId: number, factor: number) => {
-    const perm = await getPermanenceById(permId);
-    const newPermCap = Number(perm.capacity) + factor;
-  
-    if (newPermCap < 0) throw new Error("Invalid capacity");
-    
-    await db.update(permanenceSchema).set({ capacity: newPermCap }).where(eq(permanenceSchema.id, permId));
-  };
-  
-  
+  const perm = await getPermanenceById(permId);
+  const newPermCap = Number(perm.capacity) + factor;
+
+  if (newPermCap < 0) throw new Error("Invalid capacity");
+
+  await db
+    .update(permanenceSchema)
+    .set({ capacity: newPermCap })
+    .where(eq(permanenceSchema.id, permId));
+};
+
 // Voir ses permanences
 export const getMyPermanences = async (userId: number) => {
-    return await db
+  return await db
     .select({
       id: permanenceSchema.id,
       name: permanenceSchema.name,
@@ -195,16 +226,19 @@ export const getMyPermanences = async (userId: number) => {
       location: permanenceSchema.location,
     })
     .from(userPermanenceSchema)
-    .innerJoin(permanenceSchema, eq(permanenceSchema.id, userPermanenceSchema.permanence_id))
+    .innerJoin(
+      permanenceSchema,
+      eq(permanenceSchema.id, userPermanenceSchema.permanence_id)
+    )
     .where(eq(userPermanenceSchema.user_id, userId));
 };
 
 export const getAllPermanences = async () => {
-    return await db.select().from(permanenceSchema);
+  return await db.select().from(permanenceSchema);
 };
 
 export const getUsersInPermanence = async (permId: number) => {
-    return await db
+  return await db
     .select({
       userId: userSchema.id,
       firstName: userSchema.first_name,
@@ -215,56 +249,60 @@ export const getUsersInPermanence = async (permId: number) => {
     .where(eq(userPermanenceSchema.permanence_id, permId));
 };
 
-
 export const addUserToPermanence = async (userId: number, permId: number) => {
-  
-    // Désinscrire l'utilisateur
-    await db.insert(userPermanenceSchema).values({
-        user_id: userId,
-        permanence_id: permId,
-      });
-    
-      await modifyPermCap(permId, -1);
+  // Désinscrire l'utilisateur
+  await db.insert(userPermanenceSchema).values({
+    user_id: userId,
+    permanence_id: permId,
+  });
+
+  await modifyPermCap(permId, -1);
 };
 
-export const removeUserToPermanence = async (userId: number, permId: number) => {
-  
-    await db.delete(userPermanenceSchema).where(
-        and(
-          eq(userPermanenceSchema.user_id, userId),
-          eq(userPermanenceSchema.permanence_id, permId)
-        )
-      );
-    
-      await modifyPermCap(permId, 1);
+export const removeUserToPermanence = async (
+  userId: number,
+  permId: number
+) => {
+  await db
+    .delete(userPermanenceSchema)
+    .where(
+      and(
+        eq(userPermanenceSchema.user_id, userId),
+        eq(userPermanenceSchema.permanence_id, permId)
+      )
+    );
+
+  await modifyPermCap(permId, 1);
 };
 
 export const getAllPermanencesWithUsers = async () => {
-    // Récupère toutes les permanences
-    const permanences = await db.select().from(permanenceSchema);
-  
-    // Pour chaque permanence, on récupère les users associés
-    const results = await Promise.all(
-      permanences.map(async (permanence) => {
-        const userRelations = await db
-          .select({
-            user: userSchema,
-          })
-          .from(userPermanenceSchema)
-          .innerJoin(userSchema, eq(userSchema.id, userPermanenceSchema.user_id))
-          .where(eq(userPermanenceSchema.permanence_id, permanence.id));
-  
-        return {
-          ...permanence,
-          users: userRelations.map((entry) => entry.user),
-        };
-      })
-    );
-  
-    return results;
+  // Récupère toutes les permanences
+  const permanences = await db.select().from(permanenceSchema);
+
+  // Pour chaque permanence, on récupère les users associés
+  const results = await Promise.all(
+    permanences.map(async (permanence) => {
+      const userRelations = await db
+        .select({
+          user: userSchema,
+        })
+        .from(userPermanenceSchema)
+        .innerJoin(userSchema, eq(userSchema.id, userPermanenceSchema.user_id))
+        .where(eq(userPermanenceSchema.permanence_id, permanence.id));
+
+      return {
+        ...permanence,
+        users: userRelations.map((entry) => entry.user),
+      };
+    })
+  );
+
+  return results;
 };
 
-export const importPermanencesFromCSV = async (filePath: string): Promise<void> => {
+export const importPermanencesFromCSV = async (
+  filePath: string
+): Promise<void> => {
   const fileContent = fs.readFileSync(filePath, "utf8");
 
   const { data, errors } = Papa.parse<CsvPermanence>(fileContent, {

@@ -2,66 +2,47 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { getUserPrefrences, updateUserPreferences } from "../../services/requests/role.service";
-
-const commissions = [
-  { id: 1, name: "Animation", description: "Animer et divertir les CE et nouveaux étudiants." },
-  { id: 2, name: "Arbitre", description: "Arbitrer les différents défis pendant le semaine d'intégration." },
-  { id: 3, name: "Bouffe", description: "Organiser tous les repas de l’inté." },
-  { id: 4, name: "Cahier de vacances", description: "Créer un cahier d'exercices et blagues." },
-  { id: 5, name: "Communication & Graphisme", description: "Gérer la com et créer une charte graphique." },
-  { id: 6, name: "Déco", description: "Décorer l’UTT selon le thème de l’inté." },
-  { id: 7, name: "Défis TC", description: "Préparer un défi créatif pour les nouveaux TC." },
-  { id: 8, name: "Dev / Info", description: "Développer et maintenir les outils numériques." },
-  { id: 9, name: "Faux amphi", description: "Créer un faux cours pour piéger les nouveaux." },
-  { id: 10, name: "Faux discours de rentrée", description: "Faire un faux discours pour surprendre les étudiants." },
-  { id: 11, name: "Logistique", description: "Organiser et gérer le matériel de l’inté." },
-  { id: 12, name: "Médiatik", description: "Capturer les événements avec photos et vidéos." },
-  { id: 13, name: "Parrainage", description: "Attribuer des parrains/marraines aux nouveaux étudiants." },
-  { id: 14, name: "Partenariat", description: "Trouver des partenaires pour l’intégration." },
-  { id: 15, name: "Prévention", description: "Gérer les risques et assurer la sécurité." },
-  { id: 16, name: "Rallye", description: "Organiser une après-midi de jeux et défis sportifs." },
-  { id: 17, name: "Respo CE", description: "Gérer le planning des CE et organiser leurs activités." },
-  { id: 18, name: "Sécu", description: "Assurer la sécurité durant les événements." },
-  { id: 19, name: "Soirée d'intégration", description: "Organiser la grande soirée d’inté." },
-  { id: 20, name: "Son et lumière", description: "Gérer le son et lumière des événements." },
-  { id: 21, name: "Soutenabilité", description: "Réduire l’impact écologique de l’inté." },
-  { id: 22, name: "Traduction en anglais", description: "Traduire les contenus pour les étudiants internationaux." },
-  { id: 23, name: "Village Asso", description: "Organiser la présentation des associations." },
-  { id: 24, name: "Visites", description: "Planifier les visites de l’UTT et de la ville." },
-  { id: 25, name: "WEI", description: "Organiser le Week-End d’Intégration." }
-];
-
+import {
+  getRoles,
+  getUserPrefrences,
+  updateUserPreferences,
+} from "../../services/requests/role.service";
+import { Role } from "../../interfaces/role.interface";
 
 export const UserPreferences = () => {
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue } = useForm<Record<string, boolean>>();
   const [loading, setLoading] = useState(false);
+  const [commissions, setCommissions] = useState<Role[]>([]);
 
   useEffect(() => {
     const fetchPreferences = async () => {
       try {
+        const roles = await getRoles();
+        setCommissions(roles);
+
         const userPreferences = await getUserPrefrences();
-        userPreferences.forEach((roleId: number) =>
-          setValue(roleId.toString(), true)
-        );
+        userPreferences.forEach((roleId: number) => {
+          setValue(roleId.toString(), true);
+        });
       } catch (error) {
-        console.error("Erreur lors du chargement des préférences", error);
+        console.error("Erreur lors du chargement des préférences :", error);
       }
     };
+
     fetchPreferences();
   }, [setValue]);
 
   const onSubmit = async (data: Record<string, boolean>) => {
     setLoading(true);
-    const selectedRoleIds = Object.keys(data)
-      .filter((key) => data[key])
-      .map((key) => parseInt(key));
+    const selectedRoleIds = Object.entries(data)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([roleId]) => parseInt(roleId));
 
     try {
       await updateUserPreferences(selectedRoleIds);
       alert("Préférences mises à jour !");
     } catch (error) {
-      console.error("Erreur:", error);
+      console.error("Erreur lors de la mise à jour :", error);
       alert("Une erreur est survenue.");
     } finally {
       setLoading(false);
@@ -79,16 +60,16 @@ export const UserPreferences = () => {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {commissions.map(({ id, name, description }) => (
-                <div key={id} className="flex flex-col">
+              {commissions.map(({ roleId, name, description }) => (
+                <div key={roleId} className="flex flex-col">
                   <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      id={name}
-                      {...register(id.toString())}
+                      id={`role-${roleId}`}
+                      {...register(roleId.toString())}
                       className="accent-blue-600"
                     />
-                    <label htmlFor={name} className="text-sm font-medium">
+                    <label htmlFor={`role-${roleId}`} className="text-sm font-medium">
                       {name}
                     </label>
                   </div>

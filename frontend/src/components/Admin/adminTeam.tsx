@@ -185,12 +185,15 @@ export const AdminTeamManagement = () => {
               placeholder="Nom de l’équipe"
             />
             <Select
-              options={typeOptions}
-              value={typeOptions.find(option => option.value === editType)}
-              onChange={(selectedOption) => setEditType(selectedOption?.value || "")}
-              className="w-full md:w-96"
-              placeholder="Type d'équipe"
-            />
+            options={typeOptions}
+            value={
+              typeOptions.find(option => option.value === editType) ??
+              { value: "", label: "Aucun type" }
+            }
+            onChange={(selectedOption) => setEditType(selectedOption?.value || "")}
+            className="w-full md:w-96"
+            placeholder="Type d'équipe"
+          />
             <Select
               value={editFactionId
                 ? {

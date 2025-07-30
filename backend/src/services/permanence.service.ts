@@ -53,7 +53,7 @@ export const registerUserToPermanence = async (userId: number, permId: number) =
 
       if (now > limitDate) {
         throw new RegisterDeadlineError("Too late to register");
-}
+  }
 
       
       

@@ -78,7 +78,8 @@ export const registerUserToPermanence = async (
       const currentCapacity = await tx
         .select({ capacity: permanenceSchema.capacity })
         .from(permanenceSchema)
-        .where(eq(permanenceSchema.id, permId));
+        .where(eq(permanenceSchema.id, permId))
+        .then((res) => res[0]?.capacity ?? 0);
 
       if (currentCapacity == 0) {
         throw new PermanenceFullError("Permanence full");

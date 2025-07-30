@@ -108,7 +108,7 @@ export const ProfilForm = () => {
             <button
               onClick={() => {
                 window.location.href =
-                  "https://discord.com/oauth2/authorize?client_id=1392214539868705029&response_type=code&redirect_uri=https%3A%2F%2Fintegration.utt.fr%2Fdiscord&scope=identify";
+                  "https://discord.com/oauth2/authorize?client_id=1400196109434884189&response_type=code&redirect_uri=https%3A%2F%2Fintegration.utt.fr%2Fdiscord&scope=identify";
               }}
               className="w-full bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2 text-white py-2 rounded"
             >

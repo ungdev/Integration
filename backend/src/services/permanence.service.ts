@@ -66,43 +66,29 @@ export const registerUserToPermanence = async (
       throw new PermanenceFullError("Permanence full");
     }
 
-    // Transaction avec insertion directe et vérification post-insertion
-    await db.transaction(
-      async (tx) => {
-        // Tentative d'insertion directe
-        const currentCount = await tx
-          .insert(userPermanenceSchema)
-          .values({
-            user_id: userId,
-            permanence_id: permId,
-          })
-          .then(async () => {
-            // Vérification post-insertion de la capacité
-            const currentCount = await tx
-              .select({ count: count() })
-              .from(userPermanenceSchema)
-              .where(eq(userPermanenceSchema.permanence_id, permId))
-              .then((res) => res[0].count);
-            return currentCount;
-          });
+    // Transaction avec verrouillage de table complet
+    await db.transaction(async (tx) => {
+      // 1. VERROUILLAGE COMPLET de la table permanences
+      await tx.execute(sql`LOCK TABLE permanences IN EXCLUSIVE MODE`);
 
-        if (currentCount > permanence.capacity_max) {
-          await tx
-            .delete(userPermanenceSchema)
-            .where(
-              and(
-                eq(userPermanenceSchema.user_id, userId),
-                eq(userPermanenceSchema.permanence_id, permId)
-              )
-            );
-          throw new PermanenceFullError("Permanence full");
-        }
-      },
-      {
-        isolationLevel: "serializable",
+      // 2. UPDATE atomique avec condition - décrémente seulement si capacity > 0
+      const updateResult = await tx
+        .update(permanenceSchema)
+        .set({ capacity: sql`capacity - 1` })
+        .where(and(eq(permanenceSchema.id, permId), sql`capacity > 0`))
+        .returning({ newCapacity: permanenceSchema.capacity });
+
+      // 3. Si aucune ligne modifiée = pas de place disponible
+      if (updateResult.length === 0) {
+        throw new PermanenceFullError("Permanence full");
       }
-    );
-    await modifyPermCap(permId, -1);
+
+      // 4. Insérer l'utilisateur (seulement si l'UPDATE a réussi)
+      await tx.insert(userPermanenceSchema).values({
+        user_id: userId,
+        permanence_id: permId,
+      });
+    });
   } catch (error: any) {
     // Gestion des erreurs de contraintes de base de données
     if (

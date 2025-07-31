@@ -6,6 +6,7 @@ import { teamFactionSchema } from "../schemas/Relational/teamfaction.schema";
 import { userSchema } from "../schemas/Basic/user.schema";
 import { getFaction } from "./faction.service";
 import { factionSchema } from "../schemas/Basic/faction.schema";
+import { teamShotgunSchema } from "../schemas/Relational/teamshotgun.schema";
 
 export const createTeam = async (teamName: string, members: number[]) => {
 
@@ -217,7 +218,10 @@ export const deleteTeam = async (teamID: number) => {
   // 2. Supprimer la relation avec la faction (table team_faction)
   await db.delete(teamFactionSchema).where(eq(teamFactionSchema.team_id, teamID));
 
-  // 3. Supprimer l'équipe de la table principale (teams)
+  // 3. Supprimer la relation avec les utilisateurs (table user_teams)
+  await db.delete(teamShotgunSchema).where(eq(teamShotgunSchema.team_id, teamID));
+
+  // 4. Supprimer l'équipe de la table principale (teams)
   const deletedTeam = await db
     .delete(teamSchema)
     .where(eq(teamSchema.id, teamID))

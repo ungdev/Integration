@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Card } from "../ui/card";
 import Select from "react-select";
+import { Dialog } from "@headlessui/react";
 
 import {
   getAllTeams,
@@ -29,6 +30,7 @@ export const AdminTeamManagement = () => {
   const [editType, setEditType] = useState<string>("");
   const [editFactionId, setEditFactionId] = useState<number | null>(null);
   const [editMembers, setEditMembers] = useState<number[]>([]);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
   const [newTeamName, setNewTeamName] = useState("");
   const [newFactionId, setNewFactionId] = useState<number | null>(null);
@@ -94,17 +96,6 @@ export const AdminTeamManagement = () => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!selectedTeamId) return;
-    try {
-      await deleteTeam(selectedTeamId);
-      setTeams(teams.filter((t) => t.teamId !== selectedTeamId));
-      setSelectedTeamId(null);
-    } catch (err) {
-      console.error("Erreur lors de la suppression", err);
-    }
-  };
-
   const handleCreateTeam = async () => {
     if (teams.find((t) => t.name === newTeamName)) {
       alert("❌ Une équipe avec ce nom existe déjà");
@@ -132,6 +123,19 @@ export const AdminTeamManagement = () => {
   const handleMemberChange = (newValues: any) => {
     const selectedIds = newValues.map((val: any) => val.value);
     setEditMembers(selectedIds);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!selectedTeamId) return;
+    try {
+      await deleteTeam(selectedTeamId);
+      setTeams(teams.filter((t) => t.teamId !== selectedTeamId));
+      setSelectedTeamId(null);
+      setIsConfirmingDelete(false);
+      alert("✅ Équipe supprimée !");
+    } catch (err) {
+      console.error("Erreur lors de la suppression", err);
+    }
   };
 
   return (
@@ -185,15 +189,15 @@ export const AdminTeamManagement = () => {
               placeholder="Nom de l’équipe"
             />
             <Select
-            options={typeOptions}
-            value={
-              typeOptions.find(option => option.value === editType) ??
-              { value: "", label: "Aucun type" }
-            }
-            onChange={(selectedOption) => setEditType(selectedOption?.value || "")}
-            className="w-full md:w-96"
-            placeholder="Type d'équipe"
-          />
+              options={typeOptions}
+              value={
+                typeOptions.find(option => option.value === editType) ??
+                { value: "", label: "Aucun type" }
+              }
+              onChange={(selectedOption) => setEditType(selectedOption?.value || "")}
+              className="w-full md:w-96"
+              placeholder="Type d'équipe"
+            />
             <Select
               value={editFactionId
                 ? {
@@ -229,39 +233,94 @@ export const AdminTeamManagement = () => {
               <Button onClick={handleUpdate} className="bg-green-600 hover:bg-green-700 text-white">
                 💾 Sauvegarder
               </Button>
-              <Button onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white">
+              <Button onClick={() => setIsConfirmingDelete(true)} className="bg-red-600 hover:bg-red-700 text-white">
                 🗑️ Supprimer
               </Button>
             </div>
           </div>
         </Card>
       )}
+
+      {isConfirmingDelete && (
+        <Dialog open={isConfirmingDelete} onClose={() => setIsConfirmingDelete(false)} className="fixed inset-0 z-50 flex items-center justify-center bg-transparent">
+          <Card className="p-6 rounded-xl bg-white shadow-xl space-y-4 w-96">
+            <h3 className="text-xl font-bold text-red-600 text-center">🛑 Confirmation de suppression</h3>
+            <p className="text-gray-700 text-center">Es-tu sûr(e) de vouloir supprimer cette équipe ? Cette action est irréversible.</p>
+            <div className="flex justify-center gap-4 pt-4">
+              <Button onClick={handleDeleteConfirm} className="bg-red-600 hover:bg-red-700 text-white">
+                ✅ Confirmer
+              </Button>
+              <Button onClick={() => setIsConfirmingDelete(false)} className="bg-gray-300 hover:bg-gray-400 text-black">
+                ❌ Annuler
+              </Button>
+            </div>
+          </Card>
+        </Dialog>
+      )}
     </div>
   );
 };
 
 export const DistributeTeam = () => {
-  const Submit = async () => {
-    const response = await teamDistribution();
-    alert(response.message);
+
+  const [isConfirming, setIsConfirming] = useState(false);
+
+  const ConfirmSubmit = async () => {
+    try {
+      const response = await teamDistribution();
+      alert(response.message);
+    } catch (error: any) {
+      alert(error.response.data.message);
+    } finally {
+      setIsConfirming(false);
+    }
   };
+
 
   return (
     <div className="max-w-2xl mx-auto mt-8">
       <Card className="w-full p-6 rounded-2xl shadow space-y-4">
         <h2 className="text-2xl font-bold text-gray-800 text-center">🔀 Répartition automatique</h2>
         <div className="text-center text-gray-700 space-y-1">
-          <p>Voulez-vous répartir aléatoirement les nouveaux dans leurs équipes ?</p>
+          <p>Voulez-vous répartir aléatoirement les nouveaux dans leurs équipes ?</p>
           <p className="text-sm text-gray-500 font-medium">
             (Effet uniquement sur ceux qui n'ont pas encore d'équipe)
           </p>
         </div>
         <div className="flex justify-center pt-2">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={Submit}>
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+            onClick={() => setIsConfirming(true)}
+          >
             🔁 Lancer la répartition
           </Button>
         </div>
       </Card>
+
+      {isConfirming && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+          <Card className="p-6 rounded-xl bg-white shadow-xl space-y-4 w-96">
+            <h3 className="text-xl font-bold text-blue-600 text-center">⚠️ Confirmation</h3>
+            <p className="text-gray-700 text-center">
+              Cette action va affecter tous les utilisateurs sans équipe.<br />Souhaitez-vous vraiment continuer ?
+            </p>
+            <div className="flex justify-center gap-4 pt-4">
+              <Button
+                onClick={ConfirmSubmit}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                ✅ Confirmer
+              </Button>
+              <Button
+                onClick={() => setIsConfirming(false)}
+                className="bg-gray-300 hover:bg-gray-400 text-black"
+              >
+                ❌ Annuler
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };

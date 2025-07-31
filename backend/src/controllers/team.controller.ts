@@ -195,9 +195,18 @@ export const teamDistribution = async (req: Request, res: Response) => {
             email: student.email,
             branch: student.branch
           }));
+
+        const PMOMStudents = filteredStudents
+          .filter((student: any) => student.branch == "MM")
+          .map((student: any) => ({
+            id: student.userId,
+            email: student.email,
+            branch: student.branch
+          }));
   
         // Filtrer les équipes en fonction de leur type
         const tcTeams = teams.filter(team => team.type === "TC");
+        const PMOMTeams = teams.filter(team => team.type === "MM");
         const otherTeams = teams.filter(team => team.type !== "TC" && team.type !== "RI" && team.type !== "MM");
   
         // Fonction pour assigner les utilisateurs à des équipes équilibrées
@@ -228,14 +237,24 @@ export const teamDistribution = async (req: Request, res: Response) => {
         }
 
         // Assigner les utilisateurs TC aux équipes TC
-        await assignUsersToTeams(tcStudents, tcTeams);
-  
+        if(tcStudents && tcTeams){
+            await assignUsersToTeams(tcStudents, tcTeams);
+        }
+        
         // Assigner les autres utilisateurs aux équipes non-TC
-        await assignUsersToTeams(otherStudents, otherTeams);
-  
+        if(otherStudents && otherTeams){
+            await assignUsersToTeams(otherStudents, otherTeams);
+        }
+
+        //Assigner les utilisateurs MM aux équipes MM
+        if(PMOMStudents && PMOMTeams){
+            await assignUsersToTeams(PMOMStudents, PMOMTeams);
+        }
+
         Ok(res, { msg: "NewStudents distributed!" });
     } catch (error) {
         Error(res, { error });
+        return
     }
 }
   

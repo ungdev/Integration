@@ -1,0 +1,1 @@
+ALTER TABLE "permanences" ADD COLUMN "capacity_max" integer;

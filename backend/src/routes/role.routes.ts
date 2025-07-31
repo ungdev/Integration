@@ -8,10 +8,10 @@ const roleRouter = express.Router();
 //User Routes
 roleRouter.put("/user/updateuserpreferences", roleController.updateUserPreferences);
 roleRouter.get("/user/userpreferences",roleController.getUserPreferences)
+roleRouter.get("/user/getroles", roleController.getRoles)
 
 
 //Admin routes
-roleRouter.get("/admin/getroles", checkRole("Admin",[]), roleController.getRoles)
 roleRouter.get("/admin/userbyrolehandler/:roleName", checkRole("Admin",[]), roleController.getUsersByRoleHandler)
 roleRouter.get("/admin/userswithroles", checkRole("Admin",[]), roleController.getUsersWithRoles)
 roleRouter.get("/admin/getusersroles", checkRole("Admin",[]), roleController.getUserRoles)

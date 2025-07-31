@@ -5,6 +5,7 @@ import { roleSchema } from "../../schemas/Basic/role.schema";
 // Liste des rôles avec leurs descriptions
 const roles = [
     { name: "Animation", description: "Animer, divertir et motiver les CE et les nouveaux étudiants tout au long de la pré-inté et de l’inté." },
+    { name: "Arbitre", description: "Arbitrer les différents défis pendant le semaine d'intégration." },
     { name: "Bouffe", description: "Prévoir, organiser et coordonner tous les repas de l’inté. La bouffe c’est sacré !" },
     { name: "Cahier de vacances", description: "Élaborer le futur cahier de vacances des nouveaux avec des petits exercices et blagues." },
     { name: "Communication & Graphisme", description: "Préparer et gérer toute la communication de l’intégration, créer une charte graphique." },

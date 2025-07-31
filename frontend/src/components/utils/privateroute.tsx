@@ -1,22 +1,44 @@
 // src/components/PrivateRoute.tsx
 import React from 'react';
 import {  Navigate } from 'react-router-dom';
-import { getToken } from '../../services/requests/auth.service';
-import { isAdmin } from '../../services/requests/user.service';
+import { decodeToken, getToken } from '../../services/requests/auth.service';
+import { DecodedToken } from '../../interfaces/token.interfaces';
 
 interface PrivateRouteProps {
-  permissionRequired: string;
-  children: React.ReactNode; // 👈 Ajoute ça
+  permissionRequired?: string;
+  roleRequired?: string;
+  children: React.ReactNode;
 }
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ permissionRequired, children }) => {
-  
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({
+  permissionRequired,
+  roleRequired,
+  children,
+}) => {
   const token = getToken();
+
   if (!token) {
     return <Navigate to="/" />;
   }
 
-  if (!permissionRequired && !isAdmin()) {
+  let decoded: DecodedToken;
+  try {
+    decoded = decodeToken(token);
+  } catch (err) {
+    return <Navigate to="/" />;
+  }
+
+  const isAdmin = decoded.userPermission === "Admin";
+
+  const hasPermission =
+    !permissionRequired || decoded.userPermission === permissionRequired;
+
+  const hasRole =
+    !roleRequired ||
+    decoded.userRoles?.some((role) => role.roleName === roleRequired);
+
+  if (!isAdmin && !(hasPermission || hasRole)) {
     return <Navigate to="/" />;
   }
 

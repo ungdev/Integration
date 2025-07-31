@@ -102,7 +102,7 @@ export const Infos = () => {
             className="px-4"
           >
             {[
-              { logo: "CIC.png", name: "CIC", link: "https://www.cic.fr/fr/particuliers.html" },
+              { logo: "CIC.png", name: "CIC", link: "https://www.cic.fr/fr/particuliers/comptes/jeunes-pouvoir-avancer.html" },
               { logo: "CVEC.png", name: "CVEC", link: "https://www.crous-reims.fr/le-crous/la-contribution-vie-etudiante-et-de-campus-cvec-une-demarche-obligatoire-et-utile-pour-les-etudiants/" },
               { logo: "DAMONTE.png", name: "DAMONTE", link: "https://www.yves-damonte.fr/" },
               { logo: "FONDATIONUTT.png", name: "Fondation UTT", link: "https://fondation.utt.fr/" },

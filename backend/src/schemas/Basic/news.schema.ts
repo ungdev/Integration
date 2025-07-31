@@ -7,6 +7,7 @@ export const newsSchema = pgTable("news", {
   type: text("type"),
   published: boolean("published").default(false),
   target: text("target"), // "Tous", "Nouveau", "CE", "Orgas", "Admin", ...
+  image_url: text("image_url"),
   created_at: timestamp("created_at").defaultNow(),
 });
 

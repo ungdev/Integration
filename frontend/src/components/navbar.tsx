@@ -1,13 +1,18 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getPermission } from "../services/requests/user.service";
 import { useEffect, useState } from "react";
+import { getToken, decodeToken } from "../services/requests/auth.service";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
+
+interface DecodedToken {
+  userPermission?: string;
+  userRoles?: { roleName: string }[];
+}
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const permission = getPermission();
+  const token = getToken();
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
@@ -19,10 +24,26 @@ export const Navbar = () => {
     setIsEventsOpen(false);
   }, [location]);
 
-  if (!permission) {
+  if (!token) {
     navigate("/");
     return null;
   }
+
+  let decoded: DecodedToken;
+  try {
+    decoded = decodeToken(token);
+  } catch {
+    navigate("/");
+    return null;
+  }
+
+  const permission = decoded.userPermission;
+  const roles = decoded.userRoles?.map((r) => r.roleName) || [];
+
+  const isAdmin = permission === "Admin";
+  const isStudent = permission === "Student";
+  const isRespoCE = roles.includes("Respo CE");
+  const isArbitre = roles.includes("Arbitre");
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -47,6 +68,26 @@ export const Navbar = () => {
   const dropdownVariants = {
     hidden: { opacity: 0, y: -5 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.2 } },
+  };
+
+  const adminLinks = [
+    ["Users", "/admin/users"],
+    ["Roles", "/admin/roles"],
+    ["Teams", "/admin/teams"],
+    ["Factions", "/admin/factions"],
+    ["Events", "/admin/events"],
+    ["Permanences", "/admin/permanences"],
+    ["Challenge", "/admin/challenge"],
+    ["Export / Import", "/admin/export-import"],
+    ["Email", "/admin/email"],
+    ["News", "/admin/news"],
+  ];
+
+  const canAccessAdminLink = (path: string) => {
+    if (isAdmin) return true;
+    if (isRespoCE && ["/admin/teams", "/admin/factions"].includes(path)) return true;
+    if (isArbitre && ["/admin/challenge"].includes(path)) return true;
+    return false;
   };
 
   return (
@@ -78,9 +119,7 @@ export const Navbar = () => {
           <MenuItem to="/Parrainnage" label="Parrainnage" />
           <MenuItem to="/Challenges" label="Challenges" />
           <MenuItem to="/News" label="Mes Actus" />
-          {(permission === "Student" || permission === "Admin") && (
-            <MenuItem to="/Permanences" label="Permanences" />
-          )}
+          {(isStudent || isAdmin) && <MenuItem to="/Permanences" label="Permanences" />}
 
           {/* Events Dropdown */}
           <div className="relative">
@@ -99,7 +138,7 @@ export const Navbar = () => {
                   variants={dropdownVariants}
                   className="absolute top-full mt-2 bg-white text-black rounded shadow-md min-w-[160px] z-50"
                 >
-                  {(permission === "Student" || permission === "Admin") && (
+                  {(isStudent || isAdmin) && (
                     <Link to="/Shotgun" className="block px-4 py-2 hover:bg-gray-100">
                       Shotgun
                     </Link>
@@ -107,13 +146,16 @@ export const Navbar = () => {
                   <Link to="/Wei" className="block px-4 py-2 hover:bg-gray-100">
                     WEI
                   </Link>
+                  <Link to="/SDI" className="block px-4 py-2 hover:bg-gray-100">
+                    SDI
+                  </Link>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
           {/* Admin Dropdown */}
-          {permission === "Admin" && (
+          {(isAdmin || isRespoCE || isArbitre) && (
             <div className="relative">
               <button
                 onClick={() => setIsAdminOpen((prev) => !prev)}
@@ -130,26 +172,13 @@ export const Navbar = () => {
                     variants={dropdownVariants}
                     className="absolute top-full mt-2 bg-white text-black rounded shadow-md min-w-[200px] z-50"
                   >
-                    {[
-                      ["Users", "/admin/users"],
-                      ["Roles", "/admin/roles"],
-                      ["Teams", "/admin/teams"],
-                      ["Factions", "/admin/factions"],
-                      ["Shotgun", "/admin/shotgun"],
-                      ["Permanences", "/admin/permanences"],
-                      ["Challenge", "/admin/challenge"],
-                      ["Export / Import", "/admin/export-import"],
-                      ["Email", "/admin/email"],
-                      ["News", "/admin/news"],
-                    ].map(([label, path]) => (
-                      <Link
-                        key={path}
-                        to={path}
-                        className="block px-4 py-2 hover:bg-gray-100"
-                      >
-                        {label}
-                      </Link>
-                    ))}
+                    {adminLinks
+                      .filter(([_, path]) => canAccessAdminLink(path))
+                      .map(([label, path]) => (
+                        <Link key={path} to={path} className="block px-4 py-2 hover:bg-gray-100">
+                          {label}
+                        </Link>
+                      ))}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -181,30 +210,18 @@ export const Navbar = () => {
               <MenuItem to="/Parrainnage" label="Parrainnage" />
               <MenuItem to="/Challenges" label="Challenges" />
               <MenuItem to="/News" label="Mes Actus" />
-              {(permission === "Student" || permission === "Admin") && (
-                <MenuItem to="/Permanences" label="Permanences" />
-              )}
-              {(permission === "Student" || permission === "Admin") && (
-                <MenuItem to="/Shotgun" label="Shotgun" />
-              )}
-              <MenuItem to="/Wei" label="WEI" />
-              {permission === "Admin" && (
+              {(isStudent || isAdmin) && <MenuItem to="/Permanences" label="Permanences" />}
+              {(isStudent || isAdmin) && <MenuItem to="/Shotgun" label="Shotgun" />}
+              <MenuItem to="/WEI" label="WEI" />
+              <MenuItem to="/SDI" label="SDI" />
+              {(isAdmin || isRespoCE || isArbitre) && (
                 <>
                   <span className="mt-2 font-semibold text-white">Admin</span>
-                  {[
-                    ["Users", "/admin/users"],
-                    ["Roles", "/admin/roles"],
-                    ["Teams", "/admin/teams"],
-                    ["Factions", "/admin/factions"],
-                    ["Shotgun", "/admin/shotgun"],
-                    ["Permanences", "/admin/permanences"],
-                    ["Challenge", "/admin/challenge"],
-                    ["Export / Import", "/admin/export-import"],
-                    ["Email", "/admin/email"],
-                    ["News", "/admin/news"],
-                  ].map(([label, path]) => (
-                    <MenuItem key={path} to={path} label={label} />
-                  ))}
+                  {adminLinks
+                    .filter(([_, path]) => canAccessAdminLink(path))
+                    .map(([label, path]) => (
+                      <MenuItem key={path} to={path} label={label} />
+                    ))}
                 </>
               )}
               <MenuItem to="/Profil" label="Mon compte" />

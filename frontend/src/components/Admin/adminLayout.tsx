@@ -1,30 +1,52 @@
-// src/components/Admin/AdminLayout.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPermission } from "../../services/requests/user.service";
 import { Navbar } from "../navbar";
+import { decodeToken, getToken } from "../../services/requests/auth.service";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
+  allowedRoles: string[]; // Rôles autorisés
 }
 
-export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const [,setRole] = useState<string | null>(null);
+interface DecodedToken {
+  userPermission?: string;
+  userRoles?: { roleName: string }[];
+}
+
+export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, allowedRoles }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    const userRole = getPermission();
+    const token = getToken();
 
-    if (!token || userRole !== "Admin") {
-      navigate("/"); // Redirige si non admin
-    } else {
-      setRole(userRole);
+    if (!token) {
+      navigate("/");
+      return;
+    }
+
+    let decoded: DecodedToken;
+    try {
+      decoded = decodeToken(token);
+    } catch {
+      navigate("/");
+      return;
+    }
+
+    const userRoles = [
+      ...(decoded.userRoles?.map((r) => r.roleName) || []),
+      decoded.userPermission || "",
+    ];
+
+    const hasAccess = userRoles.some((role) => allowedRoles.includes(role));
+
+    if (!hasAccess) {
+      navigate("/");
+      return;
     }
 
     setLoading(false);
-  }, [navigate]);
+  }, [navigate, allowedRoles]);
 
   if (loading) {
     return <div className="flex justify-center items-center min-h-screen">Chargement...</div>;

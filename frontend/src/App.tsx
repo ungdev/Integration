@@ -6,7 +6,16 @@ import LoginPage from './pages/Auth';
 import { HomePage } from './pages/Home';
 import { ProfilPage } from './pages/Profil';
 import { ShotgunPage } from './pages/Shotgun';
-import { AdminPageRole, AdminPageTeam, AdminPageShotgun, AdminPageExport, AdminPageFaction, AdminPagePerm, AdminPageChall, AdminPageEmail, AdminPageUser, AdminPageNews } from './pages/Admin';
+import { AdminPageRole, 
+          AdminPageTeam, 
+          AdminPageEvents, 
+          AdminPageExport, 
+          AdminPageFaction, 
+          AdminPagePerm, 
+          AdminPageChall, 
+          AdminPageEmail, 
+          AdminPageUser, 
+          AdminPageNews } from './pages/Admin';
 
 import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
@@ -16,9 +25,11 @@ import { ParrainnagePage } from './pages/Parrainnage';
 import { RegisterPage } from './pages/Register';
 import { ResetPasswordPage } from './pages/ResetPassword'
 import { WeiPage } from './pages/Wei';
+import { SdiPage } from './pages/Sdi';
 import { NewsPage } from './pages/News';
+import {DiscordPage} from './pages/Discord';
 import PrivateRoute from './components/utils/privateroute';
-import DiscordPage from './pages/Discord';
+
 
 const App: React.FC = () => {
   const VITE_ANALYTICS_WEBSITE_ID = import.meta.env.VITE_ANALYTICS_WEBSITE_ID;
@@ -49,22 +60,26 @@ const App: React.FC = () => {
         <Route path="/Profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
         <Route path="/Challenges" element={<ProtectedRoute><ChallPage /></ProtectedRoute>} />
         <Route path="/Parrainnage" element={<ProtectedRoute><ParrainnagePage /></ProtectedRoute>} />
+        <Route path="/SDI" element={<ProtectedRoute><SdiPage /></ProtectedRoute>} />
         <Route path="/WEI" element={<ProtectedRoute><WeiPage /></ProtectedRoute>} />
         <Route path="/News" element={<ProtectedRoute><NewsPage /></ProtectedRoute>} />
         <Route path="/Discord" element={<ProtectedRoute><DiscordPage /></ProtectedRoute>} />
 
-        {/* Etudiant et Admin */}
-        <Route path="/Shotgun" element={<PrivateRoute permissionRequired={'Student'}><ShotgunPage /></PrivateRoute>} />
-        <Route path="/Permanences" element={<PrivateRoute permissionRequired={'Student'}><PermPage /></PrivateRoute>} />
+        {/* Étudiant et Admin */}
+        <Route path="/Shotgun" element={<PrivateRoute permissionRequired="Student"><ShotgunPage /></PrivateRoute>} />
+        <Route path="/Permanences" element={<PrivateRoute permissionRequired="Student"><PermPage /></PrivateRoute>} />
 
+        {/* ResposCE et Admin */}
+        <Route path="/admin/teams" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageTeam /></PrivateRoute>} />
+        <Route path="/admin/factions" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageFaction /></PrivateRoute>} />
+
+        {/* Arbitre et Admin*/}
+        <Route path="/admin/challenge" element={<PrivateRoute permissionRequired="Admin" roleRequired="Arbitre"><AdminPageChall /></PrivateRoute>} />
         {/* Admin uniquement */}
         <Route path="/admin/roles" element={<AdminRoute><AdminPageRole /></AdminRoute>} />
-        <Route path="/admin/teams" element={<AdminRoute><AdminPageTeam /></AdminRoute>} />
-        <Route path="/admin/factions" element={<AdminRoute><AdminPageFaction /></AdminRoute>} />
-        <Route path="/admin/shotgun" element={<AdminRoute><AdminPageShotgun /></AdminRoute>} />
+        <Route path="/admin/events" element={<AdminRoute><AdminPageEvents /></AdminRoute>} />
         <Route path="/admin/export-import" element={<AdminRoute><AdminPageExport /></AdminRoute>} />
         <Route path="/admin/permanences" element={<AdminRoute><AdminPagePerm /></AdminRoute>} />
-        <Route path="/admin/challenge" element={<AdminRoute><AdminPageChall /></AdminRoute>} />
         <Route path="/admin/email" element={<AdminRoute><AdminPageEmail /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminPageUser /></AdminRoute>} />
         <Route path="/admin/news" element={<AdminRoute><AdminPageNews /></AdminRoute>} />

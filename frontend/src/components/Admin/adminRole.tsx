@@ -1,59 +1,79 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"; // Composants UI
-import Select from "react-select"; // Importer react-select
-import { addRolesToUser, deleteRolesToUser, getRoles, getUsersByRoleHandler, getUsersRoles } from "../../services/requests/role.service";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import Select from "react-select";
+import {
+  addRolesToUser,
+  deleteRolesToUser,
+  getRoles,
+  getUsersByRoleHandler,
+  getUsersRoles,
+} from "../../services/requests/role.service";
 import { User } from "../../interfaces/user.interface";
 import { Role } from "../../interfaces/role.interface";
 import { getUsers } from "../../services/requests/user.service";
 
-// Liste des rôles disponibles
-const roles = [
-  "Animation", "Bouffe", "Cahier de vacances", "Communication & Graphisme", 
-  "Dev / Info", "Déco", "Défis TC", "Faux amphi", "Faux discours de rentrée", 
-  "Logistique", "Médiatik", "Parrainage", "Partenariat", "Prévention", 
-  "Rallye", "Respo CE", "Son et lumière", "Soutenabilité", 
-  "Traduction en anglais", "Village Asso", "Visites", "WEI"
-];
-
 export const AdminRolePreferences = () => {
-  const [selectedPreference, setSelectedPreference] = useState(""); // Rôle sélectionné
-  const [users, setUsers] = useState<User[]>([]); // Liste des utilisateurs ayant sélectionné ce rôle
+  const [selectedPreference, setSelectedPreference] = useState<string>("");
+  const [users, setUsers] = useState<User[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const allRoles = await getRoles();
+        setRoles(allRoles);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des rôles :", error);
+      }
+    };
+    fetchRoles();
+  }, []);
+
+  useEffect(() => {
     if (selectedPreference) {
-      fetchUsersByPreference(selectedPreference); // Appeler la fonction pour récupérer les utilisateurs à chaque changement de rôle
+      fetchUsersByPreference(selectedPreference);
     }
   }, [selectedPreference]);
 
-  // Fonction pour récupérer les utilisateurs par rôle
   const fetchUsersByPreference = async (roleName: string) => {
     setLoading(true);
     try {
       const usersByPreference = await getUsersByRoleHandler(roleName);
-      setUsers(usersByPreference); // Met à jour les utilisateurs dans le state
+      setUsers(usersByPreference);
     } catch (error) {
-      console.error("Erreur lors de la récupération des utilisateurs : ", error);
+      console.error("Erreur lors de la récupération des utilisateurs :", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const roleOptions = roles.map(role => ({ value: role, label: role }));
+  const roleOptions = roles.map(role => ({
+    value: role.name,
+    label: role.name,
+  }));
 
   return (
-    <div className="flex justify-center items-center w-full ">
+    <div className="flex justify-center items-center w-full">
       <Card className="p-6 shadow-xl rounded-lg bg-white w-full">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold text-center">Gestion des Préférences de Rôle</CardTitle>
+          <CardTitle className="text-xl font-semibold text-center">
+            Gestion des Préférences de Rôle
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Sélectionner une préférence</label>
+            <label className="block text-sm font-medium mb-2">
+              Sélectionner une préférence
+            </label>
             <Select
               options={roleOptions}
-              value={selectedPreference ? { value: selectedPreference, label: selectedPreference } : null}
-              onChange={(selectedOption: any) => setSelectedPreference(selectedOption?.value || "")}
+              value={
+                selectedPreference
+                  ? { value: selectedPreference, label: selectedPreference }
+                  : null
+              }
+              onChange={(option) => setSelectedPreference(option?.value || "")}
               placeholder="Choisir une préférence"
               className="w-full"
             />
@@ -63,7 +83,9 @@ export const AdminRolePreferences = () => {
             <p className="text-center">Chargement...</p>
           ) : (
             <div>
-              <h3 className="text-lg font-semibold mb-4">Utilisateurs ayant sélectionné "{selectedPreference}"</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                Utilisateurs ayant sélectionné "{selectedPreference}"
+              </h3>
               {users.length > 0 ? (
                 <table className="min-w-full table-auto">
                   <thead>
@@ -79,8 +101,8 @@ export const AdminRolePreferences = () => {
                       <tr key={user.userId}>
                         <td className="px-4 py-2">{user.firstName}</td>
                         <td className="px-4 py-2">{user.lastName}</td>
-                        <td className="px-4 py-2">{user.email ?? "Pas d'email enregitré"}</td>
-                        <td className="px-4 py-2">{user.contact ?? "Pas de contact enregitré"}</td>
+                        <td className="px-4 py-2">{user.email ?? "Pas d'email"}</td>
+                        <td className="px-4 py-2">{user.contact ?? "Pas de contact"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -96,12 +118,11 @@ export const AdminRolePreferences = () => {
   );
 };
 
-
 export const AdminRoleManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
-  const [userRoles, setUserRoles] = useState<Role[]>([]);
+  const [userRoles, setUserRoles] = useState<{ roleId: number; roleName: string }[]>([]);
   const [newRoles, setNewRoles] = useState<number[]>([]);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -126,11 +147,8 @@ export const AdminRoleManagement = () => {
         return;
       }
       try {
-        const rawUserRoles = await getUsersRoles(selectedUser); // [{ roleId: 1 }, ...]
-        const completeUserRoles = roles.filter((role: { roleId: number; }) =>
-          rawUserRoles.some((ur: { roleId: number }) => ur.roleId === role.roleId)
-        );
-        setUserRoles(completeUserRoles);
+        const rawUserRoles = await getUsersRoles(selectedUser); // [{ roleId, roleName }]
+        setUserRoles(rawUserRoles);
       } catch (error) {
         console.error("Erreur récupération rôles :", error);
       }
@@ -144,6 +162,7 @@ export const AdminRoleManagement = () => {
       await addRolesToUser(selectedUser, newRoles);
       setMessage("Rôles ajoutés avec succès !");
       setSelectedUser(null); // Reset
+      setNewRoles([]);
     } catch {
       setMessage("Erreur lors de l'ajout des rôles.");
     }
@@ -176,7 +195,7 @@ export const AdminRoleManagement = () => {
           <div className="mb-6">
             <label className="block text-sm font-medium mb-2">Utilisateur</label>
             <Select
-              options={users.map(user => ({
+              options={users.map(user  => ({
                 value: user.userId,
                 label: `${user.firstName} ${user.lastName}`,
               }))}
@@ -203,7 +222,7 @@ export const AdminRoleManagement = () => {
                 {userRoles.length > 0 ? (
                   userRoles.map(role => (
                     <li key={role.roleId} className="flex justify-between items-center bg-gray-100 p-2 rounded">
-                      <span>{role.name}</span>
+                      <span>{role.roleName}</span>
                       <button
                         className="text-sm text-red-600 hover:underline"
                         onClick={() => handleRemoveRole(role.roleId)}
@@ -254,4 +273,7 @@ export const AdminRoleManagement = () => {
     </div>
   );
 };
+
+
+
 

@@ -1,7 +1,10 @@
-const express = require('express');
-const cors = require('cors');
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
 
 import dotenv from 'dotenv';
+import path from "path";
+
 import authRoutes from './src/routes/auth.routes';
 import roleRoutes from './src/routes/role.routes';
 import userRoutes from './src/routes/user.routes';
@@ -29,8 +32,9 @@ async function startServer() {
 
     // Configuration des middlewares
     app.use(cors({ origin: "*" }));
-    app.use(express.json());
+    app.use(bodyParser.json());
     app.use(express.urlencoded({ extended: true }));
+    
 
     try {
         // Initialisation de la base de données
@@ -53,6 +57,7 @@ async function startServer() {
         app.use('/api/email',authenticateUser, emailRoutes);
         app.use('/api/news',authenticateUser, newsRoutes);
         app.use('/api/discord',authenticateUser, discordRoutes);
+        app.use("/api/uploads/imgnews", express.static(path.join(__dirname, "/uploads/imgnews")));
 
         // Démarrage du serveur
         app.listen(server_port, () => {

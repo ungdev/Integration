@@ -25,6 +25,26 @@ export const checkPreRegisterStatus = async (req: Request, res: Response) => {
     }
 };
 
+export const checkSDIStatus = async (req: Request, res: Response) => {
+    try{
+        const status = await event_service.getEventsStatus();
+        Ok(res, ({data: status?.sdi_open}));
+
+    }catch(error){
+        Error(res, {msg :"Error while catching SDI status :" + error})
+    }
+};
+
+export const checkWEIStatus = async (req: Request, res: Response) => {
+    try{
+        const status = await event_service.getEventsStatus();
+        Ok(res, ({data: status?.wei_open}));
+
+    }catch(error){
+        Error(res, {msg :"Error while catching WEI status :" + error})
+    }
+};
+
 
 export const shotgunAttempt = async (req: Request, res: Response) => {
 
@@ -75,6 +95,28 @@ export const toggleShotgun = async (req: Request, res: Response) => {
   
     try {
       const result = await event_service.updateShotgunStatus(shotgunOpen);
+      Ok(res,{ msg: "Paramètres mis à jour.", data: result });
+    } catch (error) {
+      Error(res,{ msg: "Erreur lors de la mise à jour." });
+    }
+};
+
+export const toggleSDI = async (req: Request, res: Response) => {
+    const { sdiOpen } = req.body;
+  
+    try {
+      const result = await event_service.updateSDIStatus(sdiOpen);
+      Ok(res,{ msg: "Paramètres mis à jour.", data: result });
+    } catch (error) {
+      Error(res,{ msg: "Erreur lors de la mise à jour." });
+    }
+};
+
+export const toggleWEI = async (req: Request, res: Response) => {
+    const { weiOpen } = req.body;
+  
+    try {
+      const result = await event_service.updateWEIStatus(weiOpen);
       Ok(res,{ msg: "Paramètres mis à jour.", data: result });
     } catch (error) {
       Error(res,{ msg: "Erreur lors de la mise à jour." });

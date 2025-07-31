@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken';
 import { randomBytes } from "crypto";
 import { JSDOM } from 'jsdom';
 import { jwtSecret } from '../utils/secret';
-import * as userservice from './user.service';
+import * as user_service from './user.service';
+import * as role_service from './role.service';
 import { User, userSchema } from '../schemas/Basic/user.schema';
 import { and, desc, eq, isNotNull, isNull, sum } from "drizzle-orm";
 import { registrationSchema } from '../schemas/Relational/registration.schema';
@@ -22,37 +23,53 @@ export const comparePassword = async (password: string, hashedPassword: string):
 };
 
 // Fonction pour générer un JWT
-export const generateToken = (user : User) => {
+export const generateToken = (user: User & { roles: { roleId: number; roleName: string }[] }) => {
   return jwt.sign(
-    { userId: user.id, userPermission: user.permission, userEmail: user.email },
+    {
+      userId: user.id,
+      userEmail: user.email,
+      userPermission: user.permission,
+      userRoles: user.roles, // Ajout des rôles dans le token
+    },
     jwtSecret,
-    { expiresIn: '1h' } // Le token expire après 1 heure
+    { expiresIn: "1h" }
   );
 };
 
+
 // Fonction de connexion
 export const loginUser = async (email: string, password: string) => {
-    // Chercher l'utilisateur par email
-    const user = await userservice.getUserByEmail(email);
-    if (!user) {
-      throw new Error('Utilisateur non trouvé');
-    }
-  
-    // Vérifier le mot de passe
-    const isMatch = await comparePassword(password, user.password);
-    if (!isMatch) {
-      throw new Error('Mot de passe incorrect');
-    }
-  
-    // Générer un token JWT
-    const token = generateToken(user);
-    return token;
+  // Chercher l'utilisateur par email
+  const user = await user_service.getUserByEmail(email);
+  if (!user) {
+    throw new Error("Utilisateur non trouvé");
+  }
+
+  // Vérifier le mot de passe
+  const isMatch = await comparePassword(password, user.password);
+  if (!isMatch) {
+    throw new Error("Mot de passe incorrect");
+  }
+
+  // Récupérer les rôles de l'utilisateur
+  const userRoles = await role_service.getUserRoles(user.id); // [{ roleId, roleName }]
+
+  // Ajouter les rôles à l'objet utilisateur
+  const enrichedUser = {
+    ...user,
+    roles: userRoles,
   };
+
+  // Générer un token JWT avec les rôles inclus
+  const token = generateToken(enrichedUser);
+  return token;
+};
+
 
 // Fonction d'inscription
 export const registerUser = async (firstName: string, lastName: string, email: string, password: string) => {
     // Vérifier si l'email est déjà pris
-    const existingUser = await userservice.getUserByEmail(email);
+    const existingUser = await user_service.getUserByEmail(email);
     if (existingUser) {
       throw new Error('L\'email est déjà pris');
     }

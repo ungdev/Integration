@@ -6,12 +6,17 @@ import { authenticateUser } from '../middlewares/auth.middleware';
 const eventRouter = express.Router();
 
 // User routes
-eventRouter.get("/user/shotgunstatus",checkRole("Student"), eventController.checkShotgunStatus);
-eventRouter.get("/user/preregisterstatus",checkRole("Student"), eventController.checkPreRegisterStatus);
-eventRouter.post("/user/shotgunattempt",checkRole("Student"), eventController.shotgunAttempt);
+eventRouter.get("/user/shotgunstatus",checkRole("Student",[]), eventController.checkShotgunStatus);
+eventRouter.get("/user/preregisterstatus",checkRole("Student",[]), eventController.checkPreRegisterStatus);
+eventRouter.get("/user/sdistatus", eventController.checkSDIStatus);
+eventRouter.get("/user/weistatus", eventController.checkWEIStatus);
+eventRouter.post("/user/shotgunattempt",checkRole("Student",[]), eventController.shotgunAttempt);
+
 
 // Admin routes
-eventRouter.post("/admin/shotguntoggle",checkRole("Admin"),eventController.toggleShotgun);
-eventRouter.post("/admin/preregistrationtoggle",checkRole("Admin"), eventController.togglePreRegistration);
+eventRouter.post("/admin/shotguntoggle",checkRole("Admin",[]),eventController.toggleShotgun);
+eventRouter.post("/admin/preregistrationtoggle",checkRole("Admin",[]), eventController.togglePreRegistration);
+eventRouter.post("/admin/sditoggle",checkRole("Admin",[]),eventController.toggleSDI);
+eventRouter.post("/admin/weitoggle",checkRole("Admin",[]), eventController.toggleWEI);
 
 export default eventRouter;

@@ -124,15 +124,18 @@ export const getRoles = async()=>{
 
 }
 
-export const getUserRoles = async (userId : any) =>{
+export const getUserRoles = async (userId: number) => {
+  const userRoles = await db
+    .select({
+      roleId: roleSchema.id,
+      roleName: roleSchema.name,
+    })
+    .from(userRolesSchema)
+    .innerJoin(roleSchema, eq(userRolesSchema.role_id, roleSchema.id))
+    .where(eq(userRolesSchema.user_id, userId));
 
-    const userRoles = await db
-          .select({roleId: userRolesSchema.role_id})
-          .from(userRolesSchema)
-          .where(eq(userRolesSchema.user_id, userId));
-      
-      return userRoles;
-  };
+  return userRoles;
+};
 
 
 

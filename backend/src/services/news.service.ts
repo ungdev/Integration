@@ -10,7 +10,8 @@ export const createNews =  async (
   description: string,
   type: string,
   published: boolean,
-  target: string
+  target: string,
+  image_url?: string
 ) => {
   const newNews = {
     title,
@@ -18,6 +19,7 @@ export const createNews =  async (
     type,
     published,
     target,
+    image_url
   };
 
   const result = await db.insert(newsSchema).values(newNews).returning();
@@ -64,6 +66,11 @@ export const updateNews = async (
     .where(eq(newsSchema.id, id))
     .returning();
 
+  return result[0] ?? null;
+};
+
+export const getNewsById = async (id: number) => {
+  const result = await db.select().from(newsSchema).where(eq(newsSchema.id, id));
   return result[0] ?? null;
 };
 

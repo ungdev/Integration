@@ -117,6 +117,21 @@ export const getTeamUsers = async (req: Request, res: Response) => {
 
 }
 
+export const getAllTeamsWithUsers = async (req: Request, res: Response) => {
+
+    try {
+        const teamUsers = await team_service.getAllTeamsWithUsers();
+        Ok(res,{ data: teamUsers });
+        return;
+        } catch (error) {
+        console.error(error);
+        Error(res,{ msg: "Erreur interne lors de la récupération des utilisateurs avec leurs rôles." });
+        return;
+    
+    }
+
+}
+
 export const getTeamFaction = async (req: Request, res: Response) => {
 
     const {teamId} = req.query;
@@ -183,7 +198,7 @@ export const teamDistribution = async (req: Request, res: Response) => {
   
         // Filtrer les équipes en fonction de leur type
         const tcTeams = teams.filter(team => team.type === "TC");
-        const otherTeams = teams.filter(team => team.type !== "TC" && team.type !== "RI" && team.type !== "PMOM");
+        const otherTeams = teams.filter(team => team.type !== "TC" && team.type !== "RI" && team.type !== "MM");
   
         // Fonction pour assigner les utilisateurs à des équipes équilibrées
         async function assignUsersToTeams(users: any, teams: any) {

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import * as auth_service from '../services/auth.service';
 import * as user_service from '../services/user.service';
 import * as email_service from '../services/email.service';
+import * as role_service from '../services/role.service';
 import bigInt from 'big-integer';
 import { Error, Ok, Unauthorized } from '../utils/responses';
 import { decodeToken } from '../utils/token';
@@ -60,8 +61,17 @@ export const handlecasticket = async (req: Request, res: Response) => {
                 if (!id){ Error(res,{ msg: "Pas d'id" }); return;}
                     
                 await user_service.updateUserStudent( CASuser.givenName, CASuser.sn, CASuser.email);
+
+                // Récupérer les rôles de l'utilisateur
+                  const userRoles = await role_service.getUserRoles(user.id); // [{ roleId, roleName }]
                 
-                const token = auth_service.generateToken(user);
+                  // Ajouter les rôles à l'objet utilisateur
+                  const enrichedUser = {
+                    ...user,
+                    roles: userRoles,
+                  };
+                
+                const token = auth_service.generateToken(enrichedUser);
                 
 
                 Ok(res, { data: { token } })

@@ -8,7 +8,7 @@ export const updateUserPreferences = async (req: Request, res: Response) => {
       const { roleIds } = req.body; // Liste des ID des rôles sélectionnés
 
       if (!Array.isArray(roleIds)) {
-        res.status(400).json({ message: "Invalid data format" });
+        Error(res, { msg: "Invalid data format" });
         return;
       }
 
@@ -134,7 +134,7 @@ export const getUserRoles = async (req: Request, res: Response) => {
         return;
      }
 
-      const userRoles = await role_service.getUserRoles(userId);
+      const userRoles = await role_service.getUserRoles(Number(userId));
       Ok(res,{ data: userRoles });
       return;
     } catch (error) {

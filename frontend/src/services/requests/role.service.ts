@@ -81,7 +81,7 @@ export const getUsersWithRoles  = async () => {
 
 export const getRoles  = async () => {
   try{
-    const response = await api.get("/role/admin/getroles");
+    const response = await api.get("/role/user/getroles");
     const roles = response.data.data;
   
     return roles;

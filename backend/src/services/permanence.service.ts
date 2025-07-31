@@ -67,26 +67,42 @@ export const registerUserToPermanence = async (
     }
 
     // Transaction avec insertion directe et vérification post-insertion
-    await db.transaction(async (tx) => {
-      // Tentative d'insertion directe
-      await tx.insert(userPermanenceSchema).values({
-        user_id: userId,
-        permanence_id: permId,
-      });
+    await db.transaction(
+      async (tx) => {
+        // Tentative d'insertion directe
+        const currentCount = await tx
+          .insert(userPermanenceSchema)
+          .values({
+            user_id: userId,
+            permanence_id: permId,
+          })
+          .then(async () => {
+            // Vérification post-insertion de la capacité
+            const currentCount = await tx
+              .select({ count: count() })
+              .from(userPermanenceSchema)
+              .where(eq(userPermanenceSchema.permanence_id, permId))
+              .then((res) => res[0].count);
+            return currentCount;
+          });
 
-      // Vérification post-insertion de la capacité
-      const currentCapacity = await tx
-        .select({ capacity: permanenceSchema.capacity })
-        .from(permanenceSchema)
-        .where(eq(permanenceSchema.id, permId))
-        .then((res) => res[0]?.capacity ?? 0);
-
-      if (currentCapacity == 0) {
-        throw new PermanenceFullError("Permanence full");
+        if (currentCount > permanence.capacity_max) {
+          await tx
+            .delete(userPermanenceSchema)
+            .where(
+              and(
+                eq(userPermanenceSchema.user_id, userId),
+                eq(userPermanenceSchema.permanence_id, permId)
+              )
+            );
+          throw new PermanenceFullError("Permanence full");
+        }
+      },
+      {
+        isolationLevel: "serializable",
       }
-
-      await modifyPermCap(permId, -1);
-    });
+    );
+    await modifyPermCap(permId, -1);
   } catch (error: any) {
     // Gestion des erreurs de contraintes de base de données
     if (

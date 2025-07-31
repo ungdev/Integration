@@ -8,6 +8,7 @@ export const permanenceSchema = pgTable("permanences", {
   start_at: timestamp("start_at"),
   end_at: timestamp("end_at"),
   capacity: integer("capacity"),
+  capacity_max: integer("capacity_max"),
   is_open: boolean("is_open").default(false), // Géré par l'admin
 });
 

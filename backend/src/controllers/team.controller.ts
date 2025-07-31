@@ -198,7 +198,7 @@ export const teamDistribution = async (req: Request, res: Response) => {
   
         // Filtrer les équipes en fonction de leur type
         const tcTeams = teams.filter(team => team.type === "TC");
-        const otherTeams = teams.filter(team => team.type !== "TC" && team.type !== "RI" && team.type !== "PMOM");
+        const otherTeams = teams.filter(team => team.type !== "TC" && team.type !== "RI" && team.type !== "	MM");
   
         // Fonction pour assigner les utilisateurs à des équipes équilibrées
         async function assignUsersToTeams(users: any, teams: any) {

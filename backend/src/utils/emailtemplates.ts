@@ -245,7 +245,7 @@ export const templateWelcome = `
                     <tr>
                         <td style="font-size: 15px; line-height: 140%; margin: 20px 0; text-align: center;">
                             <p>Salut à toi jeune nouveau !</p>
-                            <p>Bravo pour ton acceptation à l'UTT ! Nous sommes l'équipe d'intégration, des étudiants bénévoles qui préparent minutieusement ton arrivée pour que celle-ci reste inoubliable.</p>
+                            <p>Bravo pour ton admission à l'UTT ! Nous sommes l'équipe d'intégration, des étudiants bénévoles qui préparent minutieusement ton arrivée pour que celle-ci reste inoubliable.</p>
                             <p>Un tas d'événements incroyables, dont la participation est basée sur le volontariat, t'attendent dès le <strong><u>Lundi 1er Septembre</u></strong> que tu arrives en 1ère année, en 3ème année, en master ou en Bachelor.</p>
                             <p>Tout est fait pour que tu t'éclates et que tu rencontres les personnes qui feront de ton passage à l'UTT un moment inoubliable. Mais avant toute chose, il faut te préparer.</p>
                             <p>Assure-toi de réaliser les tâches suivantes avant ton arrivée :</p>

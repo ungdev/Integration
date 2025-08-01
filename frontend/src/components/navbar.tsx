@@ -116,7 +116,7 @@ export const Navbar = () => {
         {/* Desktop Menu */}
         <div className="hidden lg:flex items-center gap-x-4 relative">
           <MenuItem to="/Home" label="Home" />
-          <MenuItem to="/Parrainnage" label="Parrainnage" />
+          <MenuItem to="/Parrainage" label="Parrainage" />
           <MenuItem to="/Challenges" label="Challenges" />
           <MenuItem to="/News" label="Mes Actus" />
           {(isStudent || isAdmin) && <MenuItem to="/Permanences" label="Permanences" />}
@@ -207,7 +207,7 @@ export const Navbar = () => {
           >
             <div className="flex flex-col space-y-2 p-4">
               <MenuItem to="/Home" label="Home" />
-              <MenuItem to="/Parrainnage" label="Parrainnage" />
+              <MenuItem to="/Parrainage" label="Parrainage" />
               <MenuItem to="/Challenges" label="Challenges" />
               <MenuItem to="/News" label="Mes Actus" />
               {(isStudent || isAdmin) && <MenuItem to="/Permanences" label="Permanences" />}

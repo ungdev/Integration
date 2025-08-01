@@ -244,22 +244,20 @@ export const templateWelcome = `
                         <td style="font-size: 15px; line-height: 140%; margin: 20px 0; text-align: center;">
                             <p>Salut à toi jeune nouveau !</p>
                             <p>Bravo pour ton acceptation à l'UTT ! Nous sommes l'équipe d'intégration, des étudiants bénévoles qui préparent minutieusement ton arrivée pour que celle-ci reste inoubliable.</p>
-                            <p>Un tas d'événements incroyables, tous basés sur la base du volontariat, t'attendent dès le <strong><u>Lundi 2 Septembre</u></strong> si tu arrives en première année et dès le <strong><u>Mardi 3 Septembre</u></strong> si tu arrives en 3ème année ou en master.</p>
-                            <p>Tout est fait pour que tu t'éclates et que tu rencontres les personnes qui feront de ton passage à l'UTT un moment inoubliable. Mais avant toute chose, il faut te préparer.</p>
-                            <p>Assure-toi de réaliser les tâches suivantes avant ton arrivée :</p>
-                            <ul style="list-style-type: disc; padding: 0; margin: 0; text-align: left; display: inline-block; padding-left: 20px;">
-                                <li style="margin-bottom: 10px;">Connecte-toi et crée ton compte sur le site de l'intégration pour qu'on puisse avoir ton moyen de contact !</li>
-                            </ul>
-                            <p>Maintenant, il te suffit de changer ton mot de passe en cliquant sur ce lien :</p>
+                            <p>Un tas d'événements incroyables, dont la participation est basée sur le volontariat, t'attendent dès le <strong><u>Lundi 1er Septembre</u></strong> que tu arrives en 1ère année, en 3ème année, en master ou en Bachelor
+                            <p>Tout est fait pour que tu t'éclates et que tu rencontres les personnes qui feront de ton passage à l'UTT un moment inoubliable. Tu retrouveras toutes les infomrations sur le site de l'intégration : </p>
+                            <a href="https://integration.utt.fr/" style="color: #e74160; font-weight: bold;" target="_blank">https://integration.utt.fr</a> !
+
+                            <p>Pour activer ton compte, il te suffit de changer ton mot de passe en cliquant sur ce lien :</p>
                             <p><a href="https://integration.utt.fr/Register?token={{token}}" style="color: #e74160; font-weight: bold;" target="_blank">Changer ton mot de passe</a></p>
-                            <p>Une fois cela fait, tu pourras te connecter à ton compte.</p>
+                            <p>Une fois cela fait, tu pourras te connecter à ton compte. <b> L'adresse email associée est celle que tu as donné à ton inscription à l'UTT</b></p>
                             <p style="color: red; font-weight: bold;">Attention, ce lien est valable uniquement une fois !</p>
                         </td>
                     </tr>
                     <tr>
                         <td style="margin-top: 20px; text-align: center;">
                             <p style="font-size: 11pt; margin: 0;">Lorsque tu arrives à l'UTT, un.e étudiant.e plus ancien.ne devient ton parrain ou ta marraine. Il ou elle sera ton contact privilégié pour découvrir l'école mais aussi la vie étudiante troyenne et répondre à toutes tes questions que ce soit sur l'UTT, les logements, les cours, la vie à Troyes,...</p>
-                            <p style="font-size: 11pt; margin: 10px 0;">Pour t'attribuer quelqu'un qui te correspond au mieux on t'invite à remplir ce questionnaire :</p>
+                            <p style="font-size: 11pt; margin: 10px 0;">Pour t'attribuer quelqu'un qui te correspond au mieux on t'invite à remplir <a href="https://docs.google.com/forms/d/e/1FAIpQLScThti-8I0ceHVb8RBYPzLcGhXNo2KPMg_nQHshrb6hC8EG_w/viewform?pli=1&fbzx=-7742379441906364887" style="color: #e74160; font-weight: bold;" target="_blank">ce questionnaire</a></p>
                             <p style="margin: 0;"><a href="https://docs.google.com/forms/d/e/1FAIpQLScThti-8I0ceHVb8RBYPzLcGhXNo2KPMg_nQHshrb6hC8EG_w/viewform?usp=header"</a></p>
                             <p style="font-size: 15px; font-weight: bold; margin: 20px 0;">Pense à nous rejoindre sur les réseaux sociaux !</p>
                             <p style="margin: 0;">

@@ -13,6 +13,7 @@ interface EmailOptions {
 
 export const sendEmail = async (options: EmailOptions): Promise<void> => {
   try {
+
     const transporter = nodemailer.createTransport({
       host: zimbra_host,
       port: 587,

@@ -49,10 +49,10 @@ export const handleSendEmail = async (req: Request, res: Response) => {
     // Récupérer les destinataires
     const recipients = await getRecipients(permission, sendTo);
 
-  if (!recipients.length) {
-      Error(res, { msg: 'Aucun destinataire trouvé.' });
-      return;
-  }
+    if (!recipients.length) {
+        Error(res, { msg: 'Aucun destinataire trouvé.' });
+        return;
+    }
 
   for (const recp of recipients) {
     let htmlEmail = '';
@@ -63,7 +63,7 @@ export const handleSendEmail = async (req: Request, res: Response) => {
         let token;
         let user = await user_service.getUserByEmail(recp)
         token = await registration_service.getRegistrationByUserId(user.id)
-        if(!token) return;
+        if(!token) continue;
         // Générer le contenu HTML du mail
         htmlEmail = generateEmailHtml(templateName, {token : token});
 

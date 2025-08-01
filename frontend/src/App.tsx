@@ -21,7 +21,7 @@ import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
 import { PermPage } from './pages/Perm';
 import { ChallPage } from './pages/Challenge';
-import { ParrainnagePage } from './pages/Parrainnage';
+import { ParrainagePage } from './pages/Parrainage';
 import { RegisterPage } from './pages/Register';
 import { ResetPasswordPage } from './pages/ResetPassword'
 import { WeiPage } from './pages/Wei';
@@ -59,7 +59,7 @@ const App: React.FC = () => {
         <Route path="/Home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/Profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
         <Route path="/Challenges" element={<ProtectedRoute><ChallPage /></ProtectedRoute>} />
-        <Route path="/Parrainnage" element={<ProtectedRoute><ParrainnagePage /></ProtectedRoute>} />
+        <Route path="/Parrainage" element={<ProtectedRoute><ParrainagePage /></ProtectedRoute>} />
         <Route path="/SDI" element={<ProtectedRoute><SdiPage /></ProtectedRoute>} />
         <Route path="/WEI" element={<ProtectedRoute><WeiPage /></ProtectedRoute>} />
         <Route path="/News" element={<ProtectedRoute><NewsPage /></ProtectedRoute>} />

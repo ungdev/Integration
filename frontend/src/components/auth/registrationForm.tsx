@@ -43,33 +43,62 @@ export const RegistrationForm = () => {
 
     return (
         <div
-        className="relative min-h-screen flex items-center justify-center bg-cover bg-center"
-        style={{ backgroundImage: "url('img/background.png')" }}
+            className="relative min-h-screen flex items-center justify-center bg-no-repeat bg-cover bg-center"
+            style={{ backgroundImage: "url('img/bg_25.jpg')" }}
         >
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-6 text-center">Définir votre mot de passe</h2>
+            <div className="min-h-screen flex items-center justify-center w-full">
+            <div className="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-md transition-all duration-300">
+                <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+                Définir votre mot de passe
+                </h2>
 
-                {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+                {error && (
+                <div className="text-red-600 bg-red-100 p-3 rounded mb-4 text-center flex items-center justify-center gap-2 transition-all duration-300">
+                    ❌ <span>{error}</span>
+                </div>
+                )}
+
                 {success ? (
-                    <p className="text-green-600 text-center">Mot de passe enregistré. Redirection...</p>
+                <div className="text-green-700 bg-green-100 p-3 rounded text-center flex items-center justify-center gap-2 transition-all duration-300">
+                    ✅ <span>Mot de passe enregistré. Redirection...</span>
+                </div>
                 ) : (
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium">Mot de passe</label>
-                            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium">Confirmer le mot de passe</label>
-                            <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-                        </div>
-                        <Button type="submit" className="w-full bg-blue-600 text-white">
-                            Valider
-                        </Button>
-                    </form>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                        Mot de passe
+                    </label>
+                    <Input
+                        id="password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="w-full"
+                    />
+                    </div>
+
+                    <div>
+                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                        Confirmer le mot de passe
+                    </label>
+                    <Input
+                        id="confirmPassword"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        className="w-full"
+                    />
+                    </div>
+
+                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded transition duration-200">
+                    ✅ Valider
+                    </Button>
+                </form>
                 )}
             </div>
+            </div>
         </div>
-    </div>
     );
 }

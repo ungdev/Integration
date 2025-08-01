@@ -1,10 +1,10 @@
 import { Navbar } from "../components/navbar";
 import { useNavigate } from "react-router-dom";
-import { ParrainageNewStudent, ParrainageStudent } from "../components/Parrainnage/parrainnageForm";
+import { ParrainageNewStudent, ParrainageStudent } from "../components/Parrainnage/parrainageForm";
 import { getPermission } from "../services/requests/user.service";
 
 
-export const ParrainnagePage = () => {
+export const ParrainagePage = () => {
 
     const navigate = useNavigate();
     const permission = getPermission();

@@ -230,6 +230,8 @@ export const templateWelcome = `
         <tr>
             <td align="center" style="padding: 20px;">
                 <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 100%; margin: 0 auto;">
+
+                    <!-- Bloc FRANÇAIS -->
                     <tr>
                         <td align="center" style="padding: 10px;">
                             <img src="https://integration.utt.fr/img/logo_original.png" alt="Logo Comic" style="width: 18%; max-width: 104.4px; height: auto;">
@@ -244,21 +246,16 @@ export const templateWelcome = `
                         <td style="font-size: 15px; line-height: 140%; margin: 20px 0; text-align: center;">
                             <p>Salut à toi jeune nouveau !</p>
                             <p>Bravo pour ton acceptation à l'UTT ! Nous sommes l'équipe d'intégration, des étudiants bénévoles qui préparent minutieusement ton arrivée pour que celle-ci reste inoubliable.</p>
-                            <p>Un tas d'événements incroyables, dont la participation est basée sur le volontariat, t'attendent dès le <strong><u>Lundi 1er Septembre</u></strong> que tu arrives en 1ère année, en 3ème année, en master ou en Bachelor
-                            <p>Tout est fait pour que tu t'éclates et que tu rencontres les personnes qui feront de ton passage à l'UTT un moment inoubliable. Tu retrouveras toutes les informations sur le site de l'intégration : </p>
-                            <a href="https://integration.utt.fr/" style="color: #e74160; font-weight: bold;" target="_blank">https://integration.utt.fr</a> !
-
-                            <p>Pour activer ton compte, il te suffit de changer ton mot de passe en cliquant sur ce lien :</p>
+                            <p>Un tas d'événements incroyables, tous basés sur la base du volontariat, t'attendent dès le <strong><u>Lundi 1er Septembre</u></strong> que tu arrives en 1ère année, en 3ème année, en master ou en Bachelor.</p>
+                            <p>Tout est fait pour que tu t'éclates et que tu rencontres les personnes qui feront de ton passage à l'UTT un moment inoubliable. Mais avant toute chose, il faut te préparer.</p>
+                            <p>Assure-toi de réaliser les tâches suivantes avant ton arrivée :</p>
+                            <p>Connecte-toi et crée ton compte sur le site de l'intégration <a href="https://integration.utt.fr/" style="color: #e74160; font-weight: bold;" target="_blank">https://integration.utt.fr</a> pour qu'on puisse avoir ton moyen de contact !</p>
+                            <p>Maintenant, il te suffit de changer ton mot de passe en cliquant sur ce lien :</p>
                             <p><a href="https://integration.utt.fr/Register?token={{token}}" style="color: #e74160; font-weight: bold;" target="_blank">Changer ton mot de passe</a></p>
-                            <p>Une fois cela fait, tu pourras te connecter à ton compte. <b> L'adresse email associée est celle que tu as donné à ton inscription à l'UTT</b></p>
+                            <p>Une fois cela fait, tu pourras te connecter à ton compte.</p>
                             <p style="color: red; font-weight: bold;">Attention, ce lien est valable uniquement une fois !</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="margin-top: 20px; text-align: center;">
                             <p style="font-size: 11pt; margin: 0;">Lorsque tu arrives à l'UTT, un.e étudiant.e plus ancien.ne devient ton parrain ou ta marraine. Il ou elle sera ton contact privilégié pour découvrir l'école mais aussi la vie étudiante troyenne et répondre à toutes tes questions que ce soit sur l'UTT, les logements, les cours, la vie à Troyes,...</p>
                             <p style="font-size: 11pt; margin: 10px 0;">Pour t'attribuer quelqu'un qui te correspond au mieux on t'invite à remplir <a href="https://docs.google.com/forms/d/e/1FAIpQLScThti-8I0ceHVb8RBYPzLcGhXNo2KPMg_nQHshrb6hC8EG_w/viewform?pli=1&fbzx=-7742379441906364887" style="color: #e74160; font-weight: bold;" target="_blank">ce questionnaire</a></p>
-                            <p style="margin: 0;"><a href="https://docs.google.com/forms/d/e/1FAIpQLScThti-8I0ceHVb8RBYPzLcGhXNo2KPMg_nQHshrb6hC8EG_w/viewform?usp=header"</a></p>
                             <p style="font-size: 15px; font-weight: bold; margin: 20px 0;">Pense à nous rejoindre sur les réseaux sociaux !</p>
                             <p style="margin: 0;">
                                 <a href="https://www.facebook.com/bde.utt" target="_blank">
@@ -270,6 +267,51 @@ export const templateWelcome = `
                             </p>
                         </td>
                     </tr>
+
+                    <!-- Séparateur -->
+                    <tr>
+                        <td style="border-top: 2px solid #ccc; padding: 20px 0;"></td>
+                    </tr>
+
+                    <!-- Bloc ENGLISH -->
+                                        <tr>
+                        <td align="center" style="padding: 10px;">
+                            <img src="https://integration.utt.fr/img/logo_original.png" alt="Logo Comic" style="width: 18%; max-width: 104.4px; height: auto;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 21px; font-weight: bold; line-height: 240%; margin: 20px 0; text-align: center;">
+                            INTEGRATION UTT
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 15px; line-height: 140%; text-align: center;">
+                            <p>Hello there, newcomer!</p>
+                            <p>Congratulations on being accepted to UTT! We are the integration team – a group of volunteer students preparing your arrival to make it truly unforgettable.</p>
+                            <p>A whole bunch of amazing events, all based on voluntary participation, are waiting for you starting <strong><u>Monday, September 1st</u></strong>, whether you're joining in your first year, third year, master's, or Bachelor.</p>
+                            <p>Everything is set up for you to have a blast and meet people who will make your time at UTT unforgettable. But before anything else, you need to get ready.</p>
+                            <p>Please make sure to complete the following tasks before your arrival:</p>
+                            <p>Log in and create your account on the integration website <a href="https://integration.utt.fr/" style="color: #e74160; font-weight: bold;" target="_blank">https://integration.utt.fr</a> so we can get your contact details!</p>
+                            <p>Now, you just need to change your password by clicking on this link:</p>
+                            <p><a href="https://integration.utt.fr/Register?token={{token}}" style="color: #e74160; font-weight: bold;" target="_blank">Change your password</a></p>
+                            <p>Once that’s done, you’ll be able to access your account.</p>
+                            <p style="color: red; font-weight: bold;">Warning: this link is only valid once!</p>
+                            <p style="font-size: 11pt; margin: 0;">When you arrive at UTT, an older student will become your sponsor. They’ll be your main contact to help you discover the school, student life in Troyes, and answer any questions you have – whether about UTT, housing, classes, or life in Troyes.</p>
+                            <p></p>
+                            <p style="font-size: 11pt; margin: 0;font-weight: bold;">If you are an exchange student, please DO NOT fill out this form as someone will be attributed to you by the UTT itself.</p>
+                            <p style="font-size: 11pt; margin: 10px 0;">To assign someone who matches you best, please fill out <a href="https://docs.google.com/forms/d/e/1FAIpQLScThti-8I0ceHVb8RBYPzLcGhXNo2KPMg_nQHshrb6hC8EG_w/viewform?pli=1&fbzx=-7742379441906364887" style="color: #e74160; font-weight: bold;" target="_blank">this questionnaire</a></p>
+                            <p style="font-size: 15px; font-weight: bold; margin: 20px 0;">Don’t forget to follow us on social media!</p>
+                            <p style="margin: 0;">
+                                <a href="https://www.facebook.com/bde.utt" target="_blank">
+                                    <img src="https://cdn.tools.unlayer.com/social/icons/rounded/facebook.png" alt="Facebook" style="width: 33%; max-width: 30.37px; height: auto; margin: 5px;">
+                                </a>
+                                <a href="https://www.instagram.com/bde.utt" target="_blank">
+                                    <img src="https://cdn.tools.unlayer.com/social/icons/rounded/instagram.png" alt="Instagram" style="width: 33%; max-width: 30.37px; height: auto; margin: 5px;">
+                                </a>
+                            </p>
+                        </td>
+                    </tr>
+
                 </table>
             </td>
         </tr>

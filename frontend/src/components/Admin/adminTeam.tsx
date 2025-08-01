@@ -14,6 +14,7 @@ import {
   teamDistribution,
   getTeamFaction,
 } from "../../services/requests/team.service";
+
 import { getAllFactionsAdmin } from "../../services/requests/faction.service";
 import { getUsers } from "../../services/requests/user.service";
 import { Team } from "../../interfaces/team.interface";
@@ -29,11 +30,14 @@ export const AdminTeamManagement = () => {
   const [editName, setEditName] = useState<string>("");
   const [editType, setEditType] = useState<string>("");
   const [editFactionId, setEditFactionId] = useState<number | null>(null);
-  const [editMembers, setEditMembers] = useState<number[]>([]);
+  const [editLeaders, setEditLeaders] = useState<number[]>([]);
+  const [editNewMembers, setEditNewMembers] = useState<number[]>([]);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
   const [newTeamName, setNewTeamName] = useState("");
   const [newFactionId, setNewFactionId] = useState<number | null>(null);
+
+  
 
   const selectedTeam = teams.find((t) => t.teamId === selectedTeamId);
 
@@ -54,11 +58,12 @@ export const AdminTeamManagement = () => {
       const team = teams.find((t) => t.teamId === selectedTeamId);
       if (team) {
         const faction = team.faction_id ?? ((await getTeamFaction(team.teamId))?.factionId);
-        const members = await getTeamUsers(team.teamId);
+        const members : [User] = await getTeamUsers(team.teamId);
         setEditName(team.name);
         setEditType(team.type);
         setEditFactionId(faction || null);
-        setEditMembers(members.map((member: User) => member.userId));
+        setEditLeaders(members.filter(m => m.permission !== "Nouveau").map(m => m.userId));
+        setEditNewMembers(members.filter(m => m.permission === "Nouveau").map(m => m.userId));
       }
     };
     loadTeamDetails();
@@ -86,7 +91,7 @@ export const AdminTeamManagement = () => {
         teamID: selectedTeamId,
         teamName: editName,
         factionID: editFactionId,
-        teamMembers: editMembers,
+        teamMembers: [...editLeaders, ...editNewMembers],
         type: editType,
       });
       alert("✅ Équipe mise à jour !");
@@ -118,11 +123,6 @@ export const AdminTeamManagement = () => {
     } catch (err) {
       console.error("Erreur lors de la création de l'équipe", err);
     }
-  };
-
-  const handleMemberChange = (newValues: any) => {
-    const selectedIds = newValues.map((val: any) => val.value);
-    setEditMembers(selectedIds);
   };
 
   const handleDeleteConfirm = async () => {
@@ -212,20 +212,48 @@ export const AdminTeamManagement = () => {
             />
 
             <div className="w-full md:w-96">
-              <h3 className="text-md font-semibold mb-2">👥 Membres de l’équipe</h3>
+              <h3 className="text-md font-semibold mb-2">👨‍💼 Chefs d’équipe</h3>
               <Select
                 isMulti
-                value={editMembers.map((id) => {
+                value={editLeaders.map((id) => {
                   const user = users.find((u) => u.userId === id);
                   return { value: id, label: user ? `${user.firstName} ${user.lastName}` : "" };
                 })}
-                onChange={handleMemberChange}
-                options={users.map((user) => ({
-                  value: user.userId,
-                  label: `${user.firstName} ${user.lastName}`,
-                }))}
+                onChange={(newValues: any) => {
+                  const selectedIds = newValues.map((val: any) => val.value);
+                  setEditLeaders(selectedIds);
+                }}
+                options={users
+                  .filter((user) => user.permission !== "Nouveau")
+                  .map((user) => ({
+                    value: user.userId,
+                    label: `${user.firstName} ${user.lastName}`,
+                  }))}
                 className="w-full"
-                placeholder="Sélectionner des membres"
+                placeholder="Sélectionner les chefs"
+              />
+            </div>
+
+            <div className="w-full md:w-96 pt-6">
+              <h3 className="text-md font-semibold mb-2">🆕 Nouveaux membres</h3>
+              <Select
+                isMulti
+                value={editNewMembers.map((id) => {
+                  const user = users.find((u) => u.userId === id);
+                  return { value: id, label: user ? `${user.firstName} ${user.lastName}` : "" };
+                })}
+                onChange={(newValues: any) => {
+                  const selectedIds = newValues.map((val: any) => val.value);
+                  setEditNewMembers(selectedIds);
+                }}
+                options={users
+                  .filter((user) => user.permission === "Nouveau")
+                  .map((user) => ({
+                    value: user.userId,
+                    label: `${user.firstName} ${user.lastName}`,
+                  }))}
+                className="w-full"
+                placeholder="Sélectionner les nouveaux"
               />
             </div>
 

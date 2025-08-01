@@ -73,6 +73,9 @@ const App: React.FC = () => {
         <Route path="/admin/teams" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageTeam /></PrivateRoute>} />
         <Route path="/admin/factions" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageFaction /></PrivateRoute>} />
 
+        {/* ResposCE et Admin */}
+        <Route path="/admin/news" element={<PrivateRoute permissionRequired="Admin" roleRequired="Communication & Graphisme"><AdminPageNews /></PrivateRoute>} />
+
         {/* Arbitre et Admin*/}
         <Route path="/admin/challenge" element={<PrivateRoute permissionRequired="Admin" roleRequired="Arbitre"><AdminPageChall /></PrivateRoute>} />
         {/* Admin uniquement */}
@@ -82,7 +85,6 @@ const App: React.FC = () => {
         <Route path="/admin/permanences" element={<AdminRoute><AdminPagePerm /></AdminRoute>} />
         <Route path="/admin/email" element={<AdminRoute><AdminPageEmail /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminPageUser /></AdminRoute>} />
-        <Route path="/admin/news" element={<AdminRoute><AdminPageNews /></AdminRoute>} />
       </Routes>
     </Router>
 

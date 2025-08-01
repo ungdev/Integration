@@ -135,7 +135,7 @@ export const AdminPageUser: React.FC = () => {
 
 export const AdminPageNews: React.FC = () => {
   return (
-    <AdminLayout allowedRoles={["Admin"]}>
+    <AdminLayout allowedRoles={["Admin", "Communication & Graphisme"]}>
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl bg-white shadow p-6">
           < AdminNews/>

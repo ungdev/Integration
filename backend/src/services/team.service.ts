@@ -7,6 +7,7 @@ import { userSchema } from "../schemas/Basic/user.schema";
 import { getFaction } from "./faction.service";
 import { factionSchema } from "../schemas/Basic/faction.schema";
 import { teamShotgunSchema } from "../schemas/Relational/teamshotgun.schema";
+import { permission } from "process";
 
 export const createTeam = async (teamName: string, members: number[]) => {
 
@@ -135,6 +136,7 @@ export const getTeamUsers = async (teamId: any) => {
       firstName: userSchema.first_name,
       lastName: userSchema.last_name,
       email: userSchema.email,
+      permission: userSchema.permission
     })
     .from(userSchema)
     .innerJoin(userTeamsSchema, eq(userSchema.id, userTeamsSchema.user_id))

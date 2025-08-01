@@ -44,6 +44,7 @@ export const Navbar = () => {
   const isStudent = permission === "Student";
   const isRespoCE = roles.includes("Respo CE");
   const isArbitre = roles.includes("Arbitre");
+  const isComm = roles.includes("Communication & Graphisme");
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -87,6 +88,7 @@ export const Navbar = () => {
     if (isAdmin) return true;
     if (isRespoCE && ["/admin/teams", "/admin/factions"].includes(path)) return true;
     if (isArbitre && ["/admin/challenge"].includes(path)) return true;
+    if (isComm && ["/admin/news"].includes(path)) return true;
     return false;
   };
 
@@ -155,7 +157,7 @@ export const Navbar = () => {
           </div>
 
           {/* Admin Dropdown */}
-          {(isAdmin || isRespoCE || isArbitre) && (
+          {(isAdmin || isRespoCE || isArbitre || isComm) && (
             <div className="relative">
               <button
                 onClick={() => setIsAdminOpen((prev) => !prev)}
@@ -209,12 +211,13 @@ export const Navbar = () => {
               <MenuItem to="/Home" label="Home" />
               <MenuItem to="/Parrainage" label="Parrainage" />
               <MenuItem to="/Challenges" label="Challenges" />
+              
               <MenuItem to="/News" label="Mes Actus" />
               {(isStudent || isAdmin) && <MenuItem to="/Permanences" label="Permanences" />}
               {(isStudent || isAdmin) && <MenuItem to="/Shotgun" label="Shotgun" />}
               <MenuItem to="/WEI" label="WEI" />
               <MenuItem to="/SDI" label="SDI" />
-              {(isAdmin || isRespoCE || isArbitre) && (
+              {(isAdmin || isRespoCE || isArbitre || isComm) && (
                 <>
                   <span className="mt-2 font-semibold text-white">Admin</span>
                   {adminLinks

@@ -245,7 +245,7 @@ export const templateWelcome = `
                             <p>Salut à toi jeune nouveau !</p>
                             <p>Bravo pour ton acceptation à l'UTT ! Nous sommes l'équipe d'intégration, des étudiants bénévoles qui préparent minutieusement ton arrivée pour que celle-ci reste inoubliable.</p>
                             <p>Un tas d'événements incroyables, dont la participation est basée sur le volontariat, t'attendent dès le <strong><u>Lundi 1er Septembre</u></strong> que tu arrives en 1ère année, en 3ème année, en master ou en Bachelor
-                            <p>Tout est fait pour que tu t'éclates et que tu rencontres les personnes qui feront de ton passage à l'UTT un moment inoubliable. Tu retrouveras toutes les infomrations sur le site de l'intégration : </p>
+                            <p>Tout est fait pour que tu t'éclates et que tu rencontres les personnes qui feront de ton passage à l'UTT un moment inoubliable. Tu retrouveras toutes les informations sur le site de l'intégration : </p>
                             <a href="https://integration.utt.fr/" style="color: #e74160; font-weight: bold;" target="_blank">https://integration.utt.fr</a> !
 
                             <p>Pour activer ton compte, il te suffit de changer ton mot de passe en cliquant sur ce lien :</p>

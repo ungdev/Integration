@@ -1,5 +1,4 @@
-import { useEffect, useState, Fragment } from 'react';
-import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
+import { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { emailPreview, sendEmail } from '../../services/requests/email.service';
 import { Card } from '../ui/card';
@@ -7,6 +6,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { User } from '../../interfaces/user.interface';
 import { getUsers } from '../../services/requests/user.service';
+import Swal from 'sweetalert2';
 
 export const AdminEmail = () => {
   const [subject, setSubject] = useState('');
@@ -18,7 +18,6 @@ export const AdminEmail = () => {
   const [sendTo, setSendTo] = useState<any[]>([]);
   const [preview, setPreview] = useState('');
   const [users, setUsers] = useState<User[]>([]);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false); // 👈 confirmation dialog
 
   const permissionOptions = [
     { value: 'Nouveau', label: 'Nouveau' },
@@ -59,19 +58,47 @@ export const AdminEmail = () => {
     }
   };
 
-  const handleSend = async () => {
-    const payload = {
-      subject,
-      templateName: isCustom ? 'custom' : templateName,
-      format,
-      permission,
-      sendTo: permission ? null : sendTo.map((u) => u.value),
-      html: isCustom ? customContent : undefined,
-    };
-    const res = await sendEmail(payload);
-    alert(res.message);
-    setIsConfirmOpen(false); // 👈 close dialog after sending
+const handleSend = async () => {
+  // On mappe toujours pour avoir un tableau de string
+
+  const emails = sendTo.map((u) => u.value);
+
+
+  const payload = {
+    subject,
+    templateName: isCustom ? 'custom' : templateName,
+    format,
+    permission,
+    sendTo: permission ? null : emails,
+    html: isCustom ? customContent : undefined,
   };
+
+  const res = await sendEmail(payload);
+  Swal.fire({
+    icon: 'success',
+    title: 'Email envoyé',
+    text: res.message,
+  });
+};
+
+  const confirmSend = async () => {
+    const result = await Swal.fire({
+      title: 'Confirmer l\'envoi',
+      text: 'Êtes-vous sûr de vouloir envoyer cet email ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, envoyer',
+      cancelButtonText: 'Annuler',
+    });
+
+    if (result.isConfirmed) {
+      await handleSend();
+    }
+  };
+
+
 
   return (
     <Card className="space-y-4 p-6">
@@ -114,66 +141,15 @@ export const AdminEmail = () => {
         onChange={(opt) => setPermission(opt?.value || null)}
       />
       {!permission && (
-        <Select
-          isMulti
-          options={users.map((u) => ({ value: u.email, label: `${u.firstName} ${u.lastName}` }))}
-          onChange={(val) => setSendTo(val as any)}
-        />
+      <Select
+        isMulti
+        options={users.map((u) => ({ value: u.email, label: `${u.firstName} ${u.lastName}` }))}
+        onChange={(val) => setSendTo(val as any)}
+      />
       )}
-      <Button onClick={() => setIsConfirmOpen(true)} className="bg-blue-600 text-white">
+      <Button onClick={confirmSend} className="bg-blue-600 text-white">
         ✉️ Envoyer
       </Button>
-
-      {/* ✅ Confirmation Dialog */}
-      <Transition appear show={isConfirmOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={() => setIsConfirmOpen(false)}>
-          <TransitionChild
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-50"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-50"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-transparent bg-opacity-25" />
-          </TransitionChild>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <TransitionChild
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all border-4 border-red-500">
-                  <DialogTitle as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                    Confirmer l'envoi
-                  </DialogTitle>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Êtes-vous sûr de vouloir envoyer cet email ?
-                    </p>
-                  </div>
-
-                  <div className="mt-4 flex justify-end space-x-2">
-                    <Button onClick={() => setIsConfirmOpen(false)} className="bg-gray-300 text-black">
-                      Annuler
-                    </Button>
-                    <Button onClick={handleSend} className="bg-blue-600 text-white">
-                      Confirmer
-                    </Button>
-                  </div>
-                </DialogPanel>
-              </TransitionChild>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
     </Card>
   );
 };

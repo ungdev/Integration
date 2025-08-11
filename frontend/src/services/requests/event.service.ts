@@ -28,6 +28,13 @@ export const checkWEIStatus = async () => {
 
 };
 
+export const checkFoodStatus = async () => {
+
+        const response = await api.get("/event/user/foodstatus");
+        return response.data.data;
+
+};
+
 export const attemptShotgun = async () => {
 
     const response = await api.post("event/user/shotgunattempt");
@@ -61,6 +68,14 @@ export const toggleSDI = async (sdiOpen: boolean) => {
 export const toggleWEI = async (weiOpen: boolean) => {
 
         const response = await api.post(`event/admin/weitoggle`, { weiOpen});
+        return response.data;
+
+    
+};
+
+export const toggleFood = async (foodOpen: boolean) => {
+
+        const response = await api.post(`event/admin/foodtoggle`, { foodOpen});
         return response.data;
 
     

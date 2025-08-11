@@ -47,7 +47,7 @@ export const WeiSection = () => {
           <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
             <iframe
               title="Billetterie WEI"
-              src="https://www.billetweb.fr/shop.php?event=billetterie-week-end-dintegration-2024"
+              src="https://www.billetweb.fr/billetterie-week-end-dintegration-utt-2025"
               className="w-full h-[600px] border-none"
             />
           </div>

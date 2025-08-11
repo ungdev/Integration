@@ -109,12 +109,33 @@ export const templateNotebook = `
             <h1 style="font-size: 21px; font-weight: bold; margin: 10px 0;">INTEGRATION UTT</h1>
         </div>
         <div class="content">
-            <p>Hello petit nouveau ! Pour commencer l’intégration dès maintenant, on t’a préparé un petit cahier de vacances !! Rien de sérieux ni d'obligatoire ne t’inquiète pas, mais de quoi t’occuper avant la rentrée. Alors si tu veux y participer, tu peux le télécharger juste ici et le renvoyer à <a href="mailto:integration+cahier@utt.fr">integration+cahier@utt.fr</a> avant le lundi 26 août. Nous te renverrons ensuite ta correction, et si tu as été assez drôle tu pourras même apparaître dans le best of du cahier de vacances !! Bisous et à la rentrée !!</p>
-            <a href={{notebook}} target="_blank" class="button">Cahier de vacances !</a>
-            <p>Nous serons présents sur les réseaux tout au long de l'été pour te tenir informé(e), te partager des astuces, et plein d'autres trucs trop cools ! Rejoins le site de l'intégration pour bien être informé des actus !</p>
+
+            <p>Salut à toi !!!!</p><p>
+
+            <p>Si tu reçois ce mail, c’est que tu es sur le point de rejoindre l’UTT et de vivre tes premières années en école supérieure.</p>
+            
+            <p>Mais après toutes ces vacances, il est important de ne pas s’endormir et de vite se remettre au travail !</p>
+            
+            <p>C’est pourquoi l’intégration te propose un cahier de vacances qui te permettra de te remettre au niveau.</p>
+            
+            <p>Toutes les bases y sont revues, de la terminale… jusqu’au CP. À toi de nous prouver que tu en es capable ! Méthodologie et rigueur seront nécessaires pour en venir à bout (et pas mal d’humour également).</p>
+            
+            <p>Ce cahier sera examiné par un jury extrêmement talentueux : des ingénieurs hors pair, ayant déjà prouvé leur valeur lors d’un concours de Ricard sur la plage de Banyuls-sur-Mer.</p>
+            
+            <p>À toi de leur montrer que tu peux égaler leurs compétences ! Ce jury n’hésitera pas à te récompenser pour tes efforts si tu nous renvoies tes réponses à cette adresse mail.</p>
+            <p>Alors si tu veux y participer, tu peux le télécharger juste ici et le renvoyer à <a href="mailto:clement.duranson@utt.fr">clement.duranson@utt.fr</a> avant le dimanche 31 août.</p>
+            <a href="{{notebook}}" target="_blank" class="button">Cahier de vacances !</a>
+          
+            
+            <p>Nous serons présents sur les réseaux tout au long de l'été pour te tenir informé(e), te partager des astuces, et plein d'autres trucs trop cools ! </strong>Rejoins le site de l'intégration</strong> pour bien être informé des actus ! Tu as reçu dans le premier mail de notre part, un lien pour réinitialiser ton mot de passe et te connecter.</p>
             <a href="https://integration.utt.fr/" target="_blank" class="button">Inscris toi !</a>
-            <p>Pense aussi à rejoindre notre Discord, tu pourras y discuter avec des nouveaux, et poser tes questions aux étudiants déjà à l'UTT !</p>
+            <p>Pense aussi à rejoindre notre Discord, c'est uniquement par ce biais que tu pourras <strong>contacter tes chefs d'équipe</strong> et en savoir plus sur l'intégration ! </p>
             <a href="https://discord.gg/Ea8XwgX5HS" target="_blank" class="button">Rejoindre Discord</a>
+              <p>Alors, bon courage à toi, nous sommes impatients de lire tes meilleures réponses.</p>
+            
+            <p>À très vite !</p>
+            
+            <p>Toute l’équipe de l’intégration</p>
         </div>
         <div class="footer">
             <p style="font-size: 16px; font-weight: bold;">Rejoins nous sur les réseaux !</p>
@@ -122,6 +143,9 @@ export const templateNotebook = `
                 <a href="https://www.facebook.com/bde.utt" target="_blank" rel="noopener"><img src="https://cdn.tools.unlayer.com/social/icons/rounded/facebook.png" alt="Facebook"></a>
                 <a href="https://twitter.com/bdeutt" target="_blank" rel="noopener"><img src="https://cdn.tools.unlayer.com/social/icons/rounded/twitter.png" alt="Twitter"></a>
                 <a href="https://www.instagram.com/bdeutt" target="_blank" rel="noopener"><img src="https://cdn.tools.unlayer.com/social/icons/rounded/instagram.png" alt="Instagram"></a>
+                <a href="https://discord.gg/Ea8XwgX5HS" target="_blank">
+            <img src="https://cdn.tools.unlayer.com/social/icons/rounded/discord.png" alt="Discord">
+        </a>
             </div>
         </div>
     </div>

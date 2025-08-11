@@ -15,7 +15,7 @@ import {
 } from "../../services/requests/team.service";
 
 import { getAllFactionsAdmin } from "../../services/requests/faction.service";
-import { getUsers } from "../../services/requests/user.service";
+import { getUsersAdmin } from "../../services/requests/user.service";
 import { Team } from "../../interfaces/team.interface";
 import { Faction } from "../../interfaces/faction.interface";
 import { User } from "../../interfaces/user.interface";
@@ -73,7 +73,7 @@ export const AdminTeamManagement = () => {
       const [teamRes, factionRes, usersRes] = await Promise.all([
         getAllTeams(),
         getAllFactionsAdmin(),
-        getUsers(),
+        getUsersAdmin(),
       ]);
       setTeams(teamRes);
       setFactions(factionRes);

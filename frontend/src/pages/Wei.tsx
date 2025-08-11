@@ -1,5 +1,5 @@
 import { Navbar } from "../components/navbar";
-import { WeiSection } from "../components/WEI_SDI/weiSection";
+import { WeiSection } from "../components/WEI_SDI_Food/weiSection";
 
 
 export const WeiPage = () => {

@@ -20,7 +20,7 @@ export interface EmailOptions {
 export const generateEmailHtml = (templateName: string, data: any)  => {
   switch (templateName) {
     case 'templateNotebook':
-      return template.compileTemplate({ notebook: data.notebook }, template.templateNotebook);
+       return template.compileTemplate({ notebook: data.notebook }, template.templateNotebook);
     case 'templateAttributionBus':
       return template.compileTemplate({ bus:  data.bus, time: data.tim }, template.templateAttributionBus);
     case 'templateWelcome':
@@ -49,6 +49,8 @@ export const handleSendEmail = async (req: Request, res: Response) => {
     // Récupérer les destinataires
     const recipients = await getRecipients(permission, sendTo);
 
+
+
     if (!recipients.length) {
         Error(res, { msg: 'Aucun destinataire trouvé.' });
         return;
@@ -67,15 +69,16 @@ export const handleSendEmail = async (req: Request, res: Response) => {
         // Générer le contenu HTML du mail
         htmlEmail = generateEmailHtml(templateName, {token : token});
 
+      }
       if(templateName === "templateNotebook"){
-          htmlEmail = generateEmailHtml(templateName, {notebook : 'link'});
+          htmlEmail = generateEmailHtml(templateName, {notebook : 'https://drive.google.com/file/d/1Tl8UeILFlAdj9IC2vy3gYXdXCOzD4ugX/view?usp=sharing'});
       }
       if(templateName === "templateAttributionBus"){
           htmlEmail = generateEmailHtml(templateName, {bus : 'bus', time: '09h00'});
       }
     }
-
-    } else {
+    
+    else {
       htmlEmail = sanitizeHtml(html || '');
     }
 

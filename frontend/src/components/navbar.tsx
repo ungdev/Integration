@@ -44,7 +44,7 @@ export const Navbar = () => {
   const isStudent = permission === "Student";
   const isRespoCE = roles.includes("Respo CE");
   const isArbitre = roles.includes("Arbitre");
-  const isComm = roles.includes("Communication & Graphisme");
+  const isComm = roles.includes("Communication");
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -152,6 +152,9 @@ export const Navbar = () => {
                   <Link to="/SDI" className="block px-4 py-2 hover:bg-gray-100">
                     SDI
                   </Link>
+                  <Link to="/Food" className="block px-4 py-2 hover:bg-gray-100">
+                    Repas
+                  </Link>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -219,6 +222,7 @@ export const Navbar = () => {
               {(isStudent || isAdmin) && <MenuItem to="/Shotgun" label="Shotgun" />}
               <MenuItem to="/WEI" label="WEI" />
               <MenuItem to="/SDI" label="SDI" />
+              <MenuItem to="/Food" label="Repas" />
               {(isAdmin || isRespoCE || isArbitre || isComm) && (
                 <>
                   <span className="mt-2 font-semibold text-white">Admin</span>

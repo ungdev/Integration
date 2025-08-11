@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -31,7 +32,7 @@ export const AdminNews = () => {
       const response = await getAllNews();
       setNewsList(response);
     } catch (err) {
-      alert("Erreur lors du chargement des actus");
+      Swal.fire("❌ Erreur", "Erreur lors du chargement des actus", "error");
     } finally {
       setLoading(false);
     }
@@ -50,68 +51,92 @@ export const AdminNews = () => {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (file) {
-    setSelectedFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
-  }
-};
-
-const handleCreateOrUpdate = async () => {
-  try {
-    const formDataToSend = new FormData();
-
-    if (selectedFile) {
-      formDataToSend.append("file", selectedFile);
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
     }
+  };
 
-    formDataToSend.append("title", formData.title);
-    formDataToSend.append("description", formData.description);
-    formDataToSend.append("type", formData.type);
-    formDataToSend.append("published", String(formData.published));
-    formDataToSend.append("target", formData.target);
+  const handleCreateOrUpdate = async () => {
+    try {
+      const formDataToSend = new FormData();
 
-    if (editingId) {
-      formDataToSend.append("id", String(editingId));
-      const response = await updateNews(formDataToSend); // ← doit accepter FormData
-      alert(response.message);
-    } else {
-      const response = await createNews(formDataToSend); // ← doit accepter FormData
-      alert(response.message);
+      if (selectedFile) {
+        formDataToSend.append("file", selectedFile);
+      }
+
+      formDataToSend.append("title", formData.title);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("type", formData.type);
+      formDataToSend.append("published", String(formData.published));
+      formDataToSend.append("target", formData.target);
+
+      let response;
+      if (editingId) {
+        formDataToSend.append("id", String(editingId));
+        response = await updateNews(formDataToSend);
+      } else {
+        response = await createNews(formDataToSend);
+      }
+
+      await Swal.fire("✅ Succès", response.message, "success");
+      resetForm();
+      fetchNews();
+    } catch (err: any) {
+      Swal.fire("❌ Erreur", err.response?.data?.msg || "Erreur lors de la sauvegarde", "error");
     }
-
-    resetForm();
-    fetchNews();
-  } catch (err: any) {
-    console.log(err);
-    alert(err.response?.data?.msg || "Erreur lors de la sauvegarde");
-  }
-};
+  };
 
   const handleDeleteNews = async (newsId: number) => {
-    const confirmDelete = window.confirm("⚠️ Es-tu sûr de vouloir supprimer cette actu ?");
-    if (!confirmDelete) return;
+    const confirmDelete = await Swal.fire({
+      title: "⚠️ Supprimer cette actu ?",
+      text: "Es-tu sûr de vouloir la supprimer ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Oui",
+      cancelButtonText: "Non",
+    });
+
+    if (!confirmDelete.isConfirmed) return;
 
     try {
       const response = await deleteNews(newsId);
-      alert(response.message);
+      await Swal.fire("✅ Supprimée", response.message, "success");
       resetForm();
       fetchNews();
     } catch (err) {
-      console.error("Erreur lors de la suppression de l'actu", err);
+      Swal.fire("❌ Erreur", "Erreur lors de la suppression de l'actu", "error");
     }
   };
 
   const handlePublish = async (news: News) => {
-    const confirmPublish = window.confirm("✅ Confirmer la publication de cette actu ?");
-    if (!confirmPublish) return;
+    const confirmPublish = await Swal.fire({
+      title: "✅ Confirmer la publication ?",
+      text: "Souhaitez-vous publier cette actualité ?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Oui",
+      cancelButtonText: "Non",
+    });
+
+    if (!confirmPublish.isConfirmed) return;
+
+    const sendEmail = await Swal.fire({
+      title: "📧 Notifier par email ?",
+      text: "Voulez-vous envoyer une notification aux utilisateurs concernés ?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Oui",
+      cancelButtonText: "Non",
+    });
 
     try {
-      const response = await publishNews(news);
-      alert(response.message);
+      const response = await publishNews(news, sendEmail.isConfirmed);
+      await Swal.fire("✅ Publiée", response.message, "success");
       fetchNews();
     } catch (err: any) {
-      alert(err.response?.data?.msg || "Erreur lors de la publication");
+      Swal.fire("❌ Erreur", err.response?.data?.msg || "Erreur lors de la publication", "error");
     }
   };
 
@@ -141,9 +166,8 @@ const handleCreateOrUpdate = async () => {
   };
 
   const handleRemoveImage = () => {
-  setPreviewUrl(null);
+    setPreviewUrl(null);
   };
-
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">

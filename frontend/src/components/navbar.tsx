@@ -82,6 +82,7 @@ export const Navbar = () => {
     ["Export / Import", "/admin/export-import"],
     ["Email", "/admin/email"],
     ["News", "/admin/news"],
+    ["Games", "/admin/games"],
   ];
 
   const canAccessAdminLink = (path: string) => {
@@ -188,6 +189,7 @@ export const Navbar = () => {
           )}
 
           <MenuItem to="/Profil" label="Mon compte" />
+          <MenuItem to="/Games" label="Games" />
           <button
             onClick={handleLogout}
             className="px-3 py-2 text-sm hover:text-gray-200 transition-all duration-150"
@@ -228,6 +230,7 @@ export const Navbar = () => {
                 </>
               )}
               <MenuItem to="/Profil" label="Mon compte" />
+              <MenuItem to="/Games" label="Games" />
               <button onClick={handleLogout} className="text-left text-sm text-white hover:text-gray-200">
                 Déconnexion
               </button>

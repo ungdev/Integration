@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
-  getRoles,
-  getUserPrefrences,
+  fetchAvailableRoles,
+  fetchUserPreferences,
   updateUserPreferences,
 } from "../../services/requests/role.service";
 import { Role } from "../../interfaces/role.interface";
@@ -17,10 +17,10 @@ export const UserPreferences = () => {
   useEffect(() => {
     const fetchPreferences = async () => {
       try {
-        const roles = await getRoles();
+        const roles = await fetchAvailableRoles();
         setCommissions(roles);
 
-        const userPreferences = await getUserPrefrences();
+        const userPreferences = await fetchUserPreferences();
         userPreferences.forEach((roleId: number) => {
           setValue(roleId.toString(), true);
         });

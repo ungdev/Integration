@@ -20,7 +20,7 @@ const branchOptions = [
   { value: "SN_APPR", label: "Systeme Numérique en Apprentissage" },
   { value: "Branch", label: "Branche" },
   { value: "MM", label: "Mécanique et Matériaux" },
-  { value : "MA", label: "Master"},
+  { value : "Master", label: "Master"},
   { value: "RI", label: "Ressources International" },
 ];
 

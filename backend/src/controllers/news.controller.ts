@@ -65,37 +65,38 @@ export const listPublishedNewsByType = async (req: Request, res: Response) => {
 };
 
 export const publishNews = async (req: Request, res: Response) => {
-  const { id } = req.body;
+  const { id, sendEmail } = req.body;
 
   try {
-    await news_service.publishNewsandNotify(id);
+    await news_service.publishNews(id);
 
     const news = await news_service.getNewsById(Number(id));
+    if(sendEmail){
+      // Génération du mail HTML
+      const html = template.compileTemplate({title : news.title}, template.templateNotifyNews);
 
-    // Génération du mail HTML
-    const html = template.compileTemplate({title : news.title}, template.templateNotifyNews);
+      const recipients = news.target === "Tous"
+        ? (await user_service.getUsersAdmin()).map(u => u.email)
+        : (await user_service.getUsersbyPermission(news.target)).map(u => u.email);
 
-    const recipients = news.target === "Tous"
-      ? (await user_service.getUsersAdmin()).map(u => u.email)
-      : (await user_service.getUsersbyPermission(news.target)).map(u => u.email);
+      if(recipients.length === 0){ 
+          Error(res, {msg : "No recipients"});
+          return
+      } 
 
-    if(recipients.length === 0){ 
-        Error(res, {msg : "No recipients"});
-        return
-    } 
+      const email = {
+        from: "integration@utt.fr",
+        to: [],
+        subject: `[INTEGRATION UTT] Nouvelle actu : ${news.title}`,
+        html : html,
+        cc: [],
+        bcc: recipients,
+      };
 
-    const email = {
-      from: "integration@utt.fr",
-      to: [],
-      subject: `[INTEGRATION UTT] Nouvelle actu : ${news.title}`,
-      html : html,
-      cc: [],
-      bcc: recipients,
-    };
+      await email_service.sendEmail(email);
+    }
 
-    await email_service.sendEmail(email);
-
-    Ok(res, { msg: "Actu publiée et emails envoyés" });
+    Ok(res, { msg: "Actu publiée" });
   } catch (err) {
     console.error(err);
     Error(res, { msg: "Erreur lors de la publication ou de la notification" });

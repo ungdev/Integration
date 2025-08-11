@@ -1,5 +1,7 @@
 import { db } from "../db";  // Assurez-vous que votre instance db est correcte
-import { roleSchema } from "../../schemas/Basic/role.schema";
+import { Role, roleSchema } from "../../schemas/Basic/role.schema";
+import { rolePoints } from "../../schemas/Relational/rolepoints.schema";
+import { eq } from "drizzle-orm";
 
 // Liste des rôles à ajouter
 // Liste des rôles avec leurs descriptions
@@ -34,5 +36,18 @@ const roles = [
 export const initRoles = async () => {
     for (const role of roles) {
       await db.insert(roleSchema).values(role).onConflictDoNothing(); // Évite les doublons
+
+      //Initier le table pour le jeux des orga
+      const [currentRole] = await db
+          .select()
+          .from(roleSchema)
+          .where(eq(roleSchema.name, role.name))
+          .limit(1);
+
+      if (!currentRole) {
+        throw new Error(`Role not found: ${role.name}`);
+      }
+
+      await db.insert(rolePoints).values({ role_id: currentRole.id, points: 0 }).onConflictDoNothing()
     }
   };

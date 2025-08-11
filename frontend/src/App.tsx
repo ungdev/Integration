@@ -15,7 +15,8 @@ import { AdminPageRole,
           AdminPageChall, 
           AdminPageEmail, 
           AdminPageUser, 
-          AdminPageNews } from './pages/Admin';
+          AdminPageNews, 
+          AdminPageGames} from './pages/Admin';
 
 import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
@@ -29,6 +30,7 @@ import { SdiPage } from './pages/Sdi';
 import { NewsPage } from './pages/News';
 import {DiscordPage} from './pages/Discord';
 import PrivateRoute from './components/utils/privateroute';
+import { GamesPage } from './pages/Games';
 
 
 const App: React.FC = () => {
@@ -68,6 +70,7 @@ const App: React.FC = () => {
         {/* Étudiant et Admin */}
         <Route path="/Shotgun" element={<PrivateRoute permissionRequired="Student"><ShotgunPage /></PrivateRoute>} />
         <Route path="/Permanences" element={<PrivateRoute permissionRequired="Student"><PermPage /></PrivateRoute>} />
+        <Route path="/Games" element={<PrivateRoute permissionRequired="Student"><GamesPage /></PrivateRoute>} />
 
         {/* ResposCE et Admin */}
         <Route path="/admin/teams" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageTeam /></PrivateRoute>} />
@@ -85,6 +88,7 @@ const App: React.FC = () => {
         <Route path="/admin/permanences" element={<AdminRoute><AdminPagePerm /></AdminRoute>} />
         <Route path="/admin/email" element={<AdminRoute><AdminPageEmail /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminPageUser /></AdminRoute>} />
+        <Route path="/admin/games" element={<AdminRoute><AdminPageGames /></AdminRoute>} />
       </Routes>
     </Router>
 

@@ -2,8 +2,6 @@
 import { db } from "../database/db";
 import { News, newsSchema } from "../schemas/Basic/news.schema";
 import { eq, desc, and } from "drizzle-orm";
-import * as user_service from './user.service';
-import * as email_service from './email.service';
 // Créer une actu
 export const createNews =  async (
   title: string,
@@ -44,7 +42,7 @@ export const getPublishedNewsByType = async (type: string) => {
 };
 
 // Publier une actu
-export const publishNewsandNotify = async (id: number) => {
+export const publishNews = async (id: number) => {
 
   await db.update(newsSchema).set({ published : true }).where(eq(newsSchema.id, id)).returning();
 

@@ -4,16 +4,11 @@ import api from '../api';
 import { jwtDecode } from 'jwt-decode';
 
 export const registerUser = async (firstName: string, lastName: string, email: string, password: string) => {
-  try {
     const response = await api.post('/auth/register', { firstName, lastName, email, password });
     return response.data;
-  } catch (error: any) {
-    throw new Error(error.response?.data?.message || 'Erreur lors de l\'inscription');
-  }
 };
 
 export const loginUser = async (email: string, password: string) => {
-  try {
     const response = await api.post('/auth/login', { email, password });
     const token = response.data.data.token;
 
@@ -21,9 +16,6 @@ export const loginUser = async (email: string, password: string) => {
     localStorage.setItem('authToken', token);
 
     return token;
-  } catch (error: any) {
-    throw new Error(error.response?.data?.message || 'Erreur lors de la connexion');
-  }
 };
 
 export const getToken = (): string | null => {
@@ -49,17 +41,11 @@ export const handleCASTicket = async (ticket: string)=>{
 }
 
 export const isTokenValid = async () =>{
-
-  try{
   
     const response = await api.get('auth/istokenvalid/');
 
     if(response.data === null) throw new Error
     return response?.data.data
-
-  }catch(error : any){
-    return error.response.data;
-  }
 
   
 }

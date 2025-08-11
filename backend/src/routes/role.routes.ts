@@ -9,6 +9,8 @@ const roleRouter = express.Router();
 roleRouter.put("/user/updateuserpreferences", roleController.updateUserPreferences);
 roleRouter.get("/user/userpreferences",roleController.getUserPreferences)
 roleRouter.get("/user/getroles", roleController.getRoles)
+roleRouter.get("/user/points", roleController.getAllRolePoints);
+roleRouter.get("/user/points/:roleId", roleController.getRolePoints);
 
 
 //Admin routes
@@ -17,6 +19,8 @@ roleRouter.get("/admin/userswithroles", checkRole("Admin",[]), roleController.ge
 roleRouter.get("/admin/getusersroles", checkRole("Admin",[]), roleController.getUserRoles)
 roleRouter.post("/admin/addroletouser", checkRole("Admin",[]), roleController.addRoleToUser)
 roleRouter.delete("/admin/deleteroletouser", checkRole("Admin",[]), roleController.deleteRoleToUser)
+roleRouter.post("/admin/points/add", checkRole("Admin", []), roleController.addPointsToRole);
+roleRouter.post("/admin/points/remove", checkRole("Admin", []), roleController.removePointsFromRole);
 
 
 export default roleRouter;

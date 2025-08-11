@@ -19,13 +19,10 @@ export const createNews = async (formData: FormData) => {
   return response.data;
 };
 
-export const publishNews = async (news : any) => {
+export const publishNews = async (news : any, sendEmail : boolean) => {
     const res = await api.post("/news/admin/publish", {
         id: news.id,
-        title: news.title,
-        description: news.description,
-        type: news.type,
-        target: news.target,
+        sendEmail: sendEmail
       });
   
     return res.data;

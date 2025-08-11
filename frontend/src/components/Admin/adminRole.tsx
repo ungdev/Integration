@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import Select from "react-select";
 import {
-  addRolesToUser,
-  deleteRolesToUser,
-  getRoles,
-  getUsersByRoleHandler,
-  getUsersRoles,
+  assignRolesToUser,
+  removeRoleFromUser,
+  fetchAvailableRoles,
+  fetchUsersByRole,
+  fetchUserRoles,
 } from "../../services/requests/role.service";
 import { User } from "../../interfaces/user.interface";
 import { Role } from "../../interfaces/role.interface";
@@ -19,15 +19,15 @@ export const AdminRolePreferences = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchRoles = async () => {
+    const getRoles = async () => {
       try {
-        const allRoles = await getRoles();
+        const allRoles = await fetchAvailableRoles();
         setRoles(allRoles);
       } catch (error) {
         console.error("Erreur lors de la récupération des rôles :", error);
       }
     };
-    fetchRoles();
+    getRoles();
   }, []);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export const AdminRolePreferences = () => {
   const fetchUsersByPreference = async (roleName: string) => {
     setLoading(true);
     try {
-      const usersByPreference = await getUsersByRoleHandler(roleName);
+      const usersByPreference = await fetchUsersByRole(roleName);
       setUsers(usersByPreference);
     } catch (error) {
       console.error("Erreur lors de la récupération des utilisateurs :", error);
@@ -130,7 +130,7 @@ export const AdminRoleManagement = () => {
     const fetchInitialData = async () => {
       try {
         const users = await getUsers();
-        const allRoles = await getRoles();
+        const allRoles = await fetchAvailableRoles();
         setUsers(users);
         setRoles(allRoles);
       } catch (error) {
@@ -141,25 +141,25 @@ export const AdminRoleManagement = () => {
   }, []);
 
   useEffect(() => {
-    const fetchUserRoles = async () => {
+    const getUserRoles = async () => {
       if (!selectedUser) {
         setUserRoles([]);
         return;
       }
       try {
-        const rawUserRoles = await getUsersRoles(selectedUser); // [{ roleId, roleName }]
+        const rawUserRoles = await fetchUserRoles(selectedUser); // [{ roleId, roleName }]
         setUserRoles(rawUserRoles);
       } catch (error) {
         console.error("Erreur récupération rôles :", error);
       }
     };
-    fetchUserRoles();
+    getUserRoles();
   }, [selectedUser]);
 
   const handleAddRoles = async () => {
     if (!selectedUser || newRoles.length === 0) return;
     try {
-      await addRolesToUser(selectedUser, newRoles);
+      await assignRolesToUser(selectedUser, newRoles);
       setMessage("Rôles ajoutés avec succès !");
       setSelectedUser(null); // Reset
       setNewRoles([]);
@@ -171,7 +171,7 @@ export const AdminRoleManagement = () => {
   const handleRemoveRole = async (roleId: number) => {
     if (!selectedUser) return;
     try {
-      await deleteRolesToUser(selectedUser, roleId);
+      await removeRoleFromUser(selectedUser, roleId);
       setMessage("Rôle supprimé avec succès !");
       setUserRoles(prev => prev.filter(r => r.roleId !== roleId));
     } catch {

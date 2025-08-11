@@ -116,7 +116,7 @@ export const templateNotebook = `
             
             <p>Mais après toutes ces vacances, il est important de ne pas s’endormir et de vite se remettre au travail !</p>
             
-            <p>C’est pourquoi l’intégration te propose un cahier de vacances qui te permettra de te remettre au niveau.</p>
+            <p>C’est pourquoi l’intégration te propose un cahier de vacances qui te permettra de te remettre à niveau.</p>
             
             <p>Toutes les bases y sont revues, de la terminale… jusqu’au CP. À toi de nous prouver que tu en es capable ! Méthodologie et rigueur seront nécessaires pour en venir à bout (et pas mal d’humour également).</p>
             

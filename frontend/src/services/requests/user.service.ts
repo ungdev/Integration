@@ -23,44 +23,30 @@ export const isAdmin = (): boolean => {
 
 
 export const getUsers = async () => {
-  try{
-    const response = await api.get("/user/user/getusers");
+
+    const response = await api.get("/user/admin/getusers");
     const users = response.data.data;
   
     return users;
-  
-  }
-  catch(error){
-    throw new Error("Error while getting Users" + error);
-  }
 
 }
 
 export const getUsersAdmin = async () => {
-  try{
+
     const response = await api.get("/user/admin/getusers");
     const users = response.data.data;
   
     return users;
   
-  }
-  catch(error){
-    throw new Error("Error while getting Users" + error);
-  }
 
 }
 
 export const getUsersByPermission = async () => {
-  try{
+
     const response = await api.get("/user/admin/getusersbypermission");
     const users = response.data.data;
   
     return users;
-  
-  }
-  catch(error){
-    throw new Error("Error while getting Users" + error);
-  }
 
 }
 
@@ -71,54 +57,36 @@ export const getCurrentUser = async () => {
 };
 
 export const updateCurrentUser = async (data: Partial<User>) => {
-  try{
+
     const response = await api.patch("/user/user/me", data);
     return response.data
 
-  }catch(error : any){
-    return error.response.data;
-  }
 };
 
 export const updateUserByAdmin = async (id: number, data: Partial<User>) => {
-  try{
-    
+  
     const response = await api.patch(`/user/admin/user/${id}`, data);
     return response.data
 
-  }catch(error : any){
-    return error.response.data;
-  }
 };
 
 export const deleteUserByAdmin = async (id: number) => {
 
-  try{
     const response = await api.delete(`/user/admin/user/${id}`);
     return response.data
 
-  }catch(error : any){
-    return error.response.data;
-  }
 };
 
 export const syncnewStudent = async (date: string) => {
 
-  try{
     const response = await api.post(`/user/admin/syncnewstudent/`,{date});
     return response.data
 
-  }catch(error : any){
-    return error.response.data;
-  }
 };
 
 export const syncDiscordUser = async(code : string) =>{
-  try{
+
     const response = await api.post(`/discord/user/callback/`,{code});
     return response.data
 
-  }catch(error : any){
-    return error.response.data;
-  }
 }

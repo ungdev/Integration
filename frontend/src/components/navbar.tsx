@@ -44,6 +44,7 @@ export const Navbar = () => {
   const isStudent = permission === "Student";
   const isRespoCE = roles.includes("Respo CE");
   const isArbitre = roles.includes("Arbitre");
+  const isComm = roles.includes("Communication");
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -81,12 +82,14 @@ export const Navbar = () => {
     ["Export / Import", "/admin/export-import"],
     ["Email", "/admin/email"],
     ["News", "/admin/news"],
+    ["Games", "/admin/games"],
   ];
 
   const canAccessAdminLink = (path: string) => {
     if (isAdmin) return true;
     if (isRespoCE && ["/admin/teams", "/admin/factions"].includes(path)) return true;
     if (isArbitre && ["/admin/challenge"].includes(path)) return true;
+    if (isComm && ["/admin/news"].includes(path)) return true;
     return false;
   };
 
@@ -149,13 +152,16 @@ export const Navbar = () => {
                   <Link to="/SDI" className="block px-4 py-2 hover:bg-gray-100">
                     SDI
                   </Link>
+                  <Link to="/Food" className="block px-4 py-2 hover:bg-gray-100">
+                    Repas
+                  </Link>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
           {/* Admin Dropdown */}
-          {(isAdmin || isRespoCE || isArbitre) && (
+          {(isAdmin || isRespoCE || isArbitre || isComm) && (
             <div className="relative">
               <button
                 onClick={() => setIsAdminOpen((prev) => !prev)}
@@ -186,6 +192,7 @@ export const Navbar = () => {
           )}
 
           <MenuItem to="/Profil" label="Mon compte" />
+          <MenuItem to="/Games" label="Games" />
           <button
             onClick={handleLogout}
             className="px-3 py-2 text-sm hover:text-gray-200 transition-all duration-150"
@@ -209,12 +216,14 @@ export const Navbar = () => {
               <MenuItem to="/Home" label="Home" />
               <MenuItem to="/Parrainage" label="Parrainage" />
               <MenuItem to="/Challenges" label="Challenges" />
+              
               <MenuItem to="/News" label="Mes Actus" />
               {(isStudent || isAdmin) && <MenuItem to="/Permanences" label="Permanences" />}
               {(isStudent || isAdmin) && <MenuItem to="/Shotgun" label="Shotgun" />}
               <MenuItem to="/WEI" label="WEI" />
               <MenuItem to="/SDI" label="SDI" />
-              {(isAdmin || isRespoCE || isArbitre) && (
+              <MenuItem to="/Food" label="Repas" />
+              {(isAdmin || isRespoCE || isArbitre || isComm) && (
                 <>
                   <span className="mt-2 font-semibold text-white">Admin</span>
                   {adminLinks
@@ -225,6 +234,7 @@ export const Navbar = () => {
                 </>
               )}
               <MenuItem to="/Profil" label="Mon compte" />
+              <MenuItem to="/Games" label="Games" />
               <button onClick={handleLogout} className="text-left text-sm text-white hover:text-gray-200">
                 Déconnexion
               </button>

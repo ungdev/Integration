@@ -67,3 +67,9 @@ export const updateWEIStatus = async ( weiOpen: boolean) => {
       .set({ wei_open: weiOpen })
       .returning();
 };
+
+export const updateFoodStatus = async ( foodOpen: boolean) => {
+    return await db.update(eventSchema)
+      .set({ food_open: foodOpen })
+      .returning();
+};

@@ -3,7 +3,6 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Card } from "../ui/card";
 import Select from "react-select";
-import { Dialog } from "@headlessui/react";
 
 import {
   getAllTeams,
@@ -14,11 +13,13 @@ import {
   teamDistribution,
   getTeamFaction,
 } from "../../services/requests/team.service";
+
 import { getAllFactionsAdmin } from "../../services/requests/faction.service";
-import { getUsers } from "../../services/requests/user.service";
+import { getUsersAdmin } from "../../services/requests/user.service";
 import { Team } from "../../interfaces/team.interface";
 import { Faction } from "../../interfaces/faction.interface";
 import { User } from "../../interfaces/user.interface";
+import Swal from "sweetalert2";
 
 export const AdminTeamManagement = () => {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -29,11 +30,13 @@ export const AdminTeamManagement = () => {
   const [editName, setEditName] = useState<string>("");
   const [editType, setEditType] = useState<string>("");
   const [editFactionId, setEditFactionId] = useState<number | null>(null);
-  const [editMembers, setEditMembers] = useState<number[]>([]);
-  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [editLeaders, setEditLeaders] = useState<number[]>([]);
+  const [editNewMembers, setEditNewMembers] = useState<number[]>([]);
 
   const [newTeamName, setNewTeamName] = useState("");
   const [newFactionId, setNewFactionId] = useState<number | null>(null);
+
+  
 
   const selectedTeam = teams.find((t) => t.teamId === selectedTeamId);
 
@@ -54,11 +57,12 @@ export const AdminTeamManagement = () => {
       const team = teams.find((t) => t.teamId === selectedTeamId);
       if (team) {
         const faction = team.faction_id ?? ((await getTeamFaction(team.teamId))?.factionId);
-        const members = await getTeamUsers(team.teamId);
+        const members : [User] = await getTeamUsers(team.teamId);
         setEditName(team.name);
         setEditType(team.type);
         setEditFactionId(faction || null);
-        setEditMembers(members.map((member: User) => member.userId));
+        setEditLeaders(members.filter(m => m.permission !== "Nouveau").map(m => m.userId));
+        setEditNewMembers(members.filter(m => m.permission === "Nouveau").map(m => m.userId));
       }
     };
     loadTeamDetails();
@@ -69,7 +73,7 @@ export const AdminTeamManagement = () => {
       const [teamRes, factionRes, usersRes] = await Promise.all([
         getAllTeams(),
         getAllFactionsAdmin(),
-        getUsers(),
+        getUsersAdmin(),
       ]);
       setTeams(teamRes);
       setFactions(factionRes);
@@ -86,23 +90,23 @@ export const AdminTeamManagement = () => {
         teamID: selectedTeamId,
         teamName: editName,
         factionID: editFactionId,
-        teamMembers: editMembers,
+        teamMembers: [...editLeaders, ...editNewMembers],
         type: editType,
       });
-      alert("✅ Équipe mise à jour !");
+      await Swal.fire("✅ Équipe mise à jour", "", "success");
       fetchData();
     } catch (err) {
-      console.error("Erreur lors de la mise à jour", err);
+      Swal.fire("❌ Erreur", "Erreur lors de la mise à jour", "error");
     }
   };
 
   const handleCreateTeam = async () => {
     if (teams.find((t) => t.name === newTeamName)) {
-      alert("❌ Une équipe avec ce nom existe déjà");
+      Swal.fire("❌ Nom déjà utilisé", "Une équipe avec ce nom existe déjà", "warning");
       return;
     }
     if (!newTeamName) {
-      alert("Veuillez renseigner un nom d'équipe");
+      Swal.fire("⚠️ Nom requis", "Veuillez renseigner un nom d'équipe", "info");
       return;
     }
 
@@ -111,30 +115,37 @@ export const AdminTeamManagement = () => {
         teamName: newTeamName,
         factionId: newFactionId,
       });
-      alert("✅ Équipe créée !");
+      await Swal.fire("✅ Équipe créée", "", "success");
       setNewTeamName("");
       setNewFactionId(null);
       fetchData();
     } catch (err) {
-      console.error("Erreur lors de la création de l'équipe", err);
+      Swal.fire("❌ Erreur", "Erreur lors de la création de l'équipe", "error");
     }
   };
 
-  const handleMemberChange = (newValues: any) => {
-    const selectedIds = newValues.map((val: any) => val.value);
-    setEditMembers(selectedIds);
-  };
 
   const handleDeleteConfirm = async () => {
     if (!selectedTeamId) return;
+
+    const confirm = await Swal.fire({
+      title: "🛑 Supprimer cette équipe ?",
+      text: "Cette action est irréversible. Es-tu sûr(e) ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Oui",
+      cancelButtonText: "Non",
+    });
+
+    if (!confirm.isConfirmed) return;
+
     try {
       await deleteTeam(selectedTeamId);
       setTeams(teams.filter((t) => t.teamId !== selectedTeamId));
       setSelectedTeamId(null);
-      setIsConfirmingDelete(false);
-      alert("✅ Équipe supprimée !");
+      await Swal.fire("✅ Équipe supprimée", "", "success");
     } catch (err) {
-      console.error("Erreur lors de la suppression", err);
+      Swal.fire("❌ Erreur", "Erreur lors de la suppression", "error");
     }
   };
 
@@ -212,20 +223,48 @@ export const AdminTeamManagement = () => {
             />
 
             <div className="w-full md:w-96">
-              <h3 className="text-md font-semibold mb-2">👥 Membres de l’équipe</h3>
+              <h3 className="text-md font-semibold mb-2">👨‍💼 Chefs d’équipe</h3>
               <Select
                 isMulti
-                value={editMembers.map((id) => {
+                value={editLeaders.map((id) => {
                   const user = users.find((u) => u.userId === id);
                   return { value: id, label: user ? `${user.firstName} ${user.lastName}` : "" };
                 })}
-                onChange={handleMemberChange}
-                options={users.map((user) => ({
-                  value: user.userId,
-                  label: `${user.firstName} ${user.lastName}`,
-                }))}
+                onChange={(newValues: any) => {
+                  const selectedIds = newValues.map((val: any) => val.value);
+                  setEditLeaders(selectedIds);
+                }}
+                options={users
+                  .filter((user) => user.permission !== "Nouveau")
+                  .map((user) => ({
+                    value: user.userId,
+                    label: `${user.firstName} ${user.lastName}`,
+                  }))}
                 className="w-full"
-                placeholder="Sélectionner des membres"
+                placeholder="Sélectionner les chefs"
+              />
+            </div>
+
+            <div className="w-full md:w-96 pt-6">
+              <h3 className="text-md font-semibold mb-2">🆕 Nouveaux membres</h3>
+              <Select
+                isMulti
+                value={editNewMembers.map((id) => {
+                  const user = users.find((u) => u.userId === id);
+                  return { value: id, label: user ? `${user.firstName} ${user.lastName}` : "" };
+                })}
+                onChange={(newValues: any) => {
+                  const selectedIds = newValues.map((val: any) => val.value);
+                  setEditNewMembers(selectedIds);
+                }}
+                options={users
+                  .filter((user) => user.permission === "Nouveau")
+                  .map((user) => ({
+                    value: user.userId,
+                    label: `${user.firstName} ${user.lastName}`,
+                  }))}
+                className="w-full"
+                placeholder="Sélectionner les nouveaux"
               />
             </div>
 
@@ -233,49 +272,37 @@ export const AdminTeamManagement = () => {
               <Button onClick={handleUpdate} className="bg-green-600 hover:bg-green-700 text-white">
                 💾 Sauvegarder
               </Button>
-              <Button onClick={() => setIsConfirmingDelete(true)} className="bg-red-600 hover:bg-red-700 text-white">
+              <Button onClick={handleDeleteConfirm} className="bg-red-600 hover:bg-red-700 text-white">
                 🗑️ Supprimer
               </Button>
             </div>
           </div>
         </Card>
       )}
-
-      {isConfirmingDelete && (
-        <Dialog open={isConfirmingDelete} onClose={() => setIsConfirmingDelete(false)} className="fixed inset-0 z-50 flex items-center justify-center bg-transparent">
-          <Card className="p-6 rounded-xl bg-white shadow-xl space-y-4 w-96">
-            <h3 className="text-xl font-bold text-red-600 text-center">🛑 Confirmation de suppression</h3>
-            <p className="text-gray-700 text-center">Es-tu sûr(e) de vouloir supprimer cette équipe ? Cette action est irréversible.</p>
-            <div className="flex justify-center gap-4 pt-4">
-              <Button onClick={handleDeleteConfirm} className="bg-red-600 hover:bg-red-700 text-white">
-                ✅ Confirmer
-              </Button>
-              <Button onClick={() => setIsConfirmingDelete(false)} className="bg-gray-300 hover:bg-gray-400 text-black">
-                ❌ Annuler
-              </Button>
-            </div>
-          </Card>
-        </Dialog>
-      )}
     </div>
   );
 };
 
 export const DistributeTeam = () => {
+  const handleConfirmDistribution = async () => {
+    const confirm = await Swal.fire({
+      title: "⚠️ Confirmation",
+      text: "Cette action va affecter tous les utilisateurs sans équipe. Souhaitez-vous vraiment continuer ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Oui",
+      cancelButtonText: "Non",
+    });
 
-  const [isConfirming, setIsConfirming] = useState(false);
+    if (!confirm.isConfirmed) return;
 
-  const ConfirmSubmit = async () => {
     try {
       const response = await teamDistribution();
-      alert(response.message);
+      await Swal.fire("✅ Répartition effectuée", response.message, "success");
     } catch (error: any) {
-      alert(error.response.data.message);
-    } finally {
-      setIsConfirming(false);
+      Swal.fire("❌ Erreur", error.response?.data?.message || "Une erreur est survenue", "error");
     }
   };
-
 
   return (
     <div className="max-w-2xl mx-auto mt-8">
@@ -290,37 +317,12 @@ export const DistributeTeam = () => {
         <div className="flex justify-center pt-2">
           <Button
             className="bg-blue-600 hover:bg-blue-700 text-white"
-            onClick={() => setIsConfirming(true)}
+            onClick={handleConfirmDistribution}
           >
             🔁 Lancer la répartition
           </Button>
         </div>
       </Card>
-
-      {isConfirming && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-          <Card className="p-6 rounded-xl bg-white shadow-xl space-y-4 w-96">
-            <h3 className="text-xl font-bold text-blue-600 text-center">⚠️ Confirmation</h3>
-            <p className="text-gray-700 text-center">
-              Cette action va affecter tous les utilisateurs sans équipe.<br />Souhaitez-vous vraiment continuer ?
-            </p>
-            <div className="flex justify-center gap-4 pt-4">
-              <Button
-                onClick={ConfirmSubmit}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                ✅ Confirmer
-              </Button>
-              <Button
-                onClick={() => setIsConfirming(false)}
-                className="bg-gray-300 hover:bg-gray-400 text-black"
-              >
-                ❌ Annuler
-              </Button>
-            </div>
-          </Card>
-        </div>
-      )}
     </div>
   );
 };

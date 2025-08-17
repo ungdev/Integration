@@ -9,6 +9,7 @@ import { AdminChallengeAddPointsForm, AdminChallengeForm, AdminValidatedChalleng
 import { AdminEmail } from "../components/Admin/adminEmail";
 import { AdminSyncNewStudent, AdminUser } from "../components/Admin/adminUser";
 import { AdminNews } from "../components/Admin/adminNews";
+import { AdminRolePointsManager } from "../components/Admin/adminGames";
 
 
 
@@ -135,10 +136,22 @@ export const AdminPageUser: React.FC = () => {
 
 export const AdminPageNews: React.FC = () => {
   return (
-    <AdminLayout allowedRoles={["Admin"]}>
+    <AdminLayout allowedRoles={["Admin", "Communication"]}>
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl bg-white shadow p-6">
           < AdminNews/>
+        </section>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export const AdminPageGames: React.FC = () => {
+  return (
+    <AdminLayout allowedRoles={["Admin"]}>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl bg-white shadow p-6">
+          < AdminRolePointsManager/>
         </section>
       </div>
     </AdminLayout>

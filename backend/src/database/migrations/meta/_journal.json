@@ -113,6 +113,13 @@
       "when": 1753744481956,
       "tag": "0015_greedy_genesis",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1754903172897,
+      "tag": "0016_sudden_ultimatum",
+      "breakpoints": true
     }
   ]
 }

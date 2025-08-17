@@ -1,111 +1,91 @@
-import api from '../api';
+import api from "../api";
 
-export const getUserPrefrences = async () => {
-  try{
-    const response = await api.get("/role/user/userpreferences");
-    const userPreferences = response.data.data;
+export const fetchUserPreferences = async () => {
 
-    return userPreferences;
-  }
-  catch(error){
-    throw new Error("Error while fecthing preferences" + error);
-  }
-  
-}
+    const { data } = await api.get("/role/user/userpreferences");
+    return data.data;
 
-export const updateUserPreferences = async (selectedRoles : any) => {
-  try{
-    const response = await api.put("/role/user/updateuserpreferences", { roleIds: selectedRoles });
-    const userPreferences = response.data.data;
+};
 
-    return userPreferences;
-  }
-  catch(error){
-    throw new Error("Error while updating preferences" + error);
-  }
-  
-}
+export const updateUserPreferences = async (roleIds: number[]) => {
 
-export const getUsersByRoleHandler  = async (roleName: string) => {
-  try{
-    const response = await api.get("/role/admin/userbyrolehandler/"+roleName);
-    const userbyRole = response.data.data;
-  
-    return userbyRole;
-  
-  }
-  catch(error){
-    throw new Error("Error while getting preferences" + error);
-  }
+    const { data } = await api.put("/role/user/updateuserpreferences", { roleIds });
+    return data.data;
 
-}
+};
 
-export const addRolesToUser  = async (selectedUser: number, selectedRoles: number[]) => {
-  try{
-    const response = await api.post("/role/admin/addroletouser", { userId: selectedUser, roleIds: selectedRoles});
+export const fetchAvailableRoles = async () => {
 
-    return response.data
-  
-  }
-  catch(error){
-    throw new Error("Error while adding role to user" + error);
-  }
+    const { data } = await api.get("/role/user/getroles");
+    return data.data;
 
-}
+};
 
-export const deleteRolesToUser = async (selectedUser: number, selectedRole: number)=>{
-  try{
-    const response = await api.delete("/role/admin/deleteroletouser", {data: { userId: selectedUser, roleId: selectedRole}});
+export const fetchAllRolePoints = async ()=> {
 
-    return response.data
+    const { data } = await api.get("/role/user/points");
+    return data.data;
 
-  }
-  catch(error){
-    throw new Error("Error while deleting role to user" + error);
-  }
-}
+};
 
-export const getUsersWithRoles  = async () => {
-  try{
-    const response = await api.get("/role/admin/userswithroles");
-    const usersWithRoles = response.data.data;
-  
-    return usersWithRoles;
-  
-  }
-  catch(error){
-    throw new Error("Error while getting preferences" + error);
-  }
+export const fetchRolePointsById = async (roleId: number)=> {
 
-}
+    const { data } = await api.get(`/role/user/points/${roleId}`);
+    return data.data;
 
-export const getRoles  = async () => {
-  try{
-    const response = await api.get("/role/user/getroles");
-    const roles = response.data.data;
-  
-    return roles;
-  
-  }
-  catch(error){
-    throw new Error("Error while getting roles" + error);
-  }
+};
 
-}
+// 🔹 Admin Routes
 
-export const getUsersRoles = async (userId : number) => {
-  try{
-    const response = await api.get('/role/admin/getusersroles', {params: {userId}});
-    const userRoles = response.data.data;
-  
-    return userRoles;
-  
-  }
-  catch(error){
-    console.log(error);
-    throw new Error("Error while getting roles " + error);
-  }
+export const fetchUsersByRole = async (roleName: string) => {
 
-}
+    const { data } = await api.get(`/role/admin/userbyrolehandler/${roleName}`);
+    return data.data;
 
+};
 
+export const assignRolesToUser = async (userId: number, roleIds: number[]) => {
+
+    const { data } = await api.post("/role/admin/addroletouser", { userId, roleIds });
+    return data;
+
+};
+
+export const removeRoleFromUser = async (userId: number, roleId: number) => {
+
+    const { data } = await api.delete("/role/admin/deleteroletouser", {
+      data: { userId, roleId },
+    });
+    return data;
+
+};
+
+export const fetchUsersWithRoles = async () => {
+
+    const { data } = await api.get("/role/admin/userswithroles");
+    return data.data;
+
+};
+
+export const fetchUserRoles = async (userId: number) => {
+
+    const { data } = await api.get("/role/admin/getusersroles", {
+      params: { userId },
+    });
+    return data.data;
+
+};
+
+export const addPointsToRole = async (roleId: number, points: number) => {
+
+    const { data } = await api.post("/role/admin/points/add", { roleId, points });
+    return data;
+
+};
+
+export const removePointsFromRole = async (roleId: number, points: number) => {
+
+    const { data } = await api.post("/role/admin/points/remove", { roleId, points });
+    return data;
+
+};

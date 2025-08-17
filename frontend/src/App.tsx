@@ -6,16 +6,18 @@ import LoginPage from './pages/Auth';
 import { HomePage } from './pages/Home';
 import { ProfilPage } from './pages/Profil';
 import { ShotgunPage } from './pages/Shotgun';
-import { AdminPageRole, 
-          AdminPageTeam, 
-          AdminPageEvents, 
-          AdminPageExport, 
-          AdminPageFaction, 
-          AdminPagePerm, 
-          AdminPageChall, 
-          AdminPageEmail, 
-          AdminPageUser, 
-          AdminPageNews } from './pages/Admin';
+import {
+  AdminPageRole,
+  AdminPageTeam,
+  AdminPageEvents,
+  AdminPageExport,
+  AdminPageFaction,
+  AdminPagePerm,
+  AdminPageChall,
+  AdminPageEmail,
+  AdminPageUser,
+  AdminPageNews
+} from './pages/Admin';
 
 import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
@@ -27,7 +29,8 @@ import { ResetPasswordPage } from './pages/ResetPassword'
 import { WeiPage } from './pages/Wei';
 import { SdiPage } from './pages/Sdi';
 import { NewsPage } from './pages/News';
-import {DiscordPage} from './pages/Discord';
+import { DiscordPage } from './pages/Discord';
+import { RoadbookRedirect } from './pages/RoadbookRedirect';
 import PrivateRoute from './components/utils/privateroute';
 
 
@@ -54,6 +57,7 @@ const App: React.FC = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/Register" element={<RegisterPage />} />
         <Route path="/ResetPassword" element={<ResetPasswordPage />} />
+        <Route path="/roadbook" element={<RoadbookRedirect />} />
 
         {/* Utilisateurs connectés */}
         <Route path="/Home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />

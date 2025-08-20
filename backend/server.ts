@@ -11,7 +11,7 @@ import userRoutes from './src/routes/user.routes';
 import teamRoutes from './src/routes/team.routes';
 import eventRoutes from './src/routes/event.routes';
 import factionRoutes from './src/routes/faction.routes';
-import exportRoutes from './src/routes/export.routes';
+import imexportRouter from './src/routes/im_export.routes';
 import permanenceRoutes from './src/routes/permanences.routes';
 import challengeRoutes from './src/routes/challenge.routes';
 import emailRoutes from './src/routes/email.routes';
@@ -23,7 +23,6 @@ import { initRoles } from './src/database/initdb/initrole'
 import {initEvent} from './src/database/initdb/initevent'
 import {initChallenge} from './src/database/initdb/initChallenge'
 import { authenticateUser } from './src/middlewares/auth.middleware';
-//import { initDB } from './src/database/init';
 
 dotenv.config();
 
@@ -51,13 +50,15 @@ async function startServer() {
         app.use('/api/team',authenticateUser, teamRoutes);
         app.use('/api/event',authenticateUser, eventRoutes);
         app.use('/api/faction',authenticateUser, factionRoutes);
-        app.use('/api/export',authenticateUser, exportRoutes);
+        app.use('/api/imexport', authenticateUser, imexportRouter)
         app.use('/api/permanence',authenticateUser, permanenceRoutes);
         app.use('/api/challenge',authenticateUser, challengeRoutes);
         app.use('/api/email',authenticateUser, emailRoutes);
         app.use('/api/news',authenticateUser, newsRoutes);
         app.use('/api/discord',authenticateUser, discordRoutes);
         app.use("/api/uploads/imgnews", express.static(path.join(__dirname, "/uploads/imgnews")));
+        app.use("/api/uploads/foodmenu", express.static(path.join(__dirname, "/uploads/foodmenu")));
+        app.use("/api/uploads/plannings", express.static(path.join(__dirname, "/uploads/plannings")));
 
         // Démarrage du serveur
         app.listen(server_port, () => {

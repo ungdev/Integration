@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
-import * as export_service from "../services/export.service";
+import * as export_service from "../services/im_export.service";
 import * as user_service from '../services/user.service';
 import * as team_service from "../services/team.service";
 import * as permanence_service from "../services/permanence.service";
 import * as event_service from "../services/event.service";
 import { spreadsheet_id } from "../utils/secret";
 import { Ok, Error } from "../utils/responses";
+import path from "path";
+import fs from "fs";
 
 export const exportAllDataToSheets = async (req: Request, res: Response) => {
   try {
@@ -79,5 +81,54 @@ export const exportAllDataToSheets = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     Error(res, { msg: "Erreur lors de l'export vers Google Sheets" });
+  }
+};
+
+
+export const updateFoodMenu = async (req: Request, res: Response) => {
+
+  const file = req.file;
+
+  try {
+
+    // Supprimer l'ancien Menu si une nouveau est uploadée
+    if (file) {
+      const targetDir = path.join(__dirname, "../../foodmenu");
+
+      if (fs.existsSync(targetDir)) {
+        fs.rmSync(targetDir, { recursive: true, force: true });
+        fs.mkdirSync(targetDir);
+      }
+    }
+
+    Ok(res, { msg: "Menu mis à jour avec succès" });
+    return;
+  } catch (err) {
+    console.error(err);
+    Error(res, { msg: "Erreur lors de la mise à jour de l'actu" });
+  }
+};
+
+export const updatePlannings = async (req: Request, res: Response) => {
+
+  const file = req.file;
+
+  try {
+
+    // Supprimer l'ancien Planning si une nouveau est uploadée
+    if (file) {
+      const targetDir = path.join(__dirname, "../../plannings");
+
+      if (fs.existsSync(targetDir)) {
+        fs.rmSync(targetDir, { recursive: true, force: true });
+        fs.mkdirSync(targetDir);
+      }
+    }
+
+    Ok(res, { msg: "Planning mis à jour avec succès" });
+    return;
+  } catch (err) {
+    console.error(err);
+    Error(res, { msg: "Erreur lors de la mise à jour de l'actu" });
   }
 };

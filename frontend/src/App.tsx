@@ -32,6 +32,7 @@ import {DiscordPage} from './pages/Discord';
 import PrivateRoute from './components/utils/privateroute';
 import { GamesPage } from './pages/Games';
 import { FoodPage } from './pages/Food';
+import { PlanningsPage } from './pages/Plannings';
 
 
 const App: React.FC = () => {
@@ -60,6 +61,7 @@ const App: React.FC = () => {
 
         {/* Utilisateurs connectés */}
         <Route path="/Home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/Plannings" element={<ProtectedRoute><PlanningsPage /></ProtectedRoute>} />
         <Route path="/Profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
         <Route path="/Challenges" element={<ProtectedRoute><ChallPage /></ProtectedRoute>} />
         <Route path="/Parrainage" element={<ProtectedRoute><ParrainagePage /></ProtectedRoute>} />

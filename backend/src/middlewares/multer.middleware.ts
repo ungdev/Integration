@@ -1,45 +1,54 @@
 import multer from "multer";
 import path from "path";
-import fs from "fs";
+import fs from "fs/promises";
 
-// Dossier de destination
-const uploadPath = path.join(__dirname, "../../uploads/imgnews");
+export const createUploadMiddleware = (
+  relativeUploadDir: string,
+  modifiedName: boolean = true
+) => {
+  // On construit le chemin absolu à partir de la racine du projet
+  const uploadPath = path.resolve(process.cwd(), relativeUploadDir);
 
-// Crée le dossier s’il n’existe pas
-if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath, { recursive: true });
-}
+  const storage = multer.diskStorage({
+    destination: async (_req, _file, cb) => {
+      try {
+        // Création du dossier si nécessaire (async + recursive)
+        await fs.mkdir(uploadPath, { recursive: true });
+        cb(null, uploadPath);
+      } catch (err) {
+        cb(err as Error, uploadPath);
+      }
+    },
+    filename: (_req, file, cb) => {
+      if (modifiedName) {
+        const timestamp = Date.now();
+        const ext = path.extname(file.originalname);
+        const baseName = path.basename(file.originalname, ext);
+        cb(null, `${baseName}-${timestamp}${ext}`);
+      } else {
+        cb(null, file.originalname);
+      }
+    },
+  });
 
-// Configuration du storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const timestamp = Date.now();
-    const ext = path.extname(file.originalname);
-    const baseName = path.basename(file.originalname, ext);
-    cb(null, `${baseName}-${timestamp}${ext}`);
-  },
-});
+  const fileFilter = (
+    _req: Express.Request,
+    file: Express.Multer.File,
+    cb: multer.FileFilterCallback
+  ) => {
+    const isImage = file.mimetype.startsWith("image/");
+    const isPDF = file.mimetype === "application/pdf";
 
-// Filtrer les types de fichiers (optionnel)
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+    if (isImage || isPDF) {
+      cb(null, true);
+    } else {
+      cb(new Error("Seules les images et les PDF sont autorisés"));
+    }
+  };
 
-  if (file.mimetype.startsWith("image/")) {
-    cb(null, true);
-  } else {
-    cb(new Error("Seules les images sont autorisées"));
-  }
-};
-
-// Final middleware
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: {
+  const limits = {
     fileSize: 5 * 1024 * 1024, // 5 Mo
-  },
-});
+  };
 
-export default upload;
+  return multer({ storage, fileFilter, limits });
+};

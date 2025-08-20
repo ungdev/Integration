@@ -243,6 +243,16 @@ export const AdminImportPlannings = () => {
           </Button>
 
           <Button
+            onClick={() => handleImport("Planning Bachelor IA")}
+            disabled={loading}
+            className="bg-violet-600 hover:bg-violet-700 text-white py-2 px-6 rounded-xl shadow-md"
+          >
+            {loading && selectedPlanning === "Planning Bachelor IA"
+              ? "Import en cours..."
+              : "Planning Bachelor IA"}
+          </Button>
+
+          <Button
             onClick={() => handleImport("Planning Branche (non-alternant)")}
             disabled={loading}
             className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-xl shadow-md"

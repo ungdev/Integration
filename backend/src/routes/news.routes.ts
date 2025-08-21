@@ -9,7 +9,7 @@ const newsRouter = express.Router();
 
 //Admin routes
 newsRouter.post("/admin/createnews",checkRole("Admin",["Communication"]), uploadImgNews.single("file"),  newsController.createNews);
-newsRouter.post("/admin/updatenews", checkRole("Admin", ["Communication"]), uploadImgNews.single("file"), newsController.updateNews);
+newsRouter.post("/admin/updatenews", checkRole("Admin",["Communication"]), uploadImgNews.single("file"), newsController.updateNews);
 newsRouter.get("/admin/all",checkRole("Admin",["Communication"]), newsController.listAllNews);
 newsRouter.post("/admin/publish",checkRole("Admin",["Communication"]) , newsController.publishNews);
 newsRouter.delete("/admin/deletenews",checkRole("Admin",["Communication"]) ,newsController.deleteNews);

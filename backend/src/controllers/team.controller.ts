@@ -174,9 +174,9 @@ export const teamDistribution = async (req: Request, res: Response) => {
         const teams = await team_service.getTeams();
 
 
-        // Filtrer les étudiants qui ne sont pas dans la liste RI et qui ne sont pas déjà assignés à une équipe
+        // Filtrer les étudiants qui ne sont pas déjà assignés à une équipe
         const filteredStudents = newStudents
-            // .filter((student: any) => student.branch !== "RI") //RI
+            // .filter((student: any) => student.branch !== "RI") // A decommenter pour ignorer les RI dans la répartition automatique
             .filter((student: any) => !userswithteams.includes(student.userId));
 
         // Filtrer les utilisateurs en fonction de la spécialité
@@ -189,7 +189,8 @@ export const teamDistribution = async (req: Request, res: Response) => {
             }));
 
         const otherStudents = filteredStudents
-            .filter((student: any) => student.branch !== "TC" && student.branch !== "RI" && student.branch !== "MM")
+            // .filter((student: any) => student.branch !== "TC" && student.branch !== "RI" && student.branch !== "MM") A decommenter pour ignorer les RI dans la répartition automatique
+            .filter((student: any) => student.branch !== "TC" && student.branch !== "MM")
             .map((student: any) => ({
                 id: student.userId,
                 email: student.email,
@@ -207,7 +208,8 @@ export const teamDistribution = async (req: Request, res: Response) => {
         // Filtrer les équipes en fonction de leur type
         const tcTeams = teams.filter(team => team.type === "TC");
         const PMOMTeams = teams.filter(team => team.type === "MM");
-        const otherTeams = teams.filter(team => team.type !== "TC" && team.type !== "RI" && team.type !== "MM");
+        // const otherTeams = teams.filter(team => team.type !== "TC" && team.type !== "RI" && team.type !== "MM"); A decommenter pour ignorer les RI dans la répartition automatique
+        const otherTeams = teams.filter(team => team.type !== "TC" && team.type !== "MM");
 
         // Fonction pour assigner les utilisateurs à des équipes équilibrées
         async function assignUsersToTeams(users: any, teams: any) {

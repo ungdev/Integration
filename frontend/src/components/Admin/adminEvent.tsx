@@ -91,8 +91,8 @@ export const AdminEvents = () => {
   const handleToggleFood = async () => {
     setLoading(true);
     try {
-      await toggleWEI(!foodOpen);
-      setWeiOpen(!foodOpen);
+      await toggleFood(!foodOpen);
+      setFoodOpen(!foodOpen);
       alert("Food mis à jour !");
     } catch (error : any) {
       alert(error.response.data.message);

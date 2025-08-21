@@ -115,7 +115,7 @@ export const updatePlannings = async (req: Request, res: Response) => {
 
   try {
 
-    // Supprimer l'ancien Planning si une nouveau est uploadée
+    // Supprimer l'ancien Planning si un nouveau est uploadé
     if (file) {
       const targetDir = path.join(__dirname, "../../plannings");
 

@@ -129,6 +129,6 @@ export const updatePlannings = async (req: Request, res: Response) => {
     return;
   } catch (err) {
     console.error(err);
-    Error(res, { msg: "Erreur lors de la mise à jour de l'actu" });
+    Error(res, { msg: "Erreur lors de la mise à jour du Planning" });
   }
 };

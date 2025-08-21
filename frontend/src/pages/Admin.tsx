@@ -2,9 +2,9 @@ import { AdminRoleManagement, AdminRolePreferences } from "../components/Admin/a
 import { AdminEvents } from "../components/Admin/adminEvent";
 import { AdminTeamManagement, DistributeTeam } from "../components/Admin/adminTeam";  // Importer le composant
 import { AdminLayout } from "../components/Admin/adminLayout";
-import { AdminExportConnect, ImportPermCSV } from "../components/Admin/adminExportImport";
+import { AdminExportConnect, AdminImportFoodMenu, AdminImportPlannings } from "../components/Admin/adminExportImport";
 import { AdminFactionManagement } from "../components/Admin/adminFaction";
-import { AdminPermanence } from "../components/Admin/adminPerm";
+import { AdminPermanence, ImportPermCSV } from "../components/Admin/adminPerm";
 import { AdminChallengeAddPointsForm, AdminChallengeForm, AdminValidatedChallengesList } from "../components/Admin/adminChallenge";
 import { AdminEmail } from "../components/Admin/adminEmail";
 import { AdminSyncNewStudent, AdminUser } from "../components/Admin/adminUser";
@@ -73,7 +73,12 @@ export const AdminPageExport: React.FC = () => {
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl bg-white shadow p-6">
           <AdminExportConnect />
-          <ImportPermCSV/>
+        </section>
+        <section className="rounded-2xl bg-white shadow p-6">
+          <AdminImportFoodMenu />
+        </section>
+        <section className="rounded-2xl bg-white shadow p-6">
+          <AdminImportPlannings />
         </section>
       </div>
     </AdminLayout>
@@ -88,6 +93,9 @@ export const AdminPagePerm: React.FC = () => {
         <section className="rounded-2xl bg-white shadow p-6">
           <AdminPermanence />
         </section>
+        <section className="rounded-2xl bg-white shadow p-6">
+          <ImportPermCSV/>
+        </section>
       </div>
     </AdminLayout>
   );
@@ -99,8 +107,12 @@ export const AdminPageChall: React.FC = () => {
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl bg-white shadow p-6">
           < AdminChallengeForm/>
+        </section>
+        <section className="rounded-2xl bg-white shadow p-6">
           < AdminChallengeAddPointsForm/>
-          <AdminValidatedChallengesList/>
+        </section>
+        <section className="rounded-2xl bg-white shadow p-6">
+          < AdminValidatedChallengesList/>
         </section>
       </div>
     </AdminLayout>

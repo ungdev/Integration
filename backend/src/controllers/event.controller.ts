@@ -51,7 +51,7 @@ export const checkFoodStatus = async (req: Request, res: Response) => {
         Ok(res, ({data: status?.food_open}));
 
     }catch(error){
-        Error(res, {msg :"Error while catching WEI status :" + error})
+        Error(res, {msg :"Error while catching Food status :" + error})
     }
 };
 

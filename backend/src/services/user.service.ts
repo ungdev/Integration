@@ -5,6 +5,7 @@ import { eq } from 'drizzle-orm';
 import { userTeamsSchema } from '../schemas/Relational/userteams.schema';
 import { getTeam, getTeamFaction, getUserTeam } from './team.service';
 import { getFaction } from './faction.service';
+import { registrationSchema } from '../schemas/Relational/registration.schema';
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
@@ -232,6 +233,13 @@ export const updateUserByAdmin = async (
 
 export const deleteUserById = async (userId: number) => {
   try {
+
+    const user_registration_token = await db.select({user_id : registrationSchema.user_id}).from(registrationSchema).where(eq(registrationSchema.user_id, userId));
+
+    if(user_registration_token.length > 0){
+      await db.delete(registrationSchema).where(eq(registrationSchema.user_id, userId));
+    }
+    
     const result = await db.delete(userSchema).where(eq(userSchema.id, userId));
     return result;
   } catch (err) {

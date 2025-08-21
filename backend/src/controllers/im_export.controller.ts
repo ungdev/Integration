@@ -91,7 +91,7 @@ export const updateFoodMenu = async (req: Request, res: Response) => {
 
   try {
 
-    // Supprimer l'ancien Menu si une nouveau est uploadée
+    // Supprimer l'ancien Menu si un nouveau est uploadé
     if (file) {
       const targetDir = path.join(__dirname, "../../foodmenu");
 

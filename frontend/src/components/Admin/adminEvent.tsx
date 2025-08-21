@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { toggleShotgun, togglePreRegistration, checkShotgunStatus, checkPreRegisterStatus, checkSDIStatus, checkWEIStatus, toggleSDI, toggleWEI, checkFoodStatus } from "../../services/requests/event.service";
+import { toggleShotgun, togglePreRegistration, checkShotgunStatus, checkPreRegisterStatus, checkSDIStatus, checkWEIStatus, toggleSDI, toggleWEI, checkFoodStatus, toggleFood } from "../../services/requests/event.service";
 import { Button } from "../ui/button";
 
 export const AdminEvents = () => {

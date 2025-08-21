@@ -282,7 +282,9 @@ export const AdminNews = () => {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="font-bold">{news.title}</p>
-                  <p className="text-sm text-gray-600">{news.description}</p>
+                  <p className="text-sm text-gray-600 whitespace-pre-line">
+                    {news.description}
+                  </p>
                   {news.image_url && (
                   <img
                     src={news.image_url}

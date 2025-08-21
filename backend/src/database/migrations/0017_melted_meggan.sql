@@ -1,0 +1,1 @@
+ALTER TABLE "events" ADD COLUMN "food_open" boolean DEFAULT false;

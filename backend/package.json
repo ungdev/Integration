@@ -31,6 +31,7 @@
     "esbuild": "^0.25.2",
     "esbuild-register": "^3.6.0",
     "express": "^5.1.0",
+    "file-type": "^21.0.0",
     "googleapis": "^148.0.0",
     "handlebars": "^4.7.8",
     "jsdom": "^26.1.0",

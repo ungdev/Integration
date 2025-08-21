@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { toggleShotgun, togglePreRegistration, checkShotgunStatus, checkPreRegisterStatus, checkSDIStatus, checkWEIStatus, toggleSDI, toggleWEI } from "../../services/requests/event.service";
+import { toggleShotgun, togglePreRegistration, checkShotgunStatus, checkPreRegisterStatus, checkSDIStatus, checkWEIStatus, toggleSDI, toggleWEI, checkFoodStatus, toggleFood } from "../../services/requests/event.service";
 import { Button } from "../ui/button";
 
 export const AdminEvents = () => {
@@ -7,6 +7,7 @@ export const AdminEvents = () => {
   const [shotgunOpen, setShotgunOpen] = useState(false);
   const [sdiOpen, setSdiOpen] = useState(false);
   const [weiOpen, setWeiOpen] = useState(false);
+  const [foodOpen, setFoodOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingStatuses, setLoadingStatuses] = useState(true);
 
@@ -18,11 +19,13 @@ export const AdminEvents = () => {
         const shotgunStatus = await checkShotgunStatus();
         const sdiStatus = await checkSDIStatus();
         const weiStatus = await checkWEIStatus();
+        const foodStatus = await checkFoodStatus();
 
         setPreRegistrationOpen(preRegStatus);
         setShotgunOpen(shotgunStatus);
         setSdiOpen(sdiStatus);
         setWeiOpen(weiStatus);
+        setFoodOpen(foodStatus);
 
       } catch (error) {
         alert("Erreur lors de la récupération des statuts.");
@@ -78,6 +81,19 @@ export const AdminEvents = () => {
       await toggleWEI(!weiOpen);
       setWeiOpen(!weiOpen);
       alert("WEI mis à jour !");
+    } catch (error : any) {
+      alert(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggleFood = async () => {
+    setLoading(true);
+    try {
+      await toggleFood(!foodOpen);
+      setFoodOpen(!foodOpen);
+      alert("Food mis à jour !");
     } catch (error : any) {
       alert(error.response.data.message);
     } finally {
@@ -156,6 +172,21 @@ export const AdminEvents = () => {
             } p-2 rounded-md`}
           >
             {weiOpen ? "Désactiver" : "Activer"}
+          </Button>
+        </div>
+
+        {/* FOOD */}
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
+          <span className="text-sm text-gray-600">Nourriture</span>
+          <Button 
+            variant={foodOpen ? "destructive" : "default"} 
+            onClick={handleToggleFood}
+            disabled={loading}
+            className={`transition-colors duration-300 ${
+              foodOpen ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-blue-500 text-white hover:bg-blue-600'
+            } p-2 rounded-md`}
+          >
+            {foodOpen ? "Désactiver" : "Activer"}
           </Button>
         </div>
       </div>

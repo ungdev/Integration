@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Button } from "../ui/button";
-import { exportDb } from "../../services/requests/export.service";
-import { importPermanenceCSV } from "../../services/requests/permanence.service";
+import { exportDb, importFoodMenu, importPlannings } from "../../services/requests/im_export.service";
+import { FileText } from "lucide-react";
 
 export const AdminExportConnect = () => {
   const [loading, setLoading] = useState(false);
@@ -49,89 +49,250 @@ export const AdminExportConnect = () => {
   );
 };
 
-export const ImportPermCSV = () => {
-  const [file, setFile] = useState<File | null>(null);
+export const AdminImportFoodMenu = () => {
+  const [menu, setMenu] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setError(null);
+    setMessage("");
+    if (e.target.files && e.target.files.length > 0) {
+      const selected = e.target.files[0];
+      if (selected.type !== "application/pdf") {
+        setError("Seuls les fichiers PDF sont autorisés");
+        setMenu(null);
+      } else {
+        setMenu(selected);
+      }
     }
   };
 
-  const handleFileUpload = async () => {
-    if (!file) {
-      setMessage("Veuillez sélectionner un fichier CSV.");
+  const handleImport = async () => {
+    if (!menu) {
+      setError("Veuillez sélectionner un fichier PDF avant d’importer.");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
+    setLoading(true);
+    setError(null);
+    setMessage("");
 
     try {
-      const response = await importPermanenceCSV(formData);
-      setMessage(response.message);
-    } catch (error) {
-      console.error(error);
-      setMessage("Erreur lors de l'import du fichier CSV.");
+      const formData = new FormData();
+      formData.append("foodFile", menu);
+
+      const response = await importFoodMenu(formData);
+      setMessage(response.message || "Importation réussie !");
+    } catch (err) {
+      console.error("Erreur lors de l’importation du menu", err);
+      setError("Une erreur est survenue pendant l’importation.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-8 bg-white rounded-2xl shadow-xl mt-12 space-y-6">
-      <h2 className="text-3xl font-bold text-gray-900 text-center">
-        Importer un fichier CSV pour les permanences
+    <div className="max-w-xl mx-auto p-8 bg-white rounded-2xl shadow-xl">
+      <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">
+        Importer le menu au format PDF
       </h2>
 
-      <p className="text-center text-gray-500 text-sm">
-        Uploadez un fichier CSV contenant les permanences à importer.
-      </p>
-
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-col items-center mb-4 space-y-4">
+        {/* Input fichier masqué */}
         <input
+          id="menuFileInput"
           type="file"
-          accept=".csv"
+          accept=".pdf"
           onChange={handleFileChange}
-          className="file-input w-full max-w-md text-sm file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+          className="hidden"
         />
 
-        <Button
-          onClick={handleFileUpload}
-          className="w-full max-w-md bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-2.5 rounded-xl font-semibold transition shadow-md"
+        <label
+          htmlFor="menuFileInput"
+          className="cursor-pointer bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-6 rounded-xl shadow-md transition-all duration-200"
         >
-          📥 Importer le fichier
+          Choisir un fichier
+        </label>
+
+        {/* Affiche le nom du fichier sélectionné */}
+        {menu && (
+          <div className="flex items-center space-x-2 text-gray-700">
+            <FileText className="w-5 h-5 text-red-500" />
+            <span className="text-sm font-medium">{menu.name}</span>
+          </div>
+        )}
+
+        {/* Bouton importer */}
+        <Button
+          onClick={handleImport}
+          disabled={loading}
+          className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 px-6 rounded-xl shadow-md transition-all duration-200"
+        >
+          {loading ? "Import en cours..." : "Importer le PDF"}
         </Button>
       </div>
 
+      {error && (
+        <p className="text-center text-sm text-red-500 font-medium">{error}</p>
+      )}
       {message && (
-        <p
-          className={`text-center text-sm font-medium ${
-            message.toLowerCase().includes("succès")
-              ? "text-green-600"
-              : "text-red-500"
-          }`}
-        >
+        <p className="text-center text-sm text-green-600 font-medium">
           {message}
         </p>
       )}
+    </div>
+  );
+};
 
-      <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-sm text-gray-700">
-        <h3 className="font-semibold text-gray-800 mb-2 text-lg">
-          📄 Exemple de fichier CSV :
-        </h3>
-        <pre className="bg-white p-4 rounded-lg border text-xs overflow-x-auto">
-          {`name,description,location,start_at,end_at,capacity,is_open
-Permanence 1,Accueil matin,A001,2025-05-01T08:00,2025-05-01T10:00,10,false
-Permanence 2,Accueil après-midi,A002,2025-05-02T14:00,2025-05-02T16:00,15,false`}
-        </pre>
-        <p className="mt-4 text-xs text-gray-500">
-          Le fichier doit être encodé en UTF-8 et utiliser une virgule comme séparateur. Les dates doivent être au format
-          <code className="ml-1 font-mono bg-gray-200 px-1 rounded">
-            aaaa-mm-jjThh:mm
-          </code>.
-        </p>
+
+export const AdminImportPlannings = () => {
+  const [planning, setPlanning] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string>("");
+  const [selectedPlanning, setSelectedPlanning] = useState<string>("");
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setError(null);
+    setMessage("");
+    if (e.target.files && e.target.files.length > 0) {
+      const selected = e.target.files[0];
+      if (selected.type !== "application/pdf") {
+        setError("Seuls les fichiers PDF sont autorisés");
+        setPlanning(null);
+      } else {
+        setPlanning(selected);
+      }
+    }
+  };
+
+  const handleImport = async (planningName: string) => {
+    if (!planning) {
+      setError("Veuillez sélectionner un fichier PDF avant d’importer.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setMessage("");
+    setSelectedPlanning(planningName);
+
+    try {
+      const formData = new FormData();
+      formData.append("planningFile", planning);
+
+      const response = await importPlannings(formData);
+      setMessage(response.message || `Importation réussie pour ${planningName} !`);
+    } catch (err) {
+      console.error("Erreur lors de l’importation du planning", err);
+      setError("Une erreur est survenue pendant l’importation.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-xl mx-auto p-8 bg-white rounded-2xl shadow-xl">
+      <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">
+        Importer les plannings au format PDF
+      </h2>
+
+      {/* Rappel des règles de nommage */}
+      <p className="text-center text-sm text-red-600 font-medium mb-4">
+        ⚠️ Le fichier doit être nommé en minuscules, sans accents, au format <br />
+        <code className="font-mono">filiere.pdf</code> (ex: <code>tc.pdf</code>, <code>bachelor.pdf</code>)
+      </p>
+
+      <div className="flex flex-col items-center mb-4 space-y-4">
+        {/* Input fichier masqué */}
+        <input
+        id="planningFileInput"
+        type="file"
+        accept=".pdf"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+
+      <label
+        htmlFor="planningFileInput"
+        className="cursor-pointer bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-6 rounded-xl shadow-md transition-all duration-200"
+      >
+        Choisir un fichier
+      </label>
+
+        {/* Affiche le nom du fichier sélectionné */}
+        {planning && (
+          <div className="flex items-center space-x-2 text-gray-700">
+            <FileText className="w-5 h-5 text-red-500" />
+            <span className="text-sm font-medium">{planning.name}</span>
+          </div>
+        )}
+
+        {/* Différents boutons d'import */}
+        <div className="grid grid-cols-1 gap-3 w-full">
+          <Button
+            onClick={() => handleImport("Planning TC")}
+            disabled={loading}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded-xl shadow-md"
+          >
+            {loading && selectedPlanning === "Planning TC"
+              ? "Import en cours..."
+              : "Planning TC"}
+          </Button>
+
+          <Button
+            onClick={() => handleImport("Planning Bachelor IA")}
+            disabled={loading}
+            className="bg-violet-600 hover:bg-violet-700 text-white py-2 px-6 rounded-xl shadow-md"
+          >
+            {loading && selectedPlanning === "Planning Bachelor IA"
+              ? "Import en cours..."
+              : "Planning Bachelor IA"}
+          </Button>
+
+          <Button
+            onClick={() => handleImport("Planning Branche (non-alternant)")}
+            disabled={loading}
+            className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-xl shadow-md"
+          >
+            {loading && selectedPlanning === "Planning Branche (non-alternant)"
+              ? "Import en cours..."
+              : "Planning Branche (non-alternant)"}
+          </Button>
+
+          <Button
+            onClick={() => handleImport("Planning Branche FISEA (alternants)")}
+            disabled={loading}
+            className="bg-pink-600 hover:bg-pink-700 text-white py-2 px-6 rounded-xl shadow-md"
+          >
+            {loading && selectedPlanning === "Planning Branche FISEA (alternants)"
+              ? "Import en cours..."
+              : "Planning Branche FISEA (alternants)"}
+          </Button>
+
+          <Button
+            onClick={() => handleImport("Planning Master")}
+            disabled={loading}
+            className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-xl shadow-md"
+          >
+            {loading && selectedPlanning === "Planning Master"
+              ? "Import en cours..."
+              : "Planning Master"}
+          </Button>
+        </div>
       </div>
+
+      {/* Messages */}
+      {error && (
+        <p className="text-center text-sm text-red-500 font-medium">{error}</p>
+      )}
+      {message && (
+        <p className="text-center text-sm text-green-600 font-medium">
+          {message}
+        </p>
+      )}
     </div>
   );
 };

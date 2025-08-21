@@ -202,7 +202,7 @@ export const AdminImportPlannings = () => {
       {/* Rappel des règles de nommage */}
       <p className="text-center text-sm text-red-600 font-medium mb-4">
         ⚠️ Le fichier doit être nommé en minuscules, sans accents, au format <br />
-        <code className="font-mono">filière.pdf</code> (ex: <code>tc.pdf</code>, <code>bachelor.pdf</code>)
+        <code className="font-mono">filiere.pdf</code> (ex: <code>tc.pdf</code>, <code>bachelor.pdf</code>)
       </p>
 
       <div className="flex flex-col items-center mb-4 space-y-4">

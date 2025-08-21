@@ -8,8 +8,8 @@ const uploadPlannings = createUploadMiddleware("uploads/plannings/", false);
 const imexportRouter = express.Router();
 
 
-imexportRouter.post('/admin/foodimport',checkRole("Admin",[]),uploadFoodMenu.single("foodFile"), imexportController.updateFoodMenu)
-imexportRouter.post('/admin/plannings',checkRole("Admin",[]),uploadPlannings.single("planningFile"), imexportController.updatePlannings)
+imexportRouter.post('/admin/foodimport',checkRole("Admin",[]),uploadFoodMenu.multerUpload.single("foodFile"), uploadFoodMenu.verifyAndSave, imexportController.updateFoodMenu)
+imexportRouter.post('/admin/plannings',checkRole("Admin",[]),uploadPlannings.multerUpload.single("planningFile"), uploadFoodMenu.verifyAndSave, imexportController.updatePlannings)
 imexportRouter.post('/admin/export',checkRole("Admin",[]), imexportController.exportAllDataToSheets)
 
 

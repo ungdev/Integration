@@ -4,16 +4,31 @@ import { getAllChallenges, getFactionsPoints } from "../../services/requests/cha
 import { Challenge } from "../../interfaces/challenge.interface";
 import { getAllFactionsUser } from "../../services/requests/faction.service";
 import { Faction } from "../../interfaces/faction.interface";
+import { checkChallengeStatus } from "../../services/requests/event.service";
 
-export const ChallengeList = () => {
+export const UserChallengeList = () => {
   const [availableChallenges, setAvailableChallenges] = useState<Challenge[]>([]);
   const [factions, setFactions] = useState<Faction[]>([]);
   const [factionPoints, setFactionPoints] = useState<{ [key: number]: number }>({});
   const [selectedCategory, setSelectedCategory] = useState<string>("Tous");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [isChallOpen, setIsChallOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchInitialData();
+    const init = async () => {
+      try {
+        await fetchInitialData();
+        const status = await checkChallengeStatus();
+        setIsChallOpen(status);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des données :", error);
+        alert("Erreur lors de la récupération des données.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    init();
   }, []);
 
   const fetchInitialData = async () => {
@@ -44,7 +59,7 @@ export const ChallengeList = () => {
       const points: { [key: number]: number } = {};
       const fetchedFactions = await getAllFactionsUser();
       await Promise.all(
-        fetchedFactions.map(async (faction : Faction) => {
+        fetchedFactions.map(async (faction: Faction) => {
           const res = await getFactionsPoints(faction.factionId);
           points[faction.factionId] = res.points ?? 0;
         })
@@ -67,7 +82,9 @@ export const ChallengeList = () => {
       challenges = challenges.filter(c => c.category === selectedCategory);
     }
 
-    challenges.sort((a, b) => sortOrder === "asc" ? a.points - b.points : b.points - a.points);
+    challenges.sort((a, b) =>
+      sortOrder === "asc" ? a.points - b.points : b.points - a.points
+    );
 
     return challenges;
   }, [availableChallenges, selectedCategory, sortOrder]);
@@ -96,8 +113,13 @@ export const ChallengeList = () => {
       <Card className="w-full p-6 rounded-2xl shadow-md space-y-6">
         <h2 className="text-3xl font-bold text-gray-800 text-center">🏆 Challenges disponibles</h2>
 
-        {
-        availableChallenges.length === 0 ? (
+        {loading ? (
+          <p className="text-gray-500 text-center">Chargement en cours...</p>
+        ) : !isChallOpen ? (
+          <p className="text-red-500 font-semibold text-center">
+            🚫 Les challenges ne sont pas encore ouverts.
+          </p>
+        ) : availableChallenges.length === 0 ? (
           <p className="text-gray-500 text-center">Aucun challenge disponible pour le moment.</p>
         ) : (
           <>

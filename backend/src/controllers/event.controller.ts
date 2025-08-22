@@ -55,6 +55,16 @@ export const checkFoodStatus = async (req: Request, res: Response) => {
     }
 };
 
+export const checkChallStatus = async (req: Request, res: Response) => {
+    try{
+        const status = await event_service.getEventsStatus();
+        Ok(res, ({data: status?.chall_open}));
+
+    }catch(error){
+        Error(res, {msg :"Error while catching Challenge status :" + error})
+    }
+};
+
 
 export const shotgunAttempt = async (req: Request, res: Response) => {
 
@@ -138,6 +148,17 @@ export const toggleFood = async (req: Request, res: Response) => {
   
     try {
       const result = await event_service.updateFoodStatus(foodOpen);
+      Ok(res,{ msg: "Paramètres mis à jour.", data: result });
+    } catch (error) {
+      Error(res,{ msg: "Erreur lors de la mise à jour." });
+    }
+};
+
+export const toggleChall = async (req: Request, res: Response) => {
+    const { challOpen } = req.body;
+  
+    try {
+      const result = await event_service.updateChallStatus(challOpen);
       Ok(res,{ msg: "Paramètres mis à jour.", data: result });
     } catch (error) {
       Error(res,{ msg: "Erreur lors de la mise à jour." });

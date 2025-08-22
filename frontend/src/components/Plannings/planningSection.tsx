@@ -8,7 +8,11 @@ type Planning = {
 const plannings: Planning[] = [
   {
     name: "Planning TC",
-    url: "http://localhost:4001/api/uploads/plannings/tc.pdf",
+    url: "https://integration.utt.fr/api/uploads/plannings/tc.pdf",
+  },
+  {
+    name: "Planning Bachelor IA",
+    url: "https://integration.utt.fr/api/uploads/plannings/bachelor.pdf",
   },
   {
     name: "Planning Branche (non-alternant)",

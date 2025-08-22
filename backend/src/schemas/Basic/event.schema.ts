@@ -7,6 +7,7 @@ export const eventSchema = pgTable("events", {
     sdi_open: boolean("sdi_open").default(false),
     wei_open: boolean("wei_open").default(false),
     food_open: boolean("food_open").default(false),
+    chall_open: boolean("chall_open").default(false),
   });
 
 export type Event = typeof eventSchema.$inferSelect;

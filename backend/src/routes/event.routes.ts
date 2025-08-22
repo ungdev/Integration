@@ -11,6 +11,7 @@ eventRouter.get("/user/preregisterstatus",checkRole("Student",[]), eventControll
 eventRouter.get("/user/sdistatus", eventController.checkSDIStatus);
 eventRouter.get("/user/weistatus", eventController.checkWEIStatus);
 eventRouter.get("/user/foodstatus", eventController.checkFoodStatus);
+eventRouter.get("/user/challstatus", eventController.checkChallStatus);
 eventRouter.post("/user/shotgunattempt",checkRole("Student",[]), eventController.shotgunAttempt);
 
 
@@ -20,5 +21,6 @@ eventRouter.post("/admin/preregistrationtoggle",checkRole("Admin",[]), eventCont
 eventRouter.post("/admin/sditoggle",checkRole("Admin",[]),eventController.toggleSDI);
 eventRouter.post("/admin/weitoggle",checkRole("Admin",[]), eventController.toggleWEI);
 eventRouter.post("/admin/foodtoggle",checkRole("Admin",[]), eventController.toggleFood);
+eventRouter.post("/admin/challtoggle",checkRole("Admin",[]), eventController.toggleChall);
 
 export default eventRouter;

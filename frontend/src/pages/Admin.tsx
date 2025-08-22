@@ -1,15 +1,23 @@
 import { AdminRoleManagement, AdminRolePreferences } from "../components/Admin/adminRole";
 import { AdminEvents } from "../components/Admin/adminEvent";
-import { AdminTeamManagement, DistributeTeam } from "../components/Admin/adminTeam";  // Importer le composant
+import { AdminTeamManagement, DistributeTeam } from "../components/Admin/adminTeam";
 import { AdminLayout } from "../components/Admin/adminLayout";
 import { AdminExportConnect, AdminImportFoodMenu, AdminImportPlannings } from "../components/Admin/adminExportImport";
 import { AdminFactionManagement } from "../components/Admin/adminFaction";
 import { AdminPermanence, ImportPermCSV } from "../components/Admin/adminPerm";
-import { AdminChallengeAddPointsForm, AdminChallengeForm, AdminValidatedChallengesList } from "../components/Admin/adminChallenge";
 import { AdminEmail } from "../components/Admin/adminEmail";
 import { AdminSyncNewStudent, AdminUser } from "../components/Admin/adminUser";
 import { AdminNews } from "../components/Admin/adminNews";
 import { AdminRolePointsManager } from "../components/Admin/adminGames";
+
+//--------------Challenge Import--------------//
+import ChallengeEditor from "../components/Admin/AdminChallenge/adminChallengeEditor";
+import AdminChallengeList from "../components/Admin/AdminChallenge/adminChalengeList";
+import { useEffect, useRef, useState } from "react";
+import { Challenge } from "../interfaces/challenge.interface";
+import { getAllChallenges } from "../services/requests/challenge.service";
+import { AdminChallengeAddPointsForm } from "../components/Admin/AdminChallenge/adminChallengeAddPointsForm";
+import { AdminValidatedChallengesList } from "../components/Admin/AdminChallenge/adminChallengeValidatedList";
 
 
 
@@ -102,17 +110,58 @@ export const AdminPagePerm: React.FC = () => {
 };
 
 export const AdminPageChall: React.FC = () => {
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [editingChallenge, setEditingChallenge] = useState<Challenge | null>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  const fetchChallenges = async () => {
+    try {
+      const res = await getAllChallenges();
+      setChallenges(res);
+    } catch (err) {
+      console.error("Erreur chargement challenges", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchChallenges();
+  }, []);
+
+  const handleEdit = (challenge: Challenge) => {
+    setEditingChallenge(challenge);
+    editorRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-     <AdminLayout allowedRoles={["Admin", "Arbitre"]}>
+    <AdminLayout allowedRoles={["Admin", "Arbitre"]}>
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl bg-white shadow p-6">
-          < AdminChallengeForm/>
+        
+        {/* Formulaire création / édition */}
+        <section ref={editorRef} className="rounded-2xl bg-white shadow p-6">
+          <ChallengeEditor
+            editingChallenge={editingChallenge}
+            setEditingChallenge={setEditingChallenge}
+            refreshChallenges={fetchChallenges}
+          />
         </section>
+
+        {/* Liste des challenges */}
         <section className="rounded-2xl bg-white shadow p-6">
-          < AdminChallengeAddPointsForm/>
+          <AdminChallengeList
+            challenges={challenges}
+            refreshChallenges={fetchChallenges}
+            onEdit={handleEdit}
+          />
         </section>
+
+        {/* Ajout de points */}
         <section className="rounded-2xl bg-white shadow p-6">
-          < AdminValidatedChallengesList/>
+          <AdminChallengeAddPointsForm />
+        </section>
+
+        {/* Liste des challenges validés */}
+        <section className="rounded-2xl bg-white shadow p-6">
+          <AdminValidatedChallengesList />
         </section>
       </div>
     </AdminLayout>

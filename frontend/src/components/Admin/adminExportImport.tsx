@@ -99,6 +99,11 @@ export const AdminImportFoodMenu = () => {
         Importer le menu au format PDF
       </h2>
 
+      {/* Rappel des règles de nommage */}
+      <p className="text-center text-sm text-red-600 font-medium mb-4">
+        ⚠️ Le fichier doit être nommé FoodMenu.pdf <br />
+      </p>
+
       <div className="flex flex-col items-center mb-4 space-y-4">
         {/* Input fichier masqué */}
         <input

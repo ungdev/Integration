@@ -73,3 +73,9 @@ export const updateFoodStatus = async ( foodOpen: boolean) => {
       .set({ food_open: foodOpen })
       .returning();
 };
+
+export const updateChallStatus = async (challOpen: boolean) => {
+    return await db.update(eventSchema)
+      .set({ chall_open: challOpen })
+      .returning();
+};

@@ -30,7 +30,7 @@ export const createUploadMiddleware = (
     try {
       if (!req.file) return Error(res, {msg: "Aucun fichier reçu"});
 
-      const user = (req as any).user?.id || "anonymous";
+      const user = (req as Request).user?.userId || "anonymous";
       const { originalname, mimetype, buffer } = req.file;
 
       console.log(

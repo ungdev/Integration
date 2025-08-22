@@ -93,7 +93,7 @@ export const AdminValidatedChallengesList = () => {
                     }
                     className="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded"
                   >
-                    Unvalider
+                    Invalider
                   </Button>
                 </div>
               </div>

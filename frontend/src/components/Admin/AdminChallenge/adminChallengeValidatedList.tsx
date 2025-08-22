@@ -28,7 +28,7 @@ export const AdminValidatedChallengesList = () => {
       showCancelButton: true,
       confirmButtonColor: "#e3342f",
       cancelButtonColor: "#6b7280",
-      confirmButtonText: "Oui, désvalider",
+      confirmButtonText: "Oui, dévalider",
       cancelButtonText: "Annuler",
     });
 

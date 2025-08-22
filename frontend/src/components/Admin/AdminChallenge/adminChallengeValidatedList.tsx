@@ -39,7 +39,7 @@ export const AdminValidatedChallengesList = () => {
       Swal.fire("Succès", result.message, "success");
       fetchValidatedChallenges();
     } catch {
-      Swal.fire("Erreur", "❌ Une erreur est survenue lors de la désvalidation", "error");
+      Swal.fire("Erreur", "❌ Une erreur est survenue lors de la dévalidation", "error");
     }
   };
 

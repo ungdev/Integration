@@ -55,7 +55,6 @@ export const syncNewstudent = async (req: Request, res: Response) => {
       const token = await SIEP_Utils.getTokenUTTAPI();
       const newStudents = await SIEP_Utils.getNewStudentsFromUTTAPI_NOPAGE(token, date);
       const newStudentfiltered = newStudents.filter((student : any) => !noSyncEmails.includes(student.email));//Nouveau à ne pas sync (Démissionnaires, etc)
-`
 
       for (const element of newStudentfiltered) {
           
@@ -131,6 +130,3 @@ export const adminDeleteUser = async (req: Request, res: Response) => {
     Error(res, { msg: "Erreur lors de la suppression de l'utilisateur." });
   }
 };
-
-
-

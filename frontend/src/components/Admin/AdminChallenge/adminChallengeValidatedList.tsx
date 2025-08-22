@@ -22,7 +22,7 @@ export const AdminValidatedChallengesList = () => {
 
   const handleUnvalidate = async (challengeId: number, factionId: number, teamId: number, userId: number) => {
     const confirm = await Swal.fire({
-      title: "Confirmer la désvalidation ?",
+      title: "Confirmer la dévalidation ?",
       text: "Cette action retirera la validation du challenge.",
       icon: "warning",
       showCancelButton: true,

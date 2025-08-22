@@ -5,6 +5,7 @@ import { Challenge } from "../../interfaces/challenge.interface";
 import { getAllFactionsUser } from "../../services/requests/faction.service";
 import { Faction } from "../../interfaces/faction.interface";
 import { checkChallengeStatus } from "../../services/requests/event.service";
+import Swal from "sweetalert2";
 
 export const UserChallengeList = () => {
   const [availableChallenges, setAvailableChallenges] = useState<Challenge[]>([]);
@@ -15,21 +16,25 @@ export const UserChallengeList = () => {
   const [isChallOpen, setIsChallOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const init = async () => {
-      try {
-        await fetchInitialData();
-        const status = await checkChallengeStatus();
-        setIsChallOpen(status);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des données :", error);
-        alert("Erreur lors de la récupération des données.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    init();
-  }, []);
+ useEffect(() => {
+  const init = async () => {
+    try {
+      await fetchInitialData();
+      const status = await checkChallengeStatus();
+      setIsChallOpen(status);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données :", error);
+      await Swal.fire({
+        icon: "error",
+        title: "Oups...",
+        text: "Une erreur est survenue lors de la récupération des données.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  init();
+}, []);
 
   const fetchInitialData = async () => {
     await Promise.all([fetchChallenges(), fetchFactions()]);

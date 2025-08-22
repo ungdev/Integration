@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import bcrypt from 'bcryptjs';
 import * as randomstring from 'randomstring';
 import * as auth_service from "../services/auth.service"
+import { noSyncEmails } from '../utils/no_sync_list';
 
 export const getUsersAdmin = async (req: Request, res: Response) => {
     try {
@@ -53,9 +54,10 @@ export const syncNewstudent = async (req: Request, res: Response) => {
       
       const token = await SIEP_Utils.getTokenUTTAPI();
       const newStudents = await SIEP_Utils.getNewStudentsFromUTTAPI_NOPAGE(token, date);
-      //const newStudentfiltered = newStudents.filter((student : any) => !noSyncEmails.includes(student.email));
+      const newStudentfiltered = newStudents.filter((student : any) => !noSyncEmails.includes(student.email));//Nouveau à ne pas sync (Démissionnaires, etc)
+`
 
-      for (const element of newStudents) {
+      for (const element of newStudentfiltered) {
           
           let userInDb = await user_service.getUserByEmail(element.email.toLowerCase());
           if(userInDb === undefined){

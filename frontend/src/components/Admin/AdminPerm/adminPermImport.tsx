@@ -74,9 +74,9 @@ export const ImportPermCSV = () => {
           📄 Exemple de fichier CSV :
         </h3>
         <pre className="bg-white p-4 rounded-lg border text-xs overflow-x-auto">
-          {`name,description,location,start_at,end_at,capacity,difficulty,is_open,
-Permanence 1,Accueil matin,A001,2025-05-01T08:00,2025-05-01T10:00,3,10,false
-Permanence 2,Accueil après-midi,A002,2025-05-02T14:00,2025-05-02T16:00,4,15,false`}
+          {`name,description,location,start_at,end_at,capacity,difficulty,
+Permanence 1,Accueil matin,A001,2025-05-01T08:00,2025-05-01T10:00,3,10
+Permanence 2,Accueil après-midi,A002,2025-05-02T14:00,2025-05-02T16:00,4,15`}
         </pre>
         <p className="mt-4 text-xs text-gray-500">
           Le fichier doit être encodé en UTF-8 et utiliser une virgule comme séparateur. Les dates doivent être au format

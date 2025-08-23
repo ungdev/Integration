@@ -46,18 +46,41 @@ export const exportAllDataToSheets = async (req: Request, res: Response) => {
       ])
     ];
 
-    const permanenceValues = [
-      ["ID", "Nom", "Début", "Fin", "Lieu", "Inscrits (noms)","Inscrits (emails)"],
-      ...permanenceList.map(p => [
-        p.id,
-        p.name ?? "Sans nom",
-        p.start_at?.toISOString() ?? "N/A",
-        p.end_at?.toISOString() ?? "N/A",
-        p.location ?? "Sans lieu",
-        p.users.map(u => `${u.first_name} ${u.last_name}`).join(" ; ") || "Aucun inscrit",
-        p.users.map(u => (u.email)).join(" ; ") || "Aucun inscrit"
-      ])
+const permanenceValues = [
+  [
+    "ID",
+    "Nom",
+    "Début",
+    "Fin",
+    "Lieu",
+    "Responsables",
+    "Inscrits (noms)",
+    "Inscrits (emails)",
+    "Présents",
+    "Absents"
+  ],
+  ...permanenceList.map((p) => {
+    const respoNames = p.respo ? p.respo.firstName + " " + p.respo.lastName : "Aucun";
+    const userNames = p.users?.map((u) => `${u.first_name} ${u.last_name}`)?.join(" ; ") || "Aucun inscrit";
+    const userEmails = p.users?.map((u) => u.email)?.join(" ; ") || "Aucun inscrit";
+
+    const claimedUsers = p.users?.filter((u) => u.claimed)?.map((u) => `${u.first_name} ${u.last_name}`)?.join(" ; ") || "Aucun";
+    const unclaimedUsers = p.users?.filter((u) => !u.claimed)?.map((u) => `${u.first_name} ${u.last_name}`)?.join(" ; ") || "Aucun";
+
+    return [
+      p.id,
+      p.name ?? "Sans nom",
+      p.start_at ? new Date(p.start_at).toLocaleString("fr-FR") : "N/A",
+      p.end_at ? new Date(p.end_at).toLocaleString("fr-FR") : "N/A",
+      p.location ?? "Sans lieu",
+      respoNames,
+      userNames,
+      userEmails,
+      claimedUsers,
+      unclaimedUsers
     ];
+  })
+];
     
 
     const shotgunValues = [

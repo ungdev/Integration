@@ -20,7 +20,7 @@ import { AdminPageRole,
 
 import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
-import { PermPage } from './pages/Perm';
+import { AvailablePermanencesPage, MyPermanencesPage, RespoCallPage } from './pages/Perm';
 import { ChallPage } from './pages/Challenge';
 import { ParrainagePage } from './pages/Parrainage';
 import { RegisterPage } from './pages/Register';
@@ -73,7 +73,9 @@ const App: React.FC = () => {
 
         {/* Étudiant et Admin */}
         <Route path="/Shotgun" element={<PrivateRoute permissionRequired="Student"><ShotgunPage /></PrivateRoute>} />
-        <Route path="/Permanences" element={<PrivateRoute permissionRequired="Student"><PermPage /></PrivateRoute>} />
+        <Route path="/PermanencesList" element={<PrivateRoute permissionRequired="Student"><AvailablePermanencesPage /></PrivateRoute>} />
+        <Route path="/MyPermanences" element={<PrivateRoute permissionRequired="Student"><MyPermanencesPage /></PrivateRoute>} />
+        <Route path="/PermanencesAppeal" element={<PrivateRoute permissionRequired="Student"><RespoCallPage /></PrivateRoute>} />
         <Route path="/Games" element={<PrivateRoute permissionRequired="Student"><GamesPage /></PrivateRoute>} />
 
         {/* ResposCE et Admin */}

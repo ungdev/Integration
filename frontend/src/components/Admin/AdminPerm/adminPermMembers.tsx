@@ -8,6 +8,7 @@ import {
   getUsersByPermanence,
   addUserToPermanence,
   removeUserFromPermanence,
+  claimedMember,
 } from "../../../services/requests/permanence.service";
 import { Permanence } from "../../../interfaces/permanence.interface";
 import { User } from "../../../interfaces/user.interface";
@@ -19,6 +20,11 @@ interface PermanenceMembersProps {
   onRefresh: () => void;
 }
 
+interface PermanenceMember extends User {
+  claimed: boolean;
+}
+
+
 interface Option {
   value: User;
   label: string;
@@ -26,7 +32,7 @@ interface Option {
 
 const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRefresh }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [members, setMembers] = useState<User[]>([]);
+  const [members, setMembers] = useState<PermanenceMember[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -46,8 +52,8 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
   const fetchMembers = async (): Promise<void> => {
     try {
       setLoading(true);
-      const res = await getUsersByPermanence(perm.id); // { data: User[] }
-      setMembers((res.data as User[]) ?? []);
+      const res = await getUsersByPermanence(perm.id); 
+      setMembers((res.data as PermanenceMember[]) ?? []);
     } catch {
       Swal.fire("Erreur", "Impossible de récupérer les membres", "error");
     } finally {
@@ -96,6 +102,24 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
     }
   };
 
+  const handleToggleClaim = async (user: PermanenceMember): Promise<void> => {
+    try {
+      const newClaimedStatus = !user.claimed;
+      await claimedMember(user.userId, perm.id, newClaimedStatus);
+
+      await Swal.fire(
+        newClaimedStatus ? "Présence confirmée" : "Présence retirée",
+        `Le membre est marqué comme ${newClaimedStatus ? "présent" : "absent"}`,
+        newClaimedStatus ? "success" : "info"
+      );
+
+      await fetchMembers();
+      onRefresh();
+    } catch {
+      Swal.fire("Erreur", "Impossible de modifier la présence", "error");
+    }
+  };
+
   return (
     <Card className="mt-6 bg-gray-50 p-4 rounded-xl border">
       <div className="flex items-center justify-between">
@@ -120,12 +144,24 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
                       ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim()
                       : `Utilisateur ${user.userId}`}
                   </span>
-                  <Button
-                    onClick={() => void handleRemove(user.userId)}
-                    className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1"
-                  >
-                    Retirer
-                  </Button>
+                  <div className="flex gap-2 items-center">
+                    <Button
+                      onClick={() => void handleToggleClaim(user)}
+                      className={`text-xs px-2 py-1 ${
+                        user.claimed
+                          ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                          : "bg-blue-500 hover:bg-blue-600 text-white"
+                      }`}
+                    >
+                      {user.claimed ? "❌ Marquer absent" : "✅ Marquer présent"}
+                    </Button>
+                    <Button
+                      onClick={() => void handleRemove(user.userId)}
+                      className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1"
+                    >
+                      Retirer
+                    </Button>
+                  </div>
                 </li>
               ))}
             </ul>

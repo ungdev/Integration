@@ -1,3 +1,5 @@
+import { User } from "./user.interface";
+
 export interface Permanence {
     id: number;          
     name: string; 
@@ -6,9 +8,10 @@ export interface Permanence {
     end_at: string;    
     location: string;
     capacity: number;
-    isOpen: boolean;     
+    is_open: boolean;     
     createdAt: string;   
     updatedAt: string; 
-    difficulty : number;  
+    difficulty : number;
+    respo: User; 
 }
   

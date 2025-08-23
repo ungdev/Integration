@@ -34,7 +34,15 @@ export const Navbar = () => {
   { label: "Parrainage",  to: "/Parrainage" },
   { label: "Challenges",  to: "/Challenges" },
   { label: "Mes Actus",   to: "/News" },
-  { label: "Permanences", to: "/Permanences", rolesAllowed: ["Admin", "Student"]},
+  {
+    label: "Permanences",
+    to: "#",
+    children: [
+      { label: "Listes des permanences", to: "/PermanencesList", rolesAllowed: ["Admin", "Student"] },
+      { label: "Mes permanences", to: "/MyPermanences", rolesAllowed: ["Admin", "Student"] },
+      { label: "Faire l'appelle", to: "/PermanencesAppeal", rolesAllowed: ["Admin", "Student"] },
+    ],
+  },
   {
     label: "Events",
     to: "#",

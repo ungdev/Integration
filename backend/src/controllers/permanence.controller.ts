@@ -24,9 +24,9 @@ const validatePermanenceData = (start_at: string, end_at: string) => {
 
 // ➕ Créer une permanence
 export const createPermanence = async (req: Request, res: Response) => {
-  const { name, description, location, start_at, end_at, capacity, difficulty } = req.body;
+  const { name, description, location, start_at, end_at, capacity, difficulty, respoId } = req.body;
 
-  if (!name || !location || !start_at || !end_at || !capacity || !difficulty) {
+  if (!name || !location || !start_at || !end_at || !capacity || !difficulty || !respoId) {
     Error(res, { msg: "Tous les champs sont requis" });
     return;
   }
@@ -45,7 +45,8 @@ export const createPermanence = async (req: Request, res: Response) => {
       new Date(start_at),
       new Date(end_at),
       Number(capacity),
-      Number(difficulty)
+      Number(difficulty),
+      Number(respoId),
     );
     Ok(res, { msg: "Permanence créée avec succès" });
     return;
@@ -57,9 +58,9 @@ export const createPermanence = async (req: Request, res: Response) => {
 
 
 export const updatePermanence = async (req: Request, res: Response) => {
-    const { permId, name, description, location, start_at, end_at, capacity, difficulty } = req.body;
+    const { permId, name, description, location, start_at, end_at, capacity, difficulty, respoId } = req.body;
   
-    if (!name || !location || !start_at || !end_at || !capacity || !difficulty) {
+    if (!name || !location || !start_at || !end_at || !capacity || !difficulty || !respoId) {
       Error(res, { msg: "Tous les champs sont requis" });
       return;
     }
@@ -79,7 +80,8 @@ export const updatePermanence = async (req: Request, res: Response) => {
         new Date(start_at),
         new Date(end_at),
         Number(capacity),
-        Number(difficulty)
+        Number(difficulty),
+        Number(respoId)
       );
       Ok(res, { msg: "Permanence mis à jour avec succès" });
     } catch (err) {
@@ -315,5 +317,62 @@ export const uploadPermanencesCSV = async (req: MulterRequest, res: Response) =>
     Error(res, { msg: "Échec de l'importation." });
   }
 };
+
+export const isUserRespo = async (req: Request, res: Response) => {
+  const { userId } = req.query;
+
+  if (!userId) {
+    Error(res, { msg: "userId est requis" });
+    return;
+  }
+
+  try {
+    const isRespo = await permanence_service.isUserRespoOfPermanence(
+      Number(userId)
+    );
+    Ok(res, { data: isRespo });
+  } catch (err) {
+    console.error(err);
+    Error(res, { msg: "Erreur lors de la vérification du responsable" });
+  }
+};
+
+export const getRespoPermanencesWithMembers = async (req: Request, res: Response) => {
+  const respoId = req.user?.userId;
+
+  if (!respoId) {
+    Error(res, { msg: "respoId est requis" });
+    return;
+  }
+
+  try {
+    const data = await permanence_service.getPermanenceDetailsForRespo(Number(respoId));
+    Ok(res, { data });
+  } catch (err) {
+    console.error(err);
+    Error(res, { msg: "Erreur lors de la récupération des permanences du responsable" });
+  }
+};
+
+export const claimMember = async (req: Request, res: Response) => {
+  const { userId, permId, claimed } = req.body;
+
+  if (userId === undefined || permId === undefined || claimed === undefined) {
+    Error(res, { msg: "userId, permId et claimed sont requis" });
+    return;
+  }
+
+  try {
+    await permanence_service.claimMember(Number(userId), Number(permId), Boolean(claimed));
+    Ok(res, {
+      msg: `Statut mis à jour avec succès (claimed = ${claimed})`,
+    });
+  } catch (err) {
+    console.error(err);
+    Error(res, { msg: "Erreur lors de la mise à jour du statut du membre" });
+  }
+};
+
+
 
 

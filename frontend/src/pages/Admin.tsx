@@ -141,7 +141,7 @@ export const AdminPagePerm: React.FC = () => {
           transition={{ duration: 0.35 }}
           className="rounded-2xl bg-white shadow-lg p-8"
         >
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">
+          <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
             {editMode ? "✏️ Modifier une permanence" : "➕ Créer une permanence"}
           </h1>
 
@@ -163,7 +163,7 @@ export const AdminPagePerm: React.FC = () => {
           transition={{ duration: 0.35, delay: 0.2 }}
           className="rounded-2xl bg-white shadow-lg p-8"
         >
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
             📋 Permanences existantes
           </h2>
           <PermanenceList
@@ -187,7 +187,7 @@ export const AdminPagePerm: React.FC = () => {
           transition={{ duration: 0.35, delay: 0.1 }}
           className="rounded-2xl bg-white shadow-lg p-8"
         >
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
             ⚡ Actions rapides
           </h2>
           <PermanenceActions
@@ -203,7 +203,7 @@ export const AdminPagePerm: React.FC = () => {
           transition={{ duration: 0.35, delay: 0.3 }}
           className="rounded-2xl bg-white shadow-lg p-8"
         >
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
             📂 Importer des permanences (CSV)
           </h2>
           <ImportPermCSV />

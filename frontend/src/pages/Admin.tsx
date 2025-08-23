@@ -18,6 +18,7 @@ import { Challenge } from "../interfaces/challenge.interface";
 import { getAllChallenges } from "../services/requests/challenge.service";
 import { AdminChallengeAddPointsForm } from "../components/Admin/AdminChallenge/adminChallengeAddPointsForm";
 import { AdminValidatedChallengesList } from "../components/Admin/AdminChallenge/adminChallengeValidatedList";
+import { TentAdmin } from "../components/Admin/adminTent";
 
 
 
@@ -201,6 +202,18 @@ export const AdminPageNews: React.FC = () => {
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl bg-white shadow p-6">
           < AdminNews/>
+        </section>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export const AdminPageTent: React.FC = () => {
+  return (
+    <AdminLayout allowedRoles={["Admin"]}>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl bg-white shadow p-6">
+          < TentAdmin/>
         </section>
       </div>
     </AdminLayout>

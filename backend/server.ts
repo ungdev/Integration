@@ -17,6 +17,7 @@ import challengeRoutes from './src/routes/challenge.routes';
 import emailRoutes from './src/routes/email.routes';
 import newsRoutes from './src/routes/news.routes';
 import discordRoutes from './src/routes/discord.routes';
+import tentRoutes from './src/routes/tent.routes';
 import { server_port } from './src/utils/secret';
 import { initUser } from './src/database/initdb/initUser'
 import { initRoles } from './src/database/initdb/initrole'
@@ -56,6 +57,7 @@ async function startServer() {
         app.use('/api/email',authenticateUser, emailRoutes);
         app.use('/api/news',authenticateUser, newsRoutes);
         app.use('/api/discord',authenticateUser, discordRoutes);
+        app.use('/api/tent',authenticateUser, tentRoutes);
         app.use("/api/uploads/imgnews", express.static(path.join(__dirname, "/uploads/imgnews")));
         app.use("/api/uploads/foodmenu", express.static(path.join(__dirname, "/uploads/foodmenu")));
         app.use("/api/uploads/plannings", express.static(path.join(__dirname, "/uploads/plannings")));

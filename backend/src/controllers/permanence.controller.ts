@@ -24,9 +24,9 @@ const validatePermanenceData = (start_at: string, end_at: string) => {
 
 // ➕ Créer une permanence
 export const createPermanence = async (req: Request, res: Response) => {
-  const { name, description, location, start_at, end_at, capacity } = req.body;
+  const { name, description, location, start_at, end_at, capacity, difficulty } = req.body;
 
-  if (!name || !location || !start_at || !end_at || !capacity) {
+  if (!name || !location || !start_at || !end_at || !capacity || !difficulty) {
     Error(res, { msg: "Tous les champs sont requis" });
     return;
   }
@@ -44,7 +44,8 @@ export const createPermanence = async (req: Request, res: Response) => {
       location,
       new Date(start_at),
       new Date(end_at),
-      Number(capacity)
+      Number(capacity),
+      Number(difficulty)
     );
     Ok(res, { msg: "Permanence créée avec succès" });
     return;
@@ -56,9 +57,9 @@ export const createPermanence = async (req: Request, res: Response) => {
 
 
 export const updatePermanence = async (req: Request, res: Response) => {
-    const { permId, name, description, location, start_at, end_at, capacity } = req.body;
+    const { permId, name, description, location, start_at, end_at, capacity, difficulty } = req.body;
   
-    if (!name || !location || !start_at || !end_at || !capacity) {
+    if (!name || !location || !start_at || !end_at || !capacity || !difficulty) {
       Error(res, { msg: "Tous les champs sont requis" });
       return;
     }
@@ -77,7 +78,8 @@ export const updatePermanence = async (req: Request, res: Response) => {
         location,
         new Date(start_at),
         new Date(end_at),
-        Number(capacity)
+        Number(capacity),
+        Number(difficulty)
       );
       Ok(res, { msg: "Permanence mis à jour avec succès" });
     } catch (err) {

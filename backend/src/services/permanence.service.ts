@@ -10,10 +10,11 @@ type CsvPermanence = {
   name: string;
   description: string;
   location: string;
-  start_at: string; // ISO string
+  start_at: string;
   end_at: string;
   capacity: string;
-  is_open: string; // 'true' or 'false'
+  is_open: string;
+  difficulty: string; 
 };
 
 // Classes d'erreurs personnalisées
@@ -146,7 +147,8 @@ export const createPermanence = async (
   location: string,
   start_at: Date,
   end_at: Date,
-  capacity: number
+  capacity: number,
+  difficulty: number
 ) => {
   await db.insert(permanenceSchema).values({
     name,
@@ -155,7 +157,8 @@ export const createPermanence = async (
     start_at,
     end_at,
     capacity,
-    is_open: false, // pas ouverte à la création
+    is_open: false,
+    difficulty
   });
 };
 
@@ -173,7 +176,8 @@ export const updatePermanence = async (
   location: string,
   start_at: Date,
   end_at: Date,
-  capacity: number
+  capacity: number,
+  difficulty : number
 ) => {
   await db
     .update(permanenceSchema)
@@ -184,7 +188,8 @@ export const updatePermanence = async (
       start_at,
       end_at,
       capacity,
-      is_open: false, // pas ouverte à la création
+      is_open: false,
+      difficulty
     })
     .where(eq(permanenceSchema.id, permId));
 };
@@ -325,7 +330,9 @@ export const importPermanencesFromCSV = async (
     start_at: new Date(r.start_at),
     end_at: new Date(r.end_at),
     capacity: parseInt(r.capacity, 10),
-    is_open: r.is_open?.toLowerCase() === "true",
+    difficulty: r.difficulty,
+    is_open: r.is_open?.toLowerCase() === "false",
+
   }));
 
   await db.insert(permanenceSchema).values(parsedData);

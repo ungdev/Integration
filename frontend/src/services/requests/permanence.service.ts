@@ -32,6 +32,7 @@ export const createPermanence = async (permanenceData: {
   start_at: string;
   end_at: string;
   capacity: number;
+  difficulty : number;
 }) => {
 
     const response = await api.post("/permanence/admin/permanence", {
@@ -41,6 +42,7 @@ export const createPermanence = async (permanenceData: {
       start_at: permanenceData.start_at,
       end_at: permanenceData.end_at,
       capacity: permanenceData.capacity,
+      difficulty : permanenceData.difficulty
     });
     return response.data; // La réponse est de type Permanent
 
@@ -87,6 +89,7 @@ export const updatePermanence = async ( permId: number, permanenceData: {
     start_at: string;
     end_at: string;
     capacity: number;
+    difficulty : number;
   }) => {
 
       const response = await api.post("/permanence/admin/updatepermanence", {
@@ -97,6 +100,7 @@ export const updatePermanence = async ( permId: number, permanenceData: {
         start_at: permanenceData.start_at,
         end_at: permanenceData.end_at,
         capacity: permanenceData.capacity,
+        difficulty: permanenceData.difficulty
       });
       return response.data; // La réponse est de type Permanent
 

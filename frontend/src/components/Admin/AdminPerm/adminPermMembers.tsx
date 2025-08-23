@@ -1,0 +1,159 @@
+import { useEffect, useMemo, useState } from "react";
+import Select, { SingleValue } from "react-select";
+import { Button } from "../../../components/ui/button";
+import { Card } from "../../../components/ui/card";
+import Swal from "sweetalert2";
+
+import {
+  getUsersByPermanence,
+  addUserToPermanence,
+  removeUserFromPermanence,
+} from "../../../services/requests/permanence.service";
+import { Permanence } from "../../../interfaces/permanence.interface";
+import { User } from "../../../interfaces/user.interface";
+
+
+interface PermanenceMembersProps {
+  perm: Permanence;
+  users: User[];
+  onRefresh: () => void;
+}
+
+interface Option {
+  value: User;
+  label: string;
+}
+
+const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRefresh }) => {
+  const [expanded, setExpanded] = useState<boolean>(false);
+  const [members, setMembers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const options: Option[] = useMemo(() => {
+    const memberIds = new Set(members.map((m) => m.userId));
+    return users
+      .filter((u) => !memberIds.has(u.userId))
+      .map((u) => ({
+        value: u,
+        label:
+          (u.firstName || u.lastName)
+            ? `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim()
+            : `Utilisateur ${u.userId}`,
+      }));
+  }, [users, members]);
+
+  const fetchMembers = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      const res = await getUsersByPermanence(perm.id); // { data: User[] }
+      setMembers((res.data as User[]) ?? []);
+    } catch {
+      Swal.fire("Erreur", "Impossible de récupérer les membres", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (expanded) {
+      void fetchMembers();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [expanded, perm.id]);
+
+  const handleAdd = async (): Promise<void> => {
+    if (!selectedUser) return;
+    try {
+      await addUserToPermanence(perm.id, selectedUser.userId);
+      await Swal.fire("Ajouté", "Membre ajouté à la permanence", "success");
+      setSelectedUser(null);
+      await fetchMembers();
+      onRefresh();
+    } catch {
+      Swal.fire("Erreur", "Impossible d'ajouter ce membre", "error");
+    }
+  };
+
+  const handleRemove = async (userId: number): Promise<void> => {
+    const result = await Swal.fire({
+      title: "Retirer ce membre ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Retirer",
+      cancelButtonText: "Annuler",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await removeUserFromPermanence(perm.id, userId);
+      await Swal.fire("Retiré", "Membre retiré de la permanence", "success");
+      await fetchMembers();
+      onRefresh();
+    } catch {
+      Swal.fire("Erreur", "Suppression impossible", "error");
+    }
+  };
+
+  return (
+    <Card className="mt-6 bg-gray-50 p-4 rounded-xl border">
+      <div className="flex items-center justify-between">
+        <h4 className="text-md font-semibold">Membres</h4>
+        <Button variant="secondary" onClick={() => setExpanded((e) => !e)}>
+          {expanded ? "Masquer" : "👥 Voir membres"}
+        </Button>
+      </div>
+
+      {expanded && (
+        <div className="mt-4">
+          {loading ? (
+            <p className="text-sm text-gray-500">Chargement…</p>
+          ) : members.length === 0 ? (
+            <p className="text-sm text-gray-500">Aucun membre pour l’instant.</p>
+          ) : (
+            <ul className="text-sm space-y-2">
+              {members.map((user) => (
+                <li key={user.userId} className="flex justify-between items-center">
+                  <span>
+                    {(user.firstName || user.lastName)
+                      ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim()
+                      : `Utilisateur ${user.userId}`}
+                  </span>
+                  <Button
+                    onClick={() => void handleRemove(user.userId)}
+                    className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1"
+                  >
+                    Retirer
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <div className="flex flex-col md:flex-row gap-2 mt-4 items-center">
+            <div className="flex-1 w-full">
+              <Select<Option, false>
+                options={options}
+                value={selectedUser ? { value: selectedUser, label: options.find(o => o.value.userId === selectedUser.userId)?.label ?? "" } : null}
+                onChange={(opt: SingleValue<Option>) => setSelectedUser(opt?.value ?? null)}
+                placeholder="Sélectionner un utilisateur à ajouter"
+                isClearable
+              />
+            </div>
+
+            <Button onClick={() => void handleAdd()} className="bg-green-600 hover:bg-green-700 text-white">
+              Ajouter
+            </Button>
+          </div>
+
+          <p className="text-xs text-red-500 underline mt-4">
+            <strong>Attention&nbsp;: en tant qu'Admin vous pouvez bypass les quotas</strong>
+          </p>
+        </div>
+      )}
+    </Card>
+  );
+};
+
+export default PermanenceMembers;

@@ -7,6 +7,7 @@ import { getTeam, getTeamFaction, getUserTeam } from './team.service';
 import { getFaction } from './faction.service';
 import { registrationSchema } from '../schemas/Relational/registration.schema';
 import { getUserRoles } from './role.service';
+import { permission } from 'process';
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
@@ -123,6 +124,7 @@ export const getUsers = async () => {
         userId: userSchema.id,
         firstName: userSchema.first_name,
         lastName: userSchema.last_name,
+        permission : userSchema.permission
       }
     ).from(userSchema);
     return users; 

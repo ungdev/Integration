@@ -3,13 +3,14 @@ import { createTent, getUserTent, cancelTent } from "../../services/requests/ten
 import { getUsers } from "../../services/requests/user.service";
 import { Button } from "../ui/button";
 import Swal from "sweetalert2";
+import Select from "react-select";
 import { User } from "../../interfaces/user.interface";
 import { decodeToken, getToken } from "../../services/requests/auth.service";
 import { Tent } from "../../interfaces/tent.interface";
 import { checkWEIStatus } from "../../services/requests/event.service";
 
 export const TentPublic = () => {
-  const [userId2, setUserId2] = useState<number>();
+  const [userId2, setUserId2] = useState<number | null>(null);
   const [tentInfo, setTentInfo] = useState<Tent | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [isWEIOpen, setIsWEIOpen] = useState(false);
@@ -92,7 +93,7 @@ export const TentPublic = () => {
     try {
       await cancelTent();
       setTentInfo(null);
-      setUserId2(undefined);
+      setUserId2(null);
       Swal.fire("🛑 Annulée", "Ta tente a bien été annulée", "success");
     } catch {
       Swal.fire("Erreur", "Impossible d'annuler la tente", "error");
@@ -119,20 +120,28 @@ export const TentPublic = () => {
           <>
             <div className="mb-6">
               <label className="block mb-2 text-gray-700 font-medium">Choisis ton binôme :</label>
-              <select
-                value={userId2 ?? ""}
-                onChange={(e) => setUserId2(Number(e.target.value))}
-                className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition"
-              >
-                <option value="">Sélectionne ton binôme</option>
-                {users
+              <Select
+                placeholder="Sélectionne ton binôme"
+                options={users
                   .filter((user: User) => user.userId !== userId)
-                  .map((user: User) => (
-                    <option key={user.userId} value={user.userId}>
-                      {user.firstName} {user.lastName}
-                    </option>
-                  ))}
-              </select>
+                  .map((user: User) => ({
+                    value: user.userId,
+                    label: `${user.firstName} ${user.lastName}`,
+                  }))}
+                value={
+                  userId2
+                    ? {
+                        value: userId2,
+                        label: `${users.find((u) => u.userId === userId2)?.firstName || ""} ${
+                          users.find((u) => u.userId === userId2)?.lastName || ""
+                        }`,
+                      }
+                    : null
+                }
+                onChange={(option) => setUserId2(option?.value || null)}
+                isClearable
+                className="shadow-sm"
+              />
             </div>
 
             <div className="flex justify-center">
@@ -149,7 +158,7 @@ export const TentPublic = () => {
           <div className="mt-6 bg-gray-100 p-5 rounded-lg border border-gray-300 shadow-sm">
             <h3 className="font-semibold text-lg mb-3">🎫 Ta tente</h3>
             <p className="text-gray-700">
-              Binôme avec{" "}
+              Binôme avec {" "}
               <span className="font-bold text-green-700">
                 {
                   users.find(
@@ -157,7 +166,7 @@ export const TentPublic = () => {
                       user.userId ===
                       (tentInfo.user_id_1 === userId ? tentInfo.user_id_2 : tentInfo.user_id_1)
                   )?.firstName
-                }{" "}
+                } {" "}
                 {
                   users.find(
                     (user) =>
@@ -168,15 +177,12 @@ export const TentPublic = () => {
               </span>
             </p>
 
-            {/* ✅ Ajout de l'état de confirmation */}
             <div className="mt-4">
               {tentInfo.confirmed ? (
-                <p className="text-green-700 font-semibold">
-                  ✅ Ta tente est confirmée !
-                </p>
+                <p className="text-green-700 font-semibold">✅ Ta tente est confirmée !</p>
               ) : (
                 <p className="text-yellow-600 font-medium">
-                  ⏳ En attente de confirmation – tu recevras un mail de confirmation bientôt.
+                  ⏳ En attente de confirmation – tu recevras un mail bientôt.
                 </p>
               )}
             </div>

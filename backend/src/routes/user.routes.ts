@@ -1,6 +1,5 @@
 import express from 'express';
 import * as userController from '../controllers/user.controller';
-import { authenticateUser } from '../middlewares/auth.middleware';
 import { checkRole } from '../middlewares/user.middleware';
 
 const userRouter = express.Router();
@@ -14,9 +13,9 @@ userRouter.post('/admin/syncnewstudent', checkRole("Admin",[]), userController.s
 
 
 // User routes
-userRouter.patch('/user/me', authenticateUser, userController.updateProfile);
-userRouter.get('/user/me', authenticateUser, userController.getCurrentUser);
-userRouter.get('/user/getusers', checkRole("Student",[]), userController.getUsers);
+userRouter.patch('/user/me', userController.updateProfile);
+userRouter.get('/user/me', userController.getCurrentUser);
+userRouter.get('/user/getusers', userController.getUsers);
 
 
 

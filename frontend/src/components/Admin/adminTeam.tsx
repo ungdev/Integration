@@ -153,7 +153,7 @@ export const AdminTeamManagement = () => {
     <div className="flex flex-col items-center px-4 py-10 space-y-10 max-w-5xl mx-auto">
       <Card className="w-full p-6 rounded-2xl shadow space-y-6">
         <h2 className="text-3xl font-bold text-gray-800 text-center">🎯 Créer une équipe</h2>
-        <div className="flex flex-col md:flex-row items-center gap-4">
+        <div className="flex flex-col md:flex-row items-center gap-4 mx-auto">
           <Input
             placeholder="Nom de l'équipe"
             value={newTeamName}

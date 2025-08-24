@@ -40,7 +40,7 @@ export const Navbar = () => {
     children: [
       { label: "Listes des permanences", to: "/PermanencesList", rolesAllowed: ["Admin", "Student"] },
       { label: "Mes permanences", to: "/MyPermanences", rolesAllowed: ["Admin", "Student"] },
-      { label: "Faire l'appelle", to: "/PermanencesAppeal", rolesAllowed: ["Admin", "Student"] },
+      { label: "Faire l'appel", to: "/PermanencesAppeal", rolesAllowed: ["Admin", "Student"] },
     ],
   },
   {

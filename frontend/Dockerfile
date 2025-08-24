@@ -14,7 +14,7 @@ ENV VITE_ANALYTICS_WEBSITE_ID=${VITE_ANALYTICS_WEBSITE_ID}
 
 COPY package.json package-lock.json ./
 RUN npm install -g npm@latest
-RUN npm install --force
+RUN npm install
 
 COPY . .
 RUN npm run build

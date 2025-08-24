@@ -34,7 +34,15 @@ export const Navbar = () => {
   { label: "Parrainage",  to: "/Parrainage" },
   { label: "Challenges",  to: "/Challenges" },
   { label: "Mes Actus",   to: "/News" },
-  { label: "Permanences", to: "/Permanences", rolesAllowed: ["Admin", "Student"]},
+  {
+    label: "Permanences",
+    to: "#",
+    children: [
+      { label: "Listes des permanences", to: "/PermanencesList", rolesAllowed: ["Admin", "Student"] },
+      { label: "Mes permanences", to: "/MyPermanences", rolesAllowed: ["Admin", "Student"] },
+      { label: "Faire l'appelle", to: "/PermanencesAppeal", rolesAllowed: ["Admin", "Student"] },
+    ],
+  },
   {
     label: "Events",
     to: "#",
@@ -62,6 +70,7 @@ export const Navbar = () => {
       { label: "Export / Import", to: "/admin/export-import", rolesAllowed: ["Admin"] },
       { label: "Email",         to: "/admin/email",        rolesAllowed: ["Admin"] },
       { label: "News",          to: "/admin/news",         rolesAllowed: ["Admin", "Communication"] },
+      { label: "Tentes",         to: "/admin/tent",        rolesAllowed: ["Admin"] },
       { label: "Games",         to: "/admin/games",        rolesAllowed: ["Admin"] },
     ],
   },

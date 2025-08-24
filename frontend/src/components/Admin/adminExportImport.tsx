@@ -1,53 +1,96 @@
 import { ChangeEvent, useState } from "react";
 import { Button } from "../ui/button";
-import { exportDb, importFoodMenu, importPlannings } from "../../services/requests/im_export.service";
+import { exportBus, exportDb, importFoodMenu, importPlannings } from "../../services/requests/im_export.service";
 import { FileText } from "lucide-react";
 
 export const AdminExportConnect = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<{ db: boolean; bus: boolean }>({
+    db: false,
+    bus: false,
+  });
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
+  const [showBusExport, setShowBusExport] = useState(false);
 
-  const handleExport = async () => {
-    setLoading(true);
+  const busUrl = "https://integration.utt.fr/api/exports/bus/bus.csv";
+
+  const handleExport = async (
+    type: "db" | "bus",
+    exportFn: () => Promise<{ message: string }>
+  ) => {
+    setLoading((prev) => ({ ...prev, [type]: true }));
+    setError(null);
+    setMessage("");
     try {
-      const response = await exportDb();
+      const response = await exportFn();
       setMessage(response.message);
-    } catch (error) {
-      console.error("Erreur de connexion à Google", error);
-      setError("Erreur lors de la tentative de connexion.");
+      if (type === "bus") setShowBusExport(true);
+    } catch (err) {
+      console.error(`Erreur export ${type}`, err);
+      setError(
+        type === "db"
+          ? "Erreur lors de l'export vers Google Sheets."
+          : "Erreur lors de l'export des bus."
+      );
     } finally {
-      setLoading(false);
+      setLoading((prev) => ({ ...prev, [type]: false }));
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto p-8 bg-white rounded-2xl shadow-xl">
-      <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">
-        Exporter vers Google Sheets
+    <div className="max-w-2xl mx-auto p-8 bg-white rounded-2xl shadow-lg space-y-6">
+      <h2 className="text-3xl font-extrabold text-center text-gray-900">
+        ⚡ Exporter les données
       </h2>
 
-      <div className="flex justify-center mb-4">
+      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
         <Button
-          onClick={handleExport}
-          disabled={loading}
-          className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-6 rounded-xl shadow-md transition-all duration-200"
+          onClick={() => handleExport("db", exportDb)}
+          disabled={loading.db}
+          className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-6 rounded-xl shadow-md transition-all duration-200"
         >
-          {loading ? "Chargement..." : "Exporter les données"}
+          {loading.db ? "⏳ Export en cours..." : "Exporter vers Google Sheets"}
+        </Button>
+
+        <Button
+          onClick={() => handleExport("bus", exportBus)}
+          disabled={loading.bus}
+          className="w-full sm:w-auto bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 px-6 rounded-xl shadow-md transition-all duration-200"
+        >
+          {loading.bus ? "⏳ Export en cours..." : "Exporter les bus"}
         </Button>
       </div>
 
       {error && (
-        <p className="text-center text-sm text-red-500 font-medium">{error}</p>
-      )}
-      {message && (
-        <p className="text-center text-sm text-green-600 font-medium">
-          {message}
+        <p className="text-center text-sm text-red-500 font-medium animate-fade-in">
+          {error}
         </p>
+      )}
+      {message && !error && (
+        <p className="text-center text-sm text-green-600 font-medium animate-fade-in">
+          ✅ {message}
+        </p>
+      )}
+
+      {showBusExport && (
+        <div className="bg-gray-50 shadow-inner rounded-2xl p-6 space-y-4 border animate-fade-in text-center">
+          <h3 className="text-xl font-semibold text-gray-800">
+            📄 Télécharger le csv des bus
+          </h3>
+          <a
+            href={busUrl}
+            download
+            className="inline-block mt-4 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition"
+          >
+            ⬇️ Télécharger le csv
+          </a>
+        </div>
       )}
     </div>
   );
 };
+
+
 
 export const AdminImportFoodMenu = () => {
   const [menu, setMenu] = useState<File | null>(null);

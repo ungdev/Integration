@@ -15,7 +15,8 @@ export const permanenceSchema = pgTable("permanences", {
   start_at: timestamp("start_at"),
   end_at: timestamp("end_at"),
   capacity: integer("capacity"),
-  is_open: boolean("is_open").default(false), // Géré par l'admin
+  is_open: boolean("is_open").default(false),
+  difficulty: integer("difficulty")
 });
 
 export type Permanence = typeof permanenceSchema.$inferSelect;

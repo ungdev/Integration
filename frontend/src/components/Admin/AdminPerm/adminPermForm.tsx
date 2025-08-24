@@ -15,6 +15,7 @@ import { getUsers } from "../../../services/requests/user.service";
 
 import { Permanence } from "../../../interfaces/permanence.interface";
 import { User } from "../../../interfaces/user.interface";
+import { formatDateForInput } from "../../utils/datetime_utils";
 
 interface PermanenceFormProps {
   editMode: boolean;
@@ -32,8 +33,8 @@ const PermanenceForm = ({
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [location, setLocation] = useState("");
-  const [startAt, setStartAt] = useState("");
-  const [endAt, setEndAt] = useState("");
+  const [startAt, setStartAt] = useState(Date);
+  const [endAt, setEndAt] = useState(Date);
   const [capacity, setCapacity] = useState(0);
   const [difficulty, setDifficulty] = useState(0);
   const [respo, setRespo] = useState<User | null>();
@@ -57,8 +58,8 @@ const PermanenceForm = ({
       setName(editPermanence.name);
       setDesc(editPermanence.description);
       setLocation(editPermanence.location);
-      setStartAt(editPermanence.start_at);
-      setEndAt(editPermanence.end_at);
+      setStartAt(formatDateForInput(editPermanence.start_at));
+      setEndAt(formatDateForInput(editPermanence.end_at));
       setCapacity(editPermanence.capacity);
       setDifficulty(editPermanence.difficulty);
       if (editPermanence.respo) {
@@ -68,11 +69,13 @@ const PermanenceForm = ({
   }, [editMode, editPermanence]);
 
   const handleSubmit = async () => {
-    if (!name || !desc || !location || !startAt || !endAt || !capacity || !difficulty || !respo) {
+    if (!name || !desc || !location || !startAt || !endAt || !capacity || !difficulty) {
       Swal.fire("Erreur", "Veuillez remplir tous les champs", "warning");
       return;
     }
 
+    let respoId = respo && !isNaN(Number(respo.userId)) ? Number(respo.userId) : null;
+    
     try {
       const payload = {
         name,
@@ -82,7 +85,7 @@ const PermanenceForm = ({
         end_at: endAt,
         capacity,
         difficulty,
-        respoId: respo.userId,
+        respoId,
       };
 
       if (editMode && editPermanence) {

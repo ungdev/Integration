@@ -33,7 +33,7 @@ export const createPermanence = async (permanenceData: {
   end_at: string;
   capacity: number;
   difficulty : number;
-  respoId: number;
+  respoId: number | null;
 }) => {
 
     const response = await api.post("/permanence/admin/permanence", {
@@ -92,7 +92,7 @@ export const updatePermanence = async ( permId: number, permanenceData: {
     end_at: string;
     capacity: number;
     difficulty : number;
-    respoId: number;
+    respoId: number | null;
   }) => {
 
       const response = await api.post("/permanence/admin/updatepermanence", {

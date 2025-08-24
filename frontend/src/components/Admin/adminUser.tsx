@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
+import Swal from "sweetalert2";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -19,25 +20,25 @@ const permissionOptions = [
 
 const branchOptions = [
   { value: "TC", label: "Tronc Commun" },
-  { value: "RT", label: "Réseaux et Télcommunications" },
+  { value: "RT", label: "Réseaux et Télécommunications" },
   { value: "ISI", label: "Informatique et Systèmes d'Information" },
   { value: "GM", label: "Génie Mécanique" },
   { value: "GI", label: "Génie Industriel" },
-  { value: "MTE", label: "Matériaux : Technologie et Economie" },
+  { value: "MTE", label: "Matériaux : Technologie et Économie" },
   { value: "A2I", label: "Automatique & Informatique Industrielle" },
   { value: "GI_APPR", label: "Génie Industriel en Apprentissage" },
   { value: "GM_APPR", label: "Génie Mécanique en Apprentissage" },
-  { value: "SN_APPR", label: "Systeme Numérique en Apprentissage" },
+  { value: "SN_APPR", label: "Système Numérique en Apprentissage" },
   { value: "Branch", label: "Branche" },
   { value: "MM", label: "Mécanique et Matériaux" },
-  { value : "MA", label: "Master"},
-  { value: "RI", label: "Ressources International" },
+  { value: "MA", label: "Master" },
+  { value: "RI", label: "Ressources Internationales" },
 ];
 
 const majeurOptions = [
-    { value: true, label: "Majeur" },
-    { value: false, label: "Mineur" },
-  ];
+  { value: true, label: "Majeur" },
+  { value: false, label: "Mineur" },
+];
 
 export const AdminUser = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -64,42 +65,57 @@ export const AdminUser = () => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handlePermissionChange = (option: any) => {
-    setFormData((prev) => ({ ...prev, permission: option?.value || null }));
-  };
-
-  const handleMajeurChange = (option: any) => {
-    setFormData((prev) => ({ ...prev, mejeur: option?.value || null }));
-  };
-
-  const handleBranchChange = (option: any) => {
-    setFormData((prev) => ({ ...prev, branch: option?.value || null }));
+  const handleSelectChange = (field: keyof User) => (option: any) => {
+    setFormData((prev) => ({ ...prev, [field]: option?.value ?? null }));
   };
 
   const handleSave = async () => {
     if (!selectedUser) return;
     const response = await updateUserByAdmin(selectedUser.userId, formData);
-    alert(response.message);
+
+    Swal.fire({
+      icon: "success",
+      title: "Utilisateur mis à jour",
+      text: response.message,
+      confirmButtonColor: "#16a34a",
+    });
   };
 
   const handleDelete = async () => {
     if (!selectedUser) return;
-    const confirmDelete = confirm(
-      `Supprimer ${selectedUser.firstName} ${selectedUser.lastName} ?`
-    );
-    if (confirmDelete) {
+
+    const result = await Swal.fire({
+      title: `Supprimer ${selectedUser.firstName} ${selectedUser.lastName} ?`,
+      text: "Cette action est irréversible !",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Oui, supprimer",
+      cancelButtonText: "Annuler",
+    });
+
+    if (result.isConfirmed) {
       const response = await deleteUserByAdmin(selectedUser.userId);
       setUsers((prev) => prev.filter((u) => u.userId !== selectedUser.userId));
       setSelectedUser(null);
       setFormData({});
-      alert(response.message);
+
+      Swal.fire({
+        icon: "success",
+        title: "Supprimé",
+        text: response.message,
+        confirmButtonColor: "#16a34a",
+      });
     }
   };
 
   return (
     <Card className="p-6 space-y-4">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">👤 Gérer un utilisateur</CardTitle>
+        <CardTitle className="text-2xl font-bold text-gray-800">
+          👤 Gérer un utilisateur
+        </CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-4">
@@ -132,22 +148,29 @@ export const AdminUser = () => {
               disabled
               placeholder="Email"
             />
-            <p className="text-s text-red-500 underline mt-4" ><strong>Attention : la donnée récupérée est à partir de la date de synchro choisie</strong></p>
+
+            <p className="text-sm text-red-500 underline mt-2">
+              <strong>
+                Attention : la donnée récupérée dépend de la date de synchro
+                choisie
+              </strong>
+            </p>
+
             <Select
-              placeholder="Majeur?"
+              placeholder="Majeur ?"
               options={majeurOptions}
               value={
-                formData.permission
-                  ? majeurOptions.find((opt) => opt.value === formData.majeur)
-                  : null
+                majeurOptions.find((opt) => opt.value === formData.majeur) || null
               }
-              onChange={handleMajeurChange}
+              onChange={handleSelectChange("majeur")}
               isClearable
             />
 
             <Select
-              value={branchOptions.find((b) => b.value === formData.branch)}
-              onChange={handleBranchChange}
+              value={
+                branchOptions.find((b) => b.value === formData.branch) || null
+              }
+              onChange={handleSelectChange("branch")}
               options={branchOptions}
               placeholder="Choisir une filière"
               isClearable
@@ -164,19 +187,27 @@ export const AdminUser = () => {
               placeholder="Permission"
               options={permissionOptions}
               value={
-                formData.permission
-                  ? permissionOptions.find((opt) => opt.value === formData.permission)
-                  : null
+                permissionOptions.find(
+                  (opt) => opt.value === formData.permission
+                ) || null
               }
-              onChange={handlePermissionChange}
+              onChange={handleSelectChange("permission")}
               isClearable
             />
 
             <div className="flex gap-4 mt-4">
-              <Button type="button" onClick={handleSave} className="bg-green-600 hover:bg-green-700 text-white">
+              <Button
+                type="button"
+                onClick={handleSave}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
                 💾 Sauvegarder
               </Button>
-              <Button type="button" onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white">
+              <Button
+                type="button"
+                onClick={handleDelete}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
                 🗑 Supprimer
               </Button>
             </div>
@@ -187,46 +218,50 @@ export const AdminUser = () => {
   );
 };
 
-
 export const AdminSyncNewStudent = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>("");
 
   const handleSync = async () => {
     setLoading(true);
-    setError(null);
-    setMessage("");
 
     try {
-
-      // Conversion directe de la date : '2025-09-01' → '2025.0901'
       let formattedDate = "";
       if (selectedDate) {
         const [year, month, day] = selectedDate.split("-");
         formattedDate = `${year}.${month}${day}`;
       }
 
-      // Appel au backend avec la date sélectionnée
       const response = await syncnewStudent(formattedDate);
-      setMessage(response.message);
+
+      Swal.fire({
+        icon: "success",
+        title: "Synchronisation réussie",
+        text: response.message,
+        confirmButtonColor: "#2563eb",
+      });
     } catch (error) {
-      console.error("Erreur de connexion à Google", error);
-      setError("Erreur lors de la tentative de connexion.");
+      Swal.fire({
+        icon: "error",
+        title: "Erreur",
+        text: "Erreur lors de la tentative de connexion.",
+        confirmButtonColor: "#d33",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-        Synchro API SIEP
-      </h2>
+    <Card className="max-w-lg mx-auto p-6 bg-white rounded-xl shadow-lg space-y-6">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-center text-gray-800">
+          🔄 Synchro API SIEP
+        </CardTitle>
+      </CardHeader>
 
-      <div className="mb-4">
-        <label htmlFor="date" className="block text-gray-700 font-medium mb-2">
+      <CardContent className="space-y-4">
+        <label htmlFor="date" className="block text-gray-700 font-medium">
           Choisir une date de vérification de majorité :
         </label>
         <input
@@ -236,21 +271,17 @@ export const AdminSyncNewStudent = () => {
           onChange={(e) => setSelectedDate(e.target.value)}
           className="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
-      </div>
 
-      <div className="flex justify-center">
-        <Button
-          onClick={handleSync}
-          disabled={loading || !selectedDate}
-          className="bg-blue-500 text-white hover:bg-blue-600 p-3 rounded-md"
-        >
-          {loading ? "Chargement..." : "Synchro SIEP"}
-        </Button>
-      </div>
-
-      {error && <div className="text-red-500 text-center mt-4">{error}</div>}
-      {message && <div className="text-green-500 text-center mt-4">{message}</div>}
-    </div>
+        <div className="flex justify-center">
+          <Button
+            onClick={handleSync}
+            disabled={loading || !selectedDate}
+            className="bg-blue-500 text-white hover:bg-blue-600 p-3 rounded-lg shadow"
+          >
+            {loading ? "Chargement..." : "🚀 Lancer la synchro"}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
-

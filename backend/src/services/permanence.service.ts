@@ -167,7 +167,7 @@ export const createPermanence = async (
     .returning({ id: permanenceSchema.id });
 
   // Étape 2 : Ajout du responsable
-  if (newPermanence?.id) {
+  if (newPermanence?.id && respoId) {
     await db.insert(respoPermanenceSchema).values({
       user_id: respoId,
       permanence_id: newPermanence.id,
@@ -226,10 +226,12 @@ export const updatePermanence = async (
     .where(eq(respoPermanenceSchema.permanence_id, permId));
 
   // Étape 3 : Ajout du nouveau responsable
-  await db.insert(respoPermanenceSchema).values({
-    user_id: respoId,
-    permanence_id: permId,
-  });
+  if(respoId){
+    await db.insert(respoPermanenceSchema).values({
+      user_id: respoId,
+      permanence_id: permId,
+    });
+  }
 };
 
 
@@ -312,7 +314,7 @@ export const getAllPermanences = async () => {
     perms.map(async (perm) => {
       const [respo] = await db
         .select({
-          id: userSchema.id,
+          userId: userSchema.id,
           firstName: userSchema.first_name,
           lastName: userSchema.last_name,
           email: userSchema.email,

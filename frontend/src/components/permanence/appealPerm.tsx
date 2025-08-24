@@ -6,6 +6,7 @@ import { Permanence } from "../../interfaces/permanence.interface";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { CheckCircle, XCircle, Circle } from "lucide-react";
+import Swal from "sweetalert2";
 
 interface Member {
   id: number;
@@ -46,7 +47,12 @@ export const RespoPresenceManagement = () => {
 
       setPermanences(formatted);
     } catch (err) {
-      console.error("Erreur lors du chargement des permanences du respo", err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Chargement échoué',
+        text: "Impossible de récupérer les permanences du responsable.",
+      });
+
     } finally {
       setLoading(false);
     }
@@ -54,10 +60,15 @@ export const RespoPresenceManagement = () => {
 
   const handlePresence = async (userId: number, permId: number, present: boolean) => {
     try {
-      await claimedMember(userId, permId, present); // ⚠️ Adapter ton API si nécessaire
+      await claimedMember(userId, permId, present);
       fetchRespoPermanences();
     } catch (err) {
-      console.error("Erreur lors de la mise à jour de la présence", err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Mise à jour échouée',
+        text: "Une erreur est survenue lors de la mise à jour de la présence.",
+      });
+
     }
   };
 

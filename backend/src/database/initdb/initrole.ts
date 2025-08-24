@@ -11,6 +11,7 @@ const roles = [
     { name: "Argentique", description: "Couvrir les événements de l’intégration, prendre des photos" },
     { name: "Bouffe", description: "Prévoir, organiser et coordonner tous les repas de l’inté. La bouffe c’est sacré !" },
     { name: "Bar", description: "Prévoir, organiser et coordonner toutes les boissons de l’inté !" },
+    { name: "Bénévole", description: "Deviens bénévole et participe à différentes activités de l’inté !" },
     { name: "Cahier de vacances", description: "Élaborer le futur cahier de vacances des nouveaux avec des petits exercices et blagues." },
     { name: "Chasse au trésor", description: "Elaborer une chasse au trésor dans toute la capitale Troyenne." },
     { name: "Communication", description: "Préparer et gérer toute la communication de l’intégration" },

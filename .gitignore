@@ -4,6 +4,7 @@ frontend/node_modules/
 # Ignorer les node_modules du backend
 backend/node_modules/
 backend/uploads/
+backend/exports/
 
 # Autres fichiers à ignorer
 .DS_Store

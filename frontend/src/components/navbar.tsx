@@ -70,6 +70,7 @@ export const Navbar = () => {
       { label: "Export / Import", to: "/admin/export-import", rolesAllowed: ["Admin"] },
       { label: "Email",         to: "/admin/email",        rolesAllowed: ["Admin"] },
       { label: "News",          to: "/admin/news",         rolesAllowed: ["Admin", "Communication"] },
+      { label: "Tentes",         to: "/admin/tent",        rolesAllowed: ["Admin"] },
       { label: "Games",         to: "/admin/games",        rolesAllowed: ["Admin"] },
     ],
   },

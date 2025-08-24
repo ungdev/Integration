@@ -16,7 +16,8 @@ import { AdminPageRole,
           AdminPageEmail, 
           AdminPageUser, 
           AdminPageNews, 
-          AdminPageGames} from './pages/Admin';
+          AdminPageGames,
+          AdminPageTent} from './pages/Admin';
 
 import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
@@ -95,6 +96,7 @@ const App: React.FC = () => {
         <Route path="/admin/email" element={<AdminRoute><AdminPageEmail /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminPageUser /></AdminRoute>} />
         <Route path="/admin/games" element={<AdminRoute><AdminPageGames /></AdminRoute>} />
+        <Route path="/admin/tent" element={<AdminRoute><AdminPageTent /></AdminRoute>} />
       </Routes>
     </Router>
 

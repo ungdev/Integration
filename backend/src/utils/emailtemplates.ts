@@ -345,6 +345,37 @@ export const templateNotifyNews = `
   </div>
 `;
 
+export const templateNotifyTentConfirmation = `
+  <div style="background-color: #f0f0f0; padding: 30px;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 30px; border-radius: 8px; font-family: Arial, sans-serif; font-size: 14px; color: #333; text-align: center;">
+      
+      <!-- Logo -->
+      <div style="margin-bottom: 20px;">
+        <img src="https://integration.utt.fr/img/logo_original.png" alt="Logo Intégration UTT" style="width: 120px; height: auto; margin: 0 auto; display: block;">
+        <h1 style="font-size: 24px; color: #e74160; margin-top: 10px;">Intégration UTT</h1>
+      </div>
+
+      <!-- Contenu -->
+      <h2 style="color: #e74160; font-size: 20px; margin-bottom: 10px;">⛺ Mise à jour de ta tente</h2>
+      <p style="margin: 10px 0; font-size: 16px;">
+        La tente entre <strong>{{user1}}</strong> et <strong>{{user2}}</strong> a été 
+        <strong style="color: {{#if confirmed}}green{{else}}red{{/if}};">
+          {{#if confirmed}}validée{{else}}dévalidée{{/if}}
+        </strong>.
+      </p>
+
+      <p style="margin: 10px 0; color: #555;">
+        👉 Tu peux consulter l’état de ta tente sur le site de l'inté dans l’onglet <strong>Tentes</strong>.
+      </p>
+
+      <!-- Bouton -->
+      <p style="margin-top: 20px;">
+        <a href="https://integration.utt.fr" style="display: inline-block; padding: 12px 20px; background-color: #e74160; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold;">Accéder au site</a>
+      </p>
+    </div>
+  </div>
+`;
+
 
 
 // Fonction pour compiler le template

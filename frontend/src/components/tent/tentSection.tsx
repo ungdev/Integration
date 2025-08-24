@@ -6,16 +6,15 @@ import Swal from "sweetalert2";
 import { User } from "../../interfaces/user.interface";
 import { decodeToken, getToken } from "../../services/requests/auth.service";
 import { Tent } from "../../interfaces/tent.interface";
+import { checkWEIStatus } from "../../services/requests/event.service";
 
 export const TentPublic = () => {
-
   const [userId2, setUserId2] = useState<number>();
   const [tentInfo, setTentInfo] = useState<Tent | null>(null);
   const [users, setUsers] = useState<User[]>([]);
-
+  const [isWEIOpen, setIsWEIOpen] = useState(false);
 
   useEffect(() => {
-    // Charger tous les users
     const fetchUsers = async () => {
       try {
         const result = await getUsers();
@@ -25,25 +24,34 @@ export const TentPublic = () => {
       }
     };
 
-    // Charger la tente de l’utilisateur connecté
     const fetchTent = async () => {
-    try {
-      const result = await getUserTent();
-      if (result?.data && result.data.length > 0) {
-        setTentInfo(result.data[0]); // ✅ prendre data[0]
+      try {
+        const result = await getUserTent();
+        if (result?.data && result.data.length > 0) {
+          setTentInfo(result.data[0]);
+        }
+      } catch {
+        Swal.fire("Erreur", "Impossible de récupérer la tente", "error");
       }
-    } catch {
-      Swal.fire("Erreur", "Impossible de récupérer la tente", "error");
-    }
-  };
+    };
+
+    const fetchWEIStatus = async () => {
+      try {
+        const status = await checkWEIStatus();
+        setIsWEIOpen(status);
+      } catch {
+        Swal.fire("Erreur", "Impossible de récupérer le statut du WEI", "error");
+      }
+    };
 
     fetchUsers();
     fetchTent();
+    fetchWEIStatus();
   }, []);
 
-    const token = getToken();
-    if (!token) return null;
-    const { userId } = decodeToken(token);
+  const token = getToken();
+  if (!token) return null;
+  const { userId } = decodeToken(token);
 
   const handleCreate = async () => {
     if (!userId2) {
@@ -51,54 +59,75 @@ export const TentPublic = () => {
     }
 
     try {
+      Swal.fire({
+        title: "Création...",
+        text: "Ta tente est en cours de création",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+      });
+
       await createTent(userId2);
-      Swal.fire("Succès", "Tente créée avec succès !", "success");
-      handleGetTent(); // recharge les infos
+
+      Swal.fire("✅ Succès", "Ta tente a été créée avec succès !", "success");
+      handleGetTent();
     } catch (err: any) {
       Swal.fire("Erreur", err.message || "Impossible de créer la tente", "error");
     }
   };
 
   const handleCancel = async () => {
+    const confirm = await Swal.fire({
+      title: "Annuler la tente ?",
+      text: "Tu ne pourras pas revenir en arrière.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Oui, annuler",
+      cancelButtonText: "Non, garder",
+    });
+
+    if (!confirm.isConfirmed) return;
+
     try {
       await cancelTent();
       setTentInfo(null);
       setUserId2(undefined);
-      Swal.fire("Annulée", "La tente a été annulée", "success");
+      Swal.fire("🛑 Annulée", "Ta tente a bien été annulée", "success");
     } catch {
       Swal.fire("Erreur", "Impossible d'annuler la tente", "error");
     }
   };
 
   const handleGetTent = async () => {
-  try {
-    const result = await getUserTent();
-    if (result?.data && result.data.length > 0) {
-      setTentInfo(result.data[0]);
+    try {
+      const result = await getUserTent();
+      if (result?.data && result.data.length > 0) {
+        setTentInfo(result.data[0]);
+      }
+    } catch {
+      Swal.fire("Erreur", "Impossible de récupérer la tente", "error");
     }
-  } catch {
-    Swal.fire("Erreur", "Impossible de récupérer la tente", "error");
-  }
-};
+  };
 
-  return (
-    <div className="max-w-2xl mx-auto mt-8">
-      <div className="card p-6 rounded-2xl shadow space-y-4 bg-white">
-        <h2 className="text-2xl font-bold text-gray-800 text-center">🏕️ Réserve ta tente</h2>
+  return isWEIOpen ? (
+    <div className="max-w-2xl mx-auto mt-10">
+      <div className="p-6 rounded-2xl shadow-lg bg-gradient-to-br from-white to-gray-50 border border-gray-200 transition-all duration-300 hover:shadow-2xl">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">🏕️ Réserve ta tente</h2>
 
-        {/* Si l’utilisateur n’a pas encore de tente → afficher formulaire */}
         {!tentInfo ? (
           <>
-            <div className="grid grid-cols-1 gap-4">
+            <div className="mb-6">
+              <label className="block mb-2 text-gray-700 font-medium">Choisis ton binôme :</label>
               <select
                 value={userId2 ?? ""}
                 onChange={(e) => setUserId2(Number(e.target.value))}
-                className="border p-2 rounded"
+                className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-green-500 transition"
               >
                 <option value="">Sélectionne ton binôme</option>
                 {users
-                  .filter((user : User) => user.userId !== userId) // exclure soi-même
-                  .map((user : User) => (
+                  .filter((user: User) => user.userId !== userId)
+                  .map((user: User) => (
                     <option key={user.userId} value={user.userId}>
                       {user.firstName} {user.lastName}
                     </option>
@@ -106,35 +135,71 @@ export const TentPublic = () => {
               </select>
             </div>
 
-            <div className="flex justify-center space-x-4">
+            <div className="flex justify-center">
               <Button
                 onClick={handleCreate}
-                className="bg-green-600 hover:bg-green-700 text-white"
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow"
                 disabled={!userId2}
               >
-                Créer
+                ✅ Créer
               </Button>
             </div>
           </>
         ) : (
-          // Sinon → afficher infos sur la tente
-          <div className="mt-6 bg-gray-100 p-4 rounded">
-            <h3 className="font-semibold text-lg mb-2">🎫 Ta tente :</h3>
-            <p>
-            Binôme avec{" "}
-            <span className="font-bold">
-                {users.find(user => user.userId === (tentInfo.user_id_1 === userId ? tentInfo.user_id_2 : tentInfo.user_id_1))?.firstName}{" "}
-                {users.find(user => user.userId === (tentInfo.user_id_1 === userId ? tentInfo.user_id_2 : tentInfo.user_id_1))?.lastName}
-            </span>
+          <div className="mt-6 bg-gray-100 p-5 rounded-lg border border-gray-300 shadow-sm">
+            <h3 className="font-semibold text-lg mb-3">🎫 Ta tente</h3>
+            <p className="text-gray-700">
+              Binôme avec{" "}
+              <span className="font-bold text-green-700">
+                {
+                  users.find(
+                    (user) =>
+                      user.userId ===
+                      (tentInfo.user_id_1 === userId ? tentInfo.user_id_2 : tentInfo.user_id_1)
+                  )?.firstName
+                }{" "}
+                {
+                  users.find(
+                    (user) =>
+                      user.userId ===
+                      (tentInfo.user_id_1 === userId ? tentInfo.user_id_2 : tentInfo.user_id_1)
+                  )?.lastName
+                }
+              </span>
             </p>
-            <div className="flex space-x-4 mt-4">
-            <Button onClick={handleCancel} className="bg-red-600 hover:bg-red-700 text-white">
-                Annuler
-            </Button>
+
+            {/* ✅ Ajout de l'état de confirmation */}
+            <div className="mt-4">
+              {tentInfo.confirmed ? (
+                <p className="text-green-700 font-semibold">
+                  ✅ Ta tente est confirmée !
+                </p>
+              ) : (
+                <p className="text-yellow-600 font-medium">
+                  ⏳ En attente de confirmation – tu recevras un mail de confirmation bientôt.
+                </p>
+              )}
             </div>
-        </div>
+
+            <div className="flex space-x-4 mt-6">
+              <Button
+                onClick={handleCancel}
+                className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg shadow"
+              >
+                ❌ Annuler
+              </Button>
+            </div>
+          </div>
         )}
       </div>
+    </div>
+  ) : (
+    <div className="bg-white shadow-xl rounded-2xl p-8 text-center max-w-xl mx-auto mt-10 border">
+      <p className="text-2xl text-red-600 font-bold mb-2">🚫 Réservations fermées</p>
+      <p className="text-gray-600">
+        La réservation de tentes pour le WEI n’est pas encore disponible.<br />
+        🔔 Reste connecté, elle ouvrira bientôt !
+      </p>
     </div>
   );
 };

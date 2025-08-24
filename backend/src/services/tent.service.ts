@@ -74,8 +74,63 @@ export const getAllTents = async () => {
       user2_first_name: user2.first_name,
       user2_last_name: user2.last_name,
       user2_email: user2.email,
+      confirmed: userTentSchema.confirmed
     })
     .from(userTentSchema)
     .innerJoin(userSchema, eq(userTentSchema.user_id_1, userSchema.id))
     .innerJoin(user2, eq(userTentSchema.user_id_2, user2.id));
 };
+
+/**
+ * Met à jour la confirmation(avec infos des 2 utilisateurs).
+ */
+export const toggleTentConfirmation = async (
+  userId1: number,
+  userId2: number,
+  confirmed: boolean
+) => {
+  if (userId1 === userId2) {
+    throw new Error("Les deux utilisateurs doivent être différents.");
+  }
+
+  // Vérifier si la tente existe
+  const existingTent = await db
+    .select()
+    .from(userTentSchema)
+    .where(
+      or(
+        and(
+          eq(userTentSchema.user_id_1, userId1),
+          eq(userTentSchema.user_id_2, userId2)
+        ),
+        and(
+          eq(userTentSchema.user_id_1, userId2),
+          eq(userTentSchema.user_id_2, userId1)
+        )
+      )
+    );
+
+  if (existingTent.length === 0) {
+    throw new Error("La tente entre ces deux utilisateurs n'existe pas.");
+  }
+
+  // Mettre à jour la confirmation
+  await db
+    .update(userTentSchema)
+    .set({ confirmed })
+    .where(
+      or(
+        and(
+          eq(userTentSchema.user_id_1, userId1),
+          eq(userTentSchema.user_id_2, userId2)
+        ),
+        and(
+          eq(userTentSchema.user_id_1, userId2),
+          eq(userTentSchema.user_id_2, userId1)
+        )
+      )
+    );
+
+  return { success: true, message: confirmed ? "Tente validée." : "Tente dévalidée." };
+};
+

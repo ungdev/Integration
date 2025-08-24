@@ -111,7 +111,7 @@ export const AdminEvents = () => {
     },
     {
       key: "wei" as const,
-      label: "WEI (Billetterie)",
+      label: "WEI (Billetterie + Tentes)",
       toggleFn: toggleWEI,
     },
     {

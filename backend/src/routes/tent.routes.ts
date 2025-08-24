@@ -6,6 +6,7 @@ const tentRouter = express.Router();
 
 // Admin routes
 tentRouter.get('/admin/tents', checkRole("Admin",[]), tentController.getAllTentPairs);
+tentRouter.post('/admin/toggleconfirmation', checkRole("Admin",[]), tentController.toggleTentConfirmation);
 
 
 // User routes

@@ -23,3 +23,17 @@ export const getAllTentPairs = async () => {
   const response = await api.get("/tent/admin/tents");
   return response.data;
 };
+
+// Valider ou dévalider une tente (admin)
+export const toggleTentConfirmation = async (
+  userId1 : number,
+  userId2: number,
+  confirmed: boolean
+) => {
+  const response = await api.post("/tent/admin/toggleconfirmation", {
+    userId1,
+    userId2,
+    confirmed,
+  });
+  return response.data;
+};

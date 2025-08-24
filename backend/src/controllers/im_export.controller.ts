@@ -132,3 +132,14 @@ export const updatePlannings = async (req: Request, res: Response) => {
     Error(res, { msg: "Erreur lors de la mise à jour du Planning" });
   }
 };
+
+
+export const exportUsersCSV = async (req: Request, res: Response) => {
+  try {
+    const filePath = await export_service.exportUsersToCSV();
+    Ok(res, {msg : 'CSV des bus généré'});
+  } catch (error) {
+    console.error(error);
+    Error(res, { msg: "Erreur lors de l'export CSV" });
+  }
+};

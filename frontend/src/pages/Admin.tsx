@@ -213,7 +213,7 @@ export const AdminPageTent: React.FC = () => {
     <AdminLayout allowedRoles={["Admin"]}>
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl bg-white shadow p-6">
-          < TentAdmin/>
+          <TentAdmin />
         </section>
       </div>
     </AdminLayout>

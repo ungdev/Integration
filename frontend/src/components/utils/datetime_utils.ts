@@ -1,11 +1,24 @@
-// Fonction pour formater les dates pour l'input datetime-local
-export const formatDateForInput = (date: string) => {
-    const localDate = new Date(date);
-    return localDate.toISOString().slice(0, 16); // Extrait la partie yyyy-MM-ddThh:mm
-  };
+// Pour l'input datetime-local
+export const formatDateForInput = (date?: string | null) => {
+  if (!date) return "";
+  const localDate = new Date(date);
+  if (isNaN(localDate.getTime())) return ""; // date invalide
+  const offsetDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
+  return offsetDate.toISOString().slice(0, 16);
+};
 
-// Fonction pour afficher les dates en format local dans la liste des permanences
-export const formatDateForDisplay = (date: string) => {
-    const localDate = new Date(date);
-    return `${localDate.toISOString().slice(0, 10)}  Heure :  ${localDate.toISOString().slice(11, 16)}`;
+// Pour affichage lisible en français
+export const formatDateForDisplay = (date?: string | null) => {
+  if (!date) return "";
+  const localDate = new Date(date);
+  if (isNaN(localDate.getTime())) return "";
+  return localDate.toLocaleString("fr-FR", {
+    timeZone: "Europe/Paris", // évite les surprises
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 };

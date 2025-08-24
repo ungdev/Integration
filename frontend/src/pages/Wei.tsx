@@ -20,7 +20,7 @@ export const WeiPage = () => {
       <div className="bg-gray-100 min-h-screen py-6 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto space-y-8">
           <WeiSection />
-          {(permission === "Nouveau" || permission === "Admin") && (<TentPublic />)}
+          {(permission === "Nouveau" || permission === "Admin") && <TentPublic />}
         </div>
       </div>
       <footer className="bg-gray-800 text-white p-4 text-center">

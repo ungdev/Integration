@@ -26,7 +26,7 @@ const validatePermanenceData = (start_at: string, end_at: string) => {
 export const createPermanence = async (req: Request, res: Response) => {
   const { name, description, location, start_at, end_at, capacity, difficulty, respoId } = req.body;
 
-  if (!name || !location || !start_at || !end_at || !capacity || !difficulty || !respoId) {
+  if (!name || !location || !start_at || !end_at || !capacity || !difficulty) {
     Error(res, { msg: "Tous les champs sont requis" });
     return;
   }
@@ -59,8 +59,7 @@ export const createPermanence = async (req: Request, res: Response) => {
 
 export const updatePermanence = async (req: Request, res: Response) => {
     const { permId, name, description, location, start_at, end_at, capacity, difficulty, respoId } = req.body;
-  
-    if (!name || !location || !start_at || !end_at || !capacity || !difficulty || !respoId) {
+    if (!name || !location || !start_at || !end_at || !capacity || !difficulty) {
       Error(res, { msg: "Tous les champs sont requis" });
       return;
     }

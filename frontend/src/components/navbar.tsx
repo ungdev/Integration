@@ -51,7 +51,7 @@ export const Navbar = () => {
       { label: "WEI",     to: "/Wei" },
       { label: "SDI",     to: "/SDI" },
       { label: "Repas",   to: "/Food" },
-      { label: "Defis Commissions",      to: "/Games", rolesAllowed: ["Admin", "Student"] },
+      { label: "Defis Commissions", to: "/Games", rolesAllowed: ["Admin", "Student"] },
     ],
   },
   { label: "Mon compte", to: "/Profil", icon: UsersIcon },
@@ -79,8 +79,20 @@ export const Navbar = () => {
 
 
   // helper d’autorisation
-  const isAllowed = (item: NavItem) =>
-    !item.rolesAllowed || item.rolesAllowed.some(r => roles.includes(r));
+  const isAllowed = (item: NavItem): boolean => {
+  // Si l'item a une restriction directe
+  if (item.rolesAllowed) {
+    return item.rolesAllowed.some(r => roles.includes(r));
+  }
+
+  // Si l'item a des enfants, on vérifie au moins un enfant
+  if (item.children && item.children.length > 0) {
+    return item.children.some(child => isAllowed(child));
+  }
+
+  // Sinon accessible par défaut
+  return true;
+};
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -195,6 +207,7 @@ const MenuItem = ({
 };
 
 // Composant Dropdown (desktop & mobile)
+// Composant Dropdown (desktop & mobile)
 const Dropdown = ({
   item,
   mobile = false,
@@ -204,6 +217,15 @@ const Dropdown = ({
 }) => {
   const [open, setOpen] = useState(false);
   const trigger = mobile ? "p-4" : "py-2 cursor-pointer";
+
+  // helper pour roles
+  const token = getToken();
+  const { userPermission, userRoles = [] } = token ? decodeToken(token) : {};
+  const roles = [userPermission, ...(userRoles?.map((r: any) => r.roleName) || [])];
+
+  const isAllowed = (child: NavItem) =>
+    !child.rolesAllowed || child.rolesAllowed.some(r => roles.includes(r));
+
   return (
     <div className="relative">
       <div
@@ -227,17 +249,19 @@ const Dropdown = ({
             }`}
             role="menu"
           >
-            {item.children!.map(child => (
-              <li key={child.to}>
-                <NavLink  
-                  to={child.to}
-                  className="block px-4 py-2 hover:bg-gray-100"
-                  role="menuitem"
-                >
-                  {child.label}
-                </NavLink>
-              </li>
-            ))}
+            {item.children!
+              .filter(child => isAllowed(child))   // ✅ filtre selon les rôles
+              .map(child => (
+                <li key={child.to}>
+                  <NavLink
+                    to={child.to}
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    role="menuitem"
+                  >
+                    {child.label}
+                  </NavLink>
+                </li>
+              ))}
           </motion.ul>
         )}
       </AnimatePresence>

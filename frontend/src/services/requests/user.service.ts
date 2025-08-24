@@ -24,7 +24,7 @@ export const isAdmin = (): boolean => {
 
 export const getUsers = async () => {
 
-    const response = await api.get("/user/admin/getusers");
+    const response = await api.get("/user/user/getusers");
     const users = response.data.data;
   
     return users;

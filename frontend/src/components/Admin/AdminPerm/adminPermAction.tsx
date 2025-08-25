@@ -9,10 +9,15 @@ interface PermanenceActionsProps {
   onRefresh: () => void;
 }
 
+// Fonction utilitaire pour "normaliser" une date au début de journée (00:00:00)
+const normalizeDate = (d: Date): Date => {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+};
+
 const inSevenDays = (): Date => {
   const d = new Date();
   d.setDate(d.getDate() + 7);
-  return d;
+  return normalizeDate(d); // → seuil à J+7 mais à 00h00
 };
 
 const PermanenceActions: React.FC<PermanenceActionsProps> = ({ permanences, onRefresh }) => {
@@ -28,7 +33,10 @@ const PermanenceActions: React.FC<PermanenceActionsProps> = ({ permanences, onRe
     if (!confirm.isConfirmed) return;
 
     const threshold = inSevenDays().getTime();
-    const toOpen = permanences.filter((p) => new Date(p.start_at).getTime() < threshold);
+    const toOpen = permanences.filter((p) => {
+      const permDate = normalizeDate(new Date(p.start_at)).getTime();
+      return permDate <= threshold;
+  });
 
     try {
       await Promise.all(toOpen.map((p) => openPermanence(p.id)));
@@ -51,8 +59,10 @@ const PermanenceActions: React.FC<PermanenceActionsProps> = ({ permanences, onRe
     if (!confirm.isConfirmed) return;
 
     const threshold = inSevenDays().getTime();
-    const toClose = permanences.filter((p) => new Date(p.start_at).getTime() < threshold);
-
+    const toClose = permanences.filter((p) => {
+      const permDate = normalizeDate(new Date(p.start_at)).getTime();
+      return permDate <= threshold;
+    });
     try {
       await Promise.all(toClose.map((p) => closePermanence(p.id)));
       await Swal.fire("Fermées", "Toutes les permanences ont été fermées !", "success");

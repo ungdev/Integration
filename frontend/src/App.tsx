@@ -31,7 +31,7 @@ import { WeiPage } from './pages/Wei';
 import { SdiPage } from './pages/Sdi';
 import { NewsPage } from './pages/News';
 import { DiscordPage } from './pages/Discord';
-import { RoadbookRedirect } from './pages/RoadbookRedirect';
+import { Roadbook } from './pages/Roadbook';
 import PrivateRoute from './components/utils/privateroute';
 import { GamesPage } from './pages/Games';
 import { FoodPage } from './pages/Food';
@@ -60,7 +60,7 @@ const App: React.FC = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/Register" element={<RegisterPage />} />
         <Route path="/ResetPassword" element={<ResetPasswordPage />} />
-        <Route path="/roadbook" element={<RoadbookRedirect />} />
+        <Route path="/roadbook" element={<Roadbook />} />
 
         {/* Utilisateurs connectés */}
         <Route path="/Home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />

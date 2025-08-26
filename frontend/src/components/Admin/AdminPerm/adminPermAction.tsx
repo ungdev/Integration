@@ -32,10 +32,12 @@ const PermanenceActions: React.FC<PermanenceActionsProps> = ({ permanences, onRe
     });
     if (!confirm.isConfirmed) return;
 
+    const today = normalizeDate(new Date()).getTime();
     const threshold = inSevenDays().getTime();
+
     const toOpen = permanences.filter((p) => {
       const permDate = normalizeDate(new Date(p.start_at)).getTime();
-      return permDate <= threshold;
+      return permDate > today && permDate <= threshold && !p.is_open;
   });
 
     try {

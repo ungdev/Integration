@@ -2,10 +2,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import LoginPage from './pages/Auth';
-import { HomePage } from './pages/Home';
-import { ProfilPage } from './pages/Profil';
-import { ShotgunPage } from './pages/Shotgun';
+import LoginPage from './pages/auth';
+import { HomePage } from './pages/home';
+import { ProfilPage } from './pages/profil';
+import { ShotgunPage } from './pages/shotgun';
 import {
   AdminPageRole,
   AdminPageTeam,
@@ -19,19 +19,19 @@ import {
   AdminPageNews,
   AdminPageGames,
   AdminPageTent
-} from './pages/Admin';
+} from './pages/admin';
 
 import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
-import { AvailablePermanencesPage, MyPermanencesPage, RespoCallPage } from './pages/Perm';
-import { ChallPage } from './pages/Challenge';
-import { ParrainagePage } from './pages/Parrainage';
-import { RegisterPage } from './pages/Register';
-import { ResetPasswordPage } from './pages/ResetPassword'
-import { WeiPage } from './pages/Wei';
-import { SdiPage } from './pages/Sdi';
-import { NewsPage } from './pages/News';
-import { DiscordPage } from './pages/Discord';
+import { AvailablePermanencesPage, MyPermanencesPage, RespoCallPage } from './pages/perm';
+import { ChallPage } from './pages/challenge';
+import { ParrainagePage } from './pages/parrainage';
+import { RegisterPage } from './pages/register';
+import { ResetPasswordPage } from './pages/resetPassword'
+import { WeiPage } from './pages/wei';
+import { SdiPage } from './pages/sdi';
+import { NewsPage } from './pages/news';
+import { DiscordPage } from './pages/discord';
 import PrivateRoute from './components/utils/privateroute';
 import { GamesPage } from './pages/games';
 import { FoodPage } from './pages/food';

@@ -33,9 +33,9 @@ import { SdiPage } from './pages/Sdi';
 import { NewsPage } from './pages/News';
 import { DiscordPage } from './pages/Discord';
 import PrivateRoute from './components/utils/privateroute';
-import { GamesPage } from './pages/Games';
-import { FoodPage } from './pages/Food';
-import { PlanningsPage } from './pages/Plannings';
+import { GamesPage } from './pages/games';
+import { FoodPage } from './pages/food';
+import { PlanningsPage } from './pages/plannings';
 
 
 const App: React.FC = () => {

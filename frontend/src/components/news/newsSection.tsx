@@ -75,7 +75,7 @@ export const MyNews = () => {
                 />
               )}
               <h3 className="text-xl font-bold mb-2">{news.title}</h3>
-              <p className="text-sm mb-2">{news.description}</p>
+              <p className="text-sm mb-2 whitespace-pre-line">{news.description}</p>
               <p className="text-xs text-gray-500 italic">
                 Publié le {new Date(news.created_at).toLocaleDateString("fr-FR")}
               </p>

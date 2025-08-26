@@ -1,31 +1,62 @@
 import { useState, useEffect } from "react";
-import { toggleShotgun, togglePreRegistration, checkShotgunStatus, checkPreRegisterStatus, checkSDIStatus, checkWEIStatus, toggleSDI, toggleWEI } from "../../services/requests/event.service";
+import {
+  toggleShotgun,
+  togglePreRegistration,
+  checkShotgunStatus,
+  checkPreRegisterStatus,
+  checkSDIStatus,
+  checkWEIStatus,
+  toggleSDI,
+  toggleWEI,
+  checkFoodStatus,
+  toggleFood,
+  toggleChallenge,
+  checkChallengeStatus,
+} from "../../services/requests/event.service";
 import { Button } from "../ui/button";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import Swal from "sweetalert2";
 
 export const AdminEvents = () => {
-  const [preRegistrationOpen, setPreRegistrationOpen] = useState(false);
-  const [shotgunOpen, setShotgunOpen] = useState(false);
-  const [sdiOpen, setSdiOpen] = useState(false);
-  const [weiOpen, setWeiOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingStatuses, setLoadingStatuses] = useState(true);
 
-  // Récupérer les statuts de pré-inscription et de shotgun au montage du composant
+  const [statuses, setStatuses] = useState({
+    preRegistration: false,
+    shotgun: false,
+    sdi: false,
+    wei: false,
+    food: false,
+    chall : false,
+  });
+
+  // Charger les statuts au montage
   useEffect(() => {
     const fetchStatuses = async () => {
       try {
-        const preRegStatus = await checkPreRegisterStatus();
-        const shotgunStatus = await checkShotgunStatus();
-        const sdiStatus = await checkSDIStatus();
-        const weiStatus = await checkWEIStatus();
+        const [preReg, shot, sdi, wei, food, chall] = await Promise.all([
+          checkPreRegisterStatus(),
+          checkShotgunStatus(),
+          checkSDIStatus(),
+          checkWEIStatus(),
+          checkFoodStatus(),
+          checkChallengeStatus()
+        ]);
 
-        setPreRegistrationOpen(preRegStatus);
-        setShotgunOpen(shotgunStatus);
-        setSdiOpen(sdiStatus);
-        setWeiOpen(weiStatus);
-
-      } catch (error) {
-        alert("Erreur lors de la récupération des statuts.");
+        setStatuses({
+          preRegistration: preReg,
+          shotgun: shot,
+          sdi,
+          wei,
+          food,
+          chall,
+        });
+      } catch {
+        Swal.fire({
+          icon: "error",
+          title: "Erreur",
+          text: "Impossible de récupérer les statuts.",
+        });
       } finally {
         setLoadingStatuses(false);
       }
@@ -33,131 +64,124 @@ export const AdminEvents = () => {
     fetchStatuses();
   }, []);
 
-  const handleTogglePreRegistration = async () => {
+  // Fonction générique pour toggle un événement
+  const handleToggle = async (
+    key: keyof typeof statuses,
+    toggleFn: (value: boolean) => Promise<any>,
+    successMsg: string
+  ) => {
     setLoading(true);
     try {
-      await togglePreRegistration(!preRegistrationOpen);
-      setPreRegistrationOpen(!preRegistrationOpen);
-      alert("Pré-inscription mise à jour !");
-    } catch (error : any) {
-      alert(error.response.data.message);
+      await toggleFn(!statuses[key]);
+      setStatuses((prev) => ({ ...prev, [key]: !prev[key] }));
+      Swal.fire({
+        icon: "success",
+        title: "Succès",
+        text: successMsg,
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Erreur",
+        text: error.response?.data?.message || "Une erreur est survenue",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleToggleShotgun = async () => {
-    setLoading(true);
-    try {
-      await toggleShotgun(!shotgunOpen);
-      setShotgunOpen(!shotgunOpen);
-      alert("Shotgun mis à jour !");
-    } catch (error : any) {
-      alert(error.response.data.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Configuration des événements
+  const events = [
+    {
+      key: "preRegistration" as const,
+      label: "Pré-inscription",
+      toggleFn: togglePreRegistration,
+    },
+    {
+      key: "shotgun" as const,
+      label: "Shotgun",
+      toggleFn: toggleShotgun,
+    },
+    {
+      key: "sdi" as const,
+      label: "SDI (Billetterie)",
+      toggleFn: toggleSDI,
+    },
+    {
+      key: "wei" as const,
+      label: "WEI (Billetterie + Tentes)",
+      toggleFn: toggleWEI,
+    },
+    {
+      key: "food" as const,
+      label: "Nourriture (Billetterie)",
+      toggleFn: toggleFood,
+    },
+    {
+      key: "chall" as const,
+      label: "Challenges (Affichage des challenges)",
+      toggleFn: toggleChallenge,
+    },
+  ];
 
-  const handleToggleSDI = async () => {
-    setLoading(true);
-    try {
-      await toggleSDI(!sdiOpen);
-      setSdiOpen(!sdiOpen);
-      alert("SDI mis à jour !");
-    } catch (error : any) {
-      alert(error.response.data.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleToggleWEI = async () => {
-    setLoading(true);
-    try {
-      await toggleWEI(!weiOpen);
-      setWeiOpen(!weiOpen);
-      alert("WEI mis à jour !");
-    } catch (error : any) {
-      alert(error.response.data.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Si les statuts sont en cours de chargement, on affiche un indicateur
   if (loadingStatuses) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <div className="text-xl font-semibold text-gray-600">Chargement des statuts...</div>
+        <Loader2 className="animate-spin text-gray-600 w-8 h-8 mr-2" />
+        <span className="text-xl font-semibold text-gray-600">
+          Chargement des statuts...
+        </span>
       </div>
     );
   }
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Gestion des Événements Shotgun</h2>
+    <div className="max-w-lg mx-auto p-6 bg-white rounded-2xl shadow-lg">
+      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+        ⚙️ Gestion des Événements
+      </h2>
 
       <div className="space-y-4">
-        {/* Pré-inscription */}
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
-          <span className="text-sm text-gray-600">Pré-inscription</span>
-          <Button 
-            variant={preRegistrationOpen ? "destructive" : "default"} 
-            onClick={handleTogglePreRegistration}
-            disabled={loading}
-            className={`transition-colors duration-300 ${
-              preRegistrationOpen ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-blue-500 text-white hover:bg-blue-600'
-            } p-2 rounded-md`}
-          >
-            {preRegistrationOpen ? "Désactiver" : "Activer"}
-          </Button>
-        </div>
+        {events.map(({ key, label, toggleFn }) => {
+          const isActive = statuses[key];
+          return (
+            <div
+              key={key}
+              className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200"
+            >
+              <div className="flex items-center gap-2 text-gray-700">
+                {isActive ? (
+                  <CheckCircle className="text-green-600 w-5 h-5" />
+                ) : (
+                  <XCircle className="text-red-600 w-5 h-5" />
+                )}
+                <span className="font-medium">{label}</span>
+              </div>
 
-        {/* Shotgun */}
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
-          <span className="text-sm text-gray-600">Shotgun</span>
-          <Button 
-            variant={shotgunOpen ? "destructive" : "default"} 
-            onClick={handleToggleShotgun}
-            disabled={loading}
-            className={`transition-colors duration-300 ${
-              shotgunOpen ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-blue-500 text-white hover:bg-blue-600'
-            } p-2 rounded-md`}
-          >
-            {shotgunOpen ? "Désactiver" : "Activer"}
-          </Button>
-        </div>
-
-        {/* SDI */}
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
-          <span className="text-sm text-gray-600">SDI</span>
-          <Button 
-            variant={sdiOpen ? "destructive" : "default"} 
-            onClick={handleToggleSDI}
-            disabled={loading}
-            className={`transition-colors duration-300 ${
-              sdiOpen ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-blue-500 text-white hover:bg-blue-600'
-            } p-2 rounded-md`}
-          >
-            {sdiOpen ? "Désactiver" : "Activer"}
-          </Button>
-        </div>
-
-        {/* WEI */}
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-2 border-gray-200">
-          <span className="text-sm text-gray-600">WEI</span>
-          <Button 
-            variant={weiOpen ? "destructive" : "default"} 
-            onClick={handleToggleWEI}
-            disabled={loading}
-            className={`transition-colors duration-300 ${
-              weiOpen ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-blue-500 text-white hover:bg-blue-600'
-            } p-2 rounded-md`}
-          >
-            {weiOpen ? "Désactiver" : "Activer"}
-          </Button>
-        </div>
+              <Button
+                onClick={() =>
+                  handleToggle(key, toggleFn, `${label} mis à jour !`)
+                }
+                disabled={loading}
+                className={`transition-colors duration-300 ${
+                  isActive
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                } p-2 rounded-lg min-w-[110px] flex items-center justify-center`}
+              >
+                {loading ? (
+                  <Loader2 className="animate-spin w-4 h-4" />
+                ) : isActive ? (
+                  "Désactiver"
+                ) : (
+                  "Activer"
+                )}
+              </Button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -2,10 +2,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import LoginPage from './pages/Auth';
-import { HomePage } from './pages/Home';
-import { ProfilPage } from './pages/Profil';
-import { ShotgunPage } from './pages/Shotgun';
+import LoginPage from './pages/auth';
+import { HomePage } from './pages/home';
+import { ProfilPage } from './pages/profil';
+import { ShotgunPage } from './pages/shotgun';
 import {
   AdminPageRole,
   AdminPageTeam,
@@ -17,24 +17,25 @@ import {
   AdminPageEmail,
   AdminPageUser,
   AdminPageNews,
-  AdminPageGames
-} from './pages/Admin';
+  AdminPageGames,
+  AdminPageTent
+} from './pages/admin';
 
 import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
-import { PermPage } from './pages/Perm';
-import { ChallPage } from './pages/Challenge';
-import { ParrainagePage } from './pages/Parrainage';
-import { RegisterPage } from './pages/Register';
-import { ResetPasswordPage } from './pages/ResetPassword'
-import { WeiPage } from './pages/Wei';
-import { SdiPage } from './pages/Sdi';
-import { NewsPage } from './pages/News';
-import { DiscordPage } from './pages/Discord';
-import { Roadbook } from './pages/Roadbook';
+import { AvailablePermanencesPage, MyPermanencesPage, RespoCallPage } from './pages/perm';
+import { ChallPage } from './pages/challenge';
+import { ParrainagePage } from './pages/parrainage';
+import { RegisterPage } from './pages/register';
+import { ResetPasswordPage } from './pages/resetPassword'
+import { WeiPage } from './pages/wei';
+import { SdiPage } from './pages/sdi';
+import { NewsPage } from './pages/news';
+import { DiscordPage } from './pages/discord';
 import PrivateRoute from './components/utils/privateroute';
-import { GamesPage } from './pages/Games';
-import { FoodPage } from './pages/Food';
+import { GamesPage } from './pages/games';
+import { FoodPage } from './pages/food';
+import { PlanningsPage } from './pages/plannings';
 
 
 const App: React.FC = () => {
@@ -64,6 +65,7 @@ const App: React.FC = () => {
 
         {/* Utilisateurs connectés */}
         <Route path="/Home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/Plannings" element={<ProtectedRoute><PlanningsPage /></ProtectedRoute>} />
         <Route path="/Profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
         <Route path="/Challenges" element={<ProtectedRoute><ChallPage /></ProtectedRoute>} />
         <Route path="/Parrainage" element={<ProtectedRoute><ParrainagePage /></ProtectedRoute>} />
@@ -75,7 +77,9 @@ const App: React.FC = () => {
 
         {/* Étudiant et Admin */}
         <Route path="/Shotgun" element={<PrivateRoute permissionRequired="Student"><ShotgunPage /></PrivateRoute>} />
-        <Route path="/Permanences" element={<PrivateRoute permissionRequired="Student"><PermPage /></PrivateRoute>} />
+        <Route path="/PermanencesList" element={<PrivateRoute permissionRequired="Student"><AvailablePermanencesPage /></PrivateRoute>} />
+        <Route path="/MyPermanences" element={<PrivateRoute permissionRequired="Student"><MyPermanencesPage /></PrivateRoute>} />
+        <Route path="/PermanencesAppeal" element={<PrivateRoute permissionRequired="Student"><RespoCallPage /></PrivateRoute>} />
         <Route path="/Games" element={<PrivateRoute permissionRequired="Student"><GamesPage /></PrivateRoute>} />
 
         {/* ResposCE et Admin */}
@@ -95,6 +99,7 @@ const App: React.FC = () => {
         <Route path="/admin/email" element={<AdminRoute><AdminPageEmail /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminPageUser /></AdminRoute>} />
         <Route path="/admin/games" element={<AdminRoute><AdminPageGames /></AdminRoute>} />
+        <Route path="/admin/tent" element={<AdminRoute><AdminPageTent /></AdminRoute>} />
       </Routes>
     </Router>
 

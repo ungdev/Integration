@@ -5,6 +5,9 @@ import { eq } from 'drizzle-orm';
 import { userTeamsSchema } from '../schemas/Relational/userteams.schema';
 import { getTeam, getTeamFaction, getUserTeam } from './team.service';
 import { getFaction } from './faction.service';
+import { registrationSchema } from '../schemas/Relational/registration.schema';
+import { getUserRoles } from './role.service';
+import { permission } from 'process';
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
@@ -121,6 +124,7 @@ export const getUsers = async () => {
         userId: userSchema.id,
         firstName: userSchema.first_name,
         lastName: userSchema.last_name,
+        permission : userSchema.permission
       }
     ).from(userSchema);
     return users; 
@@ -134,19 +138,36 @@ export const getUsersAll = async () => {
   try {
     const users = await db.select().from(userSchema);
 
-    const userWithTeam = await Promise.all(
-        users.map(async (user) => {
-          const teamId = await getUserTeam(user.id);
-          const teamName = (await getTeam(teamId))?.teamName;
-          const factionId = await getTeamFaction(teamId);
-          const factionName = (await getFaction(factionId))?.name;
-          return {
-            ...user,
-            teamName,
-            factionName
-          };
-        })
-      );
+  const userWithTeam = await Promise.all(
+    users.map(async (user) => {
+      const roles = await getUserRoles(user.id);
+      let teamId = await getUserTeam(user.id);
+      teamId= teamId ?? null;
+
+      let teamName: string | null = null;
+      let factionId: number | null = null;
+      let factionName: string | null = null;
+
+      if (teamId) {
+        const team = await getTeam(teamId);
+        teamName = team?.teamName ?? null;
+
+        factionId = await getTeamFaction(teamId);
+        const faction = await getFaction(factionId);
+        factionName = faction?.name ?? null;
+      }
+
+      return {
+        ...user,
+        teamId,
+        teamName,
+        factionId,
+        factionName,
+        roles,
+      };
+    })
+  );
+
 
     return userWithTeam; 
   } catch (err) {
@@ -232,6 +253,13 @@ export const updateUserByAdmin = async (
 
 export const deleteUserById = async (userId: number) => {
   try {
+
+    const user_registration_token = await db.select({user_id : registrationSchema.user_id}).from(registrationSchema).where(eq(registrationSchema.user_id, userId));
+
+    if(user_registration_token.length > 0){
+      await db.delete(registrationSchema).where(eq(registrationSchema.user_id, userId));
+    }
+    
     const result = await db.delete(userSchema).where(eq(userSchema.id, userId));
     return result;
   } catch (err) {

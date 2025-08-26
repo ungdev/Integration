@@ -13,7 +13,7 @@ export const ProfilPage = () => {
     if (!permission) {
         navigate("/");
         return null;
-}
+    }
 
   return (
     <div>

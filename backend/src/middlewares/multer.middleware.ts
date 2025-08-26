@@ -1,45 +1,78 @@
 import multer from "multer";
 import path from "path";
-import fs from "fs";
+import fs from "fs/promises";
+import { Request, Response, NextFunction } from "express";
+import { fileTypeFromBuffer } from "file-type";
+import { Error } from "../utils/responses";
 
-// Dossier de destination
-const uploadPath = path.join(__dirname, "../../uploads/imgnews");
+export const createUploadMiddleware = (
+  relativeUploadDir: string,
+  modifiedName: boolean = true
+  ) => {
+  const uploadPath = path.resolve(process.cwd(), relativeUploadDir);
 
-// Crée le dossier s’il n’existe pas
-if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath, { recursive: true });
-}
+  // On stocke d'abord en mémoire pour vérifier le type réel
+  const storage = multer.memoryStorage();
 
-// Configuration du storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const timestamp = Date.now();
-    const ext = path.extname(file.originalname);
-    const baseName = path.basename(file.originalname, ext);
-    cb(null, `${baseName}-${timestamp}${ext}`);
-  },
-});
+  const multerUpload = multer({
+    storage,
+    limits: {
+      fileSize: 5 * 1024 * 1024, // 5 Mo
+    },
+  });
 
-// Filtrer les types de fichiers (optionnel)
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  // Middleware custom pour vérifier et sauvegarder
+  const verifyAndSave = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      if (!req.file) return Error(res, {msg: "Aucun fichier reçu"});
 
-  if (file.mimetype.startsWith("image/")) {
-    cb(null, true);
-  } else {
-    cb(new Error("Seules les images sont autorisées"));
-  }
+      const user = (req as Request).user?.userId || "anonymous";
+      const { originalname, mimetype, buffer } = req.file;
+
+      console.log(
+        `[UPLOAD] User: ${user}, File: ${originalname}, Mimetype annoncé: ${mimetype}`
+      );
+
+      // Vérif du vrai type
+      const detected = await fileTypeFromBuffer(buffer);
+      console.log(
+        `[UPLOAD] Type détecté: ${detected?.mime || "inconnu"}`
+      );
+
+      const isImage = detected?.mime?.startsWith("image/");
+      const isPDF = detected?.mime === "application/pdf";
+
+      if (!isImage && !isPDF) {
+        return Error(res,{ msg:"Seules les images et les PDF sont autorisés"});
+      }
+
+      // Création dossier si nécessaire
+      await fs.mkdir(uploadPath, { recursive: true });
+
+      const ext = path.extname(originalname);
+      const baseName = path.basename(originalname, ext);
+      const timestamp = Date.now();
+      const finalName = modifiedName
+        ? `${baseName}-${timestamp}${ext}`
+        : originalname;
+
+      const finalPath = path.join(uploadPath, finalName);
+
+      // Sauvegarde du fichier sur disque
+      await fs.writeFile(finalPath, buffer);
+
+      // On rajoute le chemin pour les middlewares suivants
+      (req as any).savedFilePath = finalPath;
+
+      next();
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  return { multerUpload, verifyAndSave };
 };
-
-// Final middleware
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5 Mo
-  },
-});
-
-export default upload;

@@ -1,0 +1,1 @@
+ALTER TABLE "events" ADD COLUMN "chall_open" boolean DEFAULT false;

@@ -35,6 +35,13 @@ export const checkFoodStatus = async () => {
 
 };
 
+export const checkChallengeStatus = async () => {
+
+        const response = await api.get("/event/user/challstatus");
+        return response.data.data;
+
+};
+
 export const attemptShotgun = async () => {
 
     const response = await api.post("event/user/shotgunattempt");
@@ -76,6 +83,14 @@ export const toggleWEI = async (weiOpen: boolean) => {
 export const toggleFood = async (foodOpen: boolean) => {
 
         const response = await api.post(`event/admin/foodtoggle`, { foodOpen});
+        return response.data;
+
+    
+};
+
+export const toggleChallenge = async (challOpen: boolean) => {
+
+        const response = await api.post(`event/admin/challtoggle`, {challOpen});
         return response.data;
 
     

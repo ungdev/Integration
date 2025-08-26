@@ -71,7 +71,7 @@ export const FoodSection = () => {
         )}
 
         {/* Billetterie */}
-        {!isFoodOpen && false ? (
+        {!isFoodOpen ? (
           <div className="bg-white shadow-xl rounded-2xl p-6">
             <p className="text-xl text-red-600 font-semibold">
               🚫 La billetterie des repas n’est pas encore disponible.

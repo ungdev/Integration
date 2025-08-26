@@ -69,20 +69,29 @@ const PermanenceForm = ({
   }, [editMode, editPermanence]);
 
   const handleSubmit = async () => {
-    if (!name || !desc || !location || !startAt || !endAt || !capacity || !difficulty) {
+    if (
+      !name ||
+      !desc ||
+      !location ||
+      !startAt ||
+      !endAt ||
+      !capacity ||
+      !difficulty
+    ) {
       Swal.fire("Erreur", "Veuillez remplir tous les champs", "warning");
       return;
     }
 
-    let respoId = respo && !isNaN(Number(respo.userId)) ? Number(respo.userId) : null;
-    
+    const respoId =
+      respo && !isNaN(Number(respo.userId)) ? Number(respo.userId) : null;
+
     try {
       const payload = {
         name,
         description: desc,
         location,
-        start_at: formatDateForInput(startAt),
-        end_at: formatDateForInput(endAt),
+        start_at: startAt,
+        end_at: endAt,
         capacity,
         difficulty,
         respoId,
@@ -99,7 +108,7 @@ const PermanenceForm = ({
 
       resetForm();
       onRefresh();
-    } catch(err : any) {
+    } catch (err: any) {
       Swal.fire("Erreur", err.response.data.message, "error");
     }
   };
@@ -121,31 +130,61 @@ const PermanenceForm = ({
   }));
 
   const selectedRespoOption = respo
-  ? { value: respo.userId, label: `${respo.firstName} ${respo.lastName}` }
-  : null;
-
-
+    ? { value: respo.userId, label: `${respo.firstName} ${respo.lastName}` }
+    : null;
 
   return (
     <Card className="w-full max-w-2xl p-6 shadow-lg rounded-2xl mx-auto">
       <div className="flex flex-col gap-4">
-        <Input placeholder="Nom" value={name} onChange={(e) => setName(e.target.value)} />
-        <Textarea placeholder="Description" value={desc} onChange={(e) => setDesc(e.target.value)} />
-        <Input placeholder="Lieu" value={location} onChange={(e) => setLocation(e.target.value)} />
+        <Input
+          placeholder="Nom"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Textarea
+          placeholder="Description"
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+        />
+        <Input
+          placeholder="Lieu"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
         <label>Début :</label>
-        <Input type="datetime-local" value={startAt} onChange={(e) => setStartAt(e.target.value)} />
+        <Input
+          type="datetime-local"
+          value={startAt}
+          onChange={(e) => setStartAt(e.target.value)}
+        />
         <label>Fin :</label>
-        <Input type="datetime-local" value={endAt} onChange={(e) => setEndAt(e.target.value)} />
+        <Input
+          type="datetime-local"
+          value={endAt}
+          onChange={(e) => setEndAt(e.target.value)}
+        />
         <label>Capacité :</label>
-        <Input type="number" placeholder="Capacité" value={capacity} onChange={(e) => setCapacity(Number(e.target.value))} />
+        <Input
+          type="number"
+          placeholder="Capacité"
+          value={capacity}
+          onChange={(e) => setCapacity(Number(e.target.value))}
+        />
         <label>Difficulté :</label>
-        <Input type="number" placeholder="Difficulté" value={difficulty} onChange={(e) => setDifficulty(Number(e.target.value))} />
+        <Input
+          type="number"
+          placeholder="Difficulté"
+          value={difficulty}
+          onChange={(e) => setDifficulty(Number(e.target.value))}
+        />
 
         {/* Sélection du responsable */}
         <Select
           value={selectedRespoOption}
           onChange={(selectedOption) => {
-            const selectedUser = users.find((u) => u.userId === selectedOption?.value);
+            const selectedUser = users.find(
+              (u) => u.userId === selectedOption?.value
+            );
             setRespo(selectedUser || null);
           }}
           options={respoOptions}
@@ -154,20 +193,23 @@ const PermanenceForm = ({
           classNamePrefix="select"
         />
 
-
-
         <div className="flex gap-2">
-          <Button onClick={handleSubmit} className="bg-green-600 hover:bg-green-700 text-white">
+          <Button
+            onClick={handleSubmit}
+            className="bg-green-600 hover:bg-green-700 text-white"
+          >
             {editMode ? "✅ Sauvegarder" : "Créer"}
           </Button>
           {editMode && (
-            <Button variant="outline" onClick={() => {
-              resetForm();
-              onCancelEdit();
-            }}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                resetForm();
+                onCancelEdit();
+              }}
+            >
               Annuler
             </Button>
-
           )}
         </div>
       </div>

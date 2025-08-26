@@ -6,18 +6,20 @@ import LoginPage from './pages/Auth';
 import { HomePage } from './pages/Home';
 import { ProfilPage } from './pages/Profil';
 import { ShotgunPage } from './pages/Shotgun';
-import { AdminPageRole, 
-          AdminPageTeam, 
-          AdminPageEvents, 
-          AdminPageExport, 
-          AdminPageFaction, 
-          AdminPagePerm, 
-          AdminPageChall, 
-          AdminPageEmail, 
-          AdminPageUser, 
-          AdminPageNews, 
-          AdminPageGames,
-          AdminPageTent} from './pages/Admin';
+import {
+  AdminPageRole,
+  AdminPageTeam,
+  AdminPageEvents,
+  AdminPageExport,
+  AdminPageFaction,
+  AdminPagePerm,
+  AdminPageChall,
+  AdminPageEmail,
+  AdminPageUser,
+  AdminPageNews,
+  AdminPageGames,
+  AdminPageTent
+} from './pages/Admin';
 
 import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
@@ -29,7 +31,7 @@ import { ResetPasswordPage } from './pages/ResetPassword'
 import { WeiPage } from './pages/Wei';
 import { SdiPage } from './pages/Sdi';
 import { NewsPage } from './pages/News';
-import {DiscordPage} from './pages/Discord';
+import { DiscordPage } from './pages/Discord';
 import PrivateRoute from './components/utils/privateroute';
 import { GamesPage } from './pages/Games';
 import { FoodPage } from './pages/Food';

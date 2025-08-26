@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { checkFoodStatus } from "../../services/requests/event.service";
+import { getPermission } from "../../services/requests/user.service";
 
 export const FoodSection = () => {
   const [isFoodOpen, setIsFoodOpen] = useState(false);
   const [isMenuAvailable, setIsMenuAvailable] = useState(false);
 
+  const permission = getPermission();
   const menuUrl = "https://integration.utt.fr/api/uploads/foodmenu/FoodMenu.pdf";
 
   useEffect(() => {
@@ -69,7 +71,7 @@ export const FoodSection = () => {
         )}
 
         {/* Billetterie */}
-        {!isFoodOpen ? (
+        {!isFoodOpen && false ? (
           <div className="bg-white shadow-xl rounded-2xl p-6">
             <p className="text-xl text-red-600 font-semibold">
               🚫 La billetterie des repas n’est pas encore disponible.
@@ -79,13 +81,29 @@ export const FoodSection = () => {
             </p>
           </div>
         ) : (
-          <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
-            <iframe
-              title="Billetterie Nourriture"
-              src="https://www.billetweb.fr/billetterie-repas-semaine-inte-a25"
-              className="w-full h-[600px] border-none"
-            />
-          </div>
+          <>
+            <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
+              <iframe
+                title="Billetterie Nourriture"
+                src="https://www.billetweb.fr/billetterie-repas-semaine-inte-a25"
+                className="w-full h-[600px] border-none"
+              />
+            </div>
+            {(permission === "Student" || permission === "Admin") && (
+              <div className="bg-white shadow-xl rounded-2xl p-6 space-y-4">
+                <p className="text-xl text-red-600 font-semibold">
+                  La billetterie du repas test est réservée aux Chefs d'Equipe et Organisateurs de l'Intégration 2025.
+                </p>
+                <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
+                  <iframe
+                    title="Billetterie Nourriture Test"
+                    src="https://www.billetweb.fr/billetterie-repas-test-a25"
+                    className="w-full h-[600px] border-none"
+                  />
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>

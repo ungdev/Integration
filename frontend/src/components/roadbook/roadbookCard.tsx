@@ -2,7 +2,7 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Link } from "react-router-dom";
 
-export const RoadBookLinks = () => {
+export const RoadBookCard = () => {
 
   return (
     <div className="flex flex-col items-center px-4 py-8 space-y-8 max-w-full min-h-screen mx-auto">
@@ -15,18 +15,28 @@ export const RoadBookLinks = () => {
 
 
         <div className="text-center text-gray-700 space-y-1">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae veritatis, ratione eaque exercitationem laborum nisi at, neque modi vel culpa nam corporis et alias reiciendis voluptatibus ullam. Sequi, iure vero! Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae fugit iusto illo. Laboriosam modi distinctio accusamus provident ipsum esse delectus voluptatum. Illum, ab distinctio. Ut deleniti at iste cupiditate consectetur. Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente accusamus illum dolor expedita sint deleniti sed, iure aperiam. Eligendi ipsam commodi dicta hic, modi mollitia molestias repellat quam repellendus fugit.</p>
+          <p>
+            C'est dans ce livret, que vous pourrez retrouver les informations les plus importantes pour naviguer au travers de l'Intégration. Vous y trouverez les <strong>contacts</strong> des super-orgas, de l'équipe prévention, de l'infirmerie ainsi que du <strong>téléphone d'astreinte</strong>, que vous pourrez appeler en cas de problème.
+            <br />
+            Un texte résumant toute la <strong>prévention</strong> et les bons gestes à adopter se trouve à l'intérieur.
+            <br />
+            Il y aura de même à votre disposition les <strong>plannings</strong> pour être toujours à l'heure, ainsi qu'une super description de chaque activité.
+            <br /><br />
+            On vous rappelle que <strong>LES ACTIVITES NE SONT PAS OBLIGATOIRES</strong>.
+            <br /><br />
+            Bonne Intégration à tous !
+          </p>
         </div>
 
         <div className="flex flex-col items-center space-y-4">
           <Link to={import.meta.env.VITE_ROADBOOK_URL_FRENCH}>
-            <Button>
+            <Button className="cursor-pointer">
               <span role="img" aria-label="lien" className="mr-2">🔗</span>
               Accéder à la version Française
             </Button>
           </Link>
           {/* <Link to={import.meta.env.VITE_ROADBOOK_URL_ENGLISH}>
-            <Button variant="link">
+            <Button variant="link" className="cursor-pointer">
               English Version
             </Button>
           </Link> */}

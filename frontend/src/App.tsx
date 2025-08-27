@@ -36,6 +36,7 @@ import PrivateRoute from './components/utils/privateroute';
 import { GamesPage } from './pages/games';
 import { FoodPage } from './pages/food';
 import { PlanningsPage } from './pages/plannings';
+import { Roadbook } from './pages/roadbook';
 
 
 const App: React.FC = () => {

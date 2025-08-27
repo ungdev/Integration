@@ -36,6 +36,7 @@ import PrivateRoute from './components/utils/privateroute';
 import { GamesPage } from './pages/games';
 import { FoodPage } from './pages/food';
 import { PlanningsPage } from './pages/plannings';
+import { Roadbook } from './pages/roadbook';
 
 
 const App: React.FC = () => {
@@ -61,6 +62,7 @@ const App: React.FC = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/Register" element={<RegisterPage />} />
         <Route path="/ResetPassword" element={<ResetPasswordPage />} />
+        <Route path="/roadbook" element={<Roadbook />} />
 
         {/* Utilisateurs connectés */}
         <Route path="/Home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />

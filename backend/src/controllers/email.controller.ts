@@ -76,8 +76,8 @@ export const handleSendEmail = async (req: Request, res: Response) => {
 
       if(templateName === "templateWelcome" ){
         let token;
-        let user = await user_service.getUserByEmail(recp)
-        token = await registration_service.getRegistrationByUserId(user.id)
+        let user = await user_service.getUserByEmail(recp);
+        token = await registration_service.getRegistrationByUserId(user.id);
         if(!token) continue;
         // Générer le contenu HTML du mail
         htmlEmail = generateEmailHtml(templateName, {token : token});

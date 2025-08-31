@@ -69,17 +69,16 @@ const PermanenceForm = ({
   }, [editMode, editPermanence]);
 
   const handleSubmit = async () => {
-    if (
-      !name ||
-      !desc ||
-      !location ||
-      !startAt ||
-      !endAt ||
-      !capacity ||
-      !difficulty
-    ) {
-      Swal.fire("Erreur", "Veuillez remplir tous les champs", "warning");
-      return;
+    if (!editMode) {
+      if (!name || !desc || !location || !startAt || !endAt) {
+        Swal.fire("Erreur", "Veuillez remplir tous les champs", "warning");
+        return;
+      }
+
+      if (capacity < 0 || difficulty < 0) {
+        Swal.fire("Erreur", "Capacité et difficulté doivent être positives", "warning");
+        return;
+      }
     }
 
 

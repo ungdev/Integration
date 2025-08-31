@@ -82,69 +82,74 @@ export const AuthForm = () => {
     };
 
     return (
-        <div
-            className="relative min-h-screen flex items-center justify-center bg-no-repeat bg-cover bg-center"
-            style={{ backgroundImage: "url('img/bg_25.jpg')" }}
-        >
-            <div className="absolute inset-0 bg-black opacity-50"></div>
-            <div className="z-10 w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg">
-                <h2 className="text-3xl font-bold text-center">Connexion</h2>
+    <div
+        className="relative min-h-screen flex items-center justify-center bg-no-repeat bg-cover bg-center"
+        style={{ backgroundImage: "url('img/bg_25.jpg')" }}
+    >
+        <div className="absolute inset-0 bg-black opacity-50"></div>
+        <div className="z-10 w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg">
+            <h2 className="text-3xl font-bold text-center">Connexion</h2>
 
-                {error && <p className="text-red-500 text-center">{error}</p>}
+            {error && <p className="text-red-500 text-center">{error}</p>}
 
-                <form onSubmit={handleLogin} className="space-y-6">
-                    <div className="space-y-4">
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                            <Input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                ref={userRef}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Mot de passe</label>
-                            <Input
-                                type="password"
-                                id="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
+            <form onSubmit={handleLogin} className="space-y-6">
+                <div className="space-y-4">
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                        <Input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            ref={userRef}
+                            required
+                        />
                     </div>
-
-                    <div className="flex flex-col gap-4">
-                        <Button type="submit" className="w-full py-2 bg-blue-600 text-white hover:bg-blue-700 transition">
-                            Connexion
-                        </Button>
-
-                        <Button
-                            type="button"
-                            className="w-full py-2 bg-blue-900 text-white hover:bg-gray-700 transition"
-                            onClick={UTT_Connexion}
-                        >
-                            Connexion Étudiant UTT (CAS)
-                        </Button>
-                        <Button
-                            type="button"
-                            className="w-full py-2 bg-gray-200 text-gray-800 hover:bg-gray-300 transition"
-                            onClick={handlePasswordReset}
-                        >
-                            Mot de passe oublié ?
-                        </Button>
-
-                        <p className="text-center text-sm text-gray-500">
-                            ✉️ Tu es un nouveau ? Vérifie ton mail pour activer ton compte.
-                        </p>
+                    <div>
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Mot de passe</label>
+                        <Input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
-                </form>
-            </div>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                    <Button type="submit" className="w-full py-2 bg-blue-600 text-white hover:bg-blue-700 transition">
+                        Connexion - Nouveau
+                    </Button>
+
+                    <Button
+                        type="button"
+                        className="w-full py-2 bg-gray-200 text-gray-800 hover:bg-gray-300 transition"
+                        onClick={handlePasswordReset}
+                    >
+                        Mot de passe oublié ?
+                    </Button>
+
+                    <p className="text-center text-sm text-gray-500">
+                        ✉️ Nouveau ? Ton compte se crée via <strong>login + mot de passe</strong>.  
+                        Vérifie ton mail pour l’activer.
+                    </p>
+                </div>
+
+                {/* Bouton CAS placé en bas avec précision */}
+                <div className="pt-4 border-t border-gray-200">
+                    <Button
+                        type="button"
+                        className="w-full py-2 bg-blue-900 text-white hover:bg-gray-700 transition"
+                        onClick={UTT_Connexion}
+                    >
+                        Connexion CAS – Orga / CE
+                    </Button>
+                </div>
+            </form>
         </div>
-    );
+    </div>
+);
 }

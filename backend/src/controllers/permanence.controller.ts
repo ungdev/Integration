@@ -58,36 +58,36 @@ export const createPermanence = async (req: Request, res: Response) => {
 
 
 export const updatePermanence = async (req: Request, res: Response) => {
-    const { permId, name, description, location, start_at, end_at, capacity, difficulty, respoId } = req.body;
-    if (!name || !location || !start_at || !end_at || !capacity || !difficulty) {
-      Error(res, { msg: "Tous les champs sont requis" });
-      return;
-    }
-  
-    const validation = validatePermanenceData(start_at, end_at);
-    if (!validation.valid) {
-      Error(res, { msg: validation.msg });
-      return;
-    }
-  
-    try {
-      await permanence_service.updatePermanence(
-        permId,
-        name,
-        description,
-        location,
-        new Date(start_at),
-        new Date(end_at),
-        Number(capacity),
-        Number(difficulty),
-        Number(respoId)
-      );
-      Ok(res, { msg: "Permanence mis à jour avec succès" });
-    } catch (err) {
-      console.error(err);
-      Error(res, { msg: "Erreur lors de la mis à jour de la permanence" });
-    }
+  const { permId, name, description, location, start_at, end_at, capacity, difficulty, respoId } = req.body;
+
+  const validation = validatePermanenceData(start_at, end_at);
+  if (!validation.valid) {
+    Error(res, { msg: validation.msg });
+    return;
+  }
+
+  try {
+    const perm = await permanence_service.getPermanenceById(permId);
+
+    await permanence_service.updatePermanence(
+      permId ?? perm.id,
+      name ?? perm.name,
+      description ?? perm.description,
+      location ?? perm.location,
+      start_at ? new Date(start_at) : perm.start_at,
+      end_at ? new Date(end_at) : perm.end_at,
+      capacity !== undefined ? Number(capacity) : perm.capacity,
+      difficulty !== undefined ? Number(difficulty) : perm.difficulty,
+      Number(respoId)
+    );
+
+    Ok(res, { msg: "Permanence mise à jour avec succès" });
+  } catch (err) {
+    console.error(err);
+    Error(res, { msg: "Erreur lors de la mise à jour de la permanence" });
+  }
 };
+
 
 // ➕ Créer une permanence
 export const deletePermanence = async (req: Request, res: Response) => {

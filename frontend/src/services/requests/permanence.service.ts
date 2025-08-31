@@ -29,8 +29,8 @@ export const createPermanence = async (permanenceData: {
   name: string;
   description: string;
   location: string;
-  start_at: string;
-  end_at: string;
+  start_at: string | null;
+  end_at: string | null;
   capacity: number;
   difficulty : number;
   respoId: number | null;
@@ -88,8 +88,8 @@ export const updatePermanence = async ( permId: number, permanenceData: {
     name: string;
     description: string;
     location: string;
-    start_at: string;
-    end_at: string;
+    start_at: string | null;
+    end_at: string | null;
     capacity: number;
     difficulty : number;
     respoId: number | null;

@@ -5,9 +5,17 @@ export const formatDateForInput = (date?: string | null) => {
   if (!date) return "";
   const localDate = new Date(date);
   if (isNaN(localDate.getTime())) return "";
-  // Convertir en "YYYY-MM-DDTHH:mm"
-  return localDate.toISOString().slice(0, 16);
+
+  // Construire YYYY-MM-DDTHH:mm en LOCAL
+  const year = localDate.getFullYear();
+  const month = String(localDate.getMonth() + 1).padStart(2, "0");
+  const day = String(localDate.getDate()).padStart(2, "0");
+  const hours = String(localDate.getHours()).padStart(2, "0");
+  const minutes = String(localDate.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
+
 
 // Pour envoyer vers la DB
 // On reçoit une string "YYYY-MM-DDTHH:mm" venant de l'input datetime-local

@@ -15,7 +15,7 @@ import { getUsers } from "../../../services/requests/user.service";
 
 import { Permanence } from "../../../interfaces/permanence.interface";
 import { User } from "../../../interfaces/user.interface";
-import { formatDateForInput } from "../../utils/datetime_utils";
+import { formatDateForDB, formatDateForInput } from "../../utils/datetime_utils";
 
 interface PermanenceFormProps {
   editMode: boolean;
@@ -58,8 +58,8 @@ const PermanenceForm = ({
       setName(editPermanence.name);
       setDesc(editPermanence.description);
       setLocation(editPermanence.location);
-      setStartAt(formatDateForInput(editPermanence.start_at));
-      setEndAt(formatDateForInput(editPermanence.end_at));
+      setStartAt(formatDateForInput(editPermanence.start_at)); 
+      setEndAt(formatDateForInput(editPermanence.end_at));     
       setCapacity(editPermanence.capacity);
       setDifficulty(editPermanence.difficulty);
       if (editPermanence.respo) {
@@ -82,29 +82,30 @@ const PermanenceForm = ({
       return;
     }
 
-    const respoId =
-      respo && !isNaN(Number(respo.userId)) ? Number(respo.userId) : null;
+
+    let respoId = respo && !isNaN(Number(respo.userId)) ? Number(respo.userId) : null;
+
 
     try {
       const payload = {
         name,
         description: desc,
         location,
-        start_at: formatDateForInput(startAt),
-        end_at: formatDateForInput(endAt),
+        start_at: formatDateForDB(startAt), // ✅ en UTC
+        end_at: formatDateForDB(endAt),     // ✅ en UTC
         capacity,
         difficulty,
         respoId,
       };
-
-      if (editMode && editPermanence) {
-        await updatePermanence(editPermanence.id, payload);
-        Swal.fire("Succès", "Permanence mise à jour", "success");
-        onCancelEdit();
-      } else {
-        await createPermanence(payload);
-        Swal.fire("Succès", "Permanence créée", "success");
-      }
+      
+        if (editMode && editPermanence) {
+          await updatePermanence(editPermanence.id, payload);
+          Swal.fire("Succès", "Permanence mise à jour", "success");
+          onCancelEdit();
+        } else {
+          await createPermanence(payload);
+          Swal.fire("Succès", "Permanence créée", "success");
+        }
 
       resetForm();
       onRefresh();

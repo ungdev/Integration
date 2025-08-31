@@ -1,5 +1,7 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
+import { Button } from "../ui/button";
+import { Link } from "react-router-dom";
 import "swiper/swiper-bundle.css";
 
 export const Infos = () => {
@@ -78,6 +80,20 @@ export const Infos = () => {
             <p className="text-center sm:text-lg leading-relaxed text-gray-700 max-w-3xl mx-auto">
               C'est ici que tu trouveras toutes les informations nécessaires au déroulement de la semaine d'inté. Par exemple, tu pourras prendre ta place pour le WEI ou regarder quelle faction est la plus proche de la victoire.
             </p>
+          </section>
+
+          <section className="text-center lg:text-center">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-blue-700">
+              Le Roadbook de l'inté
+            </h3>
+            <p className="text-center sm:text-lg leading-relaxed text-gray-700 max-w-3xl mx-auto mb-4">
+              Retrouve ici toutes les informations de l’intégration ! Les plannings, la prévention, les activités, les menus… Tout pour passer des moments incroyables !
+            </p>
+            <Button asChild className="bg-pink-600 hover:bg-pink-800">
+              <Link to="/roadbook">
+                Accéder au Roadbook
+              </Link>
+            </Button>
           </section>
         </div>
       </div>

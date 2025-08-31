@@ -6,18 +6,20 @@ import LoginPage from './pages/auth';
 import { HomePage } from './pages/home';
 import { ProfilPage } from './pages/profil';
 import { ShotgunPage } from './pages/shotgun';
-import { AdminPageRole, 
-          AdminPageTeam, 
-          AdminPageEvents, 
-          AdminPageExport, 
-          AdminPageFaction, 
-          AdminPagePerm, 
-          AdminPageChall, 
-          AdminPageEmail, 
-          AdminPageUser, 
-          AdminPageNews, 
-          AdminPageGames,
-          AdminPageTent} from './pages/admin';
+import {
+  AdminPageRole,
+  AdminPageTeam,
+  AdminPageEvents,
+  AdminPageExport,
+  AdminPageFaction,
+  AdminPagePerm,
+  AdminPageChall,
+  AdminPageEmail,
+  AdminPageUser,
+  AdminPageNews,
+  AdminPageGames,
+  AdminPageTent
+} from './pages/admin';
 
 import ProtectedRoute from './components/utils/protectedroute';
 import AdminRoute from './components/utils/adminroute';
@@ -29,11 +31,12 @@ import { ResetPasswordPage } from './pages/resetPassword'
 import { WeiPage } from './pages/wei';
 import { SdiPage } from './pages/sdi';
 import { NewsPage } from './pages/news';
-import {DiscordPage} from './pages/discord';
+import { DiscordPage } from './pages/discord';
 import PrivateRoute from './components/utils/privateroute';
 import { GamesPage } from './pages/games';
 import { FoodPage } from './pages/food';
 import { PlanningsPage } from './pages/plannings';
+import { Roadbook } from './pages/roadbook';
 
 
 const App: React.FC = () => {
@@ -59,6 +62,7 @@ const App: React.FC = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/Register" element={<RegisterPage />} />
         <Route path="/ResetPassword" element={<ResetPasswordPage />} />
+        <Route path="/roadbook" element={<Roadbook />} />
 
         {/* Utilisateurs connectés */}
         <Route path="/Home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />

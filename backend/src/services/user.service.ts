@@ -124,7 +124,8 @@ export const getUsers = async () => {
         userId: userSchema.id,
         firstName: userSchema.first_name,
         lastName: userSchema.last_name,
-        permission : userSchema.permission
+        permission : userSchema.permission,
+        email: userSchema.email
       }
     ).from(userSchema);
     return users; 

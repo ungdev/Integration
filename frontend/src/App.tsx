@@ -86,6 +86,7 @@ const App: React.FC = () => {
         {/* ResposCE et Admin */}
         <Route path="/admin/teams" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageTeam /></PrivateRoute>} />
         <Route path="/admin/factions" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageFaction /></PrivateRoute>} />
+        <Route path="/admin/permanences" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPagePerm /></PrivateRoute>} />
 
         {/* ResposCE et Admin */}
         <Route path="/admin/news" element={<PrivateRoute permissionRequired="Admin" roleRequired="Communication"><AdminPageNews /></PrivateRoute>} />
@@ -96,7 +97,6 @@ const App: React.FC = () => {
         <Route path="/admin/roles" element={<AdminRoute><AdminPageRole /></AdminRoute>} />
         <Route path="/admin/events" element={<AdminRoute><AdminPageEvents /></AdminRoute>} />
         <Route path="/admin/export-import" element={<AdminRoute><AdminPageExport /></AdminRoute>} />
-        <Route path="/admin/permanences" element={<AdminRoute><AdminPagePerm /></AdminRoute>} />
         <Route path="/admin/email" element={<AdminRoute><AdminPageEmail /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminPageUser /></AdminRoute>} />
         <Route path="/admin/games" element={<AdminRoute><AdminPageGames /></AdminRoute>} />

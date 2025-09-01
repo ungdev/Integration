@@ -8,7 +8,7 @@ import {
   getUsersByPermanence,
   addUserToPermanence,
   removeUserFromPermanence,
-  claimedMember,
+  claimedMemberAdmin,
 } from "../../../services/requests/permanence.service";
 import { Permanence } from "../../../interfaces/permanence.interface";
 import { User } from "../../../interfaces/user.interface";
@@ -105,7 +105,7 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
   const handleToggleClaim = async (user: PermanenceMember): Promise<void> => {
     try {
       const newClaimedStatus = !user.claimed;
-      await claimedMember(user.userId, perm.id, newClaimedStatus);
+      await claimedMemberAdmin(user.userId, perm.id, newClaimedStatus);
 
       await Swal.fire(
         newClaimedStatus ? "Présence confirmée" : "Présence retirée",

@@ -8,16 +8,17 @@ const permanenceRouter = express.Router();
 const upload = multer({ dest: "uploads/permcsv/" });
 
 // Admin routes
-permanenceRouter.post("/admin/permanence", checkRole("Admin",[]), permanenceController.createPermanence);
-permanenceRouter.delete("/admin/permanence", checkRole("Admin",[]), permanenceController.deletePermanence);
-permanenceRouter.post("/admin/updatepermanence", checkRole("Admin",[]), permanenceController.updatePermanence);
-permanenceRouter.post("/admin/open", checkRole("Admin",[]), permanenceController.openPermanence);
-permanenceRouter.post("/admin/close", checkRole("Admin",[]), permanenceController.closePermanence);
-permanenceRouter.get("/admin/permanences", checkRole("Admin",[]), permanenceController.getAllPermanences);
-permanenceRouter.get("/admin/users", checkRole("Admin",[]), permanenceController.getUsersInPermanence);
-permanenceRouter.post("/admin/add", checkRole("Admin",[]), permanenceController.addUserToPermanence);
-permanenceRouter.post("/admin/remove", checkRole("Admin",[]), permanenceController.removeUserToPermanence);
-permanenceRouter.post("/admin/importpermanences",checkRole("Admin",[]), upload.single("file"), permanenceController.uploadPermanencesCSV);
+permanenceRouter.post("/admin/permanence", checkRole("Admin",["Respo CE"]), permanenceController.createPermanence);
+permanenceRouter.delete("/admin/permanence", checkRole("Admin",["Respo CE"]), permanenceController.deletePermanence);
+permanenceRouter.post("/admin/updatepermanence", checkRole("Admin",["Respo CE"]), permanenceController.updatePermanence);
+permanenceRouter.post("/admin/open", checkRole("Admin",["Respo CE"]), permanenceController.openPermanence);
+permanenceRouter.post("/admin/close", checkRole("Admin",["Respo CE"]), permanenceController.closePermanence);
+permanenceRouter.get("/admin/permanences", checkRole("Admin",["Respo CE"]), permanenceController.getAllPermanences);
+permanenceRouter.get("/admin/users", checkRole("Admin",["Respo CE"]), permanenceController.getUsersInPermanence);
+permanenceRouter.post("/admin/add", checkRole("Admin",["Respo CE"]), permanenceController.addUserToPermanence);
+permanenceRouter.post("/admin/remove", checkRole("Admin",["Respo CE"]), permanenceController.removeUserToPermanence);
+permanenceRouter.post("/admin/importpermanences",checkRole("Admin",["Respo CE"]), upload.single("file"), permanenceController.uploadPermanencesCSV);
+permanenceRouter.post("/admin/claimedmember",checkRole("Admin",["Respo CE"]), permanenceController.claimMember);
 
 //Respo de perm routes
 

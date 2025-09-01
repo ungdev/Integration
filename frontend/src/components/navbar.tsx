@@ -65,7 +65,7 @@ export const Navbar = () => {
       { label: "Teams",         to: "/admin/teams",        rolesAllowed: ["Admin", "Respo CE"] },
       { label: "Factions",      to: "/admin/factions",     rolesAllowed: ["Admin", "Respo CE"] },
       { label: "Events",        to: "/admin/events",       rolesAllowed: ["Admin"] },
-      { label: "Permanences",   to: "/admin/permanences",  rolesAllowed: ["Admin"] },
+      { label: "Permanences",   to: "/admin/permanences",  rolesAllowed: ["Admin", "Respo CE"] },
       { label: "Challenge",     to: "/admin/challenge",    rolesAllowed: ["Admin", "Arbitre"] },
       { label: "Export / Import", to: "/admin/export-import", rolesAllowed: ["Admin"] },
       { label: "Email",         to: "/admin/email",        rolesAllowed: ["Admin"] },

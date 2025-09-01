@@ -171,5 +171,14 @@ export const claimedMember = async (userId: number, permId: number, claimed : bo
   return response.data;
 };
 
+export const claimedMemberAdmin = async (userId: number, permId: number, claimed : boolean) => {
+  const response = await api.post(`/permanence/admin/claimedmember`, {
+    userId,
+    permId,
+    claimed
+  });
+  return response.data;
+};
+
 
 

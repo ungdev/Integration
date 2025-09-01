@@ -131,7 +131,7 @@ export const AdminPagePerm: React.FC = () => {
   };
 
   return (
-    <AdminLayout allowedRoles={["Admin"]}>
+    <AdminLayout allowedRoles={["Admin", "Respo CE"]}>
       <div className="flex flex-col gap-10 px-4 py-6 max-w-7xl mx-auto">
 
         {/* Formulaire (créer/éditer) */}

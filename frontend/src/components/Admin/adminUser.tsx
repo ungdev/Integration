@@ -11,6 +11,7 @@ import {
   syncnewStudent,
 } from "../../services/requests/user.service";
 import { User } from "../../interfaces/user.interface";
+import { renewTokenUser, requestPasswordUser } from "../../services/requests/auth.service";
 
 const permissionOptions = [
   { value: "Admin", label: "Admin" },
@@ -109,6 +110,59 @@ export const AdminUser = () => {
       });
     }
   };
+
+  const handleRenewToken = async () => {
+    if (!selectedUser) return;
+
+    const result = await Swal.fire({
+      title: `Renouveler le token de ${selectedUser.firstName} ${selectedUser.lastName} ?`,
+      text: "Un nouveau token sera généré.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#2563eb",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Oui, renouveler",
+      cancelButtonText: "Annuler",
+    });
+
+    if (result.isConfirmed) {
+      const res = await renewTokenUser(selectedUser.userId);
+
+      Swal.fire({
+        icon: "success",
+        title: "Token renouvelé 🔑",
+        text: res.message, 
+        confirmButtonColor: "#16a34a",
+      });
+    }
+  };
+
+  const handleRequestPassword = async () => {
+    if (!selectedUser) return;
+
+    const result = await Swal.fire({
+      title: `Envoyer une demande de reset password à ${selectedUser.email} ?`,
+      text: "L'utilisateur recevra un email pour réinitialiser son mot de passe.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#2563eb",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Oui, envoyer",
+      cancelButtonText: "Annuler",
+    });
+
+    if (result.isConfirmed) {
+      const res = await requestPasswordUser(selectedUser.email);
+
+      Swal.fire({
+        icon: "success",
+        title: "Email envoyé 📩",
+        text: res.msg,
+        confirmButtonColor: "#16a34a",
+      });
+    }
+  };
+
 
   return (
     <Card className="p-6 space-y-4">
@@ -209,6 +263,20 @@ export const AdminUser = () => {
                 className="bg-red-600 hover:bg-red-700 text-white"
               >
                 🗑 Supprimer
+              </Button>
+              <Button
+                type="button"
+                onClick={handleRenewToken}
+                className="bg-blue-500 hover:bg-blue-600 text-white"
+              >
+                🔄 Reset Token
+              </Button>
+              <Button
+                type="button"
+                onClick={handleRequestPassword}
+                className="bg-purple-500 hover:bg-purple-600 text-white"
+              >
+                📧 Reset Password (mail)
               </Button>
             </div>
           </form>

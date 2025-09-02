@@ -68,3 +68,10 @@ export const requestPasswordUser = async(user_email : string)=>{
 
   return response?.data
 }
+
+export const renewTokenUser = async(userId : number)=>{
+  console.log(userId)
+  const response = await api.post('authadmin/admin/renewtoken', {userId});
+
+  return response?.data
+}

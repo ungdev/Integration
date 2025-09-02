@@ -103,9 +103,11 @@ export const validateChallenge = async ({
 
 // 5. Ajouter ou retirer des points manuellement
 export const modifyFactionPoints = async ({
-    factionId,
-    points,
-    adminId,
+    title, 
+    factionId, 
+    points, 
+    reason, 
+    adminId
 }: {
     title : string;
     factionId: number;
@@ -116,8 +118,10 @@ export const modifyFactionPoints = async ({
 }) => {
 
 
+    const newchall = await createChallenge(title, reason, "Free", points, adminId)
+
     const newChallengeValidationPoints = {
-        challenge_id: 1,//TO CHANGE TO 1 IN PROD
+        challenge_id: newchall.id,
         validated_by_admin_id: adminId,
         validated_at: new Date(),
         points: points,
@@ -204,7 +208,7 @@ export const getValidatedChallenges = async () => {
           challenge_id: challengeValidationSchema.challenge_id,
           challenge_name : challengeSchema.title,
           challenge_categorie : challengeSchema.category,
-          challenge_descrpition : challengeSchema.description,
+          challenge_description : challengeSchema.description,
           points: challengeValidationSchema.points,
           validated_at: challengeValidationSchema.validated_at,
           target_user_id: challengeValidationSchema.target_user_id,
@@ -241,6 +245,7 @@ export const getTotalFactionPoints = async (factionId: number): Promise<number> 
         .from(challengeValidationSchema).where(eq(challengeValidationSchema.target_faction_id, factionId));
   
       // Récupérer le total des points
+      
       const totalPoints = Number(result[0]?.totalPoints) || 0;
       return totalPoints;
     } catch (error) {

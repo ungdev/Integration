@@ -168,3 +168,12 @@ export const createRegistrationToken = async (userId: number) => {
   return token;
 };
 
+export const deleteUserRegistrationToken = async (userId: number) => {
+  try{
+    await db.delete(registrationSchema).where(eq(registrationSchema.user_id, userId));
+    return;
+  }
+  catch(error){
+    throw new Error(error);
+  } 
+};

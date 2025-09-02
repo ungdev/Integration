@@ -3,6 +3,7 @@ import * as auth_service from '../services/auth.service';
 import * as user_service from '../services/user.service';
 import * as email_service from '../services/email.service';
 import * as role_service from '../services/role.service';
+import * as registration_service from '../services/registration.service';
 import bigInt from 'big-integer';
 import { Error, Ok, Unauthorized } from '../utils/responses';
 import { decodeToken } from '../utils/token';
@@ -222,3 +223,25 @@ export const resetPasswordUser = async (req: Request, res: Response) => {
           return
       }
 }
+
+export const renewToken = async (req: Request, res: Response) => {
+  const { userId } = req.body;
+
+  try {
+
+    const userToken = await registration_service.getRegistrationByUserId(userId);
+
+    if(userToken){
+      await auth_service.deleteUserRegistrationToken(userId);
+    }
+
+    const newToken = await auth_service.createRegistrationToken(userId)
+        
+    Ok(res, {
+      msg: 'Token renouvelé, vous pouvez renvoyer un email de bienvenu avec ce lien  : https://integration.utt.fr/Register?token=' + newToken,
+    });
+  } catch (err) {
+      Error(res, { msg: err.message });
+  }
+};
+

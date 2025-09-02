@@ -71,9 +71,11 @@ export const getAllTents = async () => {
       user1_first_name: userSchema.first_name,
       user1_last_name: userSchema.last_name,
       user1_email: userSchema.email,
+      user1_majeur: userSchema.majeur,
       user2_first_name: user2.first_name,
       user2_last_name: user2.last_name,
       user2_email: user2.email,
+      user2_majeur: user2.majeur,
       confirmed: userTentSchema.confirmed
     })
     .from(userTentSchema)

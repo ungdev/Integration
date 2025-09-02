@@ -9,10 +9,12 @@ interface TentPair {
   user1_first_name: string;
   user1_last_name: string;
   user1_email: string;
+  user1_majeur: boolean;
   user2_id: number;
   user2_first_name: string;
   user2_last_name: string;
   user2_email: string;
+  user2_majeur: boolean;
   confirmed: boolean;
 }
 
@@ -151,8 +153,10 @@ export const TentAdmin = () => {
                 <tr>
                   <th className="p-3 text-left">👤 Nom 1</th>
                   <th className="p-3 text-left">📧 Email 1</th>
+                  <th className="p-3 text-left">🔞 Majeur 1</th>
                   <th className="p-3 text-left">👤 Nom 2</th>
                   <th className="p-3 text-left">📧 Email 2</th>
+                  <th className="p-3 text-left">🔞 Majeur 2</th>
                   <th className="p-3 text-center">✅ État</th>
                   <th className="p-3 text-center">⚡ Action</th>
                 </tr>
@@ -162,8 +166,10 @@ export const TentAdmin = () => {
                   <tr key={index} className="border-t hover:bg-gray-50 transition">
                     <td className="p-3">{pair.user1_first_name} {pair.user1_last_name}</td>
                     <td className="p-3">{pair.user1_email}</td>
+                    <td className="p-3">{pair.user1_majeur ? "Oui" : "Non"}</td>
                     <td className="p-3">{pair.user2_first_name} {pair.user2_last_name}</td>
                     <td className="p-3">{pair.user2_email}</td>
+                    <td className="p-3">{pair.user2_majeur  ? "Oui" : "Non"}</td>
                     <td className="p-3 text-center">
                       {pair.confirmed ? (
                         <span className="flex items-center justify-center text-green-600 font-semibold">

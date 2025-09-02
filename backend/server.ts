@@ -46,6 +46,7 @@ async function startServer() {
         
         // Utilisation des routes d'authentification
         app.use('/api/auth', authRoutes);
+        app.use('/api/authadmin',authenticateUser, authRoutes);
         app.use('/api/role',authenticateUser, roleRoutes);
         app.use('/api/user',authenticateUser, userRoutes);
         app.use('/api/team',authenticateUser, teamRoutes);

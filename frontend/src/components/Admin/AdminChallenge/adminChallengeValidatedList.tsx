@@ -1,26 +1,46 @@
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "../../ui/button";
-import { getAllChallengesValidates, unvalidateChallenge } from "../../../services/requests/challenge.service";
+import { Input } from "../../ui/input";
+import { unvalidateChallenge } from "../../../services/requests/challenge.service";
 import Swal from "sweetalert2";
+import { ValidatedChallenge } from "../../../interfaces/challenge.interface";
+import { Search } from "lucide-react";
 
+interface Props {
+  validatedChallenges: ValidatedChallenge[];
+  fetchValidatedChallenges: () => void | Promise<void>;
+}
 
-export const AdminValidatedChallengesList = () => {
-  const [validatedChallenges, setValidatedChallenges] = useState<any[]>([]);
+export const AdminValidatedChallengesList = ({
+  validatedChallenges,
+  fetchValidatedChallenges,
+}: Props) => {
+  const [search, setSearch] = useState("");
 
-  const fetchValidatedChallenges = async () => {
-    try {
-      const challenges = await getAllChallengesValidates();
-      setValidatedChallenges(challenges);
-    } catch {
-      Swal.fire("Erreur", "Impossible de récupérer les challenges validés", "error");
-    }
-  };
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return validatedChallenges.filter((c) =>
+      [
+        c.challenge_name,
+        c.challenge_categorie,
+        c.challenge_description,
+        c.target_user_firstname ?? "",
+        c.target_user_lastname ?? "",
+        c.target_team_name ?? "",
+        c.target_faction_name ?? "",
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(q)
+    );
+  }, [validatedChallenges, search]);
 
-  useEffect(() => {
-    fetchValidatedChallenges();
-  }, []);
-
-  const handleUnvalidate = async (challengeId: number, factionId: number, teamId: number, userId: number) => {
+  const handleUnvalidate = async (
+    challengeId: number,
+    factionId: number | null,
+    teamId: number | null,
+    userId: number | null
+  ) => {
     const confirm = await Swal.fire({
       title: "Confirmer la dévalidation ?",
       text: "Cette action retirera la validation du challenge.",
@@ -31,71 +51,76 @@ export const AdminValidatedChallengesList = () => {
       confirmButtonText: "Oui, dévalider",
       cancelButtonText: "Annuler",
     });
-
     if (!confirm.isConfirmed) return;
 
     try {
-      const result = await unvalidateChallenge({ challengeId, factionId, teamId, userId });
-      Swal.fire("Succès", result.message, "success");
-      fetchValidatedChallenges();
+      const res = await unvalidateChallenge({
+        challengeId,
+        factionId: factionId ?? 0,
+        teamId: teamId ?? 0,
+        userId: userId ?? 0,
+      });
+      Swal.fire({ icon: "success", title: "Dévalidé", text: res.message, timer: 1800, showConfirmButton: false });
+      await fetchValidatedChallenges();
     } catch {
-      Swal.fire("Erreur", "❌ Une erreur est survenue lors de la dévalidation", "error");
+      Swal.fire({ icon: "error", title: "Erreur", text: "Impossible de dévalider ce challenge." });
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-8">
-      <div className="card p-6 rounded-2xl shadow space-y-4">
-        <h2 className="text-2xl font-bold text-gray-800 text-center">📋 Challenges validés</h2>
+    <div className="max-w-7xl mx-auto mt-8">
+      <div className="rounded-2xl bg-white shadow p-6 space-y-6">
+        <h2 className="text-3xl font-bold text-gray-800 text-center">📋 Challenges validés</h2>
 
-        {validatedChallenges.length === 0 ? (
-          <p className="text-center text-gray-500">Aucun challenge validé pour le moment.</p>
+        {/* Recherche */}
+        <div className="flex items-center gap-2 border rounded-lg p-2 shadow-sm bg-gray-50">
+          <Search className="w-5 h-5 text-gray-400" />
+          <Input
+            placeholder="Rechercher (challenge, utilisateur, équipe, faction, catégorie)"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border-none focus:ring-0 bg-transparent flex-1"
+          />
+        </div>
+
+        {/* Grille */}
+        {filtered.length === 0 ? (
+          <p className="text-center text-gray-500">Aucun challenge validé trouvé.</p>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2">
-            {validatedChallenges.map((challenge) => (
-              <div key={challenge.challenge_id} className="flex flex-col space-y-4 p-4 border rounded-xl">
-                <div className="flex justify-between items-start space-x-6">
-                  <div className="space-y-1">
-                    <h3 className="font-semibold text-lg text-gray-900">{challenge.challenge_name}</h3>
-                    <p className="text-gray-600">{challenge.challenge_categorie}</p>
-                    <p className="text-gray-500 text-sm">{challenge.challenge_description}</p>
-                  </div>
-
-                  <div className="space-y-1 text-right">
-                    <p className="text-gray-700">
-                      <strong>Points :</strong> {challenge.points}
-                    </p>
-                    <p className="text-gray-500 text-sm">
-                      <strong>Validé le :</strong>{" "}
-                      {new Date(challenge.validated_at).toLocaleDateString()}
-                    </p>
-                  </div>
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filtered.map((c) => (
+              <div
+                key={c.challenge_id}
+                className="flex flex-col justify-between space-y-4 p-4 border rounded-xl bg-gray-50 hover:shadow-md transition"
+              >
+                <div>
+                  <h3 className="font-semibold text-lg text-gray-900">{c.challenge_name}</h3>
+                  <p className="text-gray-600">{c.challenge_categorie}</p>
+                  <p className="text-gray-500 text-sm">{c.challenge_description}</p>
                 </div>
 
-                <div className="flex justify-between items-center">
-                  <div className="space-y-1">
-                    <p className="text-gray-800 font-semibold">Destinataire :</p>
-                    <p className="text-black-600">{challenge.target_faction_name}</p>
-                    <p className="text-gray-600">{challenge.target_team_name}</p>
-                    <p className="text-gray-700">
-                      {challenge.target_user_firstname} {challenge.target_user_lastname}
-                    </p>
-                  </div>
-
-                  <Button
-                    onClick={() =>
-                      handleUnvalidate(
-                        challenge.challenge_id,
-                        challenge.target_faction_id,
-                        challenge.target_team_id,
-                        challenge.target_user_id
-                      )
-                    }
-                    className="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded"
-                  >
-                    Invalider
-                  </Button>
+                <div className="space-y-1">
+                  <p className="text-gray-700"><strong>Points :</strong> {c.points}</p>
+                  <p className="text-gray-500 text-sm">
+                    <strong>Validé le :</strong> {new Date(c.validated_at).toLocaleDateString()}
+                  </p>
                 </div>
+
+                <div className="space-y-1">
+                  <p className="text-gray-800 font-semibold">Destinataire :</p>
+                  {c.target_faction_name && <p className="text-gray-700">{c.target_faction_name}</p>}
+                  {c.target_team_name && <p className="text-gray-700">{c.target_team_name}</p>}
+                  {(c.target_user_firstname || c.target_user_lastname) && (
+                    <p className="text-gray-700">{c.target_user_firstname} {c.target_user_lastname}</p>
+                  )}
+                </div>
+
+                <Button
+                  onClick={() => handleUnvalidate(c.challenge_id, c.target_faction_id, c.target_team_id, c.target_user_id)}
+                  className="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded w-full"
+                >
+                  ❌ Invalider
+                </Button>
               </div>
             ))}
           </div>

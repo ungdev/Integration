@@ -44,7 +44,8 @@ export const UserChallengeList = () => {
   const fetchChallenges = async () => {
     try {
       const challenges = await getAllChallenges();
-      setAvailableChallenges(challenges);
+      const challengesFiltered = challenges.filter((c : Challenge) => c.category != "Free")
+      setAvailableChallenges(challengesFiltered);
     } catch (err) {
       console.error("Erreur lors du chargement des challenges", err);
     }
@@ -66,7 +67,7 @@ export const UserChallengeList = () => {
       await Promise.all(
         fetchedFactions.map(async (faction: Faction) => {
           const res = await getFactionsPoints(faction.factionId);
-          points[faction.factionId] = res.points ?? 0;
+          points[faction.factionId] = Number(res);
         })
       );
       setFactionPoints(points);

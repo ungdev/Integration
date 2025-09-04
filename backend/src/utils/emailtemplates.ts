@@ -132,29 +132,6 @@ export const templateAttributionBus = `
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Intégration UTT</title>
-    <style>
-        /* Style de la liste */
-        .custom-list {
-            list-style-type: none; /* Supprime les puces par défaut */
-            padding: 0;
-            margin: 0;
-            text-align: center; /* Centre la liste dans son conteneur */
-        }
-
-        .custom-list li {
-            position: relative;
-            padding-left: 30px; /* Espace pour le tiret */
-            text-align: left; /* Aligne le texte à gauche dans chaque élément */
-        }
-
-        .custom-list li::before {
-            content: "-"; /* Tiret avant chaque élément */
-            position: absolute;
-            left: 0; /* Place le tiret à gauche de chaque élément */
-            top: 0;
-            font-weight: bold; /* Optionnel : rend le tiret plus gras */
-        }
-    </style>
 </head>
 <body style="font-family: 'Comic Sans MS', 'Comic Sans', sans-serif; font-size: 11pt; margin: 0; padding: 0; background-color: #ffffff; text-align: center;">
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
@@ -174,26 +151,35 @@ export const templateAttributionBus = `
                     <tr>
                         <td style="font-size: 15px; line-height: 140%; margin: 20px 0; text-align: center;">
                             <p>Salut !</p>
-                            <p>Si tu reçois ce message c'est que tu pars au WEI (youhouu !), tu trouveras dans celui-ci le bus avec lequelle tu vas te rendre sur le lieu pour ce week-end</p>
+                            <p>Si tu reçois ce message c'est que tu pars au WEI (youhouu !), tu trouveras dans celui-ci le bus avec lequel tu vas te rendre sur le lieu pour ce week-end.</p>
                             <p>Fais bien attention à ne <strong>pas être en retard</strong> sous peine de rater ton bus, ça serait embêtant à la fois pour toi et pour nous.</p>
-                            <p>Autre point très important, les essentiels pour le WEI, tu trouveras ci-dessous un rappel des objets obligatoire à ramener pour passer un bon week-end. Il risque de pleuvoir alors prévoyez bien en conséquences !</p>
+                            <p>Autre point très important : les essentiels pour le WEI. Tu trouveras ci-dessous un rappel des objets obligatoires à ramener pour passer un bon week-end. Il risque de pleuvoir alors prévoyez bien en conséquence !</p>
+                            
+                            <!-- Liste des indispensables -->
                             <ul style="list-style-type: disc; padding: 0; margin: 0; text-align: left; display: inline-block; padding-left: 20px;">
-                                <li>Un sac de couchage chaud</li>
-                                <li>Des vêtements qui ne craignent rien (dès le départ en bus vendredi matin)</li>
-                                <li>Des vêtements qui tiennent chaud</li>
-                                <li>Un matelas gonflable ou un tapis de sol (pour le confort du dodo)</li>
-                                <li>Un k-way</li>
-                                <li>Ta carte d'identité</li>
-                                <li>De l'argent (CB et/ou espèces) si tu veux pouvoir acheter à boire au WEI</li>
-                                <li>Une serviette et du savon (si tu veux être propre</li>
-                                <li>Une bombe anti-moustique (ton corps te remerciera)</li>
-                                <li>De la crème solaire (ton corps te remerciera aussi)</li>
-                                <li>Ton autorisation parentale si tu es mineur</li>
-                                <li>Des bouchons d'oreilles si tu en as</li>
-                                <li>Ton écocup, ton tupperware ainsi que des couverts (sinon, tu dis au revoir au miam miam)
-                                </li>
+                                <li style="margin-bottom: 5px;">Duvet et matelas gonflable/tapis de sol 🛏️ (si vous n'avez pas de duvet, vous ne partirez pas)</li>
+                                <li style="margin-bottom: 5px;">Gourde, Tupperware, couverts, gobby (=écocup) 🍴</li>
+                                <li style="margin-bottom: 5px;">Vêtements : changes pour 2 jours, pull, maillot de bain 👙</li>
+                                <li style="margin-bottom: 5px;">Manteau imperméable 🧥</li>
+                                <li style="margin-bottom: 5px;">Affaires salissables : change complet & chaussures (à mettre dès le départ en bus) 🚌</li>
+                                <li style="margin-bottom: 5px;">Produits d’hygiène : brosse à dent, serviette, nécessaire de toilette 🪥</li>
+                                <li style="margin-bottom: 5px;">Tongues/crocs pour les douches 🩴</li>
+                                <li style="margin-bottom: 5px;">Papiers importants : Carte d’identité, CB & liquide, autorisation parentale (pour les mineurs) 💳</li>
+                                <li style="margin-bottom: 5px;">Ta place au WEI 📩</li>
+                                <li style="margin-bottom: 5px;">Crème solaire & anti-moustique ☀️</li>
+                                <li style="margin-bottom: 5px;">De quoi grignoter (prenez un pique-nique à manger avant de prendre le bus, pas dans le bus) 😋</li>
                             </ul>
-                            <p>Pour rappel, voici la vidéo des indispensables du WEI <a
+
+                            <!-- Affaires interdites -->
+                            <p style="margin-top: 20px; font-weight: bold; color: #d00000;">🚫 Affaires interdites :</p>
+                            <ul style="list-style-type: disc; padding: 0; margin: 0; text-align: left; display: inline-block; padding-left: 20px; color: #d00000;">
+                                <li style="margin-bottom: 5px;">Boissons autres que de l’eau</li>
+                                <li style="margin-bottom: 5px;">Substances illicites</li>
+                                <li style="margin-bottom: 5px;">Armes blanches</li>
+                                <li style="margin-bottom: 5px;">Déodorant en spray</li>
+                            </ul>
+
+                            <p style="margin-top: 20px;">Pour rappel, voici la vidéo des indispensables du WEI <a
                         href="https://drive.google.com/file/d/1IzeIgHVcoFB4Wk4ngky1HicoBbd08zHO/view?usp=drivesdk"
                         target="_blank"
                         rel="noopener noreferrer">ici</a></p>
@@ -208,7 +194,6 @@ export const templateAttributionBus = `
     </table>
 </body>
 </html>
-
 `;
 
 

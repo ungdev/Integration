@@ -45,7 +45,7 @@ export const writeToGoogleSheet = async (
 
 export const exportUsersToCSV = async (): Promise<string> => {
   const users = await user_service.getUsersAll();
-  console.log(users);
+  
   const formattedUsers = users.map(u => {
     const isOrga = u.roles && u.roles.length > 0;
     const isCE = u.permission === "Student" && u.teamId !== null;

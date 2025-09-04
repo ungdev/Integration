@@ -1,0 +1,1 @@
+ALTER TABLE "bus_attribution" ADD COLUMN "departure_time" text NOT NULL;

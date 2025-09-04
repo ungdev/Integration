@@ -9,7 +9,7 @@ export const updateUserPreferences = async (req: Request, res: Response) => {
     const { roleIds } = req.body;
 
     if (!userId || !Array.isArray(roleIds)) {
-      return Error(res, { msg: "Données invalides" });
+       Error(res, { msg: "Données invalides" });
     }
 
     await role_service.updateUserPreferences(userId, roleIds);
@@ -24,7 +24,7 @@ export const getUserPreferences = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.userId;
 
-    if (!userId) return Error(res, { msg: "Utilisateur non authentifié" });
+    if (!userId)  Error(res, { msg: "Utilisateur non authentifié" });
 
     const preferences = await role_service.getUserPreferences(userId);
     const roleIds = preferences.map((pref) => pref.roleId);
@@ -39,7 +39,7 @@ export const getUserPreferences = async (req: Request, res: Response) => {
 export const getUsersByRoleHandler = async (req: Request, res: Response) => {
   try {
     const { roleName } = req.params;
-    if (!roleName) return Error(res, { msg: "Nom du rôle requis" });
+    if (!roleName)  Error(res, { msg: "Nom du rôle requis" });
 
     const users = await role_service.getUsersByRoleName(roleName);
     Ok(res, { msg: "Utilisateurs récupérés", data: users });
@@ -55,7 +55,7 @@ export const addRoleToUser = async (req: Request, res: Response) => {
     const { userId, roleIds } = req.body;
 
     if (!userId || !Array.isArray(roleIds)) {
-      return Error(res, { msg: "userId et roleIds requis" });
+       Error(res, { msg: "userId et roleIds requis" });
     }
 
     for (const roleId of roleIds) {
@@ -78,7 +78,7 @@ export const deleteRoleToUser = async (req: Request, res: Response) => {
     const { userId, roleId } = req.body;
 
     if (!userId || !roleId) {
-      return Error(res, { msg: "userId et roleId requis" });
+       Error(res, { msg: "userId et roleId requis" });
     }
 
     await role_service.removeRoleFromUser(userId, roleId);
@@ -115,7 +115,7 @@ export const getRoles = async (req: Request, res: Response) => {
 export const getUserRoles = async (req: Request, res: Response) => {
   try {
     const { userId } = req.query;
-    if (!userId) return Error(res, { msg: "userId requis" });
+    if (!userId)  Error(res, { msg: "userId requis" });
 
     const roles = await role_service.getUserRoles(Number(userId));
     Ok(res, { data: roles });
@@ -135,7 +135,7 @@ export const addPointsToRole = async (req: Request, res: Response) => {
     const { roleId, points } = req.body;
 
     if (!roleId || typeof points !== "number") {
-      return Error(res, { msg: "roleId et points requis" });
+       Error(res, { msg: "roleId et points requis" });
     }
 
     await role_service.addPointsToRole(roleId, points);
@@ -152,7 +152,7 @@ export const removePointsFromRole = async (req: Request, res: Response) => {
     const { roleId, points } = req.body;
 
     if (!roleId || typeof points !== "number") {
-      return Error(res, { msg: "roleId et points requis" });
+       Error(res, { msg: "roleId et points requis" });
     }
 
     await role_service.removePointsFromRole(roleId, points);
@@ -178,10 +178,10 @@ export const getAllRolePoints = async (_req: Request, res: Response) => {
 export const getRolePoints = async (req: Request, res: Response) => {
   try {
     const { roleId } = req.params;
-    if (!roleId) return Error(res, { msg: "roleId requis" });
+    if (!roleId)  Error(res, { msg: "roleId requis" });
 
     const role = await role_service.getRolePoints(Number(roleId));
-    if (!role) return Error(res, { msg: "Rôle introuvable" });
+    if (!role)  Error(res, { msg: "Rôle introuvable" });
 
     Ok(res, { data: role });
   } catch (error) {

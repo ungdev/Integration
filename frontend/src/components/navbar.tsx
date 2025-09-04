@@ -71,6 +71,7 @@ export const Navbar = () => {
       { label: "Email",         to: "/admin/email",        rolesAllowed: ["Admin"] },
       { label: "News",          to: "/admin/news",         rolesAllowed: ["Admin", "Communication"] },
       { label: "Tentes",         to: "/admin/tent",        rolesAllowed: ["Admin"] },
+      { label: "Bus",         to: "/admin/bus",        rolesAllowed: ["Admin"] },
       { label: "Games",         to: "/admin/games",        rolesAllowed: ["Admin"] },
     ],
   },

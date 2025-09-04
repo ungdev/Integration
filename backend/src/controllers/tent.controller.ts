@@ -10,7 +10,7 @@ export const createTent = async (req: Request, res: Response) => {
   const userId1 = req.user?.userId; // Créateur = utilisateur connecté
 
   if (!userId1 || !userId2) {
-    return Error(res, { msg: "Identifiants utilisateurs manquants." });
+    Error(res, { msg: "Identifiants utilisateurs manquants." });
   }
 
   try {
@@ -26,7 +26,7 @@ export const cancelTent = async (req: Request, res: Response) => {
   const userId1 = req.user?.userId;
 
   if (!userId1) {
-    return Error(res, { msg: "Identifiants utilisateurs manquants." });
+    Error(res, { msg: "Identifiants utilisateurs manquants." });
   }
 
   try {
@@ -39,7 +39,7 @@ export const cancelTent = async (req: Request, res: Response) => {
 
 export const getUserTent = async (req: Request, res: Response) => {
   const userId = req.user?.userId;
-  if (!userId) return Error(res, { msg: "Utilisateur non authentifié." });
+  if (!userId) Error(res, { msg: "Utilisateur non authentifié." });
 
   try {
     const tent = await tent_service.getTentByUser(userId);
@@ -63,7 +63,7 @@ export const toggleTentConfirmation = async (req: Request, res: Response) => {
   const { userId1, userId2, confirmed } = req.body;
 
   if (!userId1 || !userId2 || typeof confirmed !== "boolean") {
-    return Error(res, { msg: "Paramètres manquants ou invalides." });
+    Error(res, { msg: "Paramètres manquants ou invalides." });
   }
 
   try {
@@ -75,7 +75,7 @@ export const toggleTentConfirmation = async (req: Request, res: Response) => {
     const user2 = await getUserById(userId2);
 
     if (!user1 || !user2) {
-      return Error(res, { msg: "Impossible de récupérer les utilisateurs." });
+      Error(res, { msg: "Impossible de récupérer les utilisateurs." });
     }
 
     // Génération du contenu HTML

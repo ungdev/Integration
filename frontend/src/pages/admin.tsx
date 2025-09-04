@@ -10,6 +10,7 @@ import { AdminEmail } from "../components/Admin/adminEmail";
 import { AdminSyncNewStudent, AdminUser } from "../components/Admin/adminUser";
 import { AdminNews } from "../components/Admin/adminNews";
 import { AdminRolePointsManager } from "../components/Admin/adminGames";
+import { AdminBusTools } from "../components/Admin/adminBus";
 
 //--------------Challenge Import--------------//
 import ChallengeEditor from "../components/Admin/AdminChallenge/adminChallengeEditor";
@@ -388,6 +389,18 @@ export const AdminPageTent: React.FC = () => {
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl bg-white shadow p-6">
           <TentAdmin />
+        </section>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export const AdminPageBus: React.FC = () => {
+  return (
+    <AdminLayout allowedRoles={["Admin"]}>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-2xl bg-white shadow p-6">
+          < AdminBusTools/>
         </section>
       </div>
     </AdminLayout>

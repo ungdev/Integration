@@ -24,7 +24,7 @@ export const createNews = async (req: Request, res: Response) => {
       target,
       image_url);
     Ok(res, { msg: "Actu créée avec succès", data: news });
-    return;
+    ;
   } catch (err) {
     console.error(err);
     Error(res, { msg: "Erreur lors de la création de l'actu" });
@@ -81,7 +81,7 @@ export const publishNews = async (req: Request, res: Response) => {
 
       if(recipients.length === 0){ 
           Error(res, {msg : "No recipients"});
-          return
+          
       } 
 
       const email = {
@@ -118,7 +118,7 @@ export const deleteNews = async (req: Request, res: Response) => {
       }
       await news_service.deleteNews(Number(newsId));
       Ok(res, { msg: "Actus supprimée avec succès !" });
-      return;
+      ;
 
     } catch (error) {
         Error(res, { msg: "Erreur lors de la suppression de l'actus" });
@@ -134,7 +134,7 @@ export const updateNews = async (req: Request, res: Response) => {
   try {
     const existing = await news_service.getNewsById(Number(id));
     if (!existing) {
-      return Error(res, { msg: "Actu introuvable" });
+       Error(res, { msg: "Actu introuvable" });
     }
 
     // Supprimer l'ancienne image si une nouvelle est uploadée
@@ -151,7 +151,7 @@ export const updateNews = async (req: Request, res: Response) => {
     const updated = await news_service.updateNews(Number(id), updates);
 
     Ok(res, { msg: "Actu mise à jour avec succès", data: updated });
-    return;
+    ;
   } catch (err) {
     console.error(err);
     Error(res, { msg: "Erreur lors de la mise à jour de l'actu" });

@@ -28,7 +28,7 @@ export const createUploadMiddleware = (
     next: NextFunction
   ) => {
     try {
-      if (!req.file) return Error(res, {msg: "Aucun fichier reçu"});
+      if (!req.file) Error(res, {msg: "Aucun fichier reçu"});
 
       const user = (req as Request).user?.userId || "anonymous";
       const { originalname, mimetype, buffer } = req.file;
@@ -47,7 +47,7 @@ export const createUploadMiddleware = (
       const isPDF = detected?.mime === "application/pdf";
 
       if (!isImage && !isPDF) {
-        return Error(res,{ msg:"Seules les images et les PDF sont autorisés"});
+        Error(res,{ msg:"Seules les images et les PDF sont autorisés"});
       }
 
       // Création dossier si nécessaire

@@ -28,7 +28,6 @@ export const AdminEmail = () => {
 
   const templateOptions = [
     { value: 'templateWelcome', label: 'Template Welcome' },
-    { value: 'templateAttributionBus', label: 'Template Bus' },
     { value: 'templateNotebook', label: 'Template Cahier de Vacances' },
   ];
 

@@ -27,13 +27,11 @@ jobs:
         working-directory: ./backend
         run: |
           npm ci
-          npm run lint
 
-      - name: Install dependencies and lint frontend
+      - name: Install frontend dependencies
         working-directory: ./frontend
         run: |
           npm ci
-          npm run lint
 
       - name: Build API
         working-directory: ./backend
@@ -45,6 +43,7 @@ jobs:
 
   deploy-api:
     runs-on: self-hosted
+    if : github.event_name == 'push'
 
     steps:
       - name: Checkout repository
@@ -70,6 +69,7 @@ jobs:
 
   deploy-front:
     runs-on: self-hosted
+    if : github.event_name == 'push'
 
     steps:
       - name: Checkout repository

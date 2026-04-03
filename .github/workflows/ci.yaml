@@ -11,7 +11,7 @@ on:
       - dev
 
 jobs:
-  lint-and-build:
+  build:
     runs-on: self-hosted
     if : github.event_name == 'pull_request' 
     steps:
@@ -21,7 +21,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '23'
 
       - name: Install backend dependencies
         working-directory: ./backend

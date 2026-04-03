@@ -2,7 +2,6 @@ import multer from "multer";
 import path from "path";
 import fs from "fs/promises";
 import { Request, Response, NextFunction } from "express";
-import { fileTypeFromBuffer } from "file-type";
 import { Error } from "../utils/responses";
 
 export const createUploadMiddleware = (
@@ -28,7 +27,7 @@ export const createUploadMiddleware = (
     next: NextFunction
   ) => {
     try {
-      if (!req.file) Error(res, {msg: "Aucun fichier reçu"});
+      if (!req.file) return Error(res, {msg: "Aucun fichier reçu"});
 
       const user = (req as Request).user?.userId || "anonymous";
       const { originalname, mimetype, buffer } = req.file;
@@ -38,6 +37,7 @@ export const createUploadMiddleware = (
       );
 
       // Vérif du vrai type
+      const { fileTypeFromBuffer } = await import("file-type");
       const detected = await fileTypeFromBuffer(buffer);
       console.log(
         `[UPLOAD] Type détecté: ${detected?.mime || "inconnu"}`

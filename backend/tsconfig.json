@@ -3,7 +3,7 @@
       "typeRoots": ["./types", "./node_modules/@types"],
       "strict": false,
       "target": "ES2020",
-      "module": "CommonJS",          // Utilisation de CommonJS car nodemon et ts-node ne supportent pas encore bien ESNext
+      "module": "node16",          // Utilisation de CommonJS car nodemon et ts-node ne supportent pas encore bien ESNext
       "moduleResolution": "node16",
       "esModuleInterop": true,
       "skipLibCheck": true,

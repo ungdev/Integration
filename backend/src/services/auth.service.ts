@@ -9,6 +9,7 @@ import * as role_service from './role.service';
 import { User, userSchema } from '../schemas/Basic/user.schema';
 import { and, desc, eq, isNotNull, isNull, sum } from "drizzle-orm";
 import { registrationSchema } from '../schemas/Relational/registration.schema';
+import { cas_validate_url } from '../../src/utils/secret';
 
 
 // Fonction pour hacher le mot de passe
@@ -68,80 +69,80 @@ export const loginUser = async (email: string, password: string) => {
 
 // Fonction d'inscription
 export const registerUser = async (firstName: string, lastName: string, email: string, password: string) => {
-    // Vérifier si l'email est déjà pris
-    const existingUser = await user_service.getUserByEmail(email);
-    if (existingUser) {
-      throw new Error('L\'email est déjà pris');
-    }
-  
-    // Hacher le mot de passe avant de l'enregistrer
-    const hashedPassword = await hashPassword(password);
-  
-    // Créer un nouvel utilisateur dans la base de données
-    const result = await db.insert(userSchema).values({
-      first_name: firstName, 
-      last_name: lastName, 
-      email: email,
-      password: hashedPassword,
-      permission: 'Nouveau',
-    });
-  
-    // Retourner le nouvel utilisateur
-    const newUser = result[0];  // `result` est un tableau avec l'utilisateur inséré
-    return newUser;
-  };
+  // Vérifier si l'email est déjà pris
+  const existingUser = await user_service.getUserByEmail(email);
+  if (existingUser) {
+    throw new Error('L\'email est déjà pris');
+  }
+
+  // Hacher le mot de passe avant de l'enregistrer
+  const hashedPassword = await hashPassword(password);
+
+  // Créer un nouvel utilisateur dans la base de données
+  const result = await db.insert(userSchema).values({
+    first_name: firstName,
+    last_name: lastName,
+    email: email,
+    password: hashedPassword,
+    permission: 'Nouveau',
+  });
+
+  // Retourner le nouvel utilisateur
+  const newUser = result[0];  // `result` est un tableau avec l'utilisateur inséré
+  return newUser;
+};
 
 
-export const validateCASTicket = async (ticket : string) => {
-    try {
-        const validateUrl = `https://cas.utt.fr/cas/serviceValidate?service=${encodeURIComponent('https://integration.utt.fr/')}&ticket=${ticket}`;
-        const response = await fetch(validateUrl);
-        if (response.ok) {
-            const text = await response.text();
-            /*console.log("====================validateCASTicket")
-            console.log(text)
-            console.log("validateCASTicket====================")*/
-            const isValid = text.includes("authenticationSuccess");
-            if (isValid) {
-              // User is authenticated
-                return await parseUsernameFromCASResponse(text);
-            } else {
-              console.error("CAS ticket validation failed");
-            }
-          } else {
-            console.error("Failed to validate CAS ticket");
-          }
-        }catch (error) {
-            throw new Error("Failed to fetch CAS. Please try again later.");
+export const validateCASTicket = async (ticket: string) => {
+  try {
+    const validateUrl = `${cas_validate_url}?service=${encodeURIComponent('https://integration.utt.fr/')}&ticket=${ticket}`;
+    const response = await fetch(validateUrl);
+    if (response.ok) {
+      const text = await response.text();
+      /*console.log("====================validateCASTicket")
+      console.log(text)
+      console.log("validateCASTicket====================")*/
+      const isValid = text.includes("authenticationSuccess");
+      if (isValid) {
+        // User is authenticated
+        return await parseUsernameFromCASResponse(text);
+      } else {
+        console.error("CAS ticket validation failed");
+      }
+    } else {
+      console.error("Failed to validate CAS ticket");
     }
+  } catch (error) {
+    throw new Error("Failed to fetch CAS. Please try again later.");
+  }
 }
 
-export const parseUsernameFromCASResponse = async(response: string) => {
-    const dom = new JSDOM(response, { contentType: "application/xml" });
-    const document = dom.window.document;
-    const authSuccessNode = document.getElementsByTagName("cas:authenticationSuccess")[0];
-    if (authSuccessNode) {
-      const attributesNode = authSuccessNode.getElementsByTagName("cas:attributes")[0];
-      if (attributesNode) {
-        return {
-          uid: attributesNode.getElementsByTagName("cas:uid")[0]?.textContent,
-          email: attributesNode.getElementsByTagName("cas:mail")[0]?.textContent,
-          sn: attributesNode.getElementsByTagName("cas:sn")[0]?.textContent,
-          givenName: attributesNode.getElementsByTagName("cas:givenName")[0]?.textContent,
-        };
-        }
+export const parseUsernameFromCASResponse = async (response: string) => {
+  const dom = new JSDOM(response, { contentType: "application/xml" });
+  const document = dom.window.document;
+  const authSuccessNode = document.getElementsByTagName("cas:authenticationSuccess")[0];
+  if (authSuccessNode) {
+    const attributesNode = authSuccessNode.getElementsByTagName("cas:attributes")[0];
+    if (attributesNode) {
+      return {
+        uid: attributesNode.getElementsByTagName("cas:uid")[0]?.textContent,
+        email: attributesNode.getElementsByTagName("cas:mail")[0]?.textContent,
+        sn: attributesNode.getElementsByTagName("cas:sn")[0]?.textContent,
+        givenName: attributesNode.getElementsByTagName("cas:givenName")[0]?.textContent,
+      };
     }
+  }
 }
 
 
 /*================================================================================================================*/
 
-export const completeRegistration = async(token : string, password : string) => {
+export const completeRegistration = async (token: string, password: string) => {
 
   const [tokenRow] = await db.select().from(registrationSchema).where(eq(registrationSchema.token, token));
 
   if (!tokenRow || new Date(tokenRow.expires_at) < new Date()) {
-    throw new Error( "Token invalide ou expiré." );
+    throw new Error("Token invalide ou expiré.");
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -169,11 +170,11 @@ export const createRegistrationToken = async (userId: number) => {
 };
 
 export const deleteUserRegistrationToken = async (userId: number) => {
-  try{
+  try {
     await db.delete(registrationSchema).where(eq(registrationSchema.user_id, userId));
     return;
   }
-  catch(error){
+  catch (error) {
     throw new Error(error);
-  } 
+  }
 };

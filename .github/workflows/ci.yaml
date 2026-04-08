@@ -35,11 +35,11 @@ jobs:
 
       - name: Build API
         working-directory: ./backend
-        run: npm run build
+        run: npm run build-test
 
       - name: Build Frontend
         working-directory: ./frontend
-        run: npm run build
+        run: npm run build-test
 
   deploy-api:
     runs-on: self-hosted

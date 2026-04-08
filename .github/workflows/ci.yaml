@@ -11,7 +11,7 @@ on:
       - dev
 
 jobs:
-  build:
+  build-api:
     runs-on: self-hosted
     if : github.event_name == 'pull_request' 
     steps:
@@ -23,23 +23,35 @@ jobs:
         with:
           node-version: '23'
 
-      - name: Install backend dependencies
+      - name: Install dependencies
         working-directory: ./backend
         run: |
           npm ci
 
-      - name: Install frontend dependencies
+      - name: Build 
+        working-directory: ./backend
+        run: npm run build-test
+
+  build-front:
+    runs-on: self-hosted
+    if : github.event_name == 'pull_request' 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '23'
+
+      - name: Install dependencies
         working-directory: ./frontend
         run: |
           npm ci
 
-      - name: Build API
-        working-directory: ./backend
-        run: npm run build-test
-
-      - name: Build Frontend
+      - name: Build
         working-directory: ./frontend
-        run: npm run build-test
+        run: npm run build
 
   deploy-api:
     runs-on: self-hosted

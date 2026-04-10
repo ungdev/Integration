@@ -1,7 +1,7 @@
 FROM node:23-slim AS builder
 WORKDIR /app
 
-ARG VITE_CAS_LOGIN_URL="https://cas.utt.fr/cas/login"
+ARG VITE_CAS_LOGIN_URL=""
 ARG VITE_SERVICE_URL="https://integration.utt.fr/"
 ARG VITE_API_URL="https://integration.utt.fr/api"
 ARG VITE_ANALYTICS_WEBSITE_ID=""

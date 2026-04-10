@@ -26,6 +26,7 @@ import { initRoles } from './src/database/initdb/initrole'
 import {initEvent} from './src/database/initdb/initevent'
 import {initChallenge} from './src/database/initdb/initChallenge'
 import { authenticateUser } from './src/middlewares/auth.middleware';
+import { requestLogger } from './src/middlewares/request-logger.middleware';
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ async function startServer() {
     app.use(cors({ origin: "*" }));
     app.use(bodyParser.json());
     app.use(express.urlencoded({ extended: true }));
+    app.use(requestLogger);
     
 
     try {

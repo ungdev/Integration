@@ -1,8 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
-
-const GREEN = '\x1b[32m';
-const RED = '\x1b[31m';
-const RESET = '\x1b[0m';
+import { Request } from 'express';
+import morgan from 'morgan';
 
 function getClientIp(req: Request): string {
   const forwardedFor = req.headers['x-forwarded-for'];
@@ -18,18 +15,6 @@ function getClientIp(req: Request): string {
   return req.ip || req.socket.remoteAddress || 'unknown';
 }
 
-export function requestLogger(req: Request, res: Response, next: NextFunction): void {
-  const startedAt = new Date();
+morgan.token('client-ip', (req: Request) => getClientIp(req));
 
-  res.on('finish', () => {
-    const statusCode = res.statusCode;
-    const color = statusCode >= 500 ? RED : GREEN;
-    const timestamp = startedAt.toISOString();
-
-    console.log(
-      `${color}[${timestamp}] ${req.method} ${req.originalUrl} ${statusCode} ${getClientIp(req)}${RESET}`
-    );
-  });
-
-  next();
-}
+export const requestLogger = morgan(':method :url :status :response-time ms - :client-ip');

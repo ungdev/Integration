@@ -9,7 +9,7 @@ export const ParrainageNewStudent = () => {
           Tu souhaites être accompagné par un étudiant pour découvrir ta nouvelle école ? Remplis vite ce formulaire !
         </p>
 
-        <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
+        {/* <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
           <iframe
             src="https://docs.google.com/forms/d/e/1FAIpQLScThti-8I0ceHVb8RBYPzLcGhXNo2KPMg_nQHshrb6hC8EG_w/viewform?embedded=true"
             className="absolute inset-0 w-full h-full border-none"
@@ -18,7 +18,10 @@ export const ParrainageNewStudent = () => {
           >
             Chargement…
           </iframe>
-        </div>
+        </div> */}
+        <p className="text-red-500 font-medium text-center">
+          🚫 Ce formulaire n’est pas encore disponible.
+        </p>
       </div>
     </section>
   );
@@ -35,7 +38,7 @@ export const ParrainageStudent = () => {
           Remplis ce formulaire pour accompagner un nouvel étudiant et lui faire découvrir la vie UTTienne !
         </p>
 
-        <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
+        {/* <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
           <iframe
             src="https://docs.google.com/forms/d/e/1FAIpQLScM8LTorRrysnWNGKAX31Snqo2QQz02032m-CK7lUA0MpBaQQ/viewform?embedded=true"
             className="absolute inset-0 w-full h-full border-none"
@@ -44,7 +47,10 @@ export const ParrainageStudent = () => {
           >
             Chargement…
           </iframe>
-        </div>
+        </div> */}
+        <p className="text-red-500 font-medium text-center">
+          🚫 Ce formulaire n’est pas encore disponible.
+        </p>
       </div>
     </section>
   );

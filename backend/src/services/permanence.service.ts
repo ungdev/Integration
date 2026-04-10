@@ -426,7 +426,7 @@ export const importPermanencesFromCSV = async (
     start_at: new Date(r.start_at),
     end_at: new Date(r.end_at),
     capacity: parseInt(r.capacity, 10),
-    difficulty: r.difficulty,
+    difficulty: parseInt(r.difficulty, 10),
     is_open: false,
 
   }));

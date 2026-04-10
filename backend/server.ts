@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import path from "path";
 
+import defaultRoute from './src/routes/default.routes';
 import authRoutes from './src/routes/auth.routes';
 import roleRoutes from './src/routes/role.routes';
 import userRoutes from './src/routes/user.routes';
@@ -46,6 +47,7 @@ async function startServer() {
         console.log('Base de données initialisée avec succès');
         
         // Utilisation des routes d'authentification
+        app.use('/api', defaultRoute)
         app.use('/api/auth', authRoutes);
         app.use('/api/authadmin',authenticateUser, authRoutes);
         app.use('/api/role',authenticateUser, roleRoutes);

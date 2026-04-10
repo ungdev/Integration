@@ -11,7 +11,7 @@ export const initChallenge = async () => {
             description: "Chalenge de réfrence pour les points gratuits", 
             category : "Free", 
             points: 0, 
-            created_by : "1"
+            created_by : 1
         };
         const result = await db.insert(challengeSchema).values(challengeValues).onConflictDoNothing();
     }

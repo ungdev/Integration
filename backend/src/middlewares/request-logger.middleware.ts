@@ -24,7 +24,7 @@ export function requestLogger(req: Request, res: Response, next: NextFunction): 
   res.on('finish', () => {
     const statusCode = res.statusCode;
     const color = statusCode >= 500 ? RED : GREEN;
-    const timestamp = startedAt.toLocaleString('fr-FR', { hour12: false });
+    const timestamp = startedAt.toISOString();
 
     console.log(
       `${color}[${timestamp}] ${req.method} ${req.originalUrl} ${statusCode} ${getClientIp(req)}${RESET}`

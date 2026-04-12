@@ -8,23 +8,22 @@ export const Infos = () => {
   return (
     <div className="w-full bg-white text-gray-800">
       {/* Hero Carousel */}
-      <div className="relative w-full overflow-hidden">
+      <div className="relative w-full overflow-hidden h-[280px] sm:h-[360px] md:h-[460px] lg:h-[600px]">
         <Swiper
           modules={[Pagination, Autoplay]}
           spaceBetween={0}
           pagination={{ clickable: true }}
           autoplay={{ delay: 4000, disableOnInteraction: true }}
           loop={true}
-          className="w-full"
-          style={{ height: "100%", maxHeight: "600px" }}
+          className="w-full h-full"
           effect="fade" // Smooth transition de fond
         >
           {["Home1", "Home2", "Home3", "Home4"].map((img, i) => (
-            <SwiperSlide key={i} className="relative">
+            <SwiperSlide key={i} className="relative h-full">
               <img
                 src={`/img/${img}.jpg`}
                 alt={`Photo ${i + 1}`}
-                className="w-full h-full object-cover transition-all duration-1000 ease-in-out"
+                className="w-full h-full object-cover object-center transition-all duration-1000 ease-in-out"
               />
               {/* Overlay sombre */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent z-10" />

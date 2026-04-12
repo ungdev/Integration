@@ -20,7 +20,7 @@ const branchOptions = [
   { value: "SN_APPR", label: "Systeme Numérique en Apprentissage" },
   { value: "Branch", label: "Branche" },
   { value: "MM", label: "Mécanique et Matériaux" },
-  { value : "Master", label: "Master"},
+  { value: "Master", label: "Master" },
   { value: "RI", label: "Ressources International" },
 ];
 
@@ -46,7 +46,7 @@ export const ProfilForm = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    const response = await updateCurrentUser({ branch : branch, contact : contact });
+    const response = await updateCurrentUser({ branch: branch, contact: contact });
     alert(response.message);
     setLoading(false);
   };
@@ -92,33 +92,37 @@ export const ProfilForm = () => {
               isClearable
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium">Contact</label>
-            <Input value={contact} onChange={(e) => setContact(e.target.value)} />
+          <div className={`${user.contact === null || user.contact === "" ? "p-4 rounded-lg bg-yellow-100 border border-yellow-300" : ""}`}>
+            {user.permission === "Student" || user.permission === "Admin" ? (
+              <label className="block text-sm font-medium">Contact - <u>Comment tes nouveaux pourront te contacter !</u></label>
+            ) : (
+              <label className="block text-sm font-medium">Contact (visible uniquement pour les organisateurs)</label>
+            )}
+            <Input value={contact} onChange={(e) => setContact(e.target.value)} className={user.contact === null || user.contact === "" ? "bg-white" : ""} />
           </div>
           <Button onClick={handleSubmit} disabled={loading} className="w-full">
             {loading ? "Enregistrement..." : "💾 Sauvegarder"}
           </Button>
-           <>
-          {user.discord_id ? (
-            <div className="w-full p-4 bg-green-100 text-green-800 rounded text-center">
-              ✅ Ton compte Discord est bien lié !
-            </div>
-          ) : (
-            <button
-              onClick={() => {
-                window.location.href =
-                  "https://discord.com/oauth2/authorize?client_id=1400196109434884189&response_type=code&redirect_uri=https%3A%2F%2Fintegration.utt.fr%2Fdiscord&scope=identify";
-              }}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2 text-white py-2 rounded"
-            >
-              <FaDiscord size={20} />
-              Lier mon compte Discord
-            </button>
-          )}
-        </>
+          <>
+            {user.discord_id ? (
+              <div className="w-full p-4 bg-green-100 text-green-800 rounded text-center">
+                ✅ Ton compte Discord est bien lié !
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  window.location.href =
+                    "https://discord.com/oauth2/authorize?client_id=1400196109434884189&response_type=code&redirect_uri=https%3A%2F%2Fintegration.utt.fr%2Fdiscord&scope=identify";
+                }}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2 text-white py-2 rounded"
+              >
+                <FaDiscord size={20} />
+                Lier mon compte Discord
+              </button>
+            )}
+          </>
         </CardContent>
       </Card>
-    </div>
+    </div >
   );
 };

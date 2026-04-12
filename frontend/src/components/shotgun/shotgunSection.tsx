@@ -75,11 +75,10 @@ export const Shotgun = () => {
           </Button>
           {message && (
             <p
-              className={`text-center text-lg mt-4 ${
-                message.includes("Erreur") || message.toLowerCase().includes("déjà")
-                  ? "text-red-500"
-                  : "text-green-600"
-              }`}
+              className={`text-center text-lg mt-4 ${message.includes("Erreur") || message.toLowerCase().includes("déjà")
+                ? "text-red-500"
+                : "text-green-600"
+                }`}
             >
               {message}
             </p>
@@ -87,7 +86,7 @@ export const Shotgun = () => {
         </form>
       ) : (
         <p className="text-center text-red-600 text-lg font-medium">
-          Le shotgun n'est pas encore ouvert.
+          🚫 Le shotgun n'est pas encore ouvert.
         </p>
       )}
     </div>

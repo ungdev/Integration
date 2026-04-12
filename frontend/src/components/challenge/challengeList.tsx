@@ -16,25 +16,25 @@ export const UserChallengeList = () => {
   const [isChallOpen, setIsChallOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
- useEffect(() => {
-  const init = async () => {
-    try {
-      await fetchInitialData();
-      const status = await checkChallengeStatus();
-      setIsChallOpen(status);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des données :", error);
-      await Swal.fire({
-        icon: "error",
-        title: "Oups...",
-        text: "Une erreur est survenue lors de la récupération des données.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-  init();
-}, []);
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await fetchInitialData();
+        const status = await checkChallengeStatus();
+        setIsChallOpen(status);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des données :", error);
+        await Swal.fire({
+          icon: "error",
+          title: "Oups...",
+          text: "Une erreur est survenue lors de la récupération des données.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    init();
+  }, []);
 
   const fetchInitialData = async () => {
     await Promise.all([fetchChallenges(), fetchFactions()]);
@@ -44,7 +44,7 @@ export const UserChallengeList = () => {
   const fetchChallenges = async () => {
     try {
       const challenges = await getAllChallenges();
-      const challengesFiltered = challenges.filter((c : Challenge) => c.category != "Free")
+      const challengesFiltered = challenges.filter((c: Challenge) => c.category != "Free")
       setAvailableChallenges(challengesFiltered);
     } catch (err) {
       console.error("Erreur lors du chargement des challenges", err);
@@ -122,7 +122,7 @@ export const UserChallengeList = () => {
         {loading ? (
           <p className="text-gray-500 text-center">Chargement en cours...</p>
         ) : !isChallOpen ? (
-          <p className="text-red-500 font-semibold text-center">
+          <p className="text-red-500 font-medium text-center">
             🚫 Les challenges ne sont pas encore ouverts.
           </p>
         ) : availableChallenges.length === 0 ? (

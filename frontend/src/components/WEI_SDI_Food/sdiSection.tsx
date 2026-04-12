@@ -30,14 +30,14 @@ export const SdiSection = () => {
             🎉 Participe à la Soirée d'Intégration (SDI) !
           </h2>
           <p className="text-lg md:text-xl text-gray-700">
-            Un événement incroyable t’attend… Inscris-toi dès maintenant pour ne rien rater de cette Soirée d’Intégration 2025 !
+            Un événement incroyable t'attend… Inscris-toi dès maintenant pour ne rien rater de cette Soirée d'Intégration 2025 !
           </p>
         </div>
 
         {!isSDIOpen ? (
           <div className="bg-white shadow-xl rounded-2xl p-6">
             <p className="text-xl text-red-600 font-semibold">
-              🚫 La billetterie de la Soirée d'intégration(SDI) n’est pas encore disponible.
+              🚫 La billetterie de la Soirée d'intégration(SDI) n'est pas encore disponible.
             </p>
             <p className="text-gray-600 mt-2">
               Reste connecté, elle ouvrira bientôt !

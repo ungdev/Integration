@@ -99,7 +99,7 @@ export const PlanningSection = () => {
               </>
             ) : (
               <p className="text-red-500 font-medium text-center">
-                🚫 Ce planning n’est pas encore disponible.
+                🚫 Ce planning n'est pas encore disponible.
               </p>
             )}
           </div>

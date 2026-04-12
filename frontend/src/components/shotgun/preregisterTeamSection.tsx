@@ -152,7 +152,7 @@ export const PreregisterTeamSection = () => {
         </>
       ) : (
         <p className="text-center text-red-500 text-lg font-semibold">
-          La pré-inscription est actuellement fermée.
+          🚫 La pré-inscription est actuellement fermée.
         </p>
       )}
     </div>

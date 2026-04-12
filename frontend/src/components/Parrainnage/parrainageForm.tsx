@@ -20,7 +20,7 @@ export const ParrainageNewStudent = () => {
           </iframe>
         </div> */}
         <p className="text-red-500 font-medium text-center">
-          🚫 Ce formulaire n’est pas encore disponible.
+          🚫 Ce formulaire n'est pas encore disponible.
         </p>
       </div>
     </section>
@@ -49,7 +49,7 @@ export const ParrainageStudent = () => {
           </iframe>
         </div> */}
         <p className="text-red-500 font-medium text-center">
-          🚫 Ce formulaire n’est pas encore disponible.
+          🚫 Ce formulaire n'est pas encore disponible.
         </p>
       </div>
     </section>

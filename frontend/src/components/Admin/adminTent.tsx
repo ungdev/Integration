@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getAllTentPairs, toggleTentConfirmation } from "../../services/requests/tent.service";
 import Swal from "sweetalert2";
 import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Check, X, Search } from "lucide-react";
 
 interface TentPair {
@@ -105,11 +106,13 @@ export const TentAdmin = () => {
   });
 
   return (
-    <div className="max-w-7xl mx-auto mt-10">
-      <div className="p-6 rounded-2xl shadow-lg bg-gradient-to-br from-white to-gray-50 border border-gray-200">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
           🛠️ Gestion des binômes de tentes
-        </h2>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
           {/* 🔎 Barre de recherche */}
@@ -169,7 +172,7 @@ export const TentAdmin = () => {
                     <td className="p-3">{pair.user1_majeur ? "Oui" : "Non"}</td>
                     <td className="p-3">{pair.user2_first_name} {pair.user2_last_name}</td>
                     <td className="p-3">{pair.user2_email}</td>
-                    <td className="p-3">{pair.user2_majeur  ? "Oui" : "Non"}</td>
+                    <td className="p-3">{pair.user2_majeur ? "Oui" : "Non"}</td>
                     <td className="p-3 text-center">
                       {pair.confirmed ? (
                         <span className="flex items-center justify-center text-green-600 font-semibold">
@@ -199,7 +202,7 @@ export const TentAdmin = () => {
             </table>
           </div>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };

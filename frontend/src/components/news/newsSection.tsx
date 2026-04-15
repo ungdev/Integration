@@ -65,13 +65,13 @@ export const MyNews = () => {
           {filteredActus.map((news) => (
             <li
               key={news.id}
-              className={`border rounded-lg p-5 shadow-sm ${typeColors[news.type] || "bg-gray-100 text-gray-800"}`}
+              className={`surface-card p-5 ${typeColors[news.type] || "bg-gray-100 text-gray-800"}`}
             >
               {news.image_url && (
                 <img
                   src={news.image_url}
                   alt={news.title}
-                  className="w-full h-auto rounded mb-4"
+                  className="w-full h-auto rounded-xl mb-4"
                 />
               )}
               <h3 className="text-xl font-bold mb-2">{news.title}</h3>

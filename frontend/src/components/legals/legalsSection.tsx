@@ -10,7 +10,7 @@ export const LegalsSection = () => {
                 </div>
 
                 <div className="space-y-6 pb-6">
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Editeur du Site</h2>
                         <div className="grid gap-6 md:grid-cols-2">
                             <div>
@@ -39,7 +39,7 @@ export const LegalsSection = () => {
                         </p>
                     </section>
 
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Propriétaire et Hébergeur</h2>
                         <div className="grid gap-6 md:grid-cols-2">
                             <div>
@@ -64,7 +64,7 @@ export const LegalsSection = () => {
                         </div>
                     </section>
 
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Protection des Données Personnelles</h2>
                         <p className="text-slate-700">
                             Le site collecte et traite des données personnelles conformément a la loi Informatique et Libertés du 6 janvier 1978 modifiée et au RGPD EU-2016/679.
@@ -78,14 +78,14 @@ export const LegalsSection = () => {
                         </p>
                     </section>
 
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Droits d'Auteur</h2>
                         <p className="text-slate-700">
                             L'ensemble du contenu de ce site est protegé par le droit d'auteur. Sauf mention contraire, les contenus relatifs au projet Integration UTT sont diffusés sous la responsabilité du BDE UTT. Toute reproduction, distribution ou modification est interdite sans autorisation écrite préalable.
                         </p>
                     </section>
 
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Credits</h2>
                         <p className="text-slate-700">
                             Ce site est developpé pour le projet Integration UTT du BDE UTT, avec le support technique de l'association UTT Net Group.

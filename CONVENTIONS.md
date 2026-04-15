@@ -32,7 +32,7 @@ style(ui): adjust spacing in header
 
 ### Bonnes pratiques
 
-* écrire à l’impératif → `add`, `fix`, `update`
+* écrire à l'impératif → `add`, `fix`, `update`
 * description courte (-50 caractères) et explicite
 * un commit = une seule intention
 

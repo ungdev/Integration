@@ -8,14 +8,14 @@ export const PrivacySection = () => {
                 </div>
 
                 <div className="space-y-6 pb-6">
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Vie Privée et Données à Caractère Personnel</h2>
                         <p className="text-slate-700">
                             A l'Université de Technologie de Troyes et au sein des associations BDE UTT et UTT Net Group, nous respectons votre vie privée. Les données collectées et utilisées par la plateforme Integration UTT sont nécessaires pour la gestion des membres, des inscriptions aux évènements et des services propoés pendant l'intégration.
                         </p>
                     </section>
 
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Données Personnelles Collectées</h2>
                         <p className="text-sm text-slate-600 mb-3">
                             Les données suivantes sont effectivement stockées et traitées par la plateforme Intégration UTT.
@@ -31,7 +31,7 @@ export const PrivacySection = () => {
                         </ul>
                     </section>
 
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Comment Ces Informations Sont-Elles Utilisées ?</h2>
                         <p className="text-sm text-slate-600 mb-3">
                             Les données à caractère personnel sont des informations qui permettent sous quelque forme que ce soit, directement ou indirectement, l'identification des personnes physiques auxquelles elles s'appliquent.
@@ -47,7 +47,7 @@ export const PrivacySection = () => {
                         </ul>
                     </section>
 
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Durée de Conservation des Données</h2>
                         <p className="text-slate-700 mb-2">
                             Les données personnelles sont conservées pendant un (1) an maximum, puis supprimées.
@@ -57,7 +57,7 @@ export const PrivacySection = () => {
                         <p className="text-slate-700">Les cookies de session sont détruits à la déconnexion ou à leur expiration.</p>
                     </section>
 
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Vos Droits sur Vos Données</h2>
                         <p className="text-sm text-slate-600 mb-3">Conformément à la réglementation sur les données à caractère personnel, vous disposez des droits suivants :</p>
                         <ul className="list-disc pl-6 space-y-1 text-slate-700">
@@ -69,7 +69,7 @@ export const PrivacySection = () => {
                         </ul>
                     </section>
 
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Comment Exercer Vos Droits ?</h2>
                         <p className="text-slate-700 mb-3">Si vous avez des questions ou que vous souhaitez exercer vos droits (accès, rectification, suppression), vous pouvez :</p>
                         <ul className="list-disc pl-6 space-y-2 text-slate-700">
@@ -94,7 +94,7 @@ export const PrivacySection = () => {
                         </p>
                     </section>
 
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Responsable du Traitement</h2>
                         <p className="text-slate-700 mb-2">
                             Le responsable du traitement des données pour la plateforme Intégration UTT est <strong>Arthur Dodin</strong>, Président de l'association UTT Net Group.
@@ -104,7 +104,7 @@ export const PrivacySection = () => {
                         </p>
                     </section>
 
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Sécurité des Données</h2>
                         <p className="text-slate-700 mb-2">
                             Nous mettons en œuvre toutes les mesures techniques et organisationnelles appropriées afin de garantir un niveau de sécurité adapté au risque, conformément aux exigences du RGPD.
@@ -112,7 +112,7 @@ export const PrivacySection = () => {
                         <p className="text-slate-700">Ces données ne seront en aucun cas échangées, distribuées ou vendues à un tiers.</p>
                     </section>
 
-                    <section className="bg-white rounded-2xl shadow p-6 sm:p-8">
+                    <section className="surface-card p-6 sm:p-8">
                         <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Cookies</h2>
                         <p className="text-slate-700 mb-2">
                             Nous utilisons des cookies afin d'obtenir des statistiques sur notre site web. Ces informations ne seront en aucun cas vendues, échangées ou données. Ces cookies sont anonymisés.

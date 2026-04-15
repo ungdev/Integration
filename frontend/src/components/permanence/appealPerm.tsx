@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { Card } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { respoDetails, claimedMember } from "../../services/requests/permanence.service";
 import { Permanence } from "../../interfaces/permanence.interface";
 import { format } from "date-fns";
@@ -85,101 +85,105 @@ export const RespoPresenceManagement = () => {
   }, {});
 
   return (
-    <div className="flex flex-col items-center px-4 py-8 space-y-8 max-w-5xl mx-auto">
-      <Card className="w-full p-8 rounded-2xl shadow-lg border border-gray-200 space-y-6 bg-white">
-        <h2 className="text-3xl font-bold text-gray-800 text-center">
-          ✅ Gestion des présences
-        </h2>
+    <div className="w-full max-w-3xl mx-auto">
+      <Card className="w-full max-w-3xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-3xl font-bold text-gray-800 text-center">
+            ✅ Gestion des présences
+          </CardTitle>
+        </CardHeader>
 
-        {loading ? (
-          <p className="text-center text-gray-500 animate-pulse">Chargement...</p>
-        ) : Object.keys(groupedByDay).length === 0 ? (
-          <p className="text-center text-gray-400">Aucune permanence trouvée.</p>
-        ) : (
-          Object.keys(groupedByDay).map((day) => (
-            <div key={day} className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-700 border-b pb-1">
-                📅 {day}
-              </h3>
+        <CardContent className="space-y-12">
+          {loading ? (
+            <p className="text-center text-gray-500 animate-pulse">Chargement...</p>
+          ) : Object.keys(groupedByDay).length === 0 ? (
+            <p className="text-center text-gray-400">Aucune permanence trouvée.</p>
+          ) : (
+            Object.keys(groupedByDay).map((day) => (
+              <div key={day} className="space-y-4">
+                <h3 className="text-xl font-semibold text-gray-700 border-b pb-1">
+                  📅 {day}
+                </h3>
 
-              {groupedByDay[day].map((perm: PermanenceWithMembers) => (
-                <Card
-                  key={`perm-${perm.id}`}
-                  className="rounded-xl shadow-sm bg-gray-50 border border-gray-200 overflow-hidden"
-                >
-                  {/* Header collapsible */}
-                  <button
-                    onClick={() => toggleExpand(perm.id)}
-                    className="w-full flex justify-between items-center px-6 py-4 bg-white hover:bg-gray-100 transition"
+                {groupedByDay[day].map((perm: PermanenceWithMembers) => (
+                  <Card
+                    key={`perm-${perm.id}`}
+                    className="w-full max-w-3xl mx-auto py-0"
                   >
-                    <div className="text-left">
-                      <h4 className="text-md font-semibold text-gray-800">
-                        📍 {perm.name ?? "Nom inconnu"}
-                      </h4>
-                      <p className="text-sm text-gray-500">
-                        {perm.location ?? "Lieu inconnu"} —{" "}
-                        {format(new Date(perm.start_at), "HH:mm", { locale: fr })} →{" "}
-                        {format(new Date(perm.end_at), "HH:mm", { locale: fr })}
-                      </p>
-                    </div>
-                    <span className="text-xl text-gray-500">
-                      {expandedPermId === perm.id ? "▲" : "▼"}
-                    </span>
-                  </button>
-
-                  {/* Liste des membres */}
-                  {expandedPermId === perm.id && (
-                    <div className="px-6 pb-6">
-                      {perm.members.length === 0 ? (
-                        <p className="text-center text-gray-400 mt-4">
-                          Aucun membre inscrit.
+                    {/* Header collapsible */}
+                    <button
+                      onClick={() => toggleExpand(perm.id)}
+                      className="w-full flex justify-between items-center px-6 py-6 bg-transparent hover:bg-black/5 transition"
+                    >
+                      <div className="text-left">
+                        <h4 className="text-md font-semibold text-gray-800">
+                          📍 {perm.name ?? "Nom inconnu"}
+                        </h4>
+                        <p className="text-sm text-gray-500">
+                          {perm.location ?? "Lieu inconnu"} —{" "}
+                          {format(new Date(perm.start_at), "HH:mm", { locale: fr })} →{" "}
+                          {format(new Date(perm.end_at), "HH:mm", { locale: fr })}
                         </p>
-                      ) : (
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                          {perm.members.map((member) => (
-                            <li
-                              key={`member-${perm.id}-${member.id}`}
-                              className="flex items-center justify-between bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm"
-                            >
-                              <div className="flex items-center gap-2">
-                                {member.claimed === true && (
-                                  <CheckCircle className="w-5 h-5 text-green-600" />
-                                )}
-                                {member.claimed === false && (
-                                  <XCircle className="w-5 h-5 text-red-600" />
-                                )}
-                                {member.claimed === undefined && (
-                                  <Circle className="w-5 h-5 text-gray-400" />
-                                )}
-                                <span className="text-sm text-gray-700">
-                                  {member.first_name} {member.last_name}
-                                </span>
-                              </div>
-                              <div className="flex gap-2">
-                                <Button
-                                  onClick={() => handlePresence(member.id, perm.id, true)}
-                                  className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1"
-                                >
-                                  Présent
-                                </Button>
-                                <Button
-                                  onClick={() => handlePresence(member.id, perm.id, false)}
-                                  className="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1"
-                                >
-                                  Absent
-                                </Button>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
-                </Card>
-              ))}
-            </div>
-          ))
-        )}
+                      </div>
+                      <span className="text-xl text-gray-500">
+                        {expandedPermId === perm.id ? "▲" : "▼"}
+                      </span>
+                    </button>
+
+                    {/* Liste des membres */}
+                    {expandedPermId === perm.id && (
+                      <div className="px-6 pb-6">
+                        {perm.members.length === 0 ? (
+                          <p className="text-center text-gray-400 mt-4">
+                            Aucun membre inscrit.
+                          </p>
+                        ) : (
+                          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                            {perm.members.map((member) => (
+                              <li
+                                key={`member-${perm.id}-${member.id}`}
+                                className="flex items-center justify-between surface-card px-4 py-2"
+                              >
+                                <div className="flex items-center gap-2">
+                                  {member.claimed === true && (
+                                    <CheckCircle className="w-5 h-5 text-green-600" />
+                                  )}
+                                  {member.claimed === false && (
+                                    <XCircle className="w-5 h-5 text-red-600" />
+                                  )}
+                                  {member.claimed === undefined && (
+                                    <Circle className="w-5 h-5 text-gray-400" />
+                                  )}
+                                  <span className="text-sm text-gray-700">
+                                    {member.first_name} {member.last_name}
+                                  </span>
+                                </div>
+                                <div className="flex gap-2">
+                                  <Button
+                                    onClick={() => handlePresence(member.id, perm.id, true)}
+                                    className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1"
+                                  >
+                                    Présent
+                                  </Button>
+                                  <Button
+                                    onClick={() => handlePresence(member.id, perm.id, false)}
+                                    className="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1"
+                                  >
+                                    Absent
+                                  </Button>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    )}
+                  </Card>
+                ))}
+              </div>
+            ))
+          )}
+        </CardContent>
       </Card>
     </div>
   );

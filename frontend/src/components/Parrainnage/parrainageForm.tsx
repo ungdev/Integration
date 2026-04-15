@@ -1,14 +1,17 @@
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+
 export const ParrainageNewStudent = () => {
   return (
-    <section className="w-full bg-white text-gray-800 py-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-blue-700">
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
           Tu vas intégrer l'UTT ?
-        </h2>
-        <p className="text-base sm:text-lg text-gray-600 mb-10">
+        </CardTitle>
+        <p className="text-lg md:text-xl text-gray-700">
           Tu souhaites être accompagné par un étudiant pour découvrir ta nouvelle école ? Remplis vite ce formulaire !
         </p>
-
+      </CardHeader>
+      <CardContent className="space-y-10">
         {/* <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
           <iframe
             src="https://docs.google.com/forms/d/e/1FAIpQLScThti-8I0ceHVb8RBYPzLcGhXNo2KPMg_nQHshrb6hC8EG_w/viewform?embedded=true"
@@ -22,22 +25,23 @@ export const ParrainageNewStudent = () => {
         <p className="text-red-500 font-medium text-center">
           🚫 Ce formulaire n'est pas encore disponible.
         </p>
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   );
 };
 
 export const ParrainageStudent = () => {
   return (
-    <section className="w-full bg-white text-gray-800 py-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-blue-700">
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
           Tu veux devenir parrain/marraine à l'UTT ?
-        </h2>
-        <p className="text-base sm:text-lg text-gray-600 mb-10">
+        </CardTitle>
+        <p className="text-lg md:text-xl text-gray-700">
           Remplis ce formulaire pour accompagner un nouvel étudiant et lui faire découvrir la vie UTTienne !
         </p>
-
+      </CardHeader>
+      <CardContent className="space-y-10">
         {/* <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
           <iframe
             src="https://docs.google.com/forms/d/e/1FAIpQLScM8LTorRrysnWNGKAX31Snqo2QQz02032m-CK7lUA0MpBaQQ/viewform?embedded=true"
@@ -51,7 +55,7 @@ export const ParrainageStudent = () => {
         <p className="text-red-500 font-medium text-center">
           🚫 Ce formulaire n'est pas encore disponible.
         </p>
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   );
 };

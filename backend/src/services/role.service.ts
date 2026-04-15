@@ -23,14 +23,14 @@ export const assignRoleToUser = async (userId: number, roleId: number) => {
   await db.insert(userRolesSchema).values(newUserRole);
 };
 
-// 2. Supprimer un rôle d’un utilisateur
+// 2. Supprimer un rôle d'un utilisateur
 export const removeRoleFromUser = async (userId: number, roleId: number) => {
   await db
     .delete(userRolesSchema)
     .where(and(eq(userRolesSchema.user_id, userId), eq(userRolesSchema.role_id, roleId)));
 };
 
-// 3. Récupérer les rôles d’un utilisateur
+// 3. Récupérer les rôles d'un utilisateur
 export const getUserRoles = async (userId: number) => {
   return await db
     .select({
@@ -83,7 +83,7 @@ export const getUsersByRoleName = async (roleName: string) => {
     .where(eq(userPreferencesSchema.roleId, roleId));
 };
 
-// 6. Mettre à jour les préférences d’un utilisateur
+// 6. Mettre à jour les préférences d'un utilisateur
 export const updateUserPreferences = async (userId: number, roleIds: number[]) => {
   await db.delete(userPreferencesSchema).where(eq(userPreferencesSchema.userId, userId));
 
@@ -91,7 +91,7 @@ export const updateUserPreferences = async (userId: number, roleIds: number[]) =
   await db.insert(userPreferencesSchema).values(newPreferences);
 };
 
-// 7. Récupérer les préférences d’un utilisateur
+// 7. Récupérer les préférences d'un utilisateur
 export const getUserPreferences = async (userId: number) => {
   return await db
     .select({
@@ -158,7 +158,7 @@ export const getAllRolePoints = async () => {
   return await db.select().from(rolePoints);
 };
 
-// 12. Récupérer les points d’un rôle spécifique
+// 12. Récupérer les points d'un rôle spécifique
 export const getRolePoints = async (roleId: number) => {
   const result = await db
     .select()
@@ -170,35 +170,35 @@ export const getRolePoints = async (roleId: number) => {
 };
 
 // 13. Checker le role d'User
-export const checkRoleUser = async (userId: number, roleId: number) =>{
+export const checkRoleUser = async (userId: number, roleId: number) => {
 
   const existingRole = await db
-        .select()
-        .from(userRolesSchema)
-        .where(and(eq(userRolesSchema.user_id, userId), eq(userRolesSchema.role_id, roleId)));
-    
-    return existingRole;
+    .select()
+    .from(userRolesSchema)
+    .where(and(eq(userRolesSchema.user_id, userId), eq(userRolesSchema.role_id, roleId)));
+
+  return existingRole;
 };
 
 // 13. Ajouter un role à l'User
-export const insertUserRole = async(userId: number, roleId: number) =>{
+export const insertUserRole = async (userId: number, roleId: number) => {
 
-    const newUserRole : UserRole = {user_id: userId, role_id: roleId}
-    await db.insert(userRolesSchema).values(newUserRole);
+  const newUserRole: UserRole = { user_id: userId, role_id: roleId }
+  await db.insert(userRolesSchema).values(newUserRole);
 }
 
 // 13. Recevoir tout les roles
-export const getRoles = async()=>{
-    try{
-        const roles = await db.select({
-            roleId: roleSchema.id,
-            name: roleSchema.name,
-            description: roleSchema.description
-        }).from(roleSchema);
-        return roles;
-    }
-    catch(error){
-        throw new Error("Erreur lors de la récupération des rôles : " + error.message);
-    }
+export const getRoles = async () => {
+  try {
+    const roles = await db.select({
+      roleId: roleSchema.id,
+      name: roleSchema.name,
+      description: roleSchema.description
+    }).from(roleSchema);
+    return roles;
+  }
+  catch (error) {
+    throw new Error("Erreur lors de la récupération des rôles : " + error.message);
+  }
 
 }

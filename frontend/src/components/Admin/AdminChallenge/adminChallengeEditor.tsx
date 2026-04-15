@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
-import { Card } from "../../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import Select from "react-select";
 import { createChallenge, updateChallenge } from "../../../services/requests/challenge.service";
 import { Challenge } from "../../../interfaces/challenge.interface";
@@ -61,48 +61,50 @@ const ChallengeEditor = ({ editingChallenge, setEditingChallenge, refreshChallen
   };
 
   return (
-    <Card className="p-6 rounded-2xl shadow-lg space-y-4 max-w-xl mx-auto">
-      <h2 className="text-2xl font-bold text-center">
-        {editingChallenge ? "✏️ Modifier Challenge" : "🛠️ Créer Challenge"}
-      </h2>
-
-      <Input
-        placeholder="Titre"
-        value={form.title}
-        onChange={(e) => setForm({ ...form, title: e.target.value })}
-      />
-      <Input
-        placeholder="Description"
-        value={form.description}
-        onChange={(e) => setForm({ ...form, description: e.target.value })}
-      />
-      <Select
-        placeholder="Catégorie"
-        options={categoryOptions}
-        value={categoryOptions.find((opt) => opt.value === form.category)}
-        onChange={(opt) => setForm({ ...form, category: opt?.value || "" })}
-      />
-      <Input
-        placeholder="Points"
-        type="number"
-        value={form.points}
-        onChange={(e) => setForm({ ...form, points: Number(e.target.value) })}
-      />
-
-      <div className="flex gap-4">
-        <Button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="bg-green-600 hover:bg-green-700 text-white"
-        >
-          {loading ? <Loader2 className="animate-spin w-4 h-4" /> : "Enregistrer"}
-        </Button>
-        {editingChallenge && (
-          <Button onClick={resetForm} className="bg-gray-400 hover:bg-gray-500 text-white">
-            Annuler
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+          {editingChallenge ? "✏️ Modifier Challenge" : "🛠️ Créer Challenge"}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Input
+          placeholder="Titre"
+          value={form.title}
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
+        />
+        <Input
+          placeholder="Description"
+          value={form.description}
+          onChange={(e) => setForm({ ...form, description: e.target.value })}
+        />
+        <Select
+          placeholder="Catégorie"
+          options={categoryOptions}
+          value={categoryOptions.find((opt) => opt.value === form.category)}
+          onChange={(opt) => setForm({ ...form, category: opt?.value || "" })}
+        />
+        <Input
+          placeholder="Points"
+          type="number"
+          value={form.points}
+          onChange={(e) => setForm({ ...form, points: Number(e.target.value) })}
+        />
+        <div className="flex gap-4">
+          <Button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="bg-green-600 hover:bg-green-700 text-white"
+          >
+            {loading ? <Loader2 className="animate-spin w-4 h-4" /> : "Enregistrer"}
           </Button>
-        )}
-      </div>
+          {editingChallenge && (
+            <Button onClick={resetForm} className="bg-gray-400 hover:bg-gray-500 text-white">
+              Annuler
+            </Button>
+          )}
+        </div>
+      </CardContent>
     </Card>
   );
 };

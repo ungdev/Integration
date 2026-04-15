@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Card } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import Select from "react-select";
 
 import {
@@ -36,7 +36,7 @@ export const AdminTeamManagement = () => {
   const [newTeamName, setNewTeamName] = useState("");
   const [newFactionId, setNewFactionId] = useState<number | null>(null);
 
-  
+
 
   const selectedTeam = teams.find((t) => t.teamId === selectedTeamId);
 
@@ -57,7 +57,7 @@ export const AdminTeamManagement = () => {
       const team = teams.find((t) => t.teamId === selectedTeamId);
       if (team) {
         const faction = team.faction_id ?? ((await getTeamFaction(team.teamId))?.factionId);
-        const members : [User] = await getTeamUsers(team.teamId);
+        const members: [User] = await getTeamUsers(team.teamId);
         setEditName(team.name);
         setEditType(team.type);
         setEditFactionId(faction || null);
@@ -150,54 +150,69 @@ export const AdminTeamManagement = () => {
   };
 
   return (
-    <div className="flex flex-col items-center px-4 py-10 space-y-10 max-w-5xl mx-auto">
-      <Card className="w-full p-6 rounded-2xl shadow space-y-6">
-        <h2 className="text-3xl font-bold text-gray-800 text-center">🎯 Créer une équipe</h2>
-        <div className="flex flex-col md:flex-row items-center gap-4 mx-auto">
-          <Input
-            placeholder="Nom de l'équipe"
-            value={newTeamName}
-            onChange={(e) => setNewTeamName(e.target.value)}
-            className="w-full md:w-64"
-          />
-          <Select
-            onChange={(selectedOption: any) => setNewFactionId(selectedOption.value)}
-            options={factions.map(f => ({ value: f.factionId, label: f.name }))}
-            className="w-full md:w-64"
-            placeholder="Sélectionner une faction"
-          />
-          <Button onClick={handleCreateTeam} className="bg-green-600 hover:bg-green-700 text-white">
-            ➕ Créer
-          </Button>
-        </div>
+    <div className="flex flex-col items-center px-4 py-5 space-y-10">
+      <Card className="w-full max-w-3xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+            🎯 Créer une équipe
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col md:flex-row items-center gap-4 mx-auto">
+            <Input
+              placeholder="Nom de l'équipe"
+              value={newTeamName}
+              onChange={(e) => setNewTeamName(e.target.value)}
+              className="w-full md:w-64"
+            />
+            <Select
+              onChange={(selectedOption: any) => setNewFactionId(selectedOption.value)}
+              options={factions.map(f => ({ value: f.factionId, label: f.name }))}
+              className="w-full md:w-64"
+              placeholder="Sélectionner une faction"
+            />
+            <Button onClick={handleCreateTeam} className="bg-green-600 hover:bg-green-700 text-white">
+              ➕ Créer
+            </Button>
+          </div>
+        </CardContent>
       </Card>
 
-      <Card className="w-full p-6 rounded-2xl shadow space-y-4">
-        <h2 className="text-2xl font-bold text-gray-800 text-center">🛠️ Modifier une équipe</h2>
-        <Select
-          value={selectedTeamId
-            ? {
+      <Card className="w-full max-w-3xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+            🛠️ Modifier une équipe
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Select
+            value={selectedTeamId
+              ? {
                 value: selectedTeamId,
                 label: teams.find((team) => team.teamId === selectedTeamId)?.name,
               }
-            : null}
-          onChange={(selectedOption: any) => setSelectedTeamId(selectedOption.value)}
-          options={teams.map((team) => ({ value: team.teamId, label: team.name }))}
-          className="w-full md:w-96 mx-auto"
-          placeholder="Sélectionner une équipe"
-        />
+              : null}
+            onChange={(selectedOption: any) => setSelectedTeamId(selectedOption.value)}
+            options={teams.map((team) => ({ value: team.teamId, label: team.name }))}
+            className="w-full md:w-96 mx-auto"
+            placeholder="Sélectionner une équipe"
+          />
+        </CardContent>
       </Card>
 
       {selectedTeam && (
-        <Card className="w-full p-6 rounded-2xl shadow space-y-6">
-          <h2 className="text-2xl font-semibold text-gray-800 text-center">✏️ Éditer l'équipe</h2>
-
-          <div className="flex flex-col items-center space-y-4">
+        <Card className="w-full max-w-3xl mx-auto">
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+              ✏️ Éditer l'équipe
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <Input
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
-              className="w-full md:w-96"
-              placeholder="Nom de l’équipe"
+              className="w-full md:w-96 mx-auto"
+              placeholder="Nom de l'équipe"
             />
             <Select
               options={typeOptions}
@@ -206,24 +221,24 @@ export const AdminTeamManagement = () => {
                 { value: "", label: "Aucun type" }
               }
               onChange={(selectedOption) => setEditType(selectedOption?.value || "")}
-              className="w-full md:w-96"
+              className="w-full md:w-96 mx-auto"
               placeholder="Type d'équipe"
             />
             <Select
               value={editFactionId
                 ? {
-                    value: editFactionId,
-                    label: factions.find(f => f.factionId === editFactionId)?.name,
-                  }
+                  value: editFactionId,
+                  label: factions.find(f => f.factionId === editFactionId)?.name,
+                }
                 : null}
               onChange={(selectedOption: any) => setEditFactionId(selectedOption.value)}
               options={factions.map(f => ({ value: f.factionId, label: f.name }))}
-              className="w-full md:w-96"
+              className="w-full md:w-96 mx-auto"
               placeholder="Sélectionner une faction"
             />
 
-            <div className="w-full md:w-96">
-              <h3 className="text-md font-semibold mb-2">👨‍💼 Chefs d’équipe</h3>
+            <div className="w-full md:w-96 mx-auto">
+              <h3 className="text-md font-semibold mb-2">👨‍💼 Chefs d'équipe</h3>
               <Select
                 isMulti
                 value={editLeaders.map((id) => {
@@ -245,7 +260,7 @@ export const AdminTeamManagement = () => {
               />
             </div>
 
-            <div className="w-full md:w-96 pt-6">
+            <div className="w-full md:w-96 pt-6 mx-auto">
               <h3 className="text-md font-semibold mb-2">🆕 Nouveaux membres</h3>
               <Select
                 isMulti
@@ -268,7 +283,7 @@ export const AdminTeamManagement = () => {
               />
             </div>
 
-            <div className="flex flex-wrap gap-4 pt-4">
+            <div className="flex flex-wrap justify-around gap-4 pt-4 mx-auto w-full md:w-96">
               <Button onClick={handleUpdate} className="bg-green-600 hover:bg-green-700 text-white">
                 💾 Sauvegarder
               </Button>
@@ -276,7 +291,7 @@ export const AdminTeamManagement = () => {
                 🗑️ Supprimer
               </Button>
             </div>
-          </div>
+          </CardContent>
         </Card>
       )}
     </div>
@@ -305,9 +320,13 @@ export const DistributeTeam = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-8">
-      <Card className="w-full p-6 rounded-2xl shadow space-y-4">
-        <h2 className="text-2xl font-bold text-gray-800 text-center">🔀 Répartition automatique</h2>
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+          🔀 Répartition automatique
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
         <div className="text-center text-gray-700 space-y-1">
           <p>Voulez-vous répartir aléatoirement les nouveaux dans leurs équipes ?</p>
           <p className="text-sm text-gray-500 font-medium">
@@ -322,7 +341,7 @@ export const DistributeTeam = () => {
             🔁 Lancer la répartition
           </Button>
         </div>
-      </Card>
-    </div>
+      </CardContent>
+    </Card>
   );
 };

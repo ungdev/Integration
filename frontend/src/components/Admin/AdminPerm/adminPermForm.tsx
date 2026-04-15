@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card } from "../../../components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import { Textarea } from "../../../components/ui/textarea";
 import { Button } from "../../../components/ui/button";
@@ -58,8 +58,8 @@ const PermanenceForm = ({
       setName(editPermanence.name);
       setDesc(editPermanence.description);
       setLocation(editPermanence.location);
-      setStartAt(formatDateForInput(editPermanence.start_at)); 
-      setEndAt(formatDateForInput(editPermanence.end_at));     
+      setStartAt(formatDateForInput(editPermanence.start_at));
+      setEndAt(formatDateForInput(editPermanence.end_at));
       setCapacity(editPermanence.capacity);
       setDifficulty(editPermanence.difficulty);
       if (editPermanence.respo) {
@@ -96,15 +96,15 @@ const PermanenceForm = ({
         difficulty,
         respoId,
       };
-      
-        if (editMode && editPermanence) {
-          await updatePermanence(editPermanence.id, payload);
-          Swal.fire("Succès", "Permanence mise à jour", "success");
-          onCancelEdit();
-        } else {
-          await createPermanence(payload);
-          Swal.fire("Succès", "Permanence créée", "success");
-        }
+
+      if (editMode && editPermanence) {
+        await updatePermanence(editPermanence.id, payload);
+        Swal.fire("Succès", "Permanence mise à jour", "success");
+        onCancelEdit();
+      } else {
+        await createPermanence(payload);
+        Swal.fire("Succès", "Permanence créée", "success");
+      }
 
       resetForm();
       onRefresh();
@@ -134,8 +134,13 @@ const PermanenceForm = ({
     : null;
 
   return (
-    <Card className="w-full max-w-2xl p-6 shadow-lg rounded-2xl mx-auto">
-      <div className="flex flex-col gap-4">
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-center">
+          {editMode ? "✏️ Modifier une permanence" : "➕ Créer une permanence"}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
         <Input
           placeholder="Nom"
           value={name}
@@ -151,34 +156,41 @@ const PermanenceForm = ({
           value={location}
           onChange={(e) => setLocation(e.target.value)}
         />
-        <label>Début :</label>
-        <Input
-          type="datetime-local"
-          value={startAt}
-          onChange={(e) => setStartAt(e.target.value)}
-        />
-        <label>Fin :</label>
-        <Input
-          type="datetime-local"
-          value={endAt}
-          onChange={(e) => setEndAt(e.target.value)}
-        />
-        <label>Capacité :</label>
-        <Input
-          type="number"
-          placeholder="Capacité"
-          value={capacity}
-          onChange={(e) => setCapacity(Number(e.target.value))}
-        />
-        <label>Difficulté :</label>
-        <Input
-          type="number"
-          placeholder="Difficulté"
-          value={difficulty}
-          onChange={(e) => setDifficulty(Number(e.target.value))}
-        />
+        <div className="flex flex-col gap-1">
+          <label>Début :</label>
+          <Input
+            type="datetime-local"
+            value={startAt}
+            onChange={(e) => setStartAt(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label>Fin :</label>
+          <Input
+            type="datetime-local"
+            value={endAt}
+            onChange={(e) => setEndAt(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label>Capacité :</label>
+          <Input
+            type="number"
+            placeholder="Capacité"
+            value={capacity}
+            onChange={(e) => setCapacity(Number(e.target.value))}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label>Difficulté :</label>
+          <Input
+            type="number"
+            placeholder="Difficulté"
+            value={difficulty}
+            onChange={(e) => setDifficulty(Number(e.target.value))}
+          />
+        </div>
 
-        {/* Sélection du responsable */}
         <Select
           value={selectedRespoOption}
           onChange={(selectedOption) => {
@@ -212,7 +224,7 @@ const PermanenceForm = ({
             </Button>
           )}
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 };

@@ -51,7 +51,7 @@ export const AvailablePermanencesPage: React.FC = () => {
       fetchData();
     } catch (err) {
       console.error("Erreur lors de l'inscription", err);
-      Swal.fire("Erreur", "Impossible de s’inscrire à la permanence.", "error");
+      Swal.fire("Erreur", "Impossible de s'inscrire à la permanence.", "error");
     } finally {
       setIsSubmitting(false);
     }

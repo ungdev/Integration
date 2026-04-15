@@ -69,17 +69,17 @@ export const templateNotebook = `
         <div style="text-align: center; font-size: 15px;">
             <p style="line-height: 1.4;">Salut à toi !!!!</p>
 
-            <p style="line-height: 1.4;">Si tu reçois ce mail, c’est que tu es sur le point de rejoindre l’UTT et de vivre tes premières années en école supérieure.</p>
+            <p style="line-height: 1.4;">Si tu reçois ce mail, c'est que tu es sur le point de rejoindre l'UTT et de vivre tes premières années en école supérieure.</p>
             
-            <p style="line-height: 1.4;">Mais après toutes ces vacances, il est important de ne pas s’endormir et de vite se remettre au travail !</p>
+            <p style="line-height: 1.4;">Mais après toutes ces vacances, il est important de ne pas s'endormir et de vite se remettre au travail !</p>
             
-            <p style="line-height: 1.4;">C’est pourquoi l’intégration te propose un cahier de vacances qui te permettra de te remettre à niveau.</p>
+            <p style="line-height: 1.4;">C'est pourquoi l'intégration te propose un cahier de vacances qui te permettra de te remettre à niveau.</p>
             
-            <p style="line-height: 1.4;">Toutes les bases y sont revues, de la terminale… jusqu’au CP. À toi de nous prouver que tu en es capable ! Méthodologie et rigueur seront nécessaires pour en venir à bout (et pas mal d’humour également).</p>
+            <p style="line-height: 1.4;">Toutes les bases y sont revues, de la terminale… jusqu'au CP. À toi de nous prouver que tu en es capable ! Méthodologie et rigueur seront nécessaires pour en venir à bout (et pas mal d'humour également).</p>
             
-            <p style="line-height: 1.4;">Ce cahier sera examiné par un jury extrêmement talentueux : des ingénieurs hors pair, ayant déjà prouvé leur valeur lors d’un concours de Ricard sur la plage de Banyuls-sur-Mer.</p>
+            <p style="line-height: 1.4;">Ce cahier sera examiné par un jury extrêmement talentueux : des ingénieurs hors pair, ayant déjà prouvé leur valeur lors d'un concours de Ricard sur la plage de Banyuls-sur-Mer.</p>
             
-            <p style="line-height: 1.4;">À toi de leur montrer que tu peux égaler leurs compétences ! Ce jury n’hésitera pas à te récompenser pour tes efforts si tu nous renvoies tes réponses à cette adresse mail.</p>
+            <p style="line-height: 1.4;">À toi de leur montrer que tu peux égaler leurs compétences ! Ce jury n'hésitera pas à te récompenser pour tes efforts si tu nous renvoies tes réponses à cette adresse mail.</p>
             
             <p style="line-height: 1.4;">Alors si tu veux y participer, tu peux le télécharger juste ici et le renvoyer à <a href="mailto:clement.duranson@utt.fr"; style="color: #0400ffff;">clement.duranson@utt.fr</a> avant le dimanche 31 août.</p>
             
@@ -97,7 +97,7 @@ export const templateNotebook = `
             
             <p style="line-height: 1.4;">À très vite !</p>
             
-            <p style="line-height: 1.4;">Toute l’équipe de l’intégration</p>
+            <p style="line-height: 1.4;">Toute l'équipe de l'intégration</p>
         </div>
         
         <!-- FOOTER -->
@@ -162,9 +162,9 @@ export const templateAttributionBus = `
                                 <li style="margin-bottom: 5px;">Vêtements : changes pour 2 jours, pull, maillot de bain 👙</li>
                                 <li style="margin-bottom: 5px;">Manteau imperméable 🧥</li>
                                 <li style="margin-bottom: 5px;">Affaires salissables : change complet & chaussures (à mettre dès le départ en bus) 🚌</li>
-                                <li style="margin-bottom: 5px;">Produits d’hygiène : brosse à dent, serviette, nécessaire de toilette 🪥</li>
+                                <li style="margin-bottom: 5px;">Produits d'hygiène : brosse à dent, serviette, nécessaire de toilette 🪥</li>
                                 <li style="margin-bottom: 5px;">Tongues/crocs pour les douches 🩴</li>
-                                <li style="margin-bottom: 5px;">Papiers importants : Carte d’identité, CB & liquide, autorisation parentale (pour les mineurs) 💳</li>
+                                <li style="margin-bottom: 5px;">Papiers importants : Carte d'identité, CB & liquide, autorisation parentale (pour les mineurs) 💳</li>
                                 <li style="margin-bottom: 5px;">Ta place au WEI 📩</li>
                                 <li style="margin-bottom: 5px;">Crème solaire & anti-moustique ☀️</li>
                                 <li style="margin-bottom: 5px;">De quoi grignoter (prenez un pique-nique à manger avant de prendre le bus, pas dans le bus) 😋</li>
@@ -173,7 +173,7 @@ export const templateAttributionBus = `
                             <!-- Affaires interdites -->
                             <p style="margin-top: 20px; font-weight: bold; color: #d00000;">🚫 Affaires interdites :</p>
                             <ul style="list-style-type: disc; padding: 0; margin: 0; text-align: left; display: inline-block; padding-left: 20px; color: #d00000;">
-                                <li style="margin-bottom: 5px;">Boissons autres que de l’eau</li>
+                                <li style="margin-bottom: 5px;">Boissons autres que de l'eau</li>
                                 <li style="margin-bottom: 5px;">Substances illicites</li>
                                 <li style="margin-bottom: 5px;">Armes blanches</li>
                                 <li style="margin-bottom: 5px;">Déodorant en spray</li>
@@ -271,15 +271,15 @@ export const templateWelcome = `
                     <tr>
                         <td style="font-size: 15px; line-height: 140%; margin: 20px 0; text-align: center;">
     <p>Hello there, newcomer!</p>
-    <p>Congratulations on your admission to UTT! We are the integration team – volunteer students who are carefully preparing your arrival to make it truly unforgettable.</p>
-    <p>A bunch of amazing events, all based on voluntary participation, await you starting on <strong><u>Monday, September 1st</u></strong>, whether you're arriving in your 1st year, 3rd year, Master's or Bachelor’s program.</p>
-    <p>Everything is set up for you to have fun and meet the people who will make your time at UTT unforgettable. But first things first – it’s time to get ready.</p>
+    <p>Congratulations on your admission to UTT! We are the integration team - volunteer students who are carefully preparing your arrival to make it truly unforgettable.</p>
+    <p>A bunch of amazing events, all based on voluntary participation, await you starting on <strong><u>Monday, September 1st</u></strong>, whether you're arriving in your 1st year, 3rd year, Master's or Bachelor's program.</p>
+    <p>Everything is set up for you to have fun and meet the people who will make your time at UTT unforgettable. But first things first - it's time to get ready.</p>
     <p>Please make sure to complete the following tasks before you arrive:</p>
     <p>To access the integration website, you just need to change your password by clicking the following link:</p>
 
     <p><a href="https://integration.utt.fr/Register?token={{token}}" style="color: #e74160; font-weight: bold;" target="_blank">Change your password</a></p>
     <p style="color: red; font-weight: bold;">Warning: this link is valid only once!</p>
-    <p>Once that’s done, you’ll be able to log into your account and find all the information about the integration week events here: <p><a href="https://integration.utt.fr/" style="color: #e74160; font-weight: bold;" target="_blank">https://integration.utt.fr</a></p>Also, don’t forget to link your Discord account via the <strong>"My Account"</strong> section so you can connect with your team and the other newcomers.
+    <p>Once that's done, you'll be able to log into your account and find all the information about the integration week events here: <p><a href="https://integration.utt.fr/" style="color: #e74160; font-weight: bold;" target="_blank">https://integration.utt.fr</a></p>Also, don't forget to link your Discord account via the <strong>"My Account"</strong> section so you can connect with your team and the other newcomers.
     <p></p>
     <p style="font-size: 11pt; margin: 0;">When you arrive at UTT, an older student will become your mentor ("parrain" or "marraine"). They will be your main contact to help you discover the school and student life in Troyes, and to answer any questions you may have about UTT, housing, classes, life in Troyes, etc.</p>
     <p style="font-size: 11pt; margin: 10px 0;">To match you with someone who fits you best, we invite you to fill out <a href="https://docs.google.com/forms/d/e/1FAIpQLScThti-8I0ceHVb8RBYPzLcGhXNo2KPMg_nQHshrb6hC8EG_w/viewform?pli=1&fbzx=-7742379441906364887" style="color: #e74160; font-weight: bold;" target="_blank">this questionnaire</a></p>
@@ -350,7 +350,7 @@ export const templateNotifyTentConfirmation = `
       </p>
 
       <p style="margin: 10px 0; color: #555;">
-        👉 Tu peux consulter l’état de ta tente sur le site de l'inté dans l’onglet <strong>Tentes</strong>.
+        👉 Tu peux consulter l'état de ta tente sur le site de l'inté dans l'onglet <strong>Tentes</strong>.
       </p>
 
       <!-- Bouton -->

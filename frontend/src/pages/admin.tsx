@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { RevealSection } from "../components/ui/revealSection";
 
 import { AdminRoleManagement, AdminRolePreferences } from "../components/Admin/adminRole";
 import { AdminEvents } from "../components/Admin/adminEvent";
@@ -38,17 +38,19 @@ import { getAllTeams } from "../services/requests/team.service";
 import { getAllFactionsUser } from "../services/requests/faction.service";
 
 
-
 export const AdminPageTeam: React.FC = () => {
+  // const editorRef = useRef<HTMLDivElement | null>(null);
+
   return (
     <AdminLayout allowedRoles={["Admin", "Respo CE"]}>
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl bg-white shadow p-6">
+        <RevealSection>
           <AdminTeamManagement />
-        </section>
-        <section className="rounded-2xl bg-white shadow p-6">
+        </RevealSection>
+
+        <RevealSection delay={0.1}>
           <DistributeTeam />
-        </section>
+        </RevealSection>
       </div>
     </AdminLayout>
   );
@@ -58,9 +60,9 @@ export const AdminPageFaction: React.FC = () => {
   return (
     <AdminLayout allowedRoles={["Admin", "Respo CE"]}>
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl bg-white shadow p-6">
+        <RevealSection>
           <AdminFactionManagement />
-        </section>
+        </RevealSection>
       </div>
     </AdminLayout>
   );
@@ -70,12 +72,13 @@ export const AdminPageRole: React.FC = () => {
   return (
     <AdminLayout allowedRoles={["Admin"]}>
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl bg-white shadow p-6">
+        <RevealSection>
           <AdminRolePreferences />
-        </section>
-        <section className="rounded-2xl bg-white shadow p-6">
+        </RevealSection>
+
+        <RevealSection delay={0.1}>
           <AdminRoleManagement />
-        </section>
+        </RevealSection>
       </div>
     </AdminLayout>
   );
@@ -85,9 +88,9 @@ export const AdminPageEvents: React.FC = () => {
   return (
     <AdminLayout allowedRoles={["Admin"]}>
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl bg-white shadow p-6">
+        <RevealSection>
           <AdminEvents />
-        </section>
+        </RevealSection>
       </div>
     </AdminLayout>
   );
@@ -97,15 +100,17 @@ export const AdminPageExport: React.FC = () => {
   return (
     <AdminLayout allowedRoles={["Admin"]}>
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl bg-white shadow p-6">
+        <RevealSection>
           <AdminExportConnect />
-        </section>
-        <section className="rounded-2xl bg-white shadow p-6">
+        </RevealSection>
+
+        <RevealSection delay={0.1}>
           <AdminImportFoodMenu />
-        </section>
-        <section className="rounded-2xl bg-white shadow p-6">
+        </RevealSection>
+
+        <RevealSection delay={0.2}>
           <AdminImportPlannings />
-        </section>
+        </RevealSection>
       </div>
     </AdminLayout>
   );
@@ -140,17 +145,7 @@ export const AdminPagePerm: React.FC = () => {
       <div className="flex flex-col gap-10 px-4 py-6 max-w-7xl mx-auto">
 
         {/* Formulaire (créer/éditer) */}
-        <motion.section
-          ref={editorRef}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-          className="rounded-2xl bg-white shadow-lg p-8"
-        >
-          <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-            {editMode ? "✏️ Modifier une permanence" : "➕ Créer une permanence"}
-          </h1>
-
+        <RevealSection>
           <PermanenceForm
             editMode={editMode}
             editPermanence={editPermanence}
@@ -160,18 +155,10 @@ export const AdminPagePerm: React.FC = () => {
               setEditPermanence(null);
             }}
           />
-        </motion.section>
+        </RevealSection>
 
         {/* Liste des permanences */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.2 }}
-          className="rounded-2xl bg-white shadow-lg p-8"
-        >
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-            📋 Permanences existantes
-          </h2>
+        <RevealSection delay={0.1}>
           <PermanenceList
             permanences={permanences}
             users={users}
@@ -184,36 +171,20 @@ export const AdminPagePerm: React.FC = () => {
               }, 100);
             }}
           />
-        </motion.section>
+        </RevealSection>
 
-         {/* Actions globales */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.1 }}
-          className="rounded-2xl bg-white shadow-lg p-8"
-        >
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-            ⚡ Actions rapides
-          </h2>
+        {/* Actions globales */}
+        <RevealSection delay={0.2}>
           <PermanenceActions
             permanences={permanences}
             onRefresh={fetchPermanences}
           />
-        </motion.section>
+        </RevealSection>
 
         {/* Import CSV (si dispo) */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: 0.3 }}
-          className="rounded-2xl bg-white shadow-lg p-8"
-        >
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-            📂 Importer des permanences (CSV)
-          </h2>
+        <RevealSection delay={0.3}>
           <ImportPermCSV />
-        </motion.section>
+        </RevealSection>
       </div>
     </AdminLayout>
   );
@@ -223,7 +194,7 @@ export const AdminPagePerm: React.FC = () => {
 
 
 export const AdminPageChall: React.FC = () => {
-  
+
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [validatedChallenges, setValidatedChallenges] = useState<ValidatedChallenge[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -234,13 +205,13 @@ export const AdminPageChall: React.FC = () => {
 
   const fetchChallengesUsersTeamsFactions = async () => {
     try {
-      
+
       const challsRes = await getAllChallenges();
       const usersRes = await getUsers();
       const teamsRes = await getAllTeams();
       const factionsRes = await getAllFactionsUser();
 
-      const challsResFiltered = challsRes.filter((c : Challenge) => c.category != "Free")
+      const challsResFiltered = challsRes.filter((c: Challenge) => c.category != "Free")
       setChallenges(challsResFiltered);
       setUsers(usersRes);
       setTeams(teamsRes);
@@ -252,15 +223,15 @@ export const AdminPageChall: React.FC = () => {
   };
 
   const fetchValidatedChallenges = async () => {
-  try {
-    const res = await getAllChallengesValidates();
-    setValidatedChallenges(res);
-  } catch (err) {
-    console.error("Erreur chargement challenges validés", err);
-  }
-};
-  
-  
+    try {
+      const res = await getAllChallengesValidates();
+      setValidatedChallenges(res);
+    } catch (err) {
+      console.error("Erreur chargement challenges validés", err);
+    }
+  };
+
+
   useEffect(() => {
     fetchChallengesUsersTeamsFactions();
     fetchValidatedChallenges();
@@ -274,30 +245,17 @@ export const AdminPageChall: React.FC = () => {
   return (
     <AdminLayout allowedRoles={["Admin", "Arbitre"]}>
       <div className="flex flex-col gap-6">
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="rounded-2xl bg-white shadow-lg p-8"
-        > 
+        <RevealSection>
           {/* Formulaire création / édition */}
-          <section ref={editorRef} className="rounded-2xl bg-white shadow p-6">
-            <ChallengeEditor
-              editingChallenge={editingChallenge}
-              setEditingChallenge={setEditingChallenge}
-              refreshChallenges={fetchChallengesUsersTeamsFactions}
-            />
-          </section>
-        </motion.section>
+          <ChallengeEditor
+            editingChallenge={editingChallenge}
+            setEditingChallenge={setEditingChallenge}
+            refreshChallenges={fetchChallengesUsersTeamsFactions}
+          />
+        </RevealSection>
 
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="rounded-2xl bg-white shadow-lg p-8"
-        > 
-        {/* Liste des challenges */}
-        <section className="rounded-2xl bg-white shadow p-6">
+        <RevealSection delay={0.1}>
+          {/* Liste des challenges */}
           <AdminChallengeList
             challenges={challenges}
             refreshChallenges={() => {
@@ -309,36 +267,21 @@ export const AdminPageChall: React.FC = () => {
             teams={teams}
             factions={factions}
           />
-        </section>
-        </motion.section>
+        </RevealSection>
 
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="rounded-2xl bg-white shadow-lg p-8"
-        > 
-        {/* Ajout de points */}
-        <section className="rounded-2xl bg-white shadow p-6">
+        <RevealSection delay={0.2}>
+          {/* Ajout de points */}
           <AdminChallengeAddPointsForm />
-        </section>
-        </motion.section>
+        </RevealSection>
 
 
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="rounded-2xl bg-white shadow-lg p-8"
-        > 
+        <RevealSection delay={0.3}>
           {/* Liste des challenges validés */}
-          <section className="rounded-2xl bg-white shadow p-6">
-            <AdminValidatedChallengesList
-              validatedChallenges={validatedChallenges}
-              fetchValidatedChallenges={fetchValidatedChallenges}
-            />
-          </section>
-        </motion.section>
+          <AdminValidatedChallengesList
+            validatedChallenges={validatedChallenges}
+            fetchValidatedChallenges={fetchValidatedChallenges}
+          />
+        </RevealSection>
       </div>
     </AdminLayout>
   );
@@ -348,9 +291,9 @@ export const AdminPageEmail: React.FC = () => {
   return (
     <AdminLayout allowedRoles={["Admin"]}>
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl bg-white shadow p-6">
-          < AdminEmail/>
-        </section>
+        <RevealSection>
+          <AdminEmail />
+        </RevealSection>
       </div>
     </AdminLayout>
   );
@@ -360,12 +303,13 @@ export const AdminPageUser: React.FC = () => {
   return (
     <AdminLayout allowedRoles={["Admin"]}>
       <div className="flex flex-col gap-6">
-      <section className="rounded-2xl bg-white shadow p-6">
-          < AdminUser/>
-      </section>
-      <section className="rounded-2xl bg-white shadow p-6">
-          < AdminSyncNewStudent/>
-      </section>
+        <RevealSection>
+          <AdminUser />
+        </RevealSection>
+
+        <RevealSection delay={0.1}>
+          <AdminSyncNewStudent />
+        </RevealSection>
       </div>
     </AdminLayout>
   );
@@ -375,9 +319,9 @@ export const AdminPageNews: React.FC = () => {
   return (
     <AdminLayout allowedRoles={["Admin", "Communication"]}>
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl bg-white shadow p-6">
-          < AdminNews/>
-        </section>
+        <RevealSection>
+          <AdminNews />
+        </RevealSection>
       </div>
     </AdminLayout>
   );
@@ -387,9 +331,9 @@ export const AdminPageTent: React.FC = () => {
   return (
     <AdminLayout allowedRoles={["Admin"]}>
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl bg-white shadow p-6">
+        <RevealSection>
           <TentAdmin />
-        </section>
+        </RevealSection>
       </div>
     </AdminLayout>
   );
@@ -399,9 +343,9 @@ export const AdminPageBus: React.FC = () => {
   return (
     <AdminLayout allowedRoles={["Admin"]}>
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl bg-white shadow p-6">
-          < AdminBusTools/>
-        </section>
+        <RevealSection>
+          <AdminBusTools />
+        </RevealSection>
       </div>
     </AdminLayout>
   );
@@ -411,9 +355,9 @@ export const AdminPageGames: React.FC = () => {
   return (
     <AdminLayout allowedRoles={["Admin"]}>
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl bg-white shadow p-6">
-          < AdminRolePointsManager/>
-        </section>
+        <RevealSection>
+          <AdminRolePointsManager />
+        </RevealSection>
       </div>
     </AdminLayout>
   );

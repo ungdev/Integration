@@ -3,17 +3,18 @@ import { WeiSection } from "../components/WEI_SDI_Food/weiSection";
 import { TentPublic } from "../components/tent/tentSection";
 import { useNavigate } from "react-router-dom";
 import { getPermission } from "../services/requests/user.service";
+import { Footer } from "../components/footer";
 
 export const WeiPage = () => {
 
-    const navigate = useNavigate();
-    const permission = getPermission();
+  const navigate = useNavigate();
+  const permission = getPermission();
 
-    if (!permission) {
-        navigate("/");
-        return null;
-    }
-    
+  if (!permission) {
+    navigate("/");
+    return null;
+  }
+
   return (
     <div>
       <Navbar />
@@ -23,9 +24,7 @@ export const WeiPage = () => {
           {(permission === "Nouveau" || permission === "Admin") && <TentPublic />}
         </div>
       </div>
-      <footer className="bg-gray-800 text-white p-4 text-center">
-        <p>&copy; 2025 Semaine d'Intégration UTT</p>
-      </footer>
+      <Footer />
     </div>
   );
 };

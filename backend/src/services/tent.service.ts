@@ -43,12 +43,12 @@ export const cancelTent = async (userId1: number) => {
   return await db
     .delete(userTentSchema)
     .where(
-        or(eq(userTentSchema.user_id_1, userId1), eq(userTentSchema.user_id_2, userId1)),
+      or(eq(userTentSchema.user_id_1, userId1), eq(userTentSchema.user_id_2, userId1)),
     );
 };
 
 /**
- * Récupérer la tente d’un utilisateur.
+ * Récupérer la tente d'un utilisateur.
  */
 export const getTentByUser = async (userId: number) => {
   return await db
@@ -61,7 +61,7 @@ export const getTentByUser = async (userId: number) => {
  * Récupérer toutes les tentes (avec infos des 2 utilisateurs).
  */
 export const getAllTents = async () => {
-    
+
   const user2 = alias(userSchema, "user2");
 
   return await db

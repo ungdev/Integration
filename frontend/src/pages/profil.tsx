@@ -3,26 +3,29 @@ import { Navbar } from "../components/navbar";
 import { UserPreferences } from "../components/profil/roleForm";
 import { getPermission } from "../services/requests/user.service";
 import { ProfilForm } from "../components/profil/profilForm";
+import { Footer } from "../components/footer";
 
 export const ProfilPage = () => {
 
 
-    const navigate = useNavigate();
-    const permission = getPermission();
+  const navigate = useNavigate();
+  const permission = getPermission();
 
-    if (!permission) {
-        navigate("/");
-        return null;
-    }
+  if (!permission) {
+    navigate("/");
+    return null;
+  }
 
   return (
     <div>
       <Navbar />
-      < ProfilForm/>
-      {(permission === "Student" || permission === "Admin") && (<UserPreferences />)}
-      <footer className="bg-gray-800 text-white p-4 text-center">
-        <p>&copy; 2025 Semaine d'Intégration UTT</p>
-      </footer>
+      <div className="bg-gray-100 min-h-screen py-6 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto space-y-8">
+          <ProfilForm />
+          {(permission === "Student" || permission === "Admin") && (<UserPreferences />)}
+        </div>
+      </div>
+      <Footer />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { User } from "../../interfaces/user.interface";
 import { decodeToken, getToken } from "../../services/requests/auth.service";
 import { Tent } from "../../interfaces/tent.interface";
 import { checkWEIStatus } from "../../services/requests/event.service";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 export const TentPublic = () => {
   const [userId2, setUserId2] = useState<number | null>(null);
@@ -111,101 +112,108 @@ export const TentPublic = () => {
     }
   };
 
-  return isWEIOpen ? (
-    <div className="max-w-2xl mx-auto mt-10">
-      <div className="p-6 rounded-2xl shadow-lg bg-gradient-to-br from-white to-gray-50 border border-gray-200 transition-all duration-300 hover:shadow-2xl">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">🏕️ Réserve ta tente</h2>
+  return (
+    <>
+      <Card className="w-full max-w-6xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+            🏕️ Réserve ta tente
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-10">
+          {isWEIOpen ? (
+            !tentInfo ? (
+              <>
+                <div className="mb-6">
+                  <label className="block mb-2 text-gray-700 font-medium">Choisis ton binôme :</label>
+                  <Select
+                    placeholder="Sélectionne ton binôme"
+                    options={users
+                      .filter((user: User) => user.userId !== userId)
+                      .map((user: User) => ({
+                        value: user.userId,
+                        label: `${user.firstName} ${user.lastName}`,
+                      }))}
+                    value={
+                      userId2
+                        ? {
+                          value: userId2,
+                          label: `${users.find((u) => u.userId === userId2)?.firstName || ""} ${users.find((u) => u.userId === userId2)?.lastName || ""
+                            }`,
+                        }
+                        : null
+                    }
+                    onChange={(option) => setUserId2(option?.value || null)}
+                    isClearable
+                    className="shadow-sm"
+                  />
+                </div>
 
-        {!tentInfo ? (
-          <>
-            <div className="mb-6">
-              <label className="block mb-2 text-gray-700 font-medium">Choisis ton binôme :</label>
-              <Select
-                placeholder="Sélectionne ton binôme"
-                options={users
-                  .filter((user: User) => user.userId !== userId)
-                  .map((user: User) => ({
-                    value: user.userId,
-                    label: `${user.firstName} ${user.lastName}`,
-                  }))}
-                value={
-                  userId2
-                    ? {
-                        value: userId2,
-                        label: `${users.find((u) => u.userId === userId2)?.firstName || ""} ${
-                          users.find((u) => u.userId === userId2)?.lastName || ""
-                        }`,
-                      }
-                    : null
-                }
-                onChange={(option) => setUserId2(option?.value || null)}
-                isClearable
-                className="shadow-sm"
-              />
-            </div>
-
-            <div className="flex justify-center">
-              <Button
-                onClick={handleCreate}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow"
-                disabled={!userId2}
-              >
-                ✅ Créer
-              </Button>
-            </div>
-          </>
-        ) : (
-          <div className="mt-6 bg-gray-100 p-5 rounded-lg border border-gray-300 shadow-sm">
-            <h3 className="font-semibold text-lg mb-3">🎫 Ta tente</h3>
-            <p className="text-gray-700">
-              Binôme avec {" "}
-              <span className="font-bold text-green-700">
-                {
-                  users.find(
-                    (user) =>
-                      user.userId ===
-                      (tentInfo.user_id_1 === userId ? tentInfo.user_id_2 : tentInfo.user_id_1)
-                  )?.firstName
-                } {" "}
-                {
-                  users.find(
-                    (user) =>
-                      user.userId ===
-                      (tentInfo.user_id_1 === userId ? tentInfo.user_id_2 : tentInfo.user_id_1)
-                  )?.lastName
-                }
-              </span>
-            </p>
-
-            <div className="mt-4">
-              {tentInfo.confirmed ? (
-                <p className="text-green-700 font-semibold">✅ Ta tente est confirmée !</p>
-              ) : (
-                <p className="text-yellow-600 font-medium">
-                  ⏳ En attente de confirmation – tu recevras un mail bientôt.
+                <div className="flex justify-center">
+                  <Button
+                    onClick={handleCreate}
+                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow"
+                    disabled={!userId2}
+                  >
+                    ✅ Créer
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="mt-6 surface-card p-5">
+                <h3 className="font-semibold text-lg mb-3">🎫 Ta tente</h3>
+                <p className="text-gray-700">
+                  Binôme avec {" "}
+                  <span className="font-bold text-green-700">
+                    {
+                      users.find(
+                        (user) =>
+                          user.userId ===
+                          (tentInfo.user_id_1 === userId ? tentInfo.user_id_2 : tentInfo.user_id_1)
+                      )?.firstName
+                    } {" "}
+                    {
+                      users.find(
+                        (user) =>
+                          user.userId ===
+                          (tentInfo.user_id_1 === userId ? tentInfo.user_id_2 : tentInfo.user_id_1)
+                      )?.lastName
+                    }
+                  </span>
                 </p>
-              )}
-            </div>
 
-            <div className="flex space-x-4 mt-6">
-              <Button
-                onClick={handleCancel}
-                className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg shadow"
-              >
-                ❌ Annuler
-              </Button>
+                <div className="mt-4">
+                  {tentInfo.confirmed ? (
+                    <p className="text-green-700 font-semibold">✅ Ta tente est confirmée !</p>
+                  ) : (
+                    <p className="text-yellow-600 font-medium">
+                      ⏳ En attente de confirmation - tu recevras un mail bientôt.
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex space-x-4 mt-6">
+                  <Button
+                    onClick={handleCancel}
+                    className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg shadow"
+                  >
+                    ❌ Annuler
+                  </Button>
+                </div>
+              </div>
+            )
+          ) : (
+            <div className="text-center">
+              <p className="text-xl text-red-600 font-semibold mb-2">🚫 Réservations fermées</p>
+              <p className="text-gray-600">
+                La réservation de tentes pour le WEI n'est pas encore disponible.
+                <br />
+                🔔 Reste connecté, elle ouvrira bientôt !
+              </p>
             </div>
-          </div>
-        )}
-      </div>
-    </div>
-  ) : (
-    <div className="bg-white shadow-xl rounded-2xl p-8 text-center max-w-xl mx-auto mt-10 border">
-      <p className="text-2xl text-red-600 font-bold mb-2">🚫 Réservations fermées</p>
-      <p className="text-gray-600">
-        La réservation de tentes pour le WEI n’est pas encore disponible.<br />
-        🔔 Reste connecté, elle ouvrira bientôt !
-      </p>
-    </div>
+          )}
+        </CardContent>
+      </Card >
+    </>
   );
 };

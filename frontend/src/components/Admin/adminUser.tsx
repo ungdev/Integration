@@ -131,7 +131,7 @@ export const AdminUser = () => {
       Swal.fire({
         icon: "success",
         title: "Token renouvelé 🔑",
-        text: res.message, 
+        text: res.message,
         confirmButtonColor: "#16a34a",
       });
     }
@@ -165,9 +165,9 @@ export const AdminUser = () => {
 
 
   return (
-    <Card className="p-6 space-y-4">
+    <Card className="w-full max-w-3xl mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-gray-800">
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
           👤 Gérer un utilisateur
         </CardTitle>
       </CardHeader>
@@ -321,12 +321,12 @@ export const AdminSyncNewStudent = () => {
   };
 
   return (
-    <Card className="max-w-lg mx-auto p-6 bg-white rounded-xl shadow-lg space-y-6">
+    <Card className="w-full max-w-3xl mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl font-semibold text-center text-gray-800">
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
           🔄 Synchro API SIEP
         </CardTitle>
-      </CardHeader>
+      </CardHeader >
 
       <CardContent className="space-y-4">
         <label htmlFor="date" className="block text-gray-700 font-medium">
@@ -350,6 +350,6 @@ export const AdminSyncNewStudent = () => {
           </Button>
         </div>
       </CardContent>
-    </Card>
+    </Card >
   );
 };

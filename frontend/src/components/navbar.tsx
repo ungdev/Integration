@@ -12,6 +12,10 @@ interface NavItem {
   to: string;
   icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   rolesAllowed?: string[]; // ["Admin", "Respo CE", ...]
+  public?: boolean;
+  showWhen?: "always" | "auth" | "guest";
+  kind?: "link" | "action";
+  onClick?: () => void;
   children?: NavItem[];     // pour dropdown
 }
 
@@ -19,85 +23,106 @@ export const Navbar = () => {
   const { pathname } = useLocation();
   const token = getToken();
   const [menuOpen, setMenuOpen] = useState(false);
+  const isAuthenticated = Boolean(token);
+  const { userPermission, userRoles = [] } = token ? decodeToken(token) : { userPermission: undefined, userRoles: [] };
+  const roles = [userPermission, ...userRoles.map(r => r.roleName)].filter(Boolean) as string[];
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    window.location.href = "/";
+  };
 
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
-  if (!token) return null;
-  const { userPermission, userRoles = [] } = decodeToken(token);
-  const roles = [userPermission, ...userRoles.map(r => r.roleName)];
-
   const navItems: NavItem[] = [
-  { label: "Home",        to: "/Home",                      icon: HomeIcon },
-  { label: "Plannings",   to: "/Plannings" },
-  { label: "Parrainage",  to: "/Parrainage" },
-  { label: "Challenges",  to: "/Challenges" },
-  { label: "Mes Actus",   to: "/News" },
-  {
-    label: "Permanences",
-    to: "#",
-    children: [
-      { label: "Listes des permanences", to: "/PermanencesList", rolesAllowed: ["Admin", "Student"] },
-      { label: "Mes permanences", to: "/MyPermanences", rolesAllowed: ["Admin", "Student"] },
-      { label: "Faire l'appel", to: "/PermanencesAppeal", rolesAllowed: ["Admin", "Student"] },
-    ],
-  },
-  {
-    label: "Events",
-    to: "#",
-    children: [
-      { label: "Shotgun", to: "/Shotgun", rolesAllowed: ["Admin", "Student"] },
-      { label: "WEI",     to: "/Wei" },
-      { label: "SDI",     to: "/SDI" },
-      { label: "Repas",   to: "/Food" },
-      { label: "Defis Commissions", to: "/Games", rolesAllowed: ["Admin", "Student"] },
-    ],
-  },
-  { label: "Mon compte", to: "/Profil", icon: UsersIcon },
-  {
-    label: "Admin",
-    to: "#",
-    icon: CogIcon,
-    children: [
-      { label: "Users",         to: "/admin/users",        rolesAllowed: ["Admin"] },
-      { label: "Roles",         to: "/admin/roles",        rolesAllowed: ["Admin"] },
-      { label: "Teams",         to: "/admin/teams",        rolesAllowed: ["Admin", "Respo CE"] },
-      { label: "Factions",      to: "/admin/factions",     rolesAllowed: ["Admin", "Respo CE"] },
-      { label: "Events",        to: "/admin/events",       rolesAllowed: ["Admin"] },
-      { label: "Permanences",   to: "/admin/permanences",  rolesAllowed: ["Admin", "Respo CE"] },
-      { label: "Challenge",     to: "/admin/challenge",    rolesAllowed: ["Admin", "Arbitre"] },
-      { label: "Export / Import", to: "/admin/export-import", rolesAllowed: ["Admin"] },
-      { label: "Email",         to: "/admin/email",        rolesAllowed: ["Admin"] },
-      { label: "News",          to: "/admin/news",         rolesAllowed: ["Admin", "Communication"] },
-      { label: "Tentes",         to: "/admin/tent",        rolesAllowed: ["Admin"] },
-      { label: "Bus",         to: "/admin/bus",        rolesAllowed: ["Admin"] },
-      { label: "Games",         to: "/admin/games",        rolesAllowed: ["Admin"] },
-    ],
-  },
-  
-];
+    { label: "Home", to: "/Home", icon: HomeIcon },
+    { label: "Plannings", to: "/Plannings" },
+    { label: "Parrainage", to: "/Parrainage" },
+    { label: "Challenges", to: "/Challenges" },
+    { label: "Mes Actus", to: "/News" },
+    {
+      label: "Permanences",
+      to: "#",
+      children: [
+        { label: "Listes des permanences", to: "/PermanencesList", rolesAllowed: ["Admin", "Student"] },
+        { label: "Mes permanences", to: "/MyPermanences", rolesAllowed: ["Admin", "Student"] },
+        { label: "Faire l'appel", to: "/PermanencesAppeal", rolesAllowed: ["Admin", "Student"] },
+      ],
+    },
+    {
+      label: "Events",
+      to: "#",
+      children: [
+        { label: "Shotgun", to: "/Shotgun", rolesAllowed: ["Admin", "Student"] },
+        { label: "WEI", to: "/Wei" },
+        { label: "SDI", to: "/SDI" },
+        { label: "Repas", to: "/Food" },
+        { label: "Defis Commissions", to: "/Games", rolesAllowed: ["Admin", "Student"] },
+      ],
+    },
+    { label: "Mon compte", to: "/Profil", icon: UsersIcon },
+    {
+      label: "Admin",
+      to: "#",
+      icon: CogIcon,
+      children: [
+        { label: "Users", to: "/admin/users", rolesAllowed: ["Admin"] },
+        { label: "Roles", to: "/admin/roles", rolesAllowed: ["Admin"] },
+        { label: "Teams", to: "/admin/teams", rolesAllowed: ["Admin", "Respo CE"] },
+        { label: "Factions", to: "/admin/factions", rolesAllowed: ["Admin", "Respo CE"] },
+        { label: "Events", to: "/admin/events", rolesAllowed: ["Admin"] },
+        { label: "Permanences", to: "/admin/permanences", rolesAllowed: ["Admin", "Respo CE"] },
+        { label: "Challenge", to: "/admin/challenge", rolesAllowed: ["Admin", "Arbitre"] },
+        { label: "Export / Import", to: "/admin/export-import", rolesAllowed: ["Admin"] },
+        { label: "Email", to: "/admin/email", rolesAllowed: ["Admin"] },
+        { label: "News", to: "/admin/news", rolesAllowed: ["Admin", "Communication"] },
+        { label: "Tentes", to: "/admin/tent", rolesAllowed: ["Admin"] },
+        { label: "Bus", to: "/admin/bus", rolesAllowed: ["Admin"] },
+        { label: "Games", to: "/admin/games", rolesAllowed: ["Admin"] },
+      ],
+    },
+    {
+      label: "Déconnexion",
+      to: "/",
+      kind: "action",
+      showWhen: "auth",
+      onClick: handleLogout,
+    },
+    {
+      label: "Se connecter",
+      to: "/",
+      public: true,
+      showWhen: "guest",
+    },
+
+  ];
 
 
-  // helper d’autorisation
-  const isAllowed = (item: NavItem): boolean => {
-  // Si l'item a une restriction directe
-  if (item.rolesAllowed) {
-    return item.rolesAllowed.some(r => roles.includes(r));
-  }
+  const canShowItem = (item: NavItem): boolean => {
+    if (item.showWhen === "auth") return isAuthenticated;
+    if (item.showWhen === "guest") return !isAuthenticated;
 
-  // Si l'item a des enfants, on vérifie au moins un enfant
-  if (item.children && item.children.length > 0) {
-    return item.children.some(child => isAllowed(child));
-  }
+    if (!isAuthenticated) {
+      if (item.public) return true;
 
-  // Sinon accessible par défaut
-  return true;
-};
+      if (item.children && item.children.length > 0) {
+        return item.children.some(child => canShowItem(child));
+      }
 
-  const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    window.location.href = "/";
+      return false;
+    }
+
+    if (item.rolesAllowed) {
+      return item.rolesAllowed.some(r => roles.includes(r));
+    }
+
+    if (item.children && item.children.length > 0) {
+      return item.children.some(child => canShowItem(child));
+    }
+
+    return true;
   };
 
   return (
@@ -124,24 +149,18 @@ export const Navbar = () => {
         {/* Menu desktop */}
         <ul className="hidden lg:flex items-center space-x-6">
           {navItems.map(item =>
-            isAllowed(item) ? (
+            canShowItem(item) ? (
               <li key={item.label} className="relative group">
                 {item.children ? (
-                  <Dropdown item={item} />
+                  <Dropdown item={item} canShowItem={canShowItem} />
+                ) : item.kind === "action" ? (
+                  <NavActionItem item={item} />
                 ) : (
                   <MenuItem item={item} active={pathname === item.to} />
                 )}
               </li>
             ) : null
           )}
-          <li>
-            <button
-              onClick={handleLogout}
-              className="text-sm hover:text-gray-200 transition"
-            >
-              Déconnexion
-            </button>
-          </li>
         </ul>
       </div>
 
@@ -155,28 +174,47 @@ export const Navbar = () => {
             className="lg:hidden bg-blue-700 overflow-hidden"
           >
             {navItems.map(item =>
-              isAllowed(item) ? (
+              canShowItem(item) ? (
                 <Fragment key={item.label}>
                   {!item.children ? (
-                    <MenuItem item={item} mobile />
+                    item.kind === "action" ? (
+                      <NavActionItem item={item} mobile />
+                    ) : (
+                      <MenuItem item={item} mobile />
+                    )
                   ) : (
-                    <Dropdown item={item} mobile />
+                    <Dropdown item={item} mobile canShowItem={canShowItem} />
                   )}
                 </Fragment>
               ) : null
             )}
-            <li className="p-4">
-              <button
-                onClick={handleLogout}
-                className="w-full text-left text-sm hover:text-gray-200"
-              >
-                Déconnexion
-              </button>
-            </li>
           </motion.ul>
         )}
       </AnimatePresence>
     </nav>
+  );
+};
+
+const NavActionItem = ({
+  item,
+  mobile = false,
+}: {
+  item: NavItem;
+  mobile?: boolean;
+}) => {
+  const base = mobile ? "block py-2 px-4 text-left w-full" : "inline-flex items-center py-2";
+
+  return (
+    <button
+      type="button"
+      onClick={item.onClick}
+      className={`${base} hover:text-yellow-200 transition`}
+    >
+      {item.icon && (
+        <item.icon className="w-5 h-5 mr-1 inline-block" />
+      )}
+      {item.label}
+    </button>
   );
 };
 
@@ -208,24 +246,17 @@ const MenuItem = ({
 };
 
 // Composant Dropdown (desktop & mobile)
-// Composant Dropdown (desktop & mobile)
 const Dropdown = ({
   item,
   mobile = false,
+  canShowItem,
 }: {
   item: NavItem;
   mobile?: boolean;
+  canShowItem: (item: NavItem) => boolean;
 }) => {
   const [open, setOpen] = useState(false);
   const trigger = mobile ? "p-4" : "py-2 cursor-pointer";
-
-  // helper pour roles
-  const token = getToken();
-  const { userPermission, userRoles = [] } = token ? decodeToken(token) : {};
-  const roles = [userPermission, ...(userRoles?.map((r: any) => r.roleName) || [])];
-
-  const isAllowed = (child: NavItem) =>
-    !child.rolesAllowed || child.rolesAllowed.some(r => roles.includes(r));
 
   return (
     <div className="relative">
@@ -245,13 +276,12 @@ const Dropdown = ({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className={`absolute bg-white text-black rounded shadow-md z-50 ${
-              mobile ? "static mt-2" : "top-full left-0 mt-1"
-            }`}
+            className={`absolute bg-white text-black rounded shadow-md z-50 ${mobile ? "static mt-2" : "top-full left-0 mt-1"
+              }`}
             role="menu"
           >
             {item.children!
-              .filter(child => isAllowed(child))   // ✅ filtre selon les rôles
+              .filter(child => canShowItem(child))
               .map(child => (
                 <li key={child.to}>
                   <NavLink

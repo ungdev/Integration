@@ -54,67 +54,65 @@ export const AdminRolePreferences = () => {
   }));
 
   return (
-    <div className="flex justify-center items-center w-full">
-      <Card className="p-6 shadow-xl rounded-lg bg-white w-full">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-center">
-            Gestion des Préférences de Rôle
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">
-              Sélectionner une préférence
-            </label>
-            <Select
-              options={roleOptions}
-              value={
-                selectedPreference
-                  ? { value: selectedPreference, label: selectedPreference }
-                  : null
-              }
-              onChange={(option) => setSelectedPreference(option?.value || "")}
-              placeholder="Choisir une préférence"
-              className="w-full"
-            />
-          </div>
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+          Gestion des Préférences de Rôle
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">
+            Sélectionner une préférence
+          </label>
+          <Select
+            options={roleOptions}
+            value={
+              selectedPreference
+                ? { value: selectedPreference, label: selectedPreference }
+                : null
+            }
+            onChange={(option) => setSelectedPreference(option?.value || "")}
+            placeholder="Choisir une préférence"
+            className="w-full"
+          />
+        </div>
 
-          {loading ? (
-            <p className="text-center">Chargement...</p>
-          ) : (
-            <div>
-              <h3 className="text-lg font-semibold mb-4">
-                Utilisateurs ayant sélectionné "{selectedPreference}"
-              </h3>
-              {users.length > 0 ? (
-                <table className="min-w-full table-auto">
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-2 text-left">Prénom</th>
-                      <th className="px-4 py-2 text-left">Nom</th>
-                      <th className="px-4 py-2 text-left">Email</th>
-                      <th className="px-4 py-2 text-left">Contact</th>
+        {loading ? (
+          <p className="text-center">Chargement...</p>
+        ) : (
+          <div>
+            <h3 className="text-lg font-semibold mb-4">
+              Utilisateurs ayant sélectionné "{selectedPreference}"
+            </h3>
+            {users.length > 0 ? (
+              <table className="min-w-full table-auto">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2 text-left">Prénom</th>
+                    <th className="px-4 py-2 text-left">Nom</th>
+                    <th className="px-4 py-2 text-left">Email</th>
+                    <th className="px-4 py-2 text-left">Contact</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <tr key={user.userId}>
+                      <td className="px-4 py-2">{user.firstName}</td>
+                      <td className="px-4 py-2">{user.lastName}</td>
+                      <td className="px-4 py-2">{user.email ?? "Pas d'email"}</td>
+                      <td className="px-4 py-2">{user.contact ?? "Pas de contact"}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {users.map((user) => (
-                      <tr key={user.userId}>
-                        <td className="px-4 py-2">{user.firstName}</td>
-                        <td className="px-4 py-2">{user.lastName}</td>
-                        <td className="px-4 py-2">{user.email ?? "Pas d'email"}</td>
-                        <td className="px-4 py-2">{user.contact ?? "Pas de contact"}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p>Aucun utilisateur n'a sélectionné ce rôle.</p>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>Aucun utilisateur n'a sélectionné ce rôle.</p>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
@@ -180,97 +178,95 @@ export const AdminRoleManagement = () => {
   };
 
   return (
-    <div className="flex justify-center w-full">
-      <Card className="p-6 shadow-xl bg-white w-full max-w-4xl">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-center">Gestion des rôles</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {message && (
-            <div className="mb-4 p-4 rounded bg-blue-100 text-center">
-              {message}
-            </div>
-          )}
-
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Utilisateur</label>
-            <Select
-              options={users.map(user  => ({
-                value: user.userId,
-                label: `${user.firstName} ${user.lastName}`,
-              }))}
-              value={
-                selectedUser
-                  ? {
-                      value: selectedUser,
-                      label: users.find(u => u.userId === selectedUser)?.firstName +
-                        " " +
-                        users.find(u => u.userId === selectedUser)?.lastName,
-                    }
-                  : null
-              }
-              onChange={(option: any) => setSelectedUser(option?.value ?? null)}
-              placeholder="Choisir un utilisateur"
-              className="w-full"
-            />
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">Gestion des rôles</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {message && (
+          <div className="mb-4 p-4 rounded bg-blue-100 text-center">
+            {message}
           </div>
+        )}
 
-          {selectedUser && (
-            <>
-              <h3 className="text-md font-semibold mb-2">Rôles actuels :</h3>
-              <ul className="mb-4 space-y-2">
-                {userRoles.length > 0 ? (
-                  userRoles.map(role => (
-                    <li key={role.roleId} className="flex justify-between items-center bg-gray-100 p-2 rounded">
-                      <span>{role.roleName}</span>
-                      <button
-                        className="text-sm text-red-600 hover:underline"
-                        onClick={() => handleRemoveRole(role.roleId)}
-                      >
-                        Supprimer
-                      </button>
-                    </li>
-                  ))
-                ) : (
-                  <p className="text-gray-500">Aucun rôle attribué</p>
-                )}
-              </ul>
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">Utilisateur</label>
+          <Select
+            options={users.map(user => ({
+              value: user.userId,
+              label: `${user.firstName} ${user.lastName}`,
+            }))}
+            value={
+              selectedUser
+                ? {
+                  value: selectedUser,
+                  label: users.find(u => u.userId === selectedUser)?.firstName +
+                    " " +
+                    users.find(u => u.userId === selectedUser)?.lastName,
+                }
+                : null
+            }
+            onChange={(option: any) => setSelectedUser(option?.value ?? null)}
+            placeholder="Choisir un utilisateur"
+            className="w-full"
+          />
+        </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Ajouter des rôles</label>
-                <Select
-                  isMulti
-                  options={roles
-                    .filter(r => !userRoles.some(ur => ur.roleId === r.roleId))
-                    .map(role => ({
-                      value: role.roleId,
-                      label: role.name,
-                    }))}
-                  value={roles
-                    .filter(r => newRoles.includes(r.roleId))
-                    .map(role => ({
-                      value: role.roleId,
-                      label: role.name,
-                    }))}
-                  onChange={(selected: any) => {
-                    setNewRoles(selected.map((s: any) => s.value));
-                  }}
-                  placeholder="Sélectionner des rôles à ajouter"
-                  className="w-full"
-                />
-              </div>
+        {selectedUser && (
+          <>
+            <h3 className="text-md font-semibold mb-2">Rôles actuels :</h3>
+            <ul className="mb-4 space-y-2">
+              {userRoles.length > 0 ? (
+                userRoles.map(role => (
+                  <li key={role.roleId} className="flex justify-between items-center bg-gray-100 p-2 rounded">
+                    <span>{role.roleName}</span>
+                    <button
+                      className="text-sm text-red-600 hover:underline"
+                      onClick={() => handleRemoveRole(role.roleId)}
+                    >
+                      Supprimer
+                    </button>
+                  </li>
+                ))
+              ) : (
+                <p className="text-gray-500">Aucun rôle attribué</p>
+              )}
+            </ul>
 
-              <button
-                onClick={handleAddRoles}
-                className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
-              >
-                Ajouter les rôles sélectionnés
-              </button>
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">Ajouter des rôles</label>
+              <Select
+                isMulti
+                options={roles
+                  .filter(r => !userRoles.some(ur => ur.roleId === r.roleId))
+                  .map(role => ({
+                    value: role.roleId,
+                    label: role.name,
+                  }))}
+                value={roles
+                  .filter(r => newRoles.includes(r.roleId))
+                  .map(role => ({
+                    value: role.roleId,
+                    label: role.name,
+                  }))}
+                onChange={(selected: any) => {
+                  setNewRoles(selected.map((s: any) => s.value));
+                }}
+                placeholder="Sélectionner des rôles à ajouter"
+                className="w-full"
+              />
+            </div>
+
+            <button
+              onClick={handleAddRoles}
+              className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
+            >
+              Ajouter les rôles sélectionnés
+            </button>
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

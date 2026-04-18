@@ -1,4 +1,4 @@
-# Projet d'Intégration UTT – Environnement de Développement
+# Projet d'Intégration UTT - Environnement de Développement
 
 Ce projet est une plateforme pour le site d'intégration de l'Université de Technologie de Troyes. Il utilise une architecture conteneurisée via Docker pour gérer le frontend, le backend et la base de données PostgreSQL.
 
@@ -165,7 +165,7 @@ server {
 }
 ```
 
-Puis l’activer :
+Puis l'activer :
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/integration.utt.fr /etc/nginx/sites-enabled/
@@ -202,7 +202,7 @@ Ouvrir :
 
 ## 🔚 Nettoyage quand le dev est terminé
 
-### 1. Supprimer l’entrée dans `/etc/hosts`
+### 1. Supprimer l'entrée dans `/etc/hosts`
 
 ```bash
 sudo nano /etc/hosts

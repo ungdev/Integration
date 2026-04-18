@@ -16,6 +16,7 @@ import { DecodedToken } from "../interfaces/token.interfaces";
 import { Navbar } from "../components/navbar";
 import { RespoPresenceManagement } from "../components/permanence/appealPerm";
 import { MyPermanencesList } from "../components/permanence/permUser";
+import { Footer } from "../components/footer";
 
 export const AvailablePermanencesPage: React.FC = () => {
   const [permanences, setPermanences] = useState<Permanence[]>([]);
@@ -50,7 +51,7 @@ export const AvailablePermanencesPage: React.FC = () => {
       fetchData();
     } catch (err) {
       console.error("Erreur lors de l'inscription", err);
-      Swal.fire("Erreur", "Impossible de s’inscrire à la permanence.", "error");
+      Swal.fire("Erreur", "Impossible de s'inscrire à la permanence.", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -59,16 +60,16 @@ export const AvailablePermanencesPage: React.FC = () => {
   return (
     <div>
       <Navbar />
-        <div className="min-h-screen flex justify-center bg-gray-50 py-10 px-4">
+      <div className="min-h-screen flex justify-center bg-gray-50 py-10 px-4">
         <div className="w-full max-w-6xl flex flex-col gap-12">
-            <AvailablePermanencesList
+          <AvailablePermanencesList
             permanences={permanences}
             myPermanences={myPermanences}
             isSubmitting={isSubmitting}
             onApply={handleApplyToPermanence}
-            />
+          />
         </div>
-        </div>
+      </div>
     </div>
   );
 };
@@ -133,14 +134,14 @@ export const MyPermanencesPage: React.FC = () => {
   return (
     <div>
       <Navbar />
-        <div className="min-h-screen flex justify-center bg-gray-50 py-10 px-4">
+      <div className="min-h-screen flex justify-center bg-gray-50 py-10 px-4">
         <div className="w-full max-w-6xl flex flex-col gap-12">
-            <MyPermanencesList
+          <MyPermanencesList
             myPermanences={myPermanences}
             onCancel={handleCancelPermanence}
-            />
+          />
         </div>
-        </div>
+      </div>
     </div>
   );
 };
@@ -192,9 +193,7 @@ export const RespoCallPage = () => {
           )}
         </div>
       </div>
-      <footer className="bg-gray-800 text-white p-4 text-center">
-        <p>&copy; 2025 Semaine d'Intégration UTT</p>
-      </footer>
+      <Footer />
     </div>
   );
 };

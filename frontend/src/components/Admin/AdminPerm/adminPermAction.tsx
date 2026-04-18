@@ -1,4 +1,5 @@
 import { Button } from "../../../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
 import Swal from "sweetalert2";
 
 import { openPermanence, closePermanence } from "../../../services/requests/permanence.service";
@@ -38,7 +39,7 @@ const PermanenceActions: React.FC<PermanenceActionsProps> = ({ permanences, onRe
     const toOpen = permanences.filter((p) => {
       const permDate = normalizeDate(new Date(p.start_at)).getTime();
       return permDate > today && permDate <= threshold && !p.is_open;
-  });
+    });
 
     try {
       await Promise.all(toOpen.map((p) => openPermanence(p.id)));
@@ -75,14 +76,23 @@ const PermanenceActions: React.FC<PermanenceActionsProps> = ({ permanences, onRe
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 justify-center">
-      <Button onClick={() => void handleOpenAll()} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl">
-        📅 Ouvrir toutes à J+7
-      </Button>
-      <Button onClick={() => void handleCloseAll()} className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-xl">
-        🛑 Fermer toutes à J+7
-      </Button>
-    </div>
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+          ⚡ Actions rapides
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col md:flex-row gap-4 justify-center">
+          <Button onClick={() => void handleOpenAll()} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl">
+            📅 Ouvrir toutes à J+7
+          </Button>
+          <Button onClick={() => void handleCloseAll()} className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-xl">
+            🛑 Fermer toutes à J+7
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

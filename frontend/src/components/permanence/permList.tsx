@@ -46,7 +46,7 @@ export const AvailablePermanencesList: React.FC<AvailablePermanencesListProps> =
                 {perms.map((perm) => (
                   <div
                     key={perm.id}
-                    className="bg-white border border-gray-200 rounded-2xl p-6 shadow-md hover:shadow-lg transition duration-200 flex flex-col justify-between"
+                    className="surface-card p-6 hover:shadow-lg transition duration-200 flex flex-col justify-between"
                   >
                     <div className="flex-1 mb-4">
                       <h4 className="text-xl font-semibold text-gray-800 mb-2">{perm.name}</h4>
@@ -58,11 +58,10 @@ export const AvailablePermanencesList: React.FC<AvailablePermanencesListProps> =
                     <Button
                       onClick={() => onApply(perm.id)}
                       disabled={perm.capacity <= 0 || isSubmitting}
-                      className={`w-full py-2 mt-2 text-white rounded-md ${
-                        perm.capacity <= 0
+                      className={`w-full py-2 mt-2 text-white rounded-xl ${perm.capacity <= 0
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-blue-600 hover:bg-blue-700"
-                      }`}
+                        }`}
                     >
                       {perm.capacity <= 0 ? "Complet" : "S'inscrire"}
                     </Button>

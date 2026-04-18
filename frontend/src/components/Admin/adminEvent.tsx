@@ -14,6 +14,7 @@ import {
   checkChallengeStatus,
 } from "../../services/requests/event.service";
 import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import Swal from "sweetalert2";
 
@@ -27,7 +28,7 @@ export const AdminEvents = () => {
     sdi: false,
     wei: false,
     food: false,
-    chall : false,
+    chall: false,
   });
 
   // Charger les statuts au montage
@@ -138,12 +139,13 @@ export const AdminEvents = () => {
   }
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded-2xl shadow-lg">
-      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-        ⚙️ Gestion des Événements
-      </h2>
-
-      <div className="space-y-4">
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+          ⚙️ Gestion des Événements
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
         {events.map(({ key, label, toggleFn }) => {
           const isActive = statuses[key];
           return (
@@ -165,11 +167,10 @@ export const AdminEvents = () => {
                   handleToggle(key, toggleFn, `${label} mis à jour !`)
                 }
                 disabled={loading}
-                className={`transition-colors duration-300 ${
-                  isActive
-                    ? "bg-red-600 text-white hover:bg-red-700"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                } p-2 rounded-lg min-w-[110px] flex items-center justify-center`}
+                className={`transition-colors duration-300 ${isActive
+                  ? "bg-red-600 text-white hover:bg-red-700"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
+                  } p-2 rounded-lg min-w-[110px] flex items-center justify-center`}
               >
                 {loading ? (
                   <Loader2 className="animate-spin w-4 h-4" />
@@ -182,7 +183,7 @@ export const AdminEvents = () => {
             </div>
           );
         })}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };

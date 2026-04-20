@@ -46,7 +46,7 @@ export const AdminEvents = () => {
 
         setStatuses({
           preRegistration: preReg,
-          shotgun: shot,
+          shotgun: shot.status,
           sdi,
           wei,
           food,

@@ -19,7 +19,8 @@ import {
   AdminPageNews,
   AdminPageGames,
   AdminPageTent,
-  AdminPageBus
+  AdminPageBus,
+  AdminPageShotgun
 } from './pages/admin';
 
 import ProtectedRoute from './components/utils/protectedroute';
@@ -90,6 +91,7 @@ const App: React.FC = () => {
 
         {/* ResposCE et Admin */}
         <Route path="/admin/teams" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageTeam /></PrivateRoute>} />
+        <Route path="/admin/shotgun" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageShotgun /></PrivateRoute>} />
         <Route path="/admin/factions" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageFaction /></PrivateRoute>} />
         <Route path="/admin/permanences" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPagePerm /></PrivateRoute>} />
 

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import { AxiosError } from "axios";
 import { checkShotgunStatus, attemptShotgun } from "../../services/requests/event.service";
+import { ApiErrorResponse } from "../../interfaces/event.interface";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -8,13 +10,13 @@ export const Shotgun = () => {
   const [status, setStatus] = useState(false);
   const [message, setMessage] = useState("");
   const [inputValue, setInputValue] = useState("");
-
-  const predefinedShotgunPhrase = "siropdekiwi"; // Tu peux personnaliser ça évidemment !
+  const [shotgunPassword, setShotgunPassword] = useState("");
 
   useEffect(() => {
     const fetchStatus = async () => {
-      const shotgun_open = await checkShotgunStatus();
-      setStatus(shotgun_open);
+      const shotgunStatus = await checkShotgunStatus();
+      setStatus(shotgunStatus.status);
+      setShotgunPassword(shotgunStatus.password);
     };
     fetchStatus();
   }, []);
@@ -22,16 +24,22 @@ export const Shotgun = () => {
   const handleShotgun = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (inputValue !== predefinedShotgunPhrase) {
-      setMessage("❌ Erreur : Phrase de Shotgun incorrecte.");
+    if (!shotgunPassword) {
+      setMessage("❌ Erreur : mot de passe shotgun indisponible.");
+      return;
+    }
+
+    if (inputValue !== shotgunPassword) {
+      setMessage("❌ Erreur : Mot de passe de Shotgun incorrect.");
       return;
     }
 
     try {
-      const response = await attemptShotgun();
+      const response = await attemptShotgun({ password: inputValue });
       setMessage(response.message);
-    } catch (error: any) {
-      setMessage(error.response.data.message);
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiErrorResponse>;
+      setMessage(axiosError.response?.data?.message || "Une erreur est survenue.");
     }
   };
 
@@ -50,7 +58,7 @@ export const Shotgun = () => {
           <p className="text-lg sm:text-xl font-semibold text-purple-800">
             Mot à entrer :{" "}
             <span className={`font-bold ${status ? "text-purple-900" : "blur-sm text-purple-600 select-none"}`}>
-              {predefinedShotgunPhrase}
+              {shotgunPassword || "patience..."}
             </span>
           </p>
           {!status && (
@@ -77,7 +85,7 @@ export const Shotgun = () => {
             </Button>
             {message && (
               <p
-                className={`text-center text-lg mt-4 ${message.includes("Erreur") || message.toLowerCase().includes("déjà")
+                className={`text-center text-lg mt-4 ${message.includes("Erreur") || message.toLowerCase().includes("déjà") || message.toLowerCase().includes("incorrect")
                   ? "text-red-500"
                   : "text-green-600"
                   }`}

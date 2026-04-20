@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -22,6 +23,7 @@ import { User } from "../../interfaces/user.interface";
 import Swal from "sweetalert2";
 
 export const AdminTeamManagement = () => {
+  const [searchParams] = useSearchParams();
   const [teams, setTeams] = useState<Team[]>([]);
   const [factions, setFactions] = useState<Faction[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -50,6 +52,18 @@ export const AdminTeamManagement = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const teamIdParam = searchParams.get("teamId");
+    if (!teamIdParam) {
+      return;
+    }
+
+    const parsedId = Number(teamIdParam);
+    if (!Number.isNaN(parsedId)) {
+      setSelectedTeamId(parsedId);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const loadTeamDetails = async () => {

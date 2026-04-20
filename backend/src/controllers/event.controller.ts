@@ -98,23 +98,17 @@ export const shotgunAttempt = async (req: Request, res: Response) => {
 
     const userId = (req as AuthenticatedRequest).user?.userId;
 
-    console.debug("Received shotgun attempt with password:", password); // Debug
-    console.debug("Authenticated user ID:", userId); // Debug
-
     if (!userId) {
-        console.debug("User not authenticated."); // Debug
         Unauthorized(res, { msg: "Utilisateur non authentifié." });
         return;
     }
 
     if (!shotgun_password) {
-        console.debug("Shotgun password not configured on server."); // Debug
         Error(res, { msg: "Mot de passe shotgun non configuré côté serveur." });
         return;
     }
 
     if (password !== shotgun_password) {
-        console.debug("Incorrect shotgun password provided."); // Debug
         Teapot(res, { msg: "Le mot de passe shotgun est incorrect." });
         return;
     }

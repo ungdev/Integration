@@ -37,32 +37,32 @@ export const Navbar = () => {
   }, [pathname]);
 
   const navItems: NavItem[] = [
-    { label: "Home", to: "/Home", icon: HomeIcon },
-    { label: "Plannings", to: "/Plannings" },
-    { label: "Parrainage", to: "/Parrainage" },
-    { label: "Challenges", to: "/Challenges" },
-    { label: "Mes Actus", to: "/News" },
+    { label: "Home", to: "/home", icon: HomeIcon },
+    { label: "Plannings", to: "/plannings" },
+    { label: "Parrainage", to: "/parrainage" },
+    { label: "Challenges", to: "/challenges" },
+    { label: "Mes Actus", to: "/news" },
     {
       label: "Permanences",
       to: "#",
       children: [
-        { label: "Listes des permanences", to: "/PermanencesList", rolesAllowed: ["Admin", "Student"] },
-        { label: "Mes permanences", to: "/MyPermanences", rolesAllowed: ["Admin", "Student"] },
-        { label: "Faire l'appel", to: "/PermanencesAppeal", rolesAllowed: ["Admin", "Student"] },
+        { label: "Listes des permanences", to: "/permanenceslist", rolesAllowed: ["Admin", "Student"] },
+        { label: "Mes permanences", to: "/mypermanences", rolesAllowed: ["Admin", "Student"] },
+        { label: "Faire l'appel", to: "/permanencesappeal", rolesAllowed: ["Admin", "Student"] },
       ],
     },
     {
       label: "Events",
       to: "#",
       children: [
-        { label: "Shotgun", to: "/Shotgun", rolesAllowed: ["Admin", "Student"] },
-        { label: "WEI", to: "/Wei" },
-        { label: "SDI", to: "/SDI" },
-        { label: "Repas", to: "/Food" },
-        { label: "Defis Commissions", to: "/Games", rolesAllowed: ["Admin", "Student"] },
+        { label: "Shotgun", to: "/shotgun", rolesAllowed: ["Admin", "Student"] },
+        { label: "WEI", to: "/wei" },
+        { label: "SDI", to: "/sdi" },
+        { label: "Repas", to: "/food" },
+        { label: "Defis Commissions", to: "/games", rolesAllowed: ["Admin", "Student"] },
       ],
     },
-    { label: "Mon compte", to: "/Profil", icon: UsersIcon },
+    { label: "Mon compte", to: "/profil", icon: UsersIcon },
     {
       label: "Admin",
       to: "#",
@@ -130,7 +130,7 @@ export const Navbar = () => {
     <nav className="bg-blue-800 text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
         {/* Logo */}
-        <NavLink to="/Home" className="text-2xl font-bold">
+        <NavLink to="/home" className="text-2xl font-bold">
           UTT Integration
         </NavLink>
 

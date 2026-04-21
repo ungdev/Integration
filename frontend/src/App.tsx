@@ -65,30 +65,30 @@ const App: React.FC = () => {
       <Routes>
         {/* Public */}
         <Route path="/" element={<LoginPage />} />
-        <Route path="/Register" element={<RegisterPage />} />
-        <Route path="/ResetPassword" element={<ResetPasswordPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/resetpassword" element={<ResetPasswordPage />} />
         <Route path="/roadbook" element={<Roadbook />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/legals" element={<LegalsPage />} />
 
         {/* Utilisateurs connectés */}
-        <Route path="/Home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-        <Route path="/Plannings" element={<ProtectedRoute><PlanningsPage /></ProtectedRoute>} />
-        <Route path="/Profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
-        <Route path="/Challenges" element={<ProtectedRoute><ChallPage /></ProtectedRoute>} />
-        <Route path="/Parrainage" element={<ProtectedRoute><ParrainagePage /></ProtectedRoute>} />
-        <Route path="/SDI" element={<ProtectedRoute><SdiPage /></ProtectedRoute>} />
-        <Route path="/WEI" element={<ProtectedRoute><WeiPage /></ProtectedRoute>} />
-        <Route path="/Food" element={<ProtectedRoute><FoodPage /></ProtectedRoute>} />
-        <Route path="/News" element={<ProtectedRoute><NewsPage /></ProtectedRoute>} />
-        <Route path="/Discord" element={<ProtectedRoute><DiscordPage /></ProtectedRoute>} />
+        <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/plannings" element={<ProtectedRoute><PlanningsPage /></ProtectedRoute>} />
+        <Route path="/profil" element={<ProtectedRoute><ProfilPage /></ProtectedRoute>} />
+        <Route path="/challenges" element={<ProtectedRoute><ChallPage /></ProtectedRoute>} />
+        <Route path="/parrainage" element={<ProtectedRoute><ParrainagePage /></ProtectedRoute>} />
+        <Route path="/sdi" element={<ProtectedRoute><SdiPage /></ProtectedRoute>} />
+        <Route path="/wei" element={<ProtectedRoute><WeiPage /></ProtectedRoute>} />
+        <Route path="/food" element={<ProtectedRoute><FoodPage /></ProtectedRoute>} />
+        <Route path="/news" element={<ProtectedRoute><NewsPage /></ProtectedRoute>} />
+        <Route path="/discord" element={<ProtectedRoute><DiscordPage /></ProtectedRoute>} />
 
         {/* Étudiant et Admin */}
-        <Route path="/Shotgun" element={<PrivateRoute permissionRequired="Student"><ShotgunPage /></PrivateRoute>} />
-        <Route path="/PermanencesList" element={<PrivateRoute permissionRequired="Student"><AvailablePermanencesPage /></PrivateRoute>} />
-        <Route path="/MyPermanences" element={<PrivateRoute permissionRequired="Student"><MyPermanencesPage /></PrivateRoute>} />
-        <Route path="/PermanencesAppeal" element={<PrivateRoute permissionRequired="Student"><RespoCallPage /></PrivateRoute>} />
-        <Route path="/Games" element={<PrivateRoute permissionRequired="Student"><GamesPage /></PrivateRoute>} />
+        <Route path="/shotgun" element={<PrivateRoute permissionRequired="Student"><ShotgunPage /></PrivateRoute>} />
+        <Route path="/permanenceslist" element={<PrivateRoute permissionRequired="Student"><AvailablePermanencesPage /></PrivateRoute>} />
+        <Route path="/mypermanences" element={<PrivateRoute permissionRequired="Student"><MyPermanencesPage /></PrivateRoute>} />
+        <Route path="/permanencesappeal" element={<PrivateRoute permissionRequired="Student"><RespoCallPage /></PrivateRoute>} />
+        <Route path="/games" element={<PrivateRoute permissionRequired="Student"><GamesPage /></PrivateRoute>} />
 
         {/* ResposCE et Admin */}
         <Route path="/admin/teams" element={<PrivateRoute permissionRequired="Admin" roleRequired="Respo CE"><AdminPageTeam /></PrivateRoute>} />

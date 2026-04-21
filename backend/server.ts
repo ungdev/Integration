@@ -26,6 +26,8 @@ import { initRoles } from './src/database/initdb/initrole'
 import {initEvent} from './src/database/initdb/initevent'
 import {initChallenge} from './src/database/initdb/initChallenge'
 import { authenticateUser } from './src/middlewares/auth.middleware';
+import { requestLogger } from './src/middlewares/request-logger.middleware';
+import { errorLogger } from './src/middlewares/error-logger.middleware';
 
 dotenv.config();
 
@@ -36,6 +38,7 @@ async function startServer() {
     app.use(cors({ origin: "*" }));
     app.use(bodyParser.json());
     app.use(express.urlencoded({ extended: true }));
+    app.use(requestLogger);
     
 
     try {
@@ -67,6 +70,7 @@ async function startServer() {
         app.use("/api/uploads/foodmenu", express.static(path.join(__dirname, "/uploads/foodmenu")));
         app.use("/api/uploads/plannings", express.static(path.join(__dirname, "/uploads/plannings")));
         app.use("/api/exports/bus", express.static(path.join(__dirname, "/exports/bus")));
+        app.use(errorLogger);
 
         // Démarrage du serveur
         app.listen(server_port, () => {

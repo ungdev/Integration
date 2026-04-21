@@ -26,6 +26,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: integration-dev
       PORT: 4001
+      SHOTGUN_PASSWORD: siropdekiwi
     ports:
       - "4001:4001"
     volumes:
@@ -35,7 +36,13 @@ services:
       - db
     networks:
       - app-network
-    command: ["sh", "-c", "until pg_isready -h db -p 5432; do echo 'Waiting for DB...'; sleep 2; done && npx drizzle-kit migrate && npm run dev"]
+    command:
+      [
+        "sh",
+        "-c",
+        "until pg_isready -h db -p 5432; do echo 'Waiting for DB...'; sleep 2;
+          done && npx drizzle-kit migrate && npm run dev",
+      ]
 
   frontend:
     build:

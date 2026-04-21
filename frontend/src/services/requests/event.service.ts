@@ -1,8 +1,9 @@
 import api from '../api';
+import { ApiMessageResponse, ShotgunAttemptPayload, ShotgunAttemptRow, ShotgunStatusData } from '../../interfaces/event.interface';
 
-export const checkShotgunStatus = async () => {
+export const checkShotgunStatus = async (): Promise<ShotgunStatusData> => {
 
-        const response = await api.get("/event/user/shotgunstatus");
+        const response = await api.get<{ data: ShotgunStatusData }>("/event/user/shotgunstatus");
         return response.data.data;
 };
 
@@ -42,10 +43,17 @@ export const checkChallengeStatus = async () => {
 
 };
 
-export const attemptShotgun = async () => {
+export const attemptShotgun = async (payload: ShotgunAttemptPayload): Promise<ApiMessageResponse> => {
 
-    const response = await api.post("event/user/shotgunattempt");
-    return response.data;
+        const response = await api.post<ApiMessageResponse>("event/user/shotgunattempt", payload);
+        return response.data;
+
+};
+
+export const getShotgunAttemptsAdmin = async (): Promise<ShotgunAttemptRow[]> => {
+
+        const response = await api.get<{ data: ShotgunAttemptRow[] }>("/event/admin/shotgunattempts");
+        return response.data.data;
 
 };
 
@@ -53,45 +61,45 @@ export const toggleShotgun = async (shotgunOpen: boolean) => {
 
         const response = await api.post(`event/admin/shotguntoggle`, { shotgunOpen });
         return response.data;
-    
+
 };
 
 export const togglePreRegistration = async (preRegistrationOpen: boolean) => {
 
-        const response = await api.post(`event/admin/preregistrationtoggle`, { preRegistrationOpen});
+        const response = await api.post(`event/admin/preregistrationtoggle`, { preRegistrationOpen });
         return response.data;
 
-    
+
 };
 
 export const toggleSDI = async (sdiOpen: boolean) => {
 
-        const response = await api.post(`event/admin/sditoggle`, { sdiOpen});
+        const response = await api.post(`event/admin/sditoggle`, { sdiOpen });
         return response.data;
 
-    
+
 };
 
 export const toggleWEI = async (weiOpen: boolean) => {
 
-        const response = await api.post(`event/admin/weitoggle`, { weiOpen});
+        const response = await api.post(`event/admin/weitoggle`, { weiOpen });
         return response.data;
 
-    
+
 };
 
 export const toggleFood = async (foodOpen: boolean) => {
 
-        const response = await api.post(`event/admin/foodtoggle`, { foodOpen});
+        const response = await api.post(`event/admin/foodtoggle`, { foodOpen });
         return response.data;
 
-    
+
 };
 
 export const toggleChallenge = async (challOpen: boolean) => {
 
-        const response = await api.post(`event/admin/challtoggle`, {challOpen});
+        const response = await api.post(`event/admin/challtoggle`, { challOpen });
         return response.data;
 
-    
+
 };

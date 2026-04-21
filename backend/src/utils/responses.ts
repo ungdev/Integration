@@ -28,6 +28,11 @@ export const Unauthorized = (res: Response, details: { data?: any, msg?: string 
   res.status(Code.UNAUTHORIZED).json(new HttpResponse(Code.OK, msg, details.data));
 };
 
+export const Teapot = (res: Response, details: { data?: any, msg?: string }) => {
+  const msg = details.msg || "I'm a teapot";
+  res.status(Code.IM_A_TEAPOT).json(new HttpResponse(Code.IM_A_TEAPOT, msg, details.data));
+};
+
 export enum Code {
   OK = 200,
   ACCEPTED = 202,
@@ -35,6 +40,7 @@ export enum Code {
   BAD_REQUEST = 400,
   UNAUTHORIZED = 401,
   CREATED = 201,
+  IM_A_TEAPOT = 418,
   ISE = 500
 }
 
@@ -64,6 +70,8 @@ export class HttpResponse {
         return 'INTERNAL_SERVER_ERROR';
       case Code.UNAUTHORIZED:
         return 'INTERNAL_SERVER_ERROR';
+      case Code.IM_A_TEAPOT:
+        return 'IM_A_TEAPOT';
     }
   }
 }

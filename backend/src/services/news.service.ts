@@ -3,7 +3,7 @@ import { db } from "../database/db";
 import { News, newsSchema } from "../schemas/Basic/news.schema";
 import { eq, desc, and } from "drizzle-orm";
 // Créer une actu
-export const createNews =  async (
+export const createNews = async (
   title: string,
   description: string,
   type: string,
@@ -29,7 +29,7 @@ export const getAllNews = async () => {
   return await db.select().from(newsSchema).orderBy(desc(newsSchema.created_at));
 };
 
-// Lister les actus publiées (pour l’onglet côté utilisateur)
+// Lister les actus publiées (pour l'onglet côté utilisateur)
 export const getPublishedNews = async () => {
   return await db.select().from(newsSchema).where(eq(newsSchema.published, true)).orderBy(desc(newsSchema.created_at));
 };
@@ -37,18 +37,18 @@ export const getPublishedNews = async () => {
 // Filtrer par type
 export const getPublishedNewsByType = async (type: string) => {
   return await db.select().from(newsSchema)
-    .where(and(eq(newsSchema.published, true),eq(newsSchema.type, type)))
+    .where(and(eq(newsSchema.published, true), eq(newsSchema.type, type)))
     .orderBy(desc(newsSchema.created_at));
 };
 
 // Publier une actu
 export const publishNews = async (id: number) => {
 
-  await db.update(newsSchema).set({ published : true }).where(eq(newsSchema.id, id)).returning();
+  await db.update(newsSchema).set({ published: true }).where(eq(newsSchema.id, id)).returning();
 
 };
 
-export const deleteNews = async(newsId: number) => {
+export const deleteNews = async (newsId: number) => {
 
   await db.delete(newsSchema).where(eq(newsSchema.id, newsId));
 

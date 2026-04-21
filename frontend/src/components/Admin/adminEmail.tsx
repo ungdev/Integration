@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { emailPreview, sendEmail } from '../../services/requests/email.service';
-import { Card } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { User } from '../../interfaces/user.interface';
@@ -57,28 +57,28 @@ export const AdminEmail = () => {
     }
   };
 
-const handleSend = async () => {
-  // On mappe toujours pour avoir un tableau de string
+  const handleSend = async () => {
+    // On mappe toujours pour avoir un tableau de string
 
-  const emails = sendTo.map((u) => u.value);
+    const emails = sendTo.map((u) => u.value);
 
 
-  const payload = {
-    subject,
-    templateName: isCustom ? 'custom' : templateName,
-    format,
-    permission,
-    sendTo: permission ? null : emails,
-    html: isCustom ? customContent : undefined,
+    const payload = {
+      subject,
+      templateName: isCustom ? 'custom' : templateName,
+      format,
+      permission,
+      sendTo: permission ? null : emails,
+      html: isCustom ? customContent : undefined,
+    };
+
+    const res = await sendEmail(payload);
+    Swal.fire({
+      icon: 'success',
+      title: 'Email envoyé',
+      text: res.message,
+    });
   };
-
-  const res = await sendEmail(payload);
-  Swal.fire({
-    icon: 'success',
-    title: 'Email envoyé',
-    text: res.message,
-  });
-};
 
   const confirmSend = async () => {
     const result = await Swal.fire({
@@ -100,55 +100,61 @@ const handleSend = async () => {
 
 
   return (
-    <Card className="space-y-4 p-6">
-      <h2 className="text-2xl font-bold">📬 Envoi d'e-mail</h2>
-      <Input placeholder="Sujet" value={subject} onChange={(e) => setSubject(e.target.value)} />
-      <div className="flex items-center space-x-2">
-        <input
-          type="checkbox"
-          checked={isCustom}
-          onChange={(e) => {
-            setIsCustom(e.target.checked);
-            if (e.target.checked) setTemplateName('');
-          }}
-        />
-        <label>✏️ Rédiger un mail personnalisé</label>
-      </div>
-      {!isCustom ? (
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+          📬 Envoi d'e-mail
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Input placeholder="Sujet" value={subject} onChange={(e) => setSubject(e.target.value)} />
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={isCustom}
+            onChange={(e) => {
+              setIsCustom(e.target.checked);
+              if (e.target.checked) setTemplateName('');
+            }}
+          />
+          <label>✏️ Rédiger un mail personnalisé</label>
+        </div>
+        {!isCustom ? (
+          <Select
+            placeholder="Nom du template"
+            isClearable
+            options={templateOptions}
+            onChange={(opt) => setTemplateName(opt?.value || '')}
+          />
+        ) : (
+          <textarea
+            placeholder="Contenu HTML de l'email"
+            value={customContent}
+            onChange={(e) => setCustomContent(e.target.value)}
+            className="w-full h-40 p-2 border rounded"
+          />
+        )}
+        <Button onClick={handlePreview}>👁️ Aperçu</Button>
+        {preview && (
+          <div className="border p-4 rounded bg-gray-50" dangerouslySetInnerHTML={{ __html: preview }}></div>
+        )}
         <Select
-          placeholder="Nom du template"
+          placeholder="Permission (facultatif)"
           isClearable
-          options={templateOptions}
-          onChange={(opt) => setTemplateName(opt?.value || '')}
+          options={permissionOptions}
+          onChange={(opt) => setPermission(opt?.value || null)}
         />
-      ) : (
-        <textarea
-          placeholder="Contenu HTML de l'email"
-          value={customContent}
-          onChange={(e) => setCustomContent(e.target.value)}
-          className="w-full h-40 p-2 border rounded"
-        />
-      )}
-      <Button onClick={handlePreview}>👁️ Aperçu</Button>
-      {preview && (
-        <div className="border p-4 rounded bg-gray-50" dangerouslySetInnerHTML={{ __html: preview }}></div>
-      )}
-      <Select
-        placeholder="Permission (facultatif)"
-        isClearable
-        options={permissionOptions}
-        onChange={(opt) => setPermission(opt?.value || null)}
-      />
-      {!permission && (
-      <Select
-        isMulti
-        options={users.map((u) => ({ value: u.email, label: `${u.firstName} ${u.lastName}` }))}
-        onChange={(val) => setSendTo(val as any)}
-      />
-      )}
-      <Button onClick={confirmSend} className="bg-blue-600 text-white">
-        ✉️ Envoyer
-      </Button>
+        {!permission && (
+          <Select
+            isMulti
+            options={users.map((u) => ({ value: u.email, label: `${u.firstName} ${u.lastName}` }))}
+            onChange={(val) => setSendTo(val as any)}
+          />
+        )}
+        <Button onClick={confirmSend} className="bg-blue-600 text-white">
+          ✉️ Envoyer
+        </Button>
+      </CardContent>
     </Card>
   );
 };

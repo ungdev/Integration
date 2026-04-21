@@ -11,46 +11,47 @@ import { permission } from "process";
 
 export const createTeam = async (teamName: string, members: number[]) => {
 
-    const newTeam = await db.insert(teamSchema).values({ name: teamName }).returning();
-    const teamId = newTeam[0].id;
-    await Promise.all(members.map((userId) =>
-      db.insert(userTeamsSchema).values({ team_id: teamId, user_id: userId })
-    ));
-  
-    return newTeam;
+  const newTeam = await db.insert(teamSchema).values({ name: teamName }).returning();
+  const teamId = newTeam[0].id;
+  await Promise.all(members.map((userId) =>
+    db.insert(userTeamsSchema).values({ team_id: teamId, user_id: userId })
+  ));
+
+  return newTeam;
 };
 
 export const createTeamLight = async (teamName: string, factionId: number) => {
 
-  const newTeam = await db.insert(teamSchema).values({ name: teamName }).returning({teamId : teamSchema.id});
+  const newTeam = await db.insert(teamSchema).values({ name: teamName }).returning({ teamId: teamSchema.id });
 
-  if(factionId){
-    await db.insert(teamFactionSchema).values({faction_id : factionId, team_id: newTeam[0].teamId});
+  if (factionId) {
+    await db.insert(teamFactionSchema).values({ faction_id: factionId, team_id: newTeam[0].teamId });
   }
 
   return newTeam;
 };
 
-export const getUserTeam = async(userId : number) => {
+export const getUserTeam = async (userId: number) => {
 
-    const userTeam = await db.select({userTeamId: userTeamsSchema.team_id}).from(userTeamsSchema).where(eq(userTeamsSchema.user_id, userId));
+  const userTeam = await db.select({ userTeamId: userTeamsSchema.team_id }).from(userTeamsSchema).where(eq(userTeamsSchema.user_id, userId));
 
-    return userTeam[0]?.userTeamId
+  return userTeam[0]?.userTeamId
 }
 
-export const getTeams = async() => {
+export const getTeams = async () => {
 
   const teams = await db.select(
     {
-    teamId : teamSchema.id,
-    name : teamSchema.name,
-    description : teamSchema.description,
-    type : teamSchema.type}).from(teamSchema);
+      teamId: teamSchema.id,
+      name: teamSchema.name,
+      description: teamSchema.description,
+      type: teamSchema.type
+    }).from(teamSchema);
 
   return teams
 }
 
-export const getTeamsAll = async() => {
+export const getTeamsAll = async () => {
 
   const teams = await db.select().from(teamSchema);
 
@@ -68,26 +69,26 @@ export const getTeamsAll = async() => {
 
 }
 
-export const modifyTeam = async ( teamID: number, teamMembers: number[], factionID:number, name? :string, type?: string) => {
+export const modifyTeam = async (teamID: number, teamMembers: number[], factionID: number, name?: string, type?: string) => {
 
   // 1. Mise à jour des champs de l'équipe
 
-  
+
   if (name !== undefined) {
     await db
       .update(teamSchema)
-      .set({name: name})
+      .set({ name: name })
       .where(eq(teamSchema.id, teamID));
   }
   if (type !== undefined) {
     await db
       .update(teamSchema)
-      .set({type: type})
+      .set({ type: type })
       .where(eq(teamSchema.id, teamID));
   }
 
-  // 2. Mise à jour des membres de l’équipe (remplace les anciens)
-  if(teamMembers.length !== 0){
+  // 2. Mise à jour des membres de l'équipe (remplace les anciens)
+  if (teamMembers.length !== 0) {
     if (Array.isArray(teamMembers)) {
       // Supprimer les anciens membres
       await db.delete(userTeamsSchema).where(eq(userTeamsSchema.team_id, teamID));
@@ -102,13 +103,13 @@ export const modifyTeam = async ( teamID: number, teamMembers: number[], faction
         );
       }
     }
-  }else{
+  } else {
     await db.delete(userTeamsSchema).where(eq(userTeamsSchema.team_id, teamID));
   }
 
   // 3. Mise à jour de la faction (remplace la relation précédente)
   if (factionID !== undefined) {
-    // Supprimer l’ancienne relation
+    // Supprimer l'ancienne relation
     await db.delete(teamFactionSchema).where(eq(teamFactionSchema.team_id, teamID));
 
     // Ajouter la nouvelle
@@ -150,7 +151,7 @@ export const getAllTeamsWithUsers = async () => {
       teamId: teamSchema.id,
       teamName: teamSchema.name,
       teamType: teamSchema.type,
-      teamFaction : factionSchema.name,
+      teamFaction: factionSchema.name,
       userId: userSchema.id,
       firstName: userSchema.first_name,
       lastName: userSchema.last_name,
@@ -160,14 +161,14 @@ export const getAllTeamsWithUsers = async () => {
     .from(teamSchema)
     .innerJoin(userTeamsSchema, eq(teamSchema.id, userTeamsSchema.team_id))
     .innerJoin(userSchema, eq(userSchema.id, userTeamsSchema.user_id))
-    .innerJoin(teamFactionSchema, eq(teamSchema.id, teamFactionSchema.team_id)) 
-    .innerJoin(factionSchema, eq(factionSchema.id, teamFactionSchema.faction_id)); 
+    .innerJoin(teamFactionSchema, eq(teamSchema.id, teamFactionSchema.team_id))
+    .innerJoin(factionSchema, eq(factionSchema.id, teamFactionSchema.faction_id));
 
   const teamsMap = new Map<number, {
     id: number;
     name: string;
     type: string;
-    faction : string;
+    faction: string;
     users: Array<{
       id: number;
       firstName: string;
@@ -202,7 +203,7 @@ export const getAllTeamsWithUsers = async () => {
 
 export const getTeamFaction = async (teamId: any) => {
   const teamFactionId = await db
-    .select({faction_id : teamFactionSchema.faction_id})
+    .select({ faction_id: teamFactionSchema.faction_id })
     .from(teamFactionSchema)
     .where(eq(teamFactionSchema.team_id, teamId));
 
@@ -253,7 +254,7 @@ export const getUsersWithTeam = async () => {
         teamId: userTeamsSchema.team_id,
       }
     ).from(userTeamsSchema);
-    return userswithteam; 
+    return userswithteam;
   } catch (err) {
     console.error('Erreur lors de la récupération des utilisateurs possédant une team ', err);
     throw new Error('Erreur de base de données');
@@ -264,7 +265,7 @@ export const getTeam = async (teamId: any) => {
   try {
     const team = await db.select(
       {
-        teamId : teamSchema.id,
+        teamId: teamSchema.id,
         teamName: teamSchema.name
       }
     ).from(teamSchema).where(eq(teamSchema.id, teamId));

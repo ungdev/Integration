@@ -47,7 +47,7 @@ export const MyPermanencesList: React.FC<MyPermanencesListProps> = ({
                 {perms.map((perm) => (
                   <div
                     key={perm.id}
-                    className="bg-white border border-gray-200 rounded-2xl p-6 shadow-md hover:shadow-lg transition duration-200"
+                    className="surface-card p-6 hover:shadow-lg transition duration-200"
                   >
                     <h4 className="text-xl font-semibold text-gray-800 mb-2">
                       {perm.name}
@@ -65,7 +65,7 @@ export const MyPermanencesList: React.FC<MyPermanencesListProps> = ({
                     </p>
                     <Button
                       onClick={() => onCancel(perm.id)}
-                      className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md"
+                      className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl"
                     >
                       Se désinscrire
                     </Button>

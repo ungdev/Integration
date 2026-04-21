@@ -8,11 +8,11 @@ export const createTent = async (userId2: number) => {
 
 // Annuler une tente
 export const cancelTent = async () => {
-  const response = await api.delete("/tent/user/tent", );
+  const response = await api.delete("/tent/user/tent",);
   return response.data;
 };
 
-// Récupérer la tente d’un utilisateur
+// Récupérer la tente d'un utilisateur
 export const getUserTent = async () => {
   const response = await api.get(`/tent/user/tent`);
   return response.data;
@@ -26,7 +26,7 @@ export const getAllTentPairs = async () => {
 
 // Valider ou dévalider une tente (admin)
 export const toggleTentConfirmation = async (
-  userId1 : number,
+  userId1: number,
   userId2: number,
   confirmed: boolean
 ) => {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Select, { SingleValue } from "react-select";
 import { Button } from "../../../components/ui/button";
-import { Card } from "../../../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
 import Swal from "sweetalert2";
 
 import {
@@ -52,7 +52,7 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
   const fetchMembers = async (): Promise<void> => {
     try {
       setLoading(true);
-      const res = await getUsersByPermanence(perm.id); 
+      const res = await getUsersByPermanence(perm.id);
       setMembers((res.data as PermanenceMember[]) ?? []);
     } catch {
       Swal.fire("Erreur", "Impossible de récupérer les membres", "error");
@@ -121,20 +121,22 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
   };
 
   return (
-    <Card className="mt-6 bg-gray-50 p-4 rounded-xl border">
-      <div className="flex items-center justify-between">
-        <h4 className="text-md font-semibold">Membres</h4>
-        <Button variant="secondary" onClick={() => setExpanded((e) => !e)}>
-          {expanded ? "Masquer" : "👥 Voir membres"}
-        </Button>
-      </div>
+    <Card className="mt-6 bg-gray-50">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-md font-semibold">Membres</CardTitle>
+          <Button variant="secondary" onClick={() => setExpanded((e) => !e)}>
+            {expanded ? "Masquer" : "👥 Voir membres"}
+          </Button>
+        </div>
+      </CardHeader>
 
       {expanded && (
-        <div className="mt-4">
+        <CardContent>
           {loading ? (
             <p className="text-sm text-gray-500">Chargement…</p>
           ) : members.length === 0 ? (
-            <p className="text-sm text-gray-500">Aucun membre pour l’instant.</p>
+            <p className="text-sm text-gray-500">Aucun membre pour l'instant.</p>
           ) : (
             <ul className="text-sm space-y-2">
               {members.map((user) => (
@@ -147,11 +149,10 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
                   <div className="flex gap-2 items-center">
                     <Button
                       onClick={() => void handleToggleClaim(user)}
-                      className={`text-xs px-2 py-1 ${
-                        user.claimed
-                          ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                          : "bg-blue-500 hover:bg-blue-600 text-white"
-                      }`}
+                      className={`text-xs px-2 py-1 ${user.claimed
+                        ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                        : "bg-blue-500 hover:bg-blue-600 text-white"
+                        }`}
                     >
                       {user.claimed ? "❌ Marquer absent" : "✅ Marquer présent"}
                     </Button>
@@ -186,7 +187,7 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
           <p className="text-xs text-red-500 underline mt-4">
             <strong>Attention&nbsp;: en tant qu'Admin vous pouvez bypass les quotas</strong>
           </p>
-        </div>
+        </CardContent>
       )}
     </Card>
   );

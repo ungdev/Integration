@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import {
@@ -169,152 +170,156 @@ export const AdminNews = () => {
     setPreviewUrl(null);
   };
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-        {editingId ? "Modifier l'actu" : "Créer une actu"}
-      </h2>
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+          {editingId ? "Modifier l'actu" : "Créer une actu"}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
 
-      {/* Formulaire de création ou d'édition */}
-      <div className="space-y-4 mb-8">
-        <Input
-          name="title"
-          value={formData.title}
-          onChange={handleInputChange}
-          placeholder="Titre de l'actu"
-        />
-        <Textarea
-          name="description"
-          value={formData.description}
-          onChange={handleInputChange}
-          placeholder="Contenu de l'actu"
-        />
-
-        {/* Image upload amélioré */}
-        <div className="flex flex-col items-start gap-2">
-          <Button
-            type="button"
-            onClick={() => document.getElementById("fileInput")?.click()}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold"
-          >
-            Choisir une image
-          </Button>
-
-          <input
-            id="fileInput"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="hidden"
+        {/* Formulaire de création ou d'édition */}
+        <div className="space-y-4 mb-8">
+          <Input
+            name="title"
+            value={formData.title}
+            onChange={handleInputChange}
+            placeholder="Titre de l'actu"
+          />
+          <Textarea
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            placeholder="Contenu de l'actu"
           />
 
-          {selectedFile && (
-            <p className="text-sm text-gray-600">{selectedFile.name}</p>
-          )}
-
-          {previewUrl && (
-            <div className="flex flex-col items-center mt-2">
-              <div className="w-48 h-48 rounded-xl overflow-hidden shadow-lg border border-gray-300">
-                <img
-                  src={previewUrl}
-                  alt="Aperçu"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={handleRemoveImage}
-                className="mt-2"
-              >
-                Retirer l’image
-              </Button>
-            </div>
-          )}
-        </div>
-
-        <select
-          name="type"
-          value={formData.type}
-          onChange={handleInputChange}
-          className="border rounded p-2 w-full"
-        >
-          <option value="info">Info</option>
-          <option value="warning">Avertissement</option>
-          <option value="event">Événement</option>
-        </select>
-
-        <select
-          name="target"
-          value={formData.target}
-          onChange={handleInputChange}
-          className="border rounded p-2 w-full"
-        >
-          <option value="Tous">Tous</option>
-          <option value="Nouveau">Nouveau</option>
-          <option value="Student">Étudiant</option>
-          <option value="Admin">Admin</option>
-        </select>
-
-        <div className="flex gap-2">
-          <Button onClick={handleCreateOrUpdate}>
-            {editingId ? "Valider la modification" : "Créer l'actu"}
-          </Button>
-          {editingId && (
-            <Button variant="outline" onClick={resetForm}>
-              Annuler
+          {/* Image upload amélioré */}
+          <div className="flex flex-col items-start gap-2">
+            <Button
+              type="button"
+              onClick={() => document.getElementById("fileInput")?.click()}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold"
+            >
+              Choisir une image
             </Button>
-          )}
-        </div>
-      </div>
 
-      {/* Liste des actus */}
-      <h3 className="text-xl font-semibold text-gray-700 mb-4">
-        Toutes les actus
-      </h3>
-      {loading ? (
-        <p>Chargement...</p>
-      ) : newsList.length === 0 ? (
-        <p>Aucune actu.</p>
-      ) : (
-        <ul className="space-y-4">
-          {newsList.map((news) => (
-            <li key={news.id} className="p-4 bg-gray-50 border rounded-lg">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="font-bold">{news.title}</p>
-                  <p className="text-sm text-gray-600 whitespace-pre-line">
-                    {news.description}
-                  </p>
-                  {news.image_url && (
+            <input
+              id="fileInput"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+
+            {selectedFile && (
+              <p className="text-sm text-gray-600">{selectedFile.name}</p>
+            )}
+
+            {previewUrl && (
+              <div className="flex flex-col items-center mt-2">
+                <div className="w-48 h-48 rounded-xl overflow-hidden shadow-lg border border-gray-300">
                   <img
-                    src={news.image_url}
-                    alt={news.title}
-                    className="w-32 h-auto rounded mb-2"
+                    src={previewUrl}
+                    alt="Aperçu"
+                    className="w-full h-full object-cover"
                   />
-                )}
-                  <p className="text-xs text-gray-400">
-                    Type : {news.type} | Cible : {news.target} | Publiée :{" "}
-                    {news.published ? "✅" : "❌"}
-                  </p>
                 </div>
-                <div className="flex gap-2">
-                  {!news.published && (
-                    <Button variant="default" onClick={() => handlePublish(news)}>
-                      📢 Publier
-                    </Button>
-                  )}
-                  <Button variant="secondary" onClick={() => handleEdit(news)}>
-                    ✏️ Modifier
-                  </Button>
-                  <Button variant="destructive" onClick={() => handleDeleteNews(news.id)}>
-                    🗑️ Supprimer
-                  </Button>
-                </div>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleRemoveImage}
+                  className="mt-2"
+                >
+                  Retirer l'image
+                </Button>
               </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+            )}
+          </div>
+
+          <select
+            name="type"
+            value={formData.type}
+            onChange={handleInputChange}
+            className="border rounded p-2 w-full"
+          >
+            <option value="info">Info</option>
+            <option value="warning">Avertissement</option>
+            <option value="event">Événement</option>
+          </select>
+
+          <select
+            name="target"
+            value={formData.target}
+            onChange={handleInputChange}
+            className="border rounded p-2 w-full"
+          >
+            <option value="Tous">Tous</option>
+            <option value="Nouveau">Nouveau</option>
+            <option value="Student">Étudiant</option>
+            <option value="Admin">Admin</option>
+          </select>
+
+          <div className="flex gap-2">
+            <Button onClick={handleCreateOrUpdate}>
+              {editingId ? "Valider la modification" : "Créer l'actu"}
+            </Button>
+            {editingId && (
+              <Button variant="outline" onClick={resetForm}>
+                Annuler
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Liste des actus */}
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">
+          Toutes les actus
+        </h3>
+        {loading ? (
+          <p>Chargement...</p>
+        ) : newsList.length === 0 ? (
+          <p>Aucune actu.</p>
+        ) : (
+          <ul className="space-y-4">
+            {newsList.map((news) => (
+              <li key={news.id} className="p-4 bg-gray-50 border rounded-lg">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-bold">{news.title}</p>
+                    <p className="text-sm text-gray-600 whitespace-pre-line">
+                      {news.description}
+                    </p>
+                    {news.image_url && (
+                      <img
+                        src={news.image_url}
+                        alt={news.title}
+                        className="w-32 h-auto rounded mb-2"
+                      />
+                    )}
+                    <p className="text-xs text-gray-400">
+                      Type : {news.type} | Cible : {news.target} | Publiée :{" "}
+                      {news.published ? "✅" : "❌"}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    {!news.published && (
+                      <Button variant="default" onClick={() => handlePublish(news)}>
+                        📢 Publier
+                      </Button>
+                    )}
+                    <Button variant="secondary" onClick={() => handleEdit(news)}>
+                      ✏️ Modifier
+                    </Button>
+                    <Button variant="destructive" onClick={() => handleDeleteNews(news.id)}>
+                      🗑️ Supprimer
+                    </Button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
   );
 };

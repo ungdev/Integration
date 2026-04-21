@@ -2,6 +2,7 @@ import { Navbar } from "../components/navbar";
 import { PreregisterCESection } from "../components/shotgun/preregisterCESection";
 import { PreregisterTeamSection } from "../components/shotgun/preregisterTeamSection";
 import { Shotgun } from "../components/shotgun/shotgunSection";
+import { Footer } from "../components/footer";
 
 export const ShotgunPage = () => (
 
@@ -15,8 +16,6 @@ export const ShotgunPage = () => (
                 <Shotgun />
             </div>
         </div>
-        <footer className="bg-gray-800 text-white p-4 text-center">
-            <p>&copy; 2025 Semaine d'Intégration UTT</p>
-        </footer>
+        <Footer />
     </div>
 );

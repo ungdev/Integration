@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { Card } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { respoDetails, claimedMember } from "../../services/requests/permanence.service";
 import { Permanence } from "../../interfaces/permanence.interface";
 import { format } from "date-fns";
@@ -85,12 +85,14 @@ export const RespoPresenceManagement = () => {
   }, {});
 
   return (
-    <div className="flex flex-col items-center px-4 py-8 space-y-8 max-w-5xl mx-auto">
-      <Card className="w-full p-8 rounded-2xl shadow-lg border border-gray-200 space-y-6 bg-white">
-        <h2 className="text-3xl font-bold text-gray-800 text-center">
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-3xl font-bold text-gray-800 text-center">
           ✅ Gestion des présences
-        </h2>
+        </CardTitle>
+      </CardHeader>
 
+      <CardContent className="space-y-12">
         {loading ? (
           <p className="text-center text-gray-500 animate-pulse">Chargement...</p>
         ) : Object.keys(groupedByDay).length === 0 ? (
@@ -105,12 +107,12 @@ export const RespoPresenceManagement = () => {
               {groupedByDay[day].map((perm: PermanenceWithMembers) => (
                 <Card
                   key={`perm-${perm.id}`}
-                  className="rounded-xl shadow-sm bg-gray-50 border border-gray-200 overflow-hidden"
+                  className="w-full max-w-3xl mx-auto py-0"
                 >
                   {/* Header collapsible */}
                   <button
                     onClick={() => toggleExpand(perm.id)}
-                    className="w-full flex justify-between items-center px-6 py-4 bg-white hover:bg-gray-100 transition"
+                    className="w-full flex justify-between items-center px-6 py-6 bg-transparent hover:bg-black/5 transition"
                   >
                     <div className="text-left">
                       <h4 className="text-md font-semibold text-gray-800">
@@ -139,7 +141,7 @@ export const RespoPresenceManagement = () => {
                           {perm.members.map((member) => (
                             <li
                               key={`member-${perm.id}-${member.id}`}
-                              className="flex items-center justify-between bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm"
+                              className="flex items-center justify-between surface-card px-4 py-2"
                             >
                               <div className="flex items-center gap-2">
                                 {member.claimed === true && (
@@ -180,7 +182,7 @@ export const RespoPresenceManagement = () => {
             </div>
           ))
         )}
-      </Card>
-    </div>
+      </CardContent>
+    </Card>
   );
 };

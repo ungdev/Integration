@@ -20,7 +20,7 @@ const branchOptions = [
   { value: "SN_APPR", label: "Systeme Numérique en Apprentissage" },
   { value: "Branch", label: "Branche" },
   { value: "MM", label: "Mécanique et Matériaux" },
-  { value : "Master", label: "Master"},
+  { value: "Master", label: "Master" },
   { value: "RI", label: "Ressources International" },
 ];
 
@@ -46,7 +46,7 @@ export const ProfilForm = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    const response = await updateCurrentUser({ branch : branch, contact : contact });
+    const response = await updateCurrentUser({ branch: branch, contact: contact });
     alert(response.message);
     setLoading(false);
   };
@@ -54,52 +54,55 @@ export const ProfilForm = () => {
   if (!user) return null;
 
   return (
-    <div className="flex flex-col items-center px-4 py-10 space-y-10 max-w-5xl mx-auto">
-      <Card className="w-full p-6 rounded-2xl shadow space-y-6">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">👤 Mon Profil</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium">Prénom</label>
-            <Input value={user.firstName} disabled />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Nom</label>
-            <Input value={user.lastName} disabled />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Email</label>
-            <Input value={user.email} disabled />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Permission</label>
-            <Input value={user.permission} disabled />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Filière</label>
-            <Select
-              value={branchOptions.find((b) => b.value === branch)}
-              onChange={(selected) => {
-                if (selected) {
-                  setBranch(selected.value);
-                } else {
-                  setBranch("");
-                }
-              }}
-              options={branchOptions}
-              placeholder="Choisir une filière"
-              isClearable
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Contact</label>
-            <Input value={contact} onChange={(e) => setContact(e.target.value)} />
-          </div>
-          <Button onClick={handleSubmit} disabled={loading} className="w-full">
-            {loading ? "Enregistrement..." : "💾 Sauvegarder"}
-          </Button>
-           <>
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center">👤 Mon Profil</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium">Prénom</label>
+          <Input value={user.firstName} disabled />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Nom</label>
+          <Input value={user.lastName} disabled />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Email</label>
+          <Input value={user.email} disabled />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Permission</label>
+          <Input value={user.permission} disabled />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Filière</label>
+          <Select
+            value={branchOptions.find((b) => b.value === branch)}
+            onChange={(selected) => {
+              if (selected) {
+                setBranch(selected.value);
+              } else {
+                setBranch("");
+              }
+            }}
+            options={branchOptions}
+            placeholder="Choisir une filière"
+            isClearable
+          />
+        </div>
+        <div className={`${user.contact === null || user.contact === "" ? "p-4 rounded-lg bg-yellow-100 border border-yellow-300" : ""}`}>
+          {user.permission === "Student" || user.permission === "Admin" ? (
+            <label className="block text-sm font-medium">Contact - <u>Comment tes nouveaux pourront te contacter !</u></label>
+          ) : (
+            <label className="block text-sm font-medium">Contact (visible uniquement pour les organisateurs)</label>
+          )}
+          <Input value={contact} onChange={(e) => setContact(e.target.value)} className={user.contact === null || user.contact === "" ? "bg-white" : ""} />
+        </div>
+        <Button onClick={handleSubmit} disabled={loading} className="w-full">
+          {loading ? "Enregistrement..." : "💾 Sauvegarder"}
+        </Button>
+        <>
           {user.discord_id ? (
             <div className="w-full p-4 bg-green-100 text-green-800 rounded text-center">
               ✅ Ton compte Discord est bien lié !
@@ -117,8 +120,7 @@ export const ProfilForm = () => {
             </button>
           )}
         </>
-        </CardContent>
-      </Card>
-    </div>
+      </CardContent>
+    </Card>
   );
 };

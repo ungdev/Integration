@@ -85,7 +85,7 @@ export const toggleTentConfirmation = async (req: Request, res: Response) => {
       confirmed,
     });
 
-    // Options d’email
+    // Options d'email
     const emailOptions = {
       from: "integration@utt.fr",
       to: [user1.email, user2.email],

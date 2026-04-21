@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import Select from "react-select";
 import { getAllFactionsAdmin } from "../../../services/requests/faction.service";
 import { Faction } from "../../../interfaces/faction.interface";
@@ -65,38 +66,42 @@ export const AdminChallengeAddPointsForm = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-8">
-      <div className="card p-6 rounded-2xl shadow space-y-4">
-        <h2 className="text-2xl font-bold text-gray-800 text-center">
-          🎯 Ajouter des points à une faction
-        </h2>
+    <div>
+      <Card className="w-full max-w-3xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+            🎯 Ajouter des points à une faction
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
 
-        <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titre du challenge" />
+          <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titre du challenge" />
 
-        <Select
-          value={
-            factionId
-              ? {
+          <Select
+            value={
+              factionId
+                ? {
                   value: factionId,
                   label: factions.find((f) => f.factionId === factionId)?.name || "Faction non trouvée",
                 }
-              : null
-          }
-          onChange={(option) => setFactionId(option ? option.value : null)}
-          options={factions.map((f) => ({ value: f.factionId, label: f.name }))}
-          placeholder="Sélectionner une faction"
-        />
+                : null
+            }
+            onChange={(option) => setFactionId(option ? option.value : null)}
+            options={factions.map((f) => ({ value: f.factionId, label: f.name }))}
+            placeholder="Sélectionner une faction"
+          />
 
-        <Input type="number" value={points} onChange={(e) => setPoints(e.target.value)} placeholder="Nombre de points" />
+          <Input type="number" value={points} onChange={(e) => setPoints(e.target.value)} placeholder="Nombre de points" />
 
-        <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Raison" />
+          <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Raison" />
 
-        <div className="flex justify-center pt-4">
-          <Button onClick={handleSubmit} className="bg-blue-600 hover:bg-blue-700 text-white">
-            Ajouter les points
-          </Button>
-        </div>
-      </div>
+          <div className="flex justify-center pt-4">
+            <Button onClick={handleSubmit} className="bg-blue-600 hover:bg-blue-700 text-white">
+              Ajouter les points
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

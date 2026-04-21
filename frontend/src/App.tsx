@@ -38,6 +38,9 @@ import { GamesPage } from './pages/games';
 import { FoodPage } from './pages/food';
 import { PlanningsPage } from './pages/plannings';
 import { Roadbook } from './pages/roadbook';
+import { PrivacyPage } from './pages/privacy';
+import { LegalsPage } from './pages/legals';
+import { NotFoundPage } from './pages/notFound';
 
 
 const App: React.FC = () => {
@@ -64,6 +67,8 @@ const App: React.FC = () => {
         <Route path="/Register" element={<RegisterPage />} />
         <Route path="/ResetPassword" element={<ResetPasswordPage />} />
         <Route path="/roadbook" element={<Roadbook />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/legals" element={<LegalsPage />} />
 
         {/* Utilisateurs connectés */}
         <Route path="/Home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
@@ -103,6 +108,9 @@ const App: React.FC = () => {
         <Route path="/admin/games" element={<AdminRoute><AdminPageGames /></AdminRoute>} />
         <Route path="/admin/tent" element={<AdminRoute><AdminPageTent /></AdminRoute>} />
         <Route path="/admin/bus" element={<AdminRoute><AdminPageBus /></AdminRoute>} />
+
+        {/* Fallback */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
 

@@ -72,90 +72,87 @@ export const AdminRolePointsManager = () => {
   };
 
   return (
-    <div className="flex justify-center w-full">
-      <Card className="p-6 shadow-xl bg-white w-full max-w-3xl">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold text-center">
-            Gestion des Points par Rôle
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {message && (
-            <div className="mb-4 p-4 rounded bg-blue-100 text-center">
-              {message}
-            </div>
-          )}
-
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Sélectionner un rôle</label>
-            <Select
-              options={roles.map(role => ({
-                value: role.roleId,
-                label: role.name,
-              }))}
-              value={
-                selectedRoleId
-                  ? {
-                      value: selectedRoleId,
-                      label: roles.find(r => r.roleId === selectedRoleId)?.name,
-                    }
-                  : null
-              }
-              onChange={(option: any) => setSelectedRoleId(option?.value ?? null)}
-              placeholder="Choisir un rôle"
-              className="w-full"
-            />
+    <Card className="w-full max-w-3xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+          Gestion des Points par Rôle
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {message && (
+          <div className="mb-4 p-4 rounded bg-blue-100 text-center">
+            {message}
           </div>
+        )}
 
-          {selectedRoleId && (
-            <>
-              <div className="mb-4">
-                <p className="text-md font-semibold">
-                  Points actuels :{" "}
-                    <span className="text-blue-600">
-                        {currentPoints !== null ? currentPoints : 0}
-                    </span>
+        <div>
+          <label className="block text-sm font-medium mb-2">Sélectionner un rôle</label>
+          <Select
+            options={roles.map(role => ({
+              value: role.roleId,
+              label: role.name,
+            }))}
+            value={
+              selectedRoleId
+                ? {
+                  value: selectedRoleId,
+                  label: roles.find(r => r.roleId === selectedRoleId)?.name,
+                }
+                : null
+            }
+            onChange={(option: any) => setSelectedRoleId(option?.value ?? null)}
+            placeholder="Choisir un rôle"
+            className="w-full"
+          />
+        </div>
 
-                </p>
-              </div>
+        {selectedRoleId && (
+          <>
+            <div>
+              <p className="text-md font-semibold">
+                Points actuels :{" "}
+                <span className="text-blue-600">
+                  {currentPoints !== null ? currentPoints : 0}
+                </span>
+              </p>
+            </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Ajouter des points</label>
-                <input
-                  type="number"
-                  value={pointsToAdd}
-                  onChange={(e) => setPointsToAdd(Number(e.target.value))}
-                  className="w-full border rounded px-3 py-2"
-                  placeholder="Nombre de points à ajouter"
-                />
-                <button
-                  onClick={handleAddPoints}
-                  className="mt-2 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
-                >
-                  Ajouter
-                </button>
-              </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Ajouter des points</label>
+              <input
+                type="number"
+                value={pointsToAdd}
+                onChange={(e) => setPointsToAdd(Number(e.target.value))}
+                className="w-full border rounded px-3 py-2"
+                placeholder="Nombre de points à ajouter"
+              />
+              <button
+                onClick={handleAddPoints}
+                className="mt-2 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
+              >
+                Ajouter
+              </button>
+            </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">Retirer des points</label>
-                <input
-                  type="number"
-                  value={pointsToRemove}
-                  onChange={(e) => setPointsToRemove(Number(e.target.value))}
-                  className="w-full border rounded px-3 py-2"
-                  placeholder="Nombre de points à retirer"
-                />
-                <button
-                  onClick={handleRemovePoints}
-                  className="mt-2 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
-                >
-                  Retirer
-                </button>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Retirer des points</label>
+              <input
+                type="number"
+                value={pointsToRemove}
+                onChange={(e) => setPointsToRemove(Number(e.target.value))}
+                className="w-full border rounded px-3 py-2"
+                placeholder="Nombre de points à retirer"
+              />
+              <button
+                onClick={handleRemovePoints}
+                className="mt-2 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
+              >
+                Retirer
+              </button>
+            </div>
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 };

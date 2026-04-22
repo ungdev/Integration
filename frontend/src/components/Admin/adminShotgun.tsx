@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Button } from "../ui/button";
-import { getShotgunAttemptsAdmin } from "../../services/requests/event.service";
 import { ShotgunAttemptRow } from "../../interfaces/event.interface";
+import { getShotgunAttemptsAdmin } from "../../services/requests/event.service";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 const formatResponseTime = (timestamp: string | null, baseline: number | null): string => {
     if (!timestamp || baseline === null) {

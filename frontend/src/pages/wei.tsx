@@ -1,30 +1,31 @@
-import { Navbar } from "../components/navbar";
-import { WeiSection } from "../components/WEI_SDI_Food/weiSection";
-import { TentPublic } from "../components/tent/tentSection";
 import { useNavigate } from "react-router-dom";
-import { getPermission } from "../services/requests/user.service";
 import { Footer } from "../components/footer";
+import { Navbar } from "../components/navbar";
+import { TentPublic } from "../components/tent/tentSection";
+import { WeiSection } from "../components/WEI_SDI_Food/weiSection";
+import { getPermission } from "../services/requests/user.service";
 
-export const WeiPage = () => {
+const WeiPage = () => {
+    const navigate = useNavigate();
+    const permission = getPermission();
 
-  const navigate = useNavigate();
-  const permission = getPermission();
+    if (!permission) {
+        navigate("/");
+        return null;
+    }
 
-  if (!permission) {
-    navigate("/");
-    return null;
-  }
-
-  return (
-    <div>
-      <Navbar />
-      <div className="bg-gray-100 min-h-screen py-6 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto space-y-8">
-          <WeiSection />
-          {(permission === "Nouveau" || permission === "Admin") && <TentPublic />}
+    return (
+        <div>
+            <Navbar />
+            <div className="bg-gray-100 min-h-screen py-6 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto space-y-8">
+                    <WeiSection />
+                    {(permission === "Nouveau" || permission === "Admin") && <TentPublic />}
+                </div>
+            </div>
+            <Footer />
         </div>
-      </div>
-      <Footer />
-    </div>
-  );
+    );
 };
+
+export default WeiPage;

@@ -1,19 +1,15 @@
 import { Request, Response } from "express";
-import { Accepted, Conflict, Error, Ok, Teapot, Unauthorized } from "../utils/responses";
 import * as event_service from "../services/event.service";
 import * as team_service from "../services/team.service";
-import { Event } from "../schemas/Basic/event.schema";
+import { Conflict, Error, Ok, Teapot, Unauthorized } from "../utils/responses";
 import { shotgun_password } from "../utils/secret";
 
 type AuthenticatedRequest = Request & { user?: { userId?: number } };
 
-
 export const checkShotgunStatus = async (req: Request, res: Response) => {
     try {
         const status = await event_service.getEventsStatus();
-
         Ok(res, ({ data: { status: Boolean(status?.shotgun_open), password: Boolean(status?.shotgun_open) ? shotgun_password : "" } }));
-
     } catch (error) {
         Error(res, { msg: "Error while catching shotgun status :" + error })
     }
@@ -23,7 +19,6 @@ export const checkPreRegisterStatus = async (req: Request, res: Response) => {
     try {
         const status = await event_service.getEventsStatus();
         Ok(res, ({ data: status?.pre_registration_open }));
-
     } catch (error) {
         Error(res, { msg: "Error while catching pre-registration status :" + error })
     }
@@ -33,7 +28,6 @@ export const checkSDIStatus = async (req: Request, res: Response) => {
     try {
         const status = await event_service.getEventsStatus();
         Ok(res, ({ data: status?.sdi_open }));
-
     } catch (error) {
         Error(res, { msg: "Error while catching SDI status :" + error })
     }
@@ -43,7 +37,6 @@ export const checkWEIStatus = async (req: Request, res: Response) => {
     try {
         const status = await event_service.getEventsStatus();
         Ok(res, ({ data: status?.wei_open }));
-
     } catch (error) {
         Error(res, { msg: "Error while catching WEI status :" + error })
     }
@@ -53,7 +46,6 @@ export const checkFoodStatus = async (req: Request, res: Response) => {
     try {
         const status = await event_service.getEventsStatus();
         Ok(res, ({ data: status?.food_open }));
-
     } catch (error) {
         Error(res, { msg: "Error while catching Food status :" + error })
     }
@@ -63,7 +55,6 @@ export const checkChallStatus = async (req: Request, res: Response) => {
     try {
         const status = await event_service.getEventsStatus();
         Ok(res, ({ data: status?.chall_open }));
-
     } catch (error) {
         Error(res, { msg: "Error while catching Challenge status :" + error })
     }

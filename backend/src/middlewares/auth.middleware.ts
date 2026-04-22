@@ -1,11 +1,9 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Unauthorized } from "../utils/responses"; // Assurez-vous que cette fonction est bien définie
 import { decodeToken } from "../utils/token";
 
-
 export const authenticateUser = (req: Request, res: Response, next: NextFunction) => {
     try {
-        
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {

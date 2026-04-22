@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-import { Navbar } from "../components/navbar";
 import { Footer } from "../components/footer";
-import { getToken } from "../services/requests/auth.service";
+import { Navbar } from "../components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { getToken } from "../services/requests/auth.service";
 
-export const NotFoundPage = () => {
+const NotFoundPage = () => {
     const isAuthenticated = Boolean(getToken());
 
     return (
@@ -56,3 +56,5 @@ export const NotFoundPage = () => {
         </div>
     );
 };
+
+export default NotFoundPage;

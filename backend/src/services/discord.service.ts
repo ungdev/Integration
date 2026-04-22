@@ -1,11 +1,10 @@
 import axios from 'axios';
-import { db } from '../database/db';  // Import de la connexion PostgreSQL
-import { userSchema } from '../schemas/Basic/user.schema';
 import { eq } from 'drizzle-orm';
+import { db } from '../database/db'; // Import de la connexion PostgreSQL
+import { userSchema } from '../schemas/Basic/user.schema';
 import { discord_client_id, discord_client_secret, discord_redirect_uri } from '../utils/secret';
 
-
-export const syncDiscordUserId = async (code : string, userId : number) => {
+export const syncDiscordUserId = async (code: string, userId: number) => {
     // Étape 1 : échange le code contre un access token
     const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', new URLSearchParams({
         client_id: discord_client_id,
@@ -31,8 +30,8 @@ export const syncDiscordUserId = async (code : string, userId : number) => {
 
     //Etape 3 : Update le discord_id de l'user
     const result = await db.update(userSchema)
-    .set({discord_id: userResponse.data.id,})
-    .where(eq(userSchema.id, userId));
+        .set({ discord_id: userResponse.data.id, })
+        .where(eq(userSchema.id, userId));
 
     return userResponse.data; // { id, username, discriminator, ... }
 };

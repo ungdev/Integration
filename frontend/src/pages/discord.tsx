@@ -1,10 +1,9 @@
-// pages/DiscordPage.tsx
-import {DiscordCallback} from '../components/profil/discordPage';
+import { DiscordCallback } from '../components/profil/discordPage';
 
-export const DiscordPage = () => {
-  return (
+const DiscordPage = () => (
     <div>
         <DiscordCallback />
     </div>
-  );
-};
+);
+
+export default DiscordPage;

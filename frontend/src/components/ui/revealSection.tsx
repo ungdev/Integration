@@ -1,6 +1,5 @@
-import * as React from "react";
 import { motion, type HTMLMotionProps, type Transition } from "framer-motion";
-
+import * as React from "react";
 import { cn } from "../../lib/utils";
 
 type RevealSectionProps = HTMLMotionProps<"section"> & {

@@ -1,41 +1,41 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Unauthorized } from "../utils/responses"; // adapte selon ton projet
 
 export const checkRole = (
-  requiredPermission?: string,
-  requiredRoles?: string[]
+    requiredPermission?: string,
+    requiredRoles?: string[]
 ) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user;
+    return (req: Request, res: Response, next: NextFunction) => {
+        const user = req.user;
 
-    if (!user) {
-      Unauthorized(res, { msg: "Accès non autorisé" });
-      return;
-    }
+        if (!user) {
+            Unauthorized(res, { msg: "Accès non autorisé" });
+            return;
+        }
 
-    try {
-      const isAdmin = user.userPermission === "Admin";
-      
-      const hasPermission =
-        !requiredPermission || user.userPermission === requiredPermission;
+        try {
+            const isAdmin = user.userPermission === "Admin";
 
-      const hasRole =
-        !requiredRoles ||
-        (Array.isArray(user.userRoles) &&
-          user.userRoles.some((role: { roleName: string }) =>
-            requiredRoles.includes(role.roleName)
-          ));
+            const hasPermission =
+                !requiredPermission || user.userPermission === requiredPermission;
 
-      if (!isAdmin && !(hasPermission || hasRole)) {
-        Unauthorized(res, {
-          msg: "Accès interdit, rôle ou permission insuffisants",
-        });
-        return;
-      }
+            const hasRole =
+                !requiredRoles ||
+                (Array.isArray(user.userRoles) &&
+                    user.userRoles.some((role: { roleName: string }) =>
+                        requiredRoles.includes(role.roleName)
+                    ));
 
-      next();
-    } catch (err) {
-      Unauthorized(res, { msg: "Token invalide ou expiré" });
-    }
-  };
+            if (!isAdmin && !(hasPermission || hasRole)) {
+                Unauthorized(res, {
+                    msg: "Accès interdit, rôle ou permission insuffisants",
+                });
+                return;
+            }
+
+            next();
+        } catch (err) {
+            Unauthorized(res, { msg: "Token invalide ou expiré" });
+        }
+    };
 };

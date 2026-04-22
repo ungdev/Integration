@@ -1,16 +1,15 @@
 import { Request, Response } from "express";
-import { Error, Ok, Unauthorized } from "../utils/responses";
+import { Event } from "../schemas/Basic/event.schema";
+import * as event_service from '../services/event.service';
+import * as faction_service from "../services/faction.service";
 import * as team_service from "../services/team.service";
 import * as user_service from "../services/user.service";
-import * as faction_service from "../services/faction.service";
-import * as event_service from '../services/event.service'
-import { Event } from "../schemas/Basic/event.schema";
+import { Error, Ok } from "../utils/responses";
 
 export const createNewTeam = async (req: Request, res: Response) => {
     const { teamName, members } = req.body;
 
     try {
-
         if (!teamName) {
             Error(res, { msg: "Il n'y a pas de nom d'équipe" });
             return;
@@ -42,7 +41,6 @@ export const createNewTeam = async (req: Request, res: Response) => {
         const newTeam = await team_service.createTeam(teamName, members);
         Ok(res, { msg: "Équipe créée avec succès !", data: newTeam });
         return;
-
     } catch (error) {
         Error(res, { msg: "Erreur lors de la création de l'équipe." });
     }
@@ -54,31 +52,26 @@ export const createNewTeamLight = async (req: Request, res: Response) => {
     try {
         const newTeamLigth = await team_service.createTeamLight(teamName, factionId);
         Ok(res, { msg: "Equipe créée !" });
-
     } catch (error) {
         Error(res, { msg: "Erreur lors de la création de l'équipe." });
     }
 };
 
 export const getTeams = async (req: Request, res: Response) => {
-
     try {
         const teams = await team_service.getTeams();
         Ok(res, { data: teams });
         return;
-
     } catch (error) {
         Error(res, { msg: "Erreur lors de la récupération des équipes." });
     }
 };
 
 export const getTeamsWithfactions = async (req: Request, res: Response) => {
-
     try {
         const teams = await team_service.getTeamsAll();
         Ok(res, { data: teams });
         return;
-
     } catch (error) {
         Error(res, { msg: "Erreur lors de la récupération des équipes et de leur faction." });
     }
@@ -94,7 +87,6 @@ export const modifyTeam = async (req: Request, res: Response) => {
 
         const updatedTeam = await team_service.modifyTeam(teamID, teamMembers, factionID, teamName, type);
         Ok(res, { data: updatedTeam });
-
     } catch (error) {
         console.error(error);
         Error(res, { msg: "Erreur lors de la modification de l'équipe." });
@@ -102,8 +94,8 @@ export const modifyTeam = async (req: Request, res: Response) => {
 };
 
 export const getTeamUsers = async (req: Request, res: Response) => {
-
     const { teamId } = req.query;
+
     try {
         const teamUsers = await team_service.getTeamUsers(teamId);
         Ok(res, { data: teamUsers });
@@ -112,13 +104,10 @@ export const getTeamUsers = async (req: Request, res: Response) => {
         console.error(error);
         Error(res, { msg: "Erreur interne lors de la récupération des utilisateurs avec leurs rôles." });
         return;
-
     }
-
 }
 
 export const getAllTeamsWithUsers = async (req: Request, res: Response) => {
-
     try {
         const teamUsers = await team_service.getAllTeamsWithUsers();
         Ok(res, { data: teamUsers });
@@ -127,14 +116,12 @@ export const getAllTeamsWithUsers = async (req: Request, res: Response) => {
         console.error(error);
         Error(res, { msg: "Erreur interne lors de la récupération des utilisateurs avec leurs rôles." });
         return;
-
     }
-
 }
 
 export const getTeamFaction = async (req: Request, res: Response) => {
-
     const { teamId } = req.query;
+
     try {
         const factionId = await team_service.getTeamFaction(teamId);
         const teamFaction = await faction_service.getFaction(factionId);
@@ -144,9 +131,7 @@ export const getTeamFaction = async (req: Request, res: Response) => {
         console.error(error);
         Error(res, { msg: "Erreur interne lors de la récupération des utilisateurs avec leurs rôles." });
         return;
-
     }
-
 }
 
 export const deleteTeam = async (req: Request, res: Response) => {
@@ -159,7 +144,6 @@ export const deleteTeam = async (req: Request, res: Response) => {
 
         const deletedTeam = await team_service.deleteTeam(Number(teamID));
         Ok(res, { msg: "Équipe supprimée avec succès.", data: deletedTeam });
-
     } catch (error) {
         console.error(error);
         Error(res, { msg: "Erreur lors de la suppression de l'équipe." });
@@ -168,11 +152,9 @@ export const deleteTeam = async (req: Request, res: Response) => {
 
 export const teamDistribution = async (req: Request, res: Response) => {
     try {
-
         const newStudents = await user_service.getUsersbyPermission("Nouveau");
         const userswithteams = (await team_service.getUsersWithTeam()).map((entry: any) => entry.userId);
         const teams = await team_service.getTeams();
-
 
         // Filtrer les étudiants qui ne sont pas déjà assignés à une équipe
         const filteredStudents = newStudents
@@ -259,4 +241,3 @@ export const teamDistribution = async (req: Request, res: Response) => {
         return
     }
 }
-

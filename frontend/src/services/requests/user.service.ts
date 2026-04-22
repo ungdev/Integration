@@ -1,95 +1,72 @@
-// src/services/role.service.ts
 import { User } from '../../interfaces/user.interface';
 import api from '../api';
 
 export const getPermission = (): string | null => {
-  const token = localStorage.getItem('authToken');
-  if (token) {
-    try {
-      // Suppose que le token est un JWT et qu'il contient un payload avec un rôle
-      const decodedToken = JSON.parse(atob(token.split('.')[1])); // Décodage du token JWT
-      return decodedToken?.userPermission || null;  // Retourne le rôle ou null
-    } catch (error) {
-      console.error('Erreur lors du décodage du token:', error);
-      return null;
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        try {
+            const decodedToken = JSON.parse(atob(token.split('.')[1]));
+            return decodedToken?.userPermission || null;
+        } catch (error) {
+            console.error('Erreur lors du décodage du token:', error);
+            return null;
+        }
     }
-  }
-  return null;
+    return null;
 };
 
 export const isAdmin = (): boolean => {
-  return getPermission() === 'Admin';
+    return getPermission() === 'Admin';
 };
 
 export const isConnected = (): boolean => {
-  return getPermission() !== null;
+    return getPermission() !== null;
 };
 
 export const getUsers = async () => {
-
-  const response = await api.get("/user/user/getusers");
-  const users = response.data.data;
-
-  return users;
-
+    const response = await api.get("/user/user/getusers");
+    const users = response.data.data;
+    return users;
 }
 
 export const getUsersAdmin = async () => {
-
-  const response = await api.get("/user/admin/getusers");
-  const users = response.data.data;
-
-  return users;
-
-
+    const response = await api.get("/user/admin/getusers");
+    const users = response.data.data;
+    return users;
 }
 
 export const getUsersByPermission = async () => {
-
-  const response = await api.get("/user/admin/getusersbypermission");
-  const users = response.data.data;
-
-  return users;
-
+    const response = await api.get("/user/admin/getusersbypermission");
+    const users = response.data.data;
+    return users;
 }
 
 export const getCurrentUser = async () => {
-  const res = await api.get("/user/user/me");
-
-  return res.data.data;
+    const res = await api.get("/user/user/me");
+    return res.data.data;
 };
 
 export const updateCurrentUser = async (data: Partial<User>) => {
-
-  const response = await api.patch("/user/user/me", data);
-  return response.data
-
+    const response = await api.patch("/user/user/me", data);
+    return response.data
 };
 
 export const updateUserByAdmin = async (id: number, data: Partial<User>) => {
-
-  const response = await api.patch(`/user/admin/user/${id}`, data);
-  return response.data
-
+    const response = await api.patch(`/user/admin/user/${id}`, data);
+    return response.data
 };
 
 export const deleteUserByAdmin = async (id: number) => {
-
-  const response = await api.delete(`/user/admin/user/${id}`);
-  return response.data
-
+    const response = await api.delete(`/user/admin/user/${id}`);
+    return response.data
 };
 
 export const syncnewStudent = async (date: string) => {
-
-  const response = await api.post(`/user/admin/syncnewstudent/`, { date });
-  return response.data
-
+    const response = await api.post(`/user/admin/syncnewstudent/`, { date });
+    return response.data
 };
 
 export const syncDiscordUser = async (code: string) => {
-
-  const response = await api.post(`/discord/user/callback/`, { code });
-  return response.data
-
+    const response = await api.post(`/discord/user/callback/`, { code });
+    return response.data
 }

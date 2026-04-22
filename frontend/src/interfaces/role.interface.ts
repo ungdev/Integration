@@ -3,7 +3,8 @@ export interface Role {
     name: string;
     description: string;
 }
+
 export interface RolePoint {
-  role_id: number;
-  points: number;
+    role_id: number;
+    points: number;
 };

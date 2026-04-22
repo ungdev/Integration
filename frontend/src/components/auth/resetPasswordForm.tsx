@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { resetPasswordUser } from '../../services/requests/auth.service';
 
 export const ResetPasswordForm = () => {
-
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [token, setToken] = useState<string | null>(null);
@@ -36,7 +35,7 @@ export const ResetPasswordForm = () => {
 
         setLoading(true);
         try {
-            const response = await resetPasswordUser(token,password);
+            const response = await resetPasswordUser(token, password);
             if (response) {
                 alert("Mot de passe modifié avec succès.");
                 window.location.href = "/";

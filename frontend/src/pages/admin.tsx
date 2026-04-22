@@ -11,6 +11,7 @@ import { AdminSyncNewStudent, AdminUser } from "../components/Admin/adminUser";
 import { AdminNews } from "../components/Admin/adminNews";
 import { AdminRolePointsManager } from "../components/Admin/adminGames";
 import { AdminBusTools } from "../components/Admin/adminBus";
+import { AdminShotgunRanking } from "../components/Admin/adminShotgun";
 
 //--------------Challenge Import--------------//
 import ChallengeEditor from "../components/Admin/AdminChallenge/adminChallengeEditor";
@@ -90,6 +91,18 @@ export const AdminPageEvents: React.FC = () => {
       <div className="flex flex-col gap-6">
         <RevealSection>
           <AdminEvents />
+        </RevealSection>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export const AdminPageShotgun: React.FC = () => {
+  return (
+    <AdminLayout allowedRoles={["Admin", "Respo CE"]}>
+      <div className="flex flex-col gap-6">
+        <RevealSection>
+          <AdminShotgunRanking />
         </RevealSection>
       </div>
     </AdminLayout>

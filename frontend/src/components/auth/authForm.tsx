@@ -30,7 +30,7 @@ export const AuthForm = () => {
             const token = await loginUser(formData.email, formData.password);
             if (token) {
                 localStorage.setItem("authToken", token);
-                window.location.href = "/Home";
+                window.location.href = "/home";
             }
         } catch (err: any) {
             console.error(err);
@@ -47,7 +47,7 @@ export const AuthForm = () => {
     };
 
     const handleCASLogin = async () => {
-        if (window.location.pathname === "/Home") return;
+        if (window.location.pathname === "/home") return;
         if (localStorage.getItem("casProcessed") === "true") return;
 
         localStorage.setItem("casProcessed", "true");
@@ -59,7 +59,7 @@ export const AuthForm = () => {
             try {
                 const { token } = await handleCASTicket(ticket);
                 localStorage.setItem("authToken", token);
-                setTimeout(() => window.location.href = "/Home", 300);
+                setTimeout(() => window.location.href = "/home", 300);
             } catch (error) {
                 console.error("CAS Login failed:", error);
                 setError("Authentification CAS échouée. Réessaie.");

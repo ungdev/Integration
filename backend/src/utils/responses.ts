@@ -24,8 +24,18 @@ export const Accepted = (res: Response, details: { data?: any, msg?: string }) =
 };
 
 export const Unauthorized = (res: Response, details: { data?: any, msg?: string }) => {
-  const msg = details.msg || 'Ok';
-  res.status(Code.UNAUTHORIZED).json(new HttpResponse(Code.OK, msg, details.data));
+  const msg = details.msg || 'Unauthorized';
+  res.status(Code.UNAUTHORIZED).json(new HttpResponse(Code.UNAUTHORIZED, msg, details.data));
+};
+
+export const Conflict = (res: Response, details: { data?: any, msg?: string }) => {
+  const msg = details.msg || "Conflict";
+  res.status(Code.CONFLICT).json(new HttpResponse(Code.CONFLICT, msg, details.data));
+};
+
+export const Teapot = (res: Response, details: { data?: any, msg?: string }) => {
+  const msg = details.msg || "I'm a teapot";
+  res.status(Code.IM_A_TEAPOT).json(new HttpResponse(Code.IM_A_TEAPOT, msg, details.data));
 };
 
 export enum Code {
@@ -35,6 +45,8 @@ export enum Code {
   BAD_REQUEST = 400,
   UNAUTHORIZED = 401,
   CREATED = 201,
+  CONFLICT = 409,
+  IM_A_TEAPOT = 418,
   ISE = 500
 }
 
@@ -63,7 +75,11 @@ export class HttpResponse {
       case Code.ISE:
         return 'INTERNAL_SERVER_ERROR';
       case Code.UNAUTHORIZED:
-        return 'INTERNAL_SERVER_ERROR';
+        return 'UNAUTHORIZED';
+      case Code.CONFLICT:
+        return 'CONFLICT';
+      case Code.IM_A_TEAPOT:
+        return 'IM_A_TEAPOT';
     }
   }
 }

@@ -168,8 +168,8 @@ export const RespoCallPage = () => {
 
                 const result = await isUserRespo(Number(decoded.userId));
                 setIsRespo(result.data === true);
-            } catch {
-                console.error("Erreur lors de la vérification du rôle respo", err);
+            } catch (error) {
+                console.error("Erreur lors de la vérification du rôle respo", error);
                 setIsRespo(false);
             }
         };

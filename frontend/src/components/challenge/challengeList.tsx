@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { Challenge } from "../../interfaces/challenge.interface";
-import { Faction } from "../../interfaces/faction.interface";
+
+import { type Challenge } from "../../interfaces/challenge.interface";
+import { type Faction } from "../../interfaces/faction.interface";
 import { getAllChallenges, getFactionsPoints } from "../../services/requests/challenge.service";
 import { checkChallengeStatus } from "../../services/requests/event.service";
 import { getAllFactionsUser } from "../../services/requests/faction.service";
@@ -15,6 +16,46 @@ export const UserChallengeList = () => {
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [isChallOpen, setIsChallOpen] = useState(false);
     const [loading, setLoading] = useState(true);
+
+    const fetchChallenges = useCallback(async () => {
+        try {
+            const challenges = await getAllChallenges();
+            const challengesFiltered = challenges.filter((c: Challenge) => c.category !== "Free");
+            setAvailableChallenges(challengesFiltered);
+        } catch (err) {
+            console.error("Erreur lors du chargement des challenges", err);
+        }
+    }, []);
+
+    const fetchFactions = useCallback(async () => {
+        try {
+            const data = await getAllFactionsUser();
+            setFactions(data);
+        } catch (err) {
+            console.error("Erreur lors du chargement des factions", err);
+        }
+    }, []);
+
+    const fetchFactionPoints = useCallback(async () => {
+        try {
+            const points: { [key: number]: number } = {};
+            const fetchedFactions = await getAllFactionsUser();
+            await Promise.all(
+                fetchedFactions.map(async (faction: Faction) => {
+                    const res = await getFactionsPoints(faction.factionId);
+                    points[faction.factionId] = Number(res);
+                })
+            );
+            setFactionPoints(points);
+        } catch (err) {
+            console.error("Erreur lors du chargement des points des factions", err);
+        }
+    }, []);
+
+    const fetchInitialData = useCallback(async () => {
+        await Promise.all([fetchChallenges(), fetchFactions()]);
+        await fetchFactionPoints();
+    }, [fetchChallenges, fetchFactions, fetchFactionPoints]);
 
     useEffect(() => {
         const init = async () => {
@@ -34,47 +75,7 @@ export const UserChallengeList = () => {
             }
         };
         init();
-    }, []);
-
-    const fetchInitialData = async () => {
-        await Promise.all([fetchChallenges(), fetchFactions()]);
-        await fetchFactionPoints();
-    };
-
-    const fetchChallenges = async () => {
-        try {
-            const challenges = await getAllChallenges();
-            const challengesFiltered = challenges.filter((c: Challenge) => c.category != "Free")
-            setAvailableChallenges(challengesFiltered);
-        } catch (err) {
-            console.error("Erreur lors du chargement des challenges", err);
-        }
-    };
-
-    const fetchFactions = async () => {
-        try {
-            const data = await getAllFactionsUser();
-            setFactions(data);
-        } catch (err) {
-            console.error("Erreur lors du chargement des factions", err);
-        }
-    };
-
-    const fetchFactionPoints = async () => {
-        try {
-            const points: { [key: number]: number } = {};
-            const fetchedFactions = await getAllFactionsUser();
-            await Promise.all(
-                fetchedFactions.map(async (faction: Faction) => {
-                    const res = await getFactionsPoints(faction.factionId);
-                    points[faction.factionId] = Number(res);
-                })
-            );
-            setFactionPoints(points);
-        } catch (err) {
-            console.error("Erreur lors du chargement des points des factions", err);
-        }
-    };
+    }, [fetchInitialData]);
 
     const dynamicCategories = useMemo(() => {
         const uniqueCategories = new Set(availableChallenges.map(c => c.category));
@@ -142,8 +143,11 @@ export const UserChallengeList = () => {
                             {/* Filtres */}
                             <div className="flex flex-col sm:flex-row justify-between gap-4">
                                 <div>
-                                    <label className="font-semibold mr-2">Filtrer par catégorie :</label>
+                                    <label htmlFor="categorySelect" className="font-semibold mr-2">
+                                        Filtrer par catégorie :
+                                    </label>
                                     <select
+                                        id="categorySelect"
                                         value={selectedCategory}
                                         onChange={(e) => setSelectedCategory(e.target.value)}
                                         className="border border-gray-300 rounded px-3 py-1"
@@ -155,8 +159,11 @@ export const UserChallengeList = () => {
                                 </div>
 
                                 <div>
-                                    <label className="font-semibold mr-2">Trier par points :</label>
+                                    <label htmlFor="sortOrderSelect" className="font-semibold mr-2">
+                                        Trier par points :
+                                    </label>
                                     <select
+                                        id="sortOrderSelect"
                                         value={sortOrder}
                                         onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
                                         className="border border-gray-300 rounded px-3 py-1"

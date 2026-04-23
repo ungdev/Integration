@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Role, RolePoint } from "../../interfaces/role.interface";
+
+import { type Role, type RolePoint } from "../../interfaces/role.interface";
 import { fetchAllRolePoints, fetchAvailableRoles } from "../../services/requests/role.service";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 

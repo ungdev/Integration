@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
-import { Role } from "../../interfaces/role.interface";
+
+import { type Role } from "../../interfaces/role.interface";
 import {
     addPointsToRole,
     fetchAvailableRoles,
@@ -86,8 +87,11 @@ export const AdminRolePointsManager = () => {
                 )}
 
                 <div>
-                    <label className="block text-sm font-medium mb-2">Sélectionner un rôle</label>
+                    <label htmlFor="roleSelect" className="block text-sm font-medium mb-2">
+                        Sélectionner un rôle
+                    </label>
                     <Select
+                        id="roleSelect"
                         options={roles.map(role => ({
                             value: role.roleId,
                             label: role.name,
@@ -118,8 +122,11 @@ export const AdminRolePointsManager = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-2">Ajouter des points</label>
+                            <label htmlFor="addPointsInput" className="block text-sm font-medium mb-2">
+                                Ajouter des points
+                            </label>
                             <input
+                                id="addPointsInput"
                                 type="number"
                                 value={pointsToAdd}
                                 onChange={(e) => setPointsToAdd(Number(e.target.value))}
@@ -135,8 +142,11 @@ export const AdminRolePointsManager = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-2">Retirer des points</label>
+                            <label htmlFor="removePointsInput" className="block text-sm font-medium mb-2">
+                                Retirer des points
+                            </label>
                             <input
+                                id="removePointsInput"
                                 type="number"
                                 value={pointsToRemove}
                                 onChange={(e) => setPointsToRemove(Number(e.target.value))}

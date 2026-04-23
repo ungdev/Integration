@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 import sanitizeHtml from 'sanitize-html';
 import { sendEmail } from '../services/email.service';
 import * as registration_service from '../services/registration.service';
@@ -56,7 +56,7 @@ const getRecipients = async (permission: string | undefined, sendTo: string[] | 
 };
 
 export const handleSendEmail = async (req: Request, res: Response) => {
-    const { subject, templateName, format, permission, sendTo, text, html } = req.body.payload;
+    const { subject, templateName, permission, sendTo, html } = req.body.payload;
 
     try {
         // Récupérer les destinataires
@@ -75,9 +75,8 @@ export const handleSendEmail = async (req: Request, res: Response) => {
             if (templateName !== 'custom') {
 
                 if (templateName === "templateWelcome") {
-                    let token;
-                    let user = await user_service.getUserByEmail(recp);
-                    token = await registration_service.getRegistrationByUserId(user.id);
+                    const user = await user_service.getUserByEmail(recp);
+                    const token = await registration_service.getRegistrationByUserId(user.id);
                     if (!token) continue;
                     // Générer le contenu HTML du mail
                     htmlEmail = generateEmailHtml(templateName, { token: token });

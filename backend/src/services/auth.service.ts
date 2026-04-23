@@ -5,7 +5,7 @@ import { JSDOM } from 'jsdom';
 import jwt from 'jsonwebtoken';
 import { cas_validate_url } from '../../src/utils/secret';
 import { db } from '../database/db';
-import { User, userSchema } from '../schemas/Basic/user.schema';
+import { type User, userSchema } from '../schemas/Basic/user.schema';
 import { registrationSchema } from '../schemas/Relational/registration.schema';
 import { jwtSecret } from '../utils/secret';
 import * as role_service from './role.service';
@@ -108,7 +108,7 @@ export const validateCASTicket = async (ticket: string) => {
         } else {
             console.error("Failed to validate CAS ticket");
         }
-    } catch (error) {
+    } catch {
         throw new Error("Failed to fetch CAS. Please try again later.");
     }
 }

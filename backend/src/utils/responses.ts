@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { type Response } from 'express';
 
 export const Error = (res: Response, details: { error?: any, msg?: string }) => {
     if (details.error) {

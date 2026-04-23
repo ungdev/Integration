@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import * as role_service from "../services/role.service";
 import { Error, Ok } from "../utils/responses";
 

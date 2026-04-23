@@ -3,7 +3,8 @@ import { fr } from "date-fns/locale";
 import { CheckCircle, Circle, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { Permanence } from "../../interfaces/permanence.interface";
+
+import { type Permanence } from "../../interfaces/permanence.interface";
 import { claimedMember, respoDetails } from "../../services/requests/permanence.service";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -46,7 +47,7 @@ export const RespoPresenceManagement = () => {
             );
 
             setPermanences(formatted);
-        } catch (err) {
+        } catch {
             Swal.fire({
                 icon: 'error',
                 title: 'Chargement échoué',
@@ -62,7 +63,7 @@ export const RespoPresenceManagement = () => {
         try {
             await claimedMember(userId, permId, present);
             fetchRespoPermanences();
-        } catch (err) {
+        } catch {
             Swal.fire({
                 icon: 'error',
                 title: 'Mise à jour échouée',

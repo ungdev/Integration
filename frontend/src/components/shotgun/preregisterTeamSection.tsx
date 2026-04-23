@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
+
 import { checkPreRegisterStatus } from "../../services/requests/event.service";
 import { createTeam } from "../../services/requests/team.service";
 import { getUsers } from "../../services/requests/user.service";
@@ -18,7 +19,7 @@ export const PreregisterTeamSection = () => {
             try {
                 const status = await checkPreRegisterStatus();
                 setIsPreRegistrationOpen(status);
-            } catch (error) {
+            } catch {
                 alert("Erreur lors de la récupération du statut de pré-inscription.");
             }
         };
@@ -30,7 +31,7 @@ export const PreregisterTeamSection = () => {
             try {
                 const userList = await getUsers();
                 setUsers(userList);
-            } catch (error) {
+            } catch {
                 alert("Erreur lors de la récupération des utilisateurs.");
             }
         };

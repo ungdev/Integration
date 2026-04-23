@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { decodeToken, getToken } from "../../services/requests/auth.service";
 import { Navbar } from "../navbar";
 

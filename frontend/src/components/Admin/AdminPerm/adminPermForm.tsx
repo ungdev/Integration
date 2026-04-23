@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import Swal from "sweetalert2";
+
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import { Textarea } from "../../../components/ui/textarea";
-
+import { type Permanence } from "../../../interfaces/permanence.interface";
+import { type User } from "../../../interfaces/user.interface";
 import {
     createPermanence,
     updatePermanence,
 } from "../../../services/requests/permanence.service";
-
 import { getUsers } from "../../../services/requests/user.service";
-
-import { Permanence } from "../../../interfaces/permanence.interface";
-import { User } from "../../../interfaces/user.interface";
 import { formatDateForDB, formatDateForInput } from "../../utils/datetime_utils";
 
 interface PermanenceFormProps {
@@ -82,7 +80,7 @@ const PermanenceForm = ({
         }
 
 
-        let respoId = respo && !isNaN(Number(respo.userId)) ? Number(respo.userId) : null;
+        const respoId = respo && !isNaN(Number(respo.userId)) ? Number(respo.userId) : null;
 
 
         try {
@@ -157,24 +155,27 @@ const PermanenceForm = ({
                     onChange={(e) => setLocation(e.target.value)}
                 />
                 <div className="flex flex-col gap-1">
-                    <label>Début :</label>
+                    <label htmlFor="startAtInput">Début :</label>
                     <Input
+                        id="startAtInput"
                         type="datetime-local"
                         value={startAt}
                         onChange={(e) => setStartAt(e.target.value)}
                     />
                 </div>
                 <div className="flex flex-col gap-1">
-                    <label>Fin :</label>
+                    <label htmlFor="endAtInput">Fin :</label>
                     <Input
+                        id="endAtInput"
                         type="datetime-local"
                         value={endAt}
                         onChange={(e) => setEndAt(e.target.value)}
                     />
                 </div>
                 <div className="flex flex-col gap-1">
-                    <label>Capacité :</label>
+                    <label htmlFor="capacityInput">Capacité :</label>
                     <Input
+                        id="capacityInput"
                         type="number"
                         placeholder="Capacité"
                         value={capacity}
@@ -182,8 +183,9 @@ const PermanenceForm = ({
                     />
                 </div>
                 <div className="flex flex-col gap-1">
-                    <label>Difficulté :</label>
+                    <label htmlFor="difficultyInput">Difficulté :</label>
                     <Input
+                        id="difficultyInput"
                         type="number"
                         placeholder="Difficulté"
                         value={difficulty}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { News } from "../../interfaces/news.interface";
+
+import { type News } from "../../interfaces/news.interface";
 import {
     createNews,
     deleteNews,
@@ -32,7 +33,7 @@ export const AdminNews = () => {
         try {
             const response = await getAllNews();
             setNewsList(response);
-        } catch (err) {
+        } catch {
             Swal.fire("❌ Erreur", "Erreur lors du chargement des actus", "error");
         } finally {
             setLoading(false);
@@ -106,7 +107,7 @@ export const AdminNews = () => {
             await Swal.fire("✅ Supprimée", response.message, "success");
             resetForm();
             fetchNews();
-        } catch (err) {
+        } catch {
             Swal.fire("❌ Erreur", "Erreur lors de la suppression de l'actu", "error");
         }
     };

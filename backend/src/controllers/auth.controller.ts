@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import bigInt from 'big-integer';
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 import { sign, verify } from 'jsonwebtoken';
 import * as auth_service from '../services/auth.service';
 import * as email_service from '../services/email.service';
@@ -11,7 +11,7 @@ import * as template from '../utils/emailtemplates';
 import { Error, Ok, Unauthorized } from '../utils/responses';
 import { jwtSecret, service_url } from '../utils/secret';
 import { decodeToken } from '../utils/token';
-import { EmailOptions } from './email.controller';
+import { type EmailOptions } from './email.controller';
 
 // Fonction de connexion
 export const login = async (req: Request, res: Response) => {
@@ -84,7 +84,7 @@ export const handlecasticket = async (req: Request, res: Response) => {
         } else {
             Unauthorized(res, { msg: 'Unauthorized: No ticket provided' });
         }
-    } catch (error) {
+    } catch {
         Unauthorized(res, { msg: 'Unauthorized: Invalid token' });
     }
 }
@@ -126,7 +126,7 @@ export const isTokenValid = async (req: Request, res: Response) => {
         // Répondre une seule fois
         Ok(res, { data: true });
         return
-    } catch (error) {
+    } catch {
         Error(res, { msg: "Unauthorized: Token validation failed" });
         return
     }
@@ -188,7 +188,7 @@ export const requestPasswordUser = async (req: Request, res: Response) => {
         await email_service.sendEmail(emailOptions);
         Ok(res, { msg: 'Email for password reste sent !' })
         return
-    } catch (error) {
+    } catch {
         Error(res, { msg: 'Error when reseting password' });
         return
     }

@@ -1,11 +1,12 @@
 import { CheckCircle2, Edit, Search, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import Select, { SingleValue } from "react-select";
+import Select, { type SingleValue } from "react-select";
 import Swal from "sweetalert2";
-import { Challenge } from "../../../interfaces/challenge.interface";
-import { Faction } from "../../../interfaces/faction.interface";
-import { Team } from "../../../interfaces/team.interface";
-import { User } from "../../../interfaces/user.interface";
+
+import { type Challenge } from "../../../interfaces/challenge.interface";
+import { type Faction } from "../../../interfaces/faction.interface";
+import { type Team } from "../../../interfaces/team.interface";
+import { type User } from "../../../interfaces/user.interface";
 import { deleteChallenge, validateChallenge } from "../../../services/requests/challenge.service";
 import { Button } from "../../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
@@ -56,7 +57,7 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
             await deleteChallenge(id);
             Swal.fire("Supprimé ✅", "Le challenge a bien été supprimé.", "success");
             refreshChallenges();
-        } catch (err) {
+        } catch {
             Swal.fire("Erreur ❌", "Impossible de supprimer le challenge.", "error");
         }
     };

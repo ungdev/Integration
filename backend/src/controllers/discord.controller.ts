@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import * as discord_service from "../services/discord.service";
 import { Error, Ok } from "../utils/responses";
 

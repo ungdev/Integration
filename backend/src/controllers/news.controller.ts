@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import fs from "fs";
 import path from "path";
 import * as email_service from "../services/email.service";
@@ -112,7 +112,7 @@ export const deleteNews = async (req: Request, res: Response) => {
         Ok(res, { msg: "Actus supprimée avec succès !" });
         ;
 
-    } catch (error) {
+    } catch {
         Error(res, { msg: "Erreur lors de la suppression de l'actus" });
     }
 };

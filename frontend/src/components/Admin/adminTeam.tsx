@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import Swal from "sweetalert2";
-import { Faction } from "../../interfaces/faction.interface";
-import { Team } from "../../interfaces/team.interface";
-import { User } from "../../interfaces/user.interface";
+
+import { type Faction } from "../../interfaces/faction.interface";
+import { type Team } from "../../interfaces/team.interface";
+import { type User } from "../../interfaces/user.interface";
 import { getAllFactionsAdmin } from "../../services/requests/faction.service";
 import {
     createTeamLight,
@@ -107,7 +108,7 @@ export const AdminTeamManagement = () => {
             });
             await Swal.fire("✅ Équipe mise à jour", "", "success");
             fetchData();
-        } catch (err) {
+        } catch {
             Swal.fire("❌ Erreur", "Erreur lors de la mise à jour", "error");
         }
     };
@@ -131,7 +132,7 @@ export const AdminTeamManagement = () => {
             setNewTeamName("");
             setNewFactionId(null);
             fetchData();
-        } catch (err) {
+        } catch {
             Swal.fire("❌ Erreur", "Erreur lors de la création de l'équipe", "error");
         }
     };
@@ -156,7 +157,7 @@ export const AdminTeamManagement = () => {
             setTeams(teams.filter((t) => t.teamId !== selectedTeamId));
             setSelectedTeamId(null);
             await Swal.fire("✅ Équipe supprimée", "", "success");
-        } catch (err) {
+        } catch {
             Swal.fire("❌ Erreur", "Erreur lors de la suppression", "error");
         }
     };
@@ -340,7 +341,7 @@ export const DistributeTeam = () => {
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="text-center text-gray-700 space-y-1">
-                    <p>Voulez-vous répartir aléatoirement les nouveaux dans leurs équipes ?</p>
+                    <p>Voulez-vous répartir aléatoirement les nouveaux dans leurs équipes ?</p>
                     <p className="text-sm text-gray-500 font-medium">
                         (Effet uniquement sur ceux qui n'ont pas encore d'équipe)
                     </p>

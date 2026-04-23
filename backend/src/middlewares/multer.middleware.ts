@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { type NextFunction, type Request, type Response } from "express";
 import fs from "fs/promises";
 import multer from "multer";
 import path from "path";
@@ -29,8 +29,7 @@ export const createUploadMiddleware = (
         try {
             if (!req.file) return Error(res, { msg: "Aucun fichier reçu" });
 
-            const user = (req as Request).user?.userId || "anonymous";
-            const { originalname, mimetype, buffer } = req.file;
+            const { originalname, buffer } = req.file;
 
             // Vérif du vrai type
             const { fileTypeFromBuffer } = await import("file-type");
@@ -44,6 +43,7 @@ export const createUploadMiddleware = (
 
             if (!isImage && !isPDF) {
                 Error(res, { msg: "Seules les images et les PDF sont autorisés" });
+                return;
             }
 
             // Création dossier si nécessaire

@@ -1,6 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "../database/db";
-import { News, newsSchema } from "../schemas/Basic/news.schema";
+import { type News, newsSchema } from "../schemas/Basic/news.schema";
 
 // Créer une actu
 export const createNews = async (

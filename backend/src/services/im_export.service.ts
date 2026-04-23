@@ -4,7 +4,8 @@ import { google } from 'googleapis';
 import { parse } from "json2csv";
 import * as user_service from './user.service';
 
-const path = require('path');
+import path from 'path';
+
 const keyFilePath = path.resolve(__dirname, '../utils/google_credentials.json');
 
 // Crée une instance JWT en utilisant la clé du service account

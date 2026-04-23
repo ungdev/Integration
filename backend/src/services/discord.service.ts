@@ -29,7 +29,7 @@ export const syncDiscordUserId = async (code: string, userId: number) => {
     });
 
     //Etape 3 : Update le discord_id de l'user
-    const result = await db.update(userSchema)
+    await db.update(userSchema)
         .set({ discord_id: userResponse.data.id, })
         .where(eq(userSchema.id, userId));
 

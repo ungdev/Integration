@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { checkWEIStatus } from "../../services/requests/event.service";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
@@ -18,7 +19,7 @@ export const WeiSection = () => {
         try {
             const status = await checkWEIStatus();
             setIsWEIOpen(status);
-        } catch (error) {
+        } catch {
             alert("Erreur lors de la récupération du statut de WEI.");
         }
     };

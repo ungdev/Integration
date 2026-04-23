@@ -1,6 +1,7 @@
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+
 import {
     checkChallengeStatus,
     checkFoodStatus,

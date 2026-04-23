@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { syncDiscordUser } from "../../services/requests/user.service";
 
 export const DiscordCallback = () => {
@@ -24,7 +25,7 @@ export const DiscordCallback = () => {
         };
 
         run();
-    }, []);
+    }, [navigate]);
 
     return <div>Connexion à Discord...</div>;
 };

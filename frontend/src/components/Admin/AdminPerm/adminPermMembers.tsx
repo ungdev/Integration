@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import Select, { SingleValue } from "react-select";
+import Select, { type SingleValue } from "react-select";
 import Swal from "sweetalert2";
+
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
-import { Permanence } from "../../../interfaces/permanence.interface";
-import { User } from "../../../interfaces/user.interface";
+import { type Permanence } from "../../../interfaces/permanence.interface";
+import { type User } from "../../../interfaces/user.interface";
 import {
     addUserToPermanence,
     claimedMemberAdmin,

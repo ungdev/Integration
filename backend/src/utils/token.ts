@@ -7,7 +7,7 @@ export const decodeToken = (token: string) => {
     }
     try {
         return verify(token, jwtSecret);
-    } catch (error) {
+    } catch {
         return null
     }
 };

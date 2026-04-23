@@ -1,13 +1,9 @@
 import Swal from "sweetalert2";
+
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
-import { Permanence } from "../../../interfaces/permanence.interface";
+import { type PermanenceActionsProps } from "../../../interfaces/permanence.interface";
 import { closePermanence, openPermanence } from "../../../services/requests/permanence.service";
-
-interface PermanenceActionsProps {
-    permanences: Permanence[];
-    onRefresh: () => void;
-}
 
 // Fonction utilitaire pour "normaliser" une date au début de journée (00:00:00)
 const normalizeDate = (d: Date): Date => {

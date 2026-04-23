@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { FaDiscord } from "react-icons/fa";
 import Select from "react-select";
-import { User } from "../../interfaces/user.interface";
+
+import { type User } from "../../interfaces/user.interface";
 import { getCurrentUser, updateCurrentUser } from "../../services/requests/user.service";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -60,24 +61,25 @@ export const ProfilForm = () => {
             </CardHeader>
             <CardContent className="space-y-6">
                 <div>
-                    <label className="block text-sm font-medium">Prénom</label>
-                    <Input value={user.firstName} disabled />
+                    <label htmlFor="profile-first-name" className="block text-sm font-medium">Prénom</label>
+                    <Input id="profile-first-name" value={user.firstName} disabled />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium">Nom</label>
-                    <Input value={user.lastName} disabled />
+                    <label htmlFor="profile-last-name" className="block text-sm font-medium">Nom</label>
+                    <Input id="profile-last-name" value={user.lastName} disabled />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium">Email</label>
-                    <Input value={user.email} disabled />
+                    <label htmlFor="profile-email" className="block text-sm font-medium">Email</label>
+                    <Input id="profile-email" value={user.email} disabled />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium">Permission</label>
-                    <Input value={user.permission} disabled />
+                    <label htmlFor="profile-permission" className="block text-sm font-medium">Permission</label>
+                    <Input id="profile-permission" value={user.permission} disabled />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium">Filière</label>
+                    <label htmlFor="profile-branch" className="block text-sm font-medium">Filière</label>
                     <Select
+                        inputId="profile-branch"
                         value={branchOptions.find((b) => b.value === branch)}
                         onChange={(selected) => {
                             if (selected) {
@@ -93,11 +95,11 @@ export const ProfilForm = () => {
                 </div>
                 <div className={`${user.contact === null || user.contact === "" ? "p-4 rounded-lg bg-yellow-100 border border-yellow-300" : ""}`}>
                     {user.permission === "Student" || user.permission === "Admin" ? (
-                        <label className="block text-sm font-medium">Contact - <u>Comment tes nouveaux pourront te contacter !</u></label>
+                        <label htmlFor="profile-contact" className="block text-sm font-medium">Contact - <u>Comment tes nouveaux pourront te contacter !</u></label>
                     ) : (
-                        <label className="block text-sm font-medium">Contact (visible uniquement pour les organisateurs)</label>
+                        <label htmlFor="profile-contact" className="block text-sm font-medium">Contact (visible uniquement pour les organisateurs)</label>
                     )}
-                    <Input value={contact} onChange={(e) => setContact(e.target.value)} className={user.contact === null || user.contact === "" ? "bg-white" : ""} />
+                    <Input id="profile-contact" value={contact} onChange={(e) => setContact(e.target.value)} className={user.contact === null || user.contact === "" ? "bg-white" : ""} />
                 </div>
                 <Button onClick={handleSubmit} disabled={loading} className="w-full">
                     {loading ? "Enregistrement..." : "💾 Sauvegarder"}

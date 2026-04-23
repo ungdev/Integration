@@ -1,4 +1,4 @@
-import { User } from '../../interfaces/user.interface';
+import { type User } from '../../interfaces/user.interface';
 import api from '../api';
 
 export const getPermission = (): string | null => {

@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import Swal from "sweetalert2";
+
 import { Footer } from "../components/footer";
 import { Navbar } from "../components/navbar";
 import { RespoPresenceManagement } from "../components/permanence/appealPerm";
 import { AvailablePermanencesList } from "../components/permanence/permList";
 import { MyPermanencesList } from "../components/permanence/permUser";
-import { Permanence } from "../interfaces/permanence.interface";
-import { DecodedToken } from "../interfaces/token.interfaces";
+import { type Permanence } from "../interfaces/permanence.interface";
+import { type DecodedToken } from "../interfaces/token.interfaces";
 import { decodeToken, getToken } from "../services/requests/auth.service";
 import {
     applyToPermanence,
@@ -161,13 +162,13 @@ export const RespoCallPage = () => {
                 let decoded: DecodedToken;
                 try {
                     decoded = decodeToken(token);
-                } catch (err) {
+                } catch {
                     return <Navigate to="/" />;
                 }
 
                 const result = await isUserRespo(Number(decoded.userId));
                 setIsRespo(result.data === true);
-            } catch (err) {
+            } catch {
                 console.error("Erreur lors de la vérification du rôle respo", err);
                 setIsRespo(false);
             }

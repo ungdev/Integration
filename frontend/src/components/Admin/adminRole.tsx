@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
-import { Role } from "../../interfaces/role.interface";
-import { User } from "../../interfaces/user.interface";
+
+import { type Role } from "../../interfaces/role.interface";
+import { type User } from "../../interfaces/user.interface";
 import {
     assignRolesToUser,
     fetchAvailableRoles,
@@ -62,10 +63,11 @@ export const AdminRolePreferences = () => {
             </CardHeader>
             <CardContent>
                 <div className="mb-6">
-                    <label className="block text-sm font-medium mb-2">
+                    <label htmlFor="preferenceSelect" className="block text-sm font-medium mb-2">
                         Sélectionner une préférence
                     </label>
                     <Select
+                        id="preferenceSelect"
                         options={roleOptions}
                         value={
                             selectedPreference
@@ -190,8 +192,11 @@ export const AdminRoleManagement = () => {
                 )}
 
                 <div className="mb-6">
-                    <label className="block text-sm font-medium mb-2">Utilisateur</label>
+                    <label htmlFor="userSelect" className="block text-sm font-medium mb-2">
+                        Utilisateur
+                    </label>
                     <Select
+                        id="userSelect"
                         options={users.map(user => ({
                             value: user.userId,
                             label: `${user.firstName} ${user.lastName}`,
@@ -234,8 +239,11 @@ export const AdminRoleManagement = () => {
                         </ul>
 
                         <div className="mb-4">
-                            <label className="block text-sm font-medium mb-2">Ajouter des rôles</label>
+                            <label htmlFor="addRolesSelect" className="block text-sm font-medium mb-2">
+                                Ajouter des rôles
+                            </label>
                             <Select
+                                id="addRolesSelect"
                                 isMulti
                                 options={roles
                                     .filter(r => !userRoles.some(ur => ur.roleId === r.roleId))

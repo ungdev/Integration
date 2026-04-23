@@ -1,6 +1,7 @@
 import { Check, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+
 import { getAllTentPairs, toggleTentConfirmation } from "../../services/requests/tent.service";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";

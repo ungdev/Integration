@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 import { Footer } from "../components/footer";
 import { Navbar } from "../components/navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";

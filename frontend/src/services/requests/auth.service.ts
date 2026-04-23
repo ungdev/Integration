@@ -1,5 +1,6 @@
 import { jwtDecode } from 'jwt-decode';
-import { DecodedToken } from '../../interfaces/token.interfaces';
+
+import { type DecodedToken } from '../../interfaces/token.interfaces';
 import api from '../api';
 
 export const registerUser = async (firstName: string, lastName: string, email: string, password: string) => {

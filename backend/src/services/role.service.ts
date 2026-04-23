@@ -5,7 +5,7 @@ import { userSchema } from "../schemas/Basic/user.schema";
 import { rolePoints } from "../schemas/Relational/rolepoints.schema";
 import {
     userPreferencesSchema,
-    UserRole,
+    type UserRole,
     userRolesSchema,
 } from "../schemas/Relational/userroles.schema";
 

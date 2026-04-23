@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { type NextFunction, type Request, type Response } from "express";
 import { Unauthorized } from "../utils/responses"; // adapte selon ton projet
 
 export const checkRole = (
@@ -34,7 +34,7 @@ export const checkRole = (
             }
 
             next();
-        } catch (err) {
+        } catch {
             Unauthorized(res, { msg: "Token invalide ou expiré" });
         }
     };

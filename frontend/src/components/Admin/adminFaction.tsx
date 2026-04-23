@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Faction } from "../../interfaces/faction.interface";
+
+import { type Faction } from "../../interfaces/faction.interface";
 import { createFaction, deleteFaction, getAllFactionsAdmin } from "../../services/requests/faction.service";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import { completeRegistration } from "../../services/requests/auth.service";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";

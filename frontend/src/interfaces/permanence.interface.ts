@@ -1,4 +1,4 @@
-import { User } from "./user.interface";
+import { type User } from "./user.interface";
 
 export interface Permanence {
     id: number;
@@ -14,3 +14,8 @@ export interface Permanence {
     difficulty: number;
     respo: User;
 }
+
+export interface PermanenceActionsProps {
+    permanences: Permanence[];
+    onRefresh: () => void;
+};

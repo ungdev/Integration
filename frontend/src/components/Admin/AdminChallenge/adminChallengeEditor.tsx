@@ -2,7 +2,8 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import Swal from "sweetalert2";
-import { Challenge } from "../../../interfaces/challenge.interface";
+
+import { type Challenge } from "../../../interfaces/challenge.interface";
 import { createChallenge, updateChallenge } from "../../../services/requests/challenge.service";
 import { Button } from "../../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";

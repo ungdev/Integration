@@ -3,6 +3,7 @@ import { XMarkIcon, } from "@heroicons/react/24/solid";
 import { AnimatePresence, motion } from "framer-motion";
 import { Fragment, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+
 import { decodeToken, getToken } from "../services/requests/auth.service";
 
 interface NavItem {
@@ -259,15 +260,17 @@ const Dropdown = ({
 
     return (
         <div className="relative">
-            <div
+            <button
+                type="button"
                 onClick={() => setOpen(!open)}
                 className={`${trigger} flex items-center justify-between`}
                 aria-expanded={open}
                 aria-controls={`submenu-${item.label}`}
+                aria-haspopup="menu"
             >
                 {item.icon && <item.icon className="w-5 h-5 mr-1" />}
                 {item.label} <span className="ml-1">▾</span>
-            </div>
+            </button>
             <AnimatePresence>
                 {open && (
                     <motion.ul

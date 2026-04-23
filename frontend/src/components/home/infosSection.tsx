@@ -1,7 +1,9 @@
+import "swiper/swiper-bundle.css";
+
 import { Link } from "react-router-dom";
 import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/swiper-bundle.css";
+
 import { Button } from "../ui/button";
 import { RevealSection } from "../ui/revealSection";
 
@@ -22,7 +24,7 @@ export const Infos = () => (
                     <SwiperSlide key={i} className="relative h-full">
                         <img
                             src={`/img/${img}.jpg`}
-                            alt={`Photo ${i + 1}`}
+                            alt={`${i + 1}`}
                             className="w-full h-full object-cover object-center transition-all duration-1000 ease-in-out"
                         />
                         {/* Overlay sombre */}

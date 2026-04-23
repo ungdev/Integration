@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { News } from "../../interfaces/news.interface";
+
+import { type News } from "../../interfaces/news.interface";
 import { getAllPublished } from "../../services/requests/news.service";
 import { Button } from "../ui/button";
 

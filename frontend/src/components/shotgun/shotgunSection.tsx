@@ -1,6 +1,7 @@
-import { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { ApiErrorResponse } from "../../interfaces/event.interface";
+
+import { type ApiErrorResponse } from "../../interfaces/event.interface";
 import { attemptShotgun, checkShotgunStatus } from "../../services/requests/event.service";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";

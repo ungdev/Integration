@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import * as challenge_service from "../services/challenge.service";
 import { Created, Error, Ok, Unauthorized } from "../utils/responses";
 
@@ -42,9 +42,6 @@ export const validateChallenge = async (req: Request, res: Response) => {
 };
 export const unvalidateChallenge = async (req: Request, res: Response) => {
     const { challengeId, factionId, teamId, userId } = req.body;
-
-    teamId ? teamId : null
-    userId ? userId : null
 
     try {
         const unvalidation = await challenge_service.unvalidateChallenge({ challengeId, factionId, teamId, userId });

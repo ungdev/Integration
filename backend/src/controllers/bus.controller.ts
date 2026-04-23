@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import * as bus_service from "../services/bus.service";
 import { sendEmail } from "../services/email.service";
 import { Error, Ok } from "../utils/responses";

@@ -2,11 +2,12 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { ChevronDown } from "lucide-react";
 import Swal from "sweetalert2";
+
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../components/ui/accordion";
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
-import { Permanence } from "../../../interfaces/permanence.interface";
-import { User } from "../../../interfaces/user.interface";
+import { type Permanence } from "../../../interfaces/permanence.interface";
+import { type User } from "../../../interfaces/user.interface";
 import {
     closePermanence,
     deletePermanence,

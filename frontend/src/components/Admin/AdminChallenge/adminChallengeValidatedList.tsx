@@ -1,7 +1,8 @@
 import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { ValidatedChallenge } from "../../../interfaces/challenge.interface";
+
+import { type ValidatedChallenge } from "../../../interfaces/challenge.interface";
 import { unvalidateChallenge } from "../../../services/requests/challenge.service";
 import { Button } from "../../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";

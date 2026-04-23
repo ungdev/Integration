@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { checkSDIStatus } from "../../services/requests/event.service";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
@@ -18,7 +19,7 @@ export const SdiSection = () => {
         try {
             const status = await checkSDIStatus();
             setIsSDIOpen(status);
-        } catch (error) {
+        } catch {
             alert("Erreur lors de la récupération du statut de SDI.");
         }
     };

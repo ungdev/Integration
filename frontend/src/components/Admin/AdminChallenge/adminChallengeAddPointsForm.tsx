@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import Swal from "sweetalert2";
-import { Faction } from "../../../interfaces/faction.interface";
+
+import { type Faction } from "../../../interfaces/faction.interface";
 import { addPointsToFaction } from "../../../services/requests/challenge.service";
 import { getAllFactionsAdmin } from "../../../services/requests/faction.service";
 import { Button } from "../../ui/button";
@@ -20,7 +21,7 @@ export const AdminChallengeAddPointsForm = () => {
             try {
                 const response = await getAllFactionsAdmin();
                 setFactions(response);
-            } catch (error) {
+            } catch {
                 Swal.fire("Erreur", "Impossible de récupérer les factions", "error");
             }
         };
@@ -59,7 +60,7 @@ export const AdminChallengeAddPointsForm = () => {
             setFactionId(null);
             setPoints("");
             setReason("");
-        } catch (error) {
+        } catch {
             Swal.fire("Erreur", "❌ Une erreur est survenue lors de l'ajout des points", "error");
         }
     };

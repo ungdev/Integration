@@ -1,6 +1,11 @@
-import { RevealSection } from "../components/ui/revealSection";
+//--------------Challenge Import--------------//
+import { useEffect, useRef, useState } from "react";
 
 import { AdminBusTools } from "../components/Admin/adminBus";
+import AdminChallengeList from "../components/Admin/AdminChallenge/adminChalengeList";
+import { AdminChallengeAddPointsForm } from "../components/Admin/AdminChallenge/adminChallengeAddPointsForm";
+import ChallengeEditor from "../components/Admin/AdminChallenge/adminChallengeEditor";
+import { AdminValidatedChallengesList } from "../components/Admin/AdminChallenge/adminChallengeValidatedList";
 import { AdminEmail } from "../components/Admin/adminEmail";
 import { AdminEvents } from "../components/Admin/adminEvent";
 import { AdminExportConnect, AdminImportFoodMenu, AdminImportPlannings } from "../components/Admin/adminExportImport";
@@ -8,30 +13,23 @@ import { AdminFactionManagement } from "../components/Admin/adminFaction";
 import { AdminRolePointsManager } from "../components/Admin/adminGames";
 import { AdminLayout } from "../components/Admin/adminLayout";
 import { AdminNews } from "../components/Admin/adminNews";
-import { AdminRoleManagement, AdminRolePreferences } from "../components/Admin/adminRole";
-import { AdminShotgunRanking } from "../components/Admin/adminShotgun";
-import { AdminTeamManagement, DistributeTeam } from "../components/Admin/adminTeam";
-import { AdminSyncNewStudent, AdminUser } from "../components/Admin/adminUser";
-
-//--------------Challenge Import--------------//
-import { useEffect, useRef, useState } from "react";
-import AdminChallengeList from "../components/Admin/AdminChallenge/adminChalengeList";
-import { AdminChallengeAddPointsForm } from "../components/Admin/AdminChallenge/adminChallengeAddPointsForm";
-import ChallengeEditor from "../components/Admin/AdminChallenge/adminChallengeEditor";
-import { AdminValidatedChallengesList } from "../components/Admin/AdminChallenge/adminChallengeValidatedList";
-import { TentAdmin } from "../components/Admin/adminTent";
-import { Challenge, ValidatedChallenge } from "../interfaces/challenge.interface";
-import { getAllChallenges, getAllChallengesValidates } from "../services/requests/challenge.service";
-
 //--------------Perm Import--------------//
 import PermanenceActions from "../components/Admin/AdminPerm/adminPermAction";
 import PermanenceForm from "../components/Admin/AdminPerm/adminPermForm";
 import { ImportPermCSV } from "../components/Admin/AdminPerm/adminPermImport";
 import PermanenceList from "../components/Admin/AdminPerm/adminPermList";
-import { Faction } from "../interfaces/faction.interface";
-import { Permanence } from "../interfaces/permanence.interface";
-import { Team } from "../interfaces/team.interface";
-import { User } from "../interfaces/user.interface";
+import { AdminRoleManagement, AdminRolePreferences } from "../components/Admin/adminRole";
+import { AdminShotgunRanking } from "../components/Admin/adminShotgun";
+import { AdminTeamManagement, DistributeTeam } from "../components/Admin/adminTeam";
+import { TentAdmin } from "../components/Admin/adminTent";
+import { AdminSyncNewStudent, AdminUser } from "../components/Admin/adminUser";
+import { RevealSection } from "../components/ui/revealSection";
+import { type Challenge, type ValidatedChallenge } from "../interfaces/challenge.interface";
+import { type Faction } from "../interfaces/faction.interface";
+import { type Permanence } from "../interfaces/permanence.interface";
+import { type Team } from "../interfaces/team.interface";
+import { type User } from "../interfaces/user.interface";
+import { getAllChallenges, getAllChallengesValidates } from "../services/requests/challenge.service";
 import { getAllFactionsUser } from "../services/requests/faction.service";
 import { getAllPermanences } from "../services/requests/permanence.service";
 import { getAllTeams } from "../services/requests/team.service";

@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { Event } from "../schemas/Basic/event.schema";
+import { type Request, type Response } from "express";
+import { type Event } from "../schemas/Basic/event.schema";
 import * as event_service from '../services/event.service';
 import * as faction_service from "../services/faction.service";
 import * as team_service from "../services/team.service";
@@ -41,7 +41,7 @@ export const createNewTeam = async (req: Request, res: Response) => {
         const newTeam = await team_service.createTeam(teamName, members);
         Ok(res, { msg: "Équipe créée avec succès !", data: newTeam });
         return;
-    } catch (error) {
+    } catch {
         Error(res, { msg: "Erreur lors de la création de l'équipe." });
     }
 };
@@ -50,9 +50,9 @@ export const createNewTeamLight = async (req: Request, res: Response) => {
     const { teamName, factionId } = req.body;
 
     try {
-        const newTeamLigth = await team_service.createTeamLight(teamName, factionId);
+        await team_service.createTeamLight(teamName, factionId);
         Ok(res, { msg: "Equipe créée !" });
-    } catch (error) {
+    } catch {
         Error(res, { msg: "Erreur lors de la création de l'équipe." });
     }
 };
@@ -62,7 +62,7 @@ export const getTeams = async (req: Request, res: Response) => {
         const teams = await team_service.getTeams();
         Ok(res, { data: teams });
         return;
-    } catch (error) {
+    } catch {
         Error(res, { msg: "Erreur lors de la récupération des équipes." });
     }
 };
@@ -72,7 +72,7 @@ export const getTeamsWithfactions = async (req: Request, res: Response) => {
         const teams = await team_service.getTeamsAll();
         Ok(res, { data: teams });
         return;
-    } catch (error) {
+    } catch {
         Error(res, { msg: "Erreur lors de la récupération des équipes et de leur faction." });
     }
 };

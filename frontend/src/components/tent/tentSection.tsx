@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import Swal from "sweetalert2";
-import { Tent } from "../../interfaces/tent.interface";
-import { User } from "../../interfaces/user.interface";
+
+import { type Tent } from "../../interfaces/tent.interface";
+import { type User } from "../../interfaces/user.interface";
 import { decodeToken, getToken } from "../../services/requests/auth.service";
 import { checkWEIStatus } from "../../services/requests/event.service";
 import { cancelTent, createTent, getUserTent } from "../../services/requests/tent.service";
@@ -125,8 +126,9 @@ export const TentPublic = () => {
                         !tentInfo ? (
                             <>
                                 <div className="mb-6">
-                                    <label className="block mb-2 text-gray-700 font-medium">Choisis ton binôme :</label>
+                                    <label htmlFor="tent-partner-select" className="block mb-2 text-gray-700 font-medium">Choisis ton binôme :</label>
                                     <Select
+                                        inputId="tent-partner-select"
                                         placeholder="Sélectionne ton binôme"
                                         options={users
                                             .filter((user: User) => user.userId !== userId)

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
-import { User } from '../../interfaces/user.interface';
+
+import { type User } from '../../interfaces/user.interface';
 import { emailPreview, sendEmail } from '../../services/requests/email.service';
 import { getUsers } from '../../services/requests/user.service';
 import { Button } from '../ui/button';
@@ -52,7 +53,7 @@ export const AdminEmail = () => {
                 const html = await emailPreview(templateName);
                 setPreview(html);
             }
-        } catch (err) {
+        } catch {
             alert('Erreur dans les données JSON');
         }
     };
@@ -110,6 +111,7 @@ export const AdminEmail = () => {
                 <Input placeholder="Sujet" value={subject} onChange={(e) => setSubject(e.target.value)} />
                 <div className="flex items-center space-x-2">
                     <input
+                        id="customEmailCheckbox"
                         type="checkbox"
                         checked={isCustom}
                         onChange={(e) => {
@@ -117,7 +119,7 @@ export const AdminEmail = () => {
                             if (e.target.checked) setTemplateName('');
                         }}
                     />
-                    <label>✏️ Rédiger un mail personnalisé</label>
+                    <label htmlFor="customEmailCheckbox">✏️ Rédiger un mail personnalisé</label>
                 </div>
                 {!isCustom ? (
                     <Select

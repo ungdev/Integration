@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import fs from "fs";
 import path from "path";
 import * as event_service from "../services/event.service";
@@ -150,7 +150,7 @@ export const updatePlannings = async (req: Request, res: Response) => {
 
 export const exportUsersCSV = async (req: Request, res: Response) => {
     try {
-        const filePath = await export_service.exportUsersToCSV();
+        await export_service.exportUsersToCSV();
         Ok(res, { msg: 'CSV des bus généré' });
     } catch (error) {
         console.error(error);

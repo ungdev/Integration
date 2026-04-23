@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import * as randomstring from 'randomstring';
 import * as auth_service from "../services/auth.service";
 import * as user_service from '../services/user.service';
@@ -55,9 +55,9 @@ export const syncNewstudent = async (req: Request, res: Response) => {
         const newStudentfiltered = newStudents.filter((student: any) => !noSyncEmails.includes(student.email));//Nouveau à ne pas sync (Démissionnaires, etc)
 
         for (const element of newStudentfiltered) {
-            let userInDb = await user_service.getUserByEmail(element.email.toLowerCase());
+            const userInDb = await user_service.getUserByEmail(element.email.toLowerCase());
             if (userInDb === undefined) {
-                let tmpPassword = await bcrypt.hash(randomstring.generate(48), 10);
+                const tmpPassword = await bcrypt.hash(randomstring.generate(48), 10);
                 const newUser = await user_service.createUser(
                     element.prenom,
                     element.nom,
@@ -82,7 +82,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     try {
         const user = await user_service.getUserById(userId);
         Ok(res, { data: user });
-    } catch (err) {
+    } catch {
         Error(res, { msg: "Erreur lors de la mise à jour du profil." });
     }
 };
@@ -94,7 +94,7 @@ export const updateProfile = async (req: Request, res: Response) => {
     try {
         const result = await user_service.updateUserInfoByUserId(userId, branch, contact);
         Ok(res, { msg: "Profil mis à jour", data: result });
-    } catch (err) {
+    } catch {
         Error(res, { msg: "Erreur lors de la mise à jour du profil." });
     }
 };
@@ -107,7 +107,7 @@ export const adminUpdateUser = async (req: Request, res: Response) => {
     try {
         const result = await user_service.updateUserByAdmin(parseInt(userId), updates);
         Ok(res, { msg: "Utilisateur mis à jour", data: result });
-    } catch (err) {
+    } catch {
         Error(res, { msg: "Erreur lors de la mise à jour de l'utilisateur." });
     }
 };
@@ -118,7 +118,7 @@ export const adminDeleteUser = async (req: Request, res: Response) => {
     try {
         const result = await user_service.deleteUserById(parseInt(userId));
         Ok(res, { msg: "Utilisateur supprimé", data: result });
-    } catch (err) {
+    } catch {
         Error(res, { msg: "Erreur lors de la suppression de l'utilisateur." });
     }
 };

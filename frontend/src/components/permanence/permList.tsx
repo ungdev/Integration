@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Permanence } from "../../interfaces/permanence.interface";
+
+import { type Permanence } from "../../interfaces/permanence.interface";
 import { Button } from "../ui/button";
 
 interface AvailablePermanencesListProps {

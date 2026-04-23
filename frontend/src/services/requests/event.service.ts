@@ -1,4 +1,4 @@
-import { ApiMessageResponse, ShotgunAttemptPayload, ShotgunAttemptRow, ShotgunStatusData } from '../../interfaces/event.interface';
+import { type ApiMessageResponse, type ShotgunAttemptPayload, type ShotgunAttemptRow, type ShotgunStatusData } from '../../interfaces/event.interface';
 import api from '../api';
 
 export const checkShotgunStatus = async (): Promise<ShotgunStatusData> => {

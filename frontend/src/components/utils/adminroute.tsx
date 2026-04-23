@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { DecodedToken } from "../../interfaces/token.interfaces";
+
+import { type DecodedToken } from "../../interfaces/token.interfaces";
 import { decodeToken, getToken } from "../../services/requests/auth.service";
 
 interface AdminRouteProps {

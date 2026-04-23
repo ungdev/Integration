@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { checkFoodStatus } from "../../services/requests/event.service";
 import { getPermission } from "../../services/requests/user.service";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -16,29 +17,29 @@ export const FoodSection = () => {
         script.async = true;
         document.body.appendChild(script);
 
-        fetchStatus();
-        checkMenuAvailability();
-    }, []);
-
-    const fetchStatus = async () => {
-        try {
-            const status = await checkFoodStatus();
-            setIsFoodOpen(status);
-        } catch (error) {
-            alert("Erreur lors de la récupération du statut de la nourriture.");
-        }
-    };
-
-    const checkMenuAvailability = async () => {
-        try {
-            const response = await fetch(menuUrl, { method: "HEAD" });
-            if (response.ok) {
-                setIsMenuAvailable(true);
+        const fetchStatus = async () => {
+            try {
+                const status = await checkFoodStatus();
+                setIsFoodOpen(status);
+            } catch {
+                alert("Erreur lors de la récupération du statut de la nourriture.");
             }
-        } catch (error) {
-            // Ne rien faire si le fichier n'est pas disponible
-        }
-    };
+        };
+
+        const checkMenuAvailability = async () => {
+            try {
+                const response = await fetch(menuUrl, { method: "HEAD" });
+                if (response.ok) {
+                    setIsMenuAvailable(true);
+                }
+            } catch {
+                // Ne rien faire si le fichier n'est pas disponible
+            }
+        };
+
+        void fetchStatus();
+        void checkMenuAvailability();
+    }, [menuUrl]);
 
 
     return (

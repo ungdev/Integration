@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { db } from '../database/db'; // Import de la connexion PostgreSQL
-import { User, userSchema } from '../schemas/Basic/user.schema';
+import { type User, userSchema } from '../schemas/Basic/user.schema';
 import { registrationSchema } from '../schemas/Relational/registration.schema';
 import { getFaction } from './faction.service';
 import { getUserRoles } from './role.service';

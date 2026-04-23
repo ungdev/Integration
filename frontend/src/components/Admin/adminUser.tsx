@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import Swal from "sweetalert2";
-import { User } from "../../interfaces/user.interface";
+
+import { type User } from "../../interfaces/user.interface";
 import { renewTokenUser, requestPasswordUser } from "../../services/requests/auth.service";
 import {
     deleteUserByAdmin,
@@ -308,7 +309,7 @@ export const AdminSyncNewStudent = () => {
                 text: response.message,
                 confirmButtonColor: "#2563eb",
             });
-        } catch (error) {
+        } catch {
             Swal.fire({
                 icon: "error",
                 title: "Erreur",

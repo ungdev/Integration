@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Role } from "../../interfaces/role.interface";
+
+import { type Role } from "../../interfaces/role.interface";
 import {
     fetchAvailableRoles,
     fetchUserPreferences,
@@ -35,7 +36,7 @@ export const UserPreferences = () => {
     const onSubmit = async (data: Record<string, boolean>) => {
         setLoading(true);
         const selectedRoleIds = Object.entries(data)
-            .filter(([_, isSelected]) => isSelected)
+            .filter(([, isSelected]) => isSelected)
             .map(([roleId]) => parseInt(roleId));
 
         try {

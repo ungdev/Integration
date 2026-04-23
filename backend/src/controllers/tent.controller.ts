@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import { sendEmail } from "../services/email.service";
 import * as tent_service from "../services/tent.service";
 import { getUserById } from "../services/user.service";
@@ -31,7 +31,7 @@ export const cancelTent = async (req: Request, res: Response) => {
     try {
         await tent_service.cancelTent(userId1);
         Ok(res, { msg: "Tente annulée." });
-    } catch (err) {
+    } catch {
         Error(res, { msg: "Erreur lors de l'annulation." });
     }
 };
@@ -44,7 +44,7 @@ export const getUserTent = async (req: Request, res: Response) => {
     try {
         const tent = await tent_service.getTentByUser(userId);
         Ok(res, { data: tent });
-    } catch (err) {
+    } catch {
         Error(res, { msg: "Erreur lors de la récupération." });
     }
 };
@@ -53,7 +53,7 @@ export const getAllTentPairs = async (req: Request, res: Response) => {
     try {
         const tents = await tent_service.getAllTents();
         Ok(res, { data: tents });
-    } catch (err) {
+    } catch {
         Error(res, { msg: "Erreur lors de la récupération des binômes." });
     }
 };

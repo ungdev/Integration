@@ -43,7 +43,7 @@ async function startServer() {
         await initRoles();
         await initEvent();
         await initChallenge();
-        console.log('Base de données initialisée avec succès');
+        console.log('Base de données initialisée avec succès.');
 
         // Utilisation des routes d'authentification
         app.use('/api', defaultRoute)

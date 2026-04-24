@@ -5,20 +5,15 @@ import { checkRole } from '../middlewares/user.middleware';
 const userRouter = express.Router();
 
 // Admin routes
-userRouter.get('/admin/getusersbypermission', checkRole("Admin",[]), userController.getUsersByPermission);
-userRouter.patch('/admin/user/:userId', checkRole("Admin",[]), userController.adminUpdateUser);
-userRouter.delete('/admin/user/:userId', checkRole("Admin",[]), userController.adminDeleteUser);
-userRouter.get('/admin/getusers', checkRole("Admin",["Respo CE"]), userController.getUsersAdmin);
-userRouter.post('/admin/syncnewstudent', checkRole("Admin",[]), userController.syncNewstudent);
-
+userRouter.get('/admin/getusersbypermission', checkRole("Admin", []), userController.getUsersByPermission);
+userRouter.patch('/admin/user/:userId', checkRole("Admin", []), userController.adminUpdateUser);
+userRouter.delete('/admin/user/:userId', checkRole("Admin", []), userController.adminDeleteUser);
+userRouter.get('/admin/getusers', checkRole("Admin", ["Respo CE"]), userController.getUsersAdmin);
+userRouter.post('/admin/syncnewstudent', checkRole("Admin", []), userController.syncNewstudent);
 
 // User routes
 userRouter.patch('/user/me', userController.updateProfile);
 userRouter.get('/user/me', userController.getCurrentUser);
 userRouter.get('/user/getusers', userController.getUsers);
-
-
-
-
 
 export default userRouter;

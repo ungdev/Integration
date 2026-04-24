@@ -1,7 +1,6 @@
 import express from 'express';
 import * as eventController from '../controllers/event.controller';
 import { checkRole } from '../middlewares/user.middleware';
-import { authenticateUser } from '../middlewares/auth.middleware';
 
 const eventRouter = express.Router();
 
@@ -13,7 +12,6 @@ eventRouter.get("/user/weistatus", eventController.checkWEIStatus);
 eventRouter.get("/user/foodstatus", eventController.checkFoodStatus);
 eventRouter.get("/user/challstatus", eventController.checkChallStatus);
 eventRouter.post("/user/shotgunattempt", checkRole("Student", []), eventController.shotgunAttempt);
-
 
 // Admin routes
 eventRouter.post("/admin/shotguntoggle", checkRole("Admin", []), eventController.toggleShotgun);

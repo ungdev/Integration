@@ -1,10 +1,8 @@
+import { Footer } from "../components/footer";
 import { RoleLeaderboard } from "../components/Games/roleLeaderboard";
 import { Navbar } from "../components/navbar";
-import { Footer } from "../components/footer";
 
-
-export const GamesPage = () => (
-
+const GamesPage = () => (
     <div>
         <Navbar />
         <div className="bg-gray-100 min-h-screen py-6 px-4 sm:px-6 lg:px-8">
@@ -15,3 +13,5 @@ export const GamesPage = () => (
         <Footer />
     </div>
 );
+
+export default GamesPage;

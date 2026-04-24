@@ -1,78 +1,74 @@
+import { type NextFunction, type Request, type Response } from "express";
+import fs from "fs/promises";
 import multer from "multer";
 import path from "path";
-import fs from "fs/promises";
-import { Request, Response, NextFunction } from "express";
 import { Error } from "../utils/responses";
 
 export const createUploadMiddleware = (
-  relativeUploadDir: string,
-  modifiedName: boolean = true
-  ) => {
-  const uploadPath = path.resolve(process.cwd(), relativeUploadDir);
+    relativeUploadDir: string,
+    modifiedName: boolean = true
+) => {
+    const uploadPath = path.resolve(process.cwd(), relativeUploadDir);
 
-  // On stocke d'abord en mémoire pour vérifier le type réel
-  const storage = multer.memoryStorage();
+    // On stocke d'abord en mémoire pour vérifier le type réel
+    const storage = multer.memoryStorage();
 
-  const multerUpload = multer({
-    storage,
-    limits: {
-      fileSize: 5 * 1024 * 1024, // 5 Mo
-    },
-  });
+    const multerUpload = multer({
+        storage,
+        limits: {
+            fileSize: 5 * 1024 * 1024, // 5 Mo
+        },
+    });
 
-  // Middleware custom pour vérifier et sauvegarder
-  const verifyAndSave = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      if (!req.file) return Error(res, {msg: "Aucun fichier reçu"});
+    // Middleware custom pour vérifier et sauvegarder
+    const verifyAndSave = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            if (!req.file) return Error(res, { msg: "Aucun fichier reçu" });
 
-      const user = (req as Request).user?.userId || "anonymous";
-      const { originalname, mimetype, buffer } = req.file;
+            const { originalname, buffer } = req.file;
 
-      console.log(
-        `[UPLOAD] User: ${user}, File: ${originalname}, Mimetype annoncé: ${mimetype}`
-      );
+            // Vérif du vrai type
+            const { fileTypeFromBuffer } = await import("file-type");
+            const detected = await fileTypeFromBuffer(buffer);
+            console.log(
+                `[UPLOAD] Type détecté: ${detected?.mime || "inconnu"}`
+            );
 
-      // Vérif du vrai type
-      const { fileTypeFromBuffer } = await import("file-type");
-      const detected = await fileTypeFromBuffer(buffer);
-      console.log(
-        `[UPLOAD] Type détecté: ${detected?.mime || "inconnu"}`
-      );
+            const isImage = detected?.mime?.startsWith("image/");
+            const isPDF = detected?.mime === "application/pdf";
 
-      const isImage = detected?.mime?.startsWith("image/");
-      const isPDF = detected?.mime === "application/pdf";
+            if (!isImage && !isPDF) {
+                Error(res, { msg: "Seules les images et les PDF sont autorisés" });
+                return;
+            }
 
-      if (!isImage && !isPDF) {
-        Error(res,{ msg:"Seules les images et les PDF sont autorisés"});
-      }
+            // Création dossier si nécessaire
+            await fs.mkdir(uploadPath, { recursive: true });
 
-      // Création dossier si nécessaire
-      await fs.mkdir(uploadPath, { recursive: true });
+            const ext = path.extname(originalname);
+            const baseName = path.basename(originalname, ext);
+            const timestamp = Date.now();
+            const finalName = modifiedName
+                ? `${baseName}-${timestamp}${ext}`
+                : originalname;
 
-      const ext = path.extname(originalname);
-      const baseName = path.basename(originalname, ext);
-      const timestamp = Date.now();
-      const finalName = modifiedName
-        ? `${baseName}-${timestamp}${ext}`
-        : originalname;
+            const finalPath = path.join(uploadPath, finalName);
 
-      const finalPath = path.join(uploadPath, finalName);
+            // Sauvegarde du fichier sur disque
+            await fs.writeFile(finalPath, buffer);
 
-      // Sauvegarde du fichier sur disque
-      await fs.writeFile(finalPath, buffer);
+            // On rajoute le chemin pour les middlewares suivants
+            (req as any).savedFilePath = finalPath;
 
-      // On rajoute le chemin pour les middlewares suivants
-      (req as any).savedFilePath = finalPath;
+            next();
+        } catch (err) {
+            next(err);
+        }
+    };
 
-      next();
-    } catch (err) {
-      next(err);
-    }
-  };
-
-  return { multerUpload, verifyAndSave };
+    return { multerUpload, verifyAndSave };
 };

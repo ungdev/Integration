@@ -1,18 +1,16 @@
-// src/pages/index.tsx
-import { Navbar } from "../components/navbar";
+import { Footer } from "../components/footer";
 import { Infos } from "../components/home/infosSection";
 import { SocialLinks } from "../components/home/socialSection";
-import { Footer } from "../components/footer";
+import { Navbar } from "../components/navbar";
 
-export const HomePage = () => {
-
-  return (
+const HomePage = () => (
     <div>
-      <Navbar />
-      <Infos />
-      <SocialLinks />
+        <Navbar />
+        <Infos />
+        <SocialLinks />
 
-      <Footer />
+        <Footer />
     </div>
-  );
-}
+);
+
+export default HomePage;

@@ -1,6 +1,5 @@
 import express from 'express';
-import  * as discordController from '../controllers/discord.controller';
-
+import * as discordController from '../controllers/discord.controller';
 
 const discordRouter = express.Router();
 

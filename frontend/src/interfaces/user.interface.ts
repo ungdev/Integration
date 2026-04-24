@@ -3,10 +3,9 @@ export interface User {
     firstName: string;
     lastName: string;
     email: string;
-    permission : string;
+    permission: string;
     majeur: boolean;
     branch: string;
     contact: string;
-    discord_id : string;
-    
+    discord_id: string;
 }

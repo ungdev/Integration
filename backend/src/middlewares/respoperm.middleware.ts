@@ -1,29 +1,28 @@
-import { Request, Response, NextFunction } from "express";
-import { Error } from "../utils/responses";
+import { type NextFunction, type Request, type Response } from "express";
 import { isUserRespoOfPermanence } from "../services/permanence.service";
+import { Error } from "../utils/responses";
 
 export const isRespoMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
 ) => {
-  const userId = req.user?.userId;
+    const userId = req.user?.userId;
 
-  if (!userId) {
-    Error(res, { msg: "Utilisateur ou permanence non spécifié" });
-    return;
-  }
-
-  try {
-    const isRespo = await isUserRespoOfPermanence(userId);
-    if (!isRespo) {
-      Error(res, { msg: "Accès refusé : vous n'êtes pas responsable d'une permanence" });
-      return;
+    if (!userId) {
+        Error(res, { msg: "Utilisateur ou permanence non spécifié" });
+        return;
     }
 
-    next(); // ✅ L'utilisateur est bien respo, on continue
-  } catch (err) {
-    console.error(err);
-    Error(res, { msg: "Erreur lors de la vérification du responsable" });
-  }
+    try {
+        const isRespo = await isUserRespoOfPermanence(userId);
+        if (!isRespo) {
+            Error(res, { msg: "Accès refusé : vous n'êtes pas responsable d'une permanence" });
+            return;
+        }
+        next(); // ✅ L'utilisateur est bien respo, on continue
+    } catch (err) {
+        console.error(err);
+        Error(res, { msg: "Erreur lors de la vérification du responsable" });
+    }
 };

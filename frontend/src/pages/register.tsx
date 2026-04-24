@@ -1,10 +1,9 @@
-// pages/LoginPage.tsx
-import {RegistrationForm} from '../components/auth/registrationForm';
+import { RegistrationForm } from '../components/auth/registrationForm';
 
-export const RegisterPage = () => {
-  return (
+const RegisterPage = () => (
     <div>
         <RegistrationForm />
     </div>
-  );
-};
+);
+
+export default RegisterPage;

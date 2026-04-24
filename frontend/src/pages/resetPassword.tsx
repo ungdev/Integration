@@ -1,10 +1,9 @@
-// pages/ResetPage.tsx
-import {ResetPasswordForm} from '../components/auth/resetPasswordForm';
+import { ResetPasswordForm } from '../components/auth/resetPasswordForm';
 
-export const ResetPasswordPage = () => {
-  return (
+const ResetPasswordPage = () => (
     <div>
         <ResetPasswordForm />
     </div>
-  );
-};
+);
+
+export default ResetPasswordPage;

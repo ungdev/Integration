@@ -49,7 +49,6 @@ export const templateResetPassword = `
 </html>
 `;
 
-
 export const templateNotebook = `
 <!DOCTYPE html>
 <html>
@@ -121,8 +120,6 @@ export const templateNotebook = `
     </div>
 </body>
 </html>
-
-
 `;
 
 export const templateAttributionBus = `
@@ -195,7 +192,6 @@ export const templateAttributionBus = `
 </body>
 </html>
 `;
-
 
 export const templateWelcome = `
 <!DOCTYPE html>
@@ -360,8 +356,6 @@ export const templateNotifyTentConfirmation = `
     </div>
   </div>
 `;
-
-
 
 // Fonction pour compiler le template
 export const compileTemplate = (data: any, templateName: string) => {

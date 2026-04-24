@@ -8,6 +8,6 @@ export const challengeSchema = pgTable("challenges", {
     category: text("category").notNull(),
     points: integer("points").notNull(),
     created_by: integer("created_by").references(() => userSchema.id), // l'admin qui l'a créé
-  });
-  export type Challenge = typeof challengeSchema.$inferSelect;
-  
+});
+
+export type Challenge = typeof challengeSchema.$inferSelect;

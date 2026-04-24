@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
 import { resetPasswordUser } from '../../services/requests/auth.service';
 
 export const ResetPasswordForm = () => {
-
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [token, setToken] = useState<string | null>(null);
@@ -36,12 +36,12 @@ export const ResetPasswordForm = () => {
 
         setLoading(true);
         try {
-            const response = await resetPasswordUser(token,password);
+            const response = await resetPasswordUser(token, password);
             if (response) {
                 alert("Mot de passe modifié avec succès.");
                 window.location.href = "/";
             }
-        } catch (error) {
+        } catch {
             alert("Erreur de connexion au serveur.");
         } finally {
             setLoading(false);
@@ -57,8 +57,11 @@ export const ResetPasswordForm = () => {
                 <h1 className="text-2xl font-bold text-center mb-6">Réinitialiser le mot de passe</h1>
 
                 <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">Nouveau mot de passe :</label>
+                    <label htmlFor="passwordInput" className="block text-sm font-medium text-gray-700">
+                        Nouveau mot de passe :
+                    </label>
                     <input
+                        id="passwordInput"
                         type="password"
                         className="mt-1 w-full border border-gray-300 p-2 rounded"
                         value={password}
@@ -68,8 +71,11 @@ export const ResetPasswordForm = () => {
                 </div>
 
                 <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700">Confirmer le mot de passe :</label>
+                    <label htmlFor="confirmPasswordInput" className="block text-sm font-medium text-gray-700">
+                        Confirmer le mot de passe :
+                    </label>
                     <input
+                        id="confirmPasswordInput"
                         type="password"
                         className="mt-1 w-full border border-gray-300 p-2 rounded"
                         value={confirmPassword}

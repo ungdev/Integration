@@ -1,7 +1,8 @@
-import { useRef, useEffect, useState } from "react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { useEffect, useRef, useState } from "react";
+
 import { handleCASTicket, loginUser, requestPasswordUser } from "../../services/requests/auth.service";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 export const AuthForm = () => {
     const userRef = useRef<HTMLInputElement>(null);
@@ -16,7 +17,7 @@ export const AuthForm = () => {
             handleCASLogin();
         }
         if (userRef.current) userRef.current.focus();
-    }, []);
+    }, [casProcessed]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;

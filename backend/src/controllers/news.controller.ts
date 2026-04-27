@@ -7,19 +7,72 @@ import * as user_service from '../services/user.service';
 import * as template from "../utils/emailtemplates";
 import { Error, Ok } from "../utils/responses";
 
+const toStoredUploadPath = (imageUrl: string) => {
+    if (!imageUrl) {
+        return null;
+    }
+
+    let normalized = imageUrl.trim();
+    if (!normalized) {
+        return null;
+    }
+
+    // Accept absolute URLs and keep only the pathname part.
+    if (normalized.startsWith("http://") || normalized.startsWith("https://")) {
+        try {
+            normalized = new URL(normalized).pathname;
+        } catch {
+            return null;
+        }
+    }
+
+    if (normalized.startsWith("/api/")) {
+        normalized = normalized.slice(4);
+    }
+
+    if (!normalized.startsWith("/uploads/")) {
+        return null;
+    }
+
+    return normalized;
+};
+
+const resolveStoredImagePath = (imageUrl: string) => {
+    const storedPath = toStoredUploadPath(imageUrl);
+    if (!storedPath) {
+        return null;
+    }
+
+    return path.resolve(process.cwd(), storedPath.replace(/^\//, ""));
+};
+
+const deleteImageIfExists = (imageUrl: string) => {
+    const imagePath = resolveStoredImagePath(imageUrl);
+    if (!imagePath) {
+        return;
+    }
+
+    if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+    }
+};
+
 export const createNews = async (req: Request, res: Response) => {
-    const { title, description, type, published, target } = req.body;
+    const { title, description, type, published, target, image_url } = req.body;
     const file = req.file;
 
     try {
-        const image_url = file ? `/api/uploads/imgnews/${file.filename}` : undefined;
+        const resolvedImageUrl = file
+            ? `/uploads/news/${file.filename}`
+            : image_url;
+
         const news = await news_service.createNews(
             title,
             description,
             type,
-            published,
+            published === true || published === "true",
             target,
-            image_url);
+            resolvedImageUrl);
         Ok(res, { msg: "Actu créée avec succès", data: news });
     } catch (err) {
         console.error(err);
@@ -103,41 +156,53 @@ export const deleteNews = async (req: Request, res: Response) => {
     try {
         const existing = await news_service.getNewsById(Number(newsId));
         if (existing?.image_url) {
-            const imagePath = path.join(__dirname, "../../", existing.image_url);
-            if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath);
-            }
+            deleteImageIfExists(existing.image_url);
         }
+
         await news_service.deleteNews(Number(newsId));
         Ok(res, { msg: "Actus supprimée avec succès !" });
-        ;
 
-    } catch {
+    } catch (err) {
+        console.error(err);
         Error(res, { msg: "Erreur lors de la suppression de l'actus" });
     }
 };
 
 export const updateNews = async (req: Request, res: Response) => {
-    const { id, title, description, type, target } = req.body;
+    const { id, title, description, type, target, image_url } = req.body;
     const file = req.file;
-    const image_url = file ? `/api/uploads/imgnews/${file.filename}` : undefined;
+    const hasImageUrlField = Object.prototype.hasOwnProperty.call(req.body, "image_url");
+    const resolvedImageUrl = file
+        ? `/uploads/news/${file.filename}`
+        : hasImageUrlField
+            ? (image_url ?? null)
+            : undefined;
 
     try {
         const existing = await news_service.getNewsById(Number(id));
         if (!existing) {
             Error(res, { msg: "Actu introuvable" });
+            return;
         }
 
-        // Supprimer l'ancienne image si une nouvelle est uploadée
-        if (file && existing.image_url) {
-            const oldPath = path.join(__dirname, "../../", existing.image_url);
-            if (fs.existsSync(oldPath)) {
-                fs.unlinkSync(oldPath);
-            }
+        const shouldReplaceImage = typeof resolvedImageUrl === "string";
+        const shouldRemoveImage = resolvedImageUrl === null;
+
+        // Supprimer l'ancienne image si elle est remplacée ou explicitement supprimée.
+        if (existing.image_url && ((shouldReplaceImage && existing.image_url !== resolvedImageUrl) || shouldRemoveImage)) {
+            deleteImageIfExists(existing.image_url);
         }
 
-        const updates: any = { title, description, type, target };
-        if (image_url) updates.image_url = image_url;
+        const updates: {
+            title: string;
+            description: string;
+            type: string;
+            target: string;
+            image_url?: string | null;
+        } = { title, description, type, target };
+        if (resolvedImageUrl !== undefined) {
+            updates.image_url = resolvedImageUrl;
+        }
 
         const updated = await news_service.updateNews(Number(id), updates);
 

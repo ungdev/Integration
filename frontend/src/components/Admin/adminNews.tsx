@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
+import { MIMEType } from "../../interfaces/import.interface";
 import { type News } from "../../interfaces/news.interface";
 import {
     createNews,
@@ -13,13 +14,14 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { AdminFileImport } from "./adminFileImport";
 
 export const AdminNews = () => {
     const [newsList, setNewsList] = useState<News[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingId, setEditingId] = useState<number | null>(null);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [editingImageUrl, setEditingImageUrl] = useState<string | null>(null);
+    const [submitDraftImage, setSubmitDraftImage] = useState<((itemOverride?: string) => Promise<string | null>) | null>(null);
 
     const [formData, setFormData] = useState({
         title: "",
@@ -52,41 +54,78 @@ export const AdminNews = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setSelectedFile(file);
-            setPreviewUrl(URL.createObjectURL(file));
+    const getErrorMessage = (err: unknown, fallback: string) => {
+        if (typeof err === "object" && err !== null && "response" in err) {
+            const response = (err as { response?: { data?: { msg?: string } } }).response;
+            if (response?.data?.msg) {
+                return response.data.msg;
+            }
         }
+
+        return fallback;
+    };
+
+    const resolveNewsImageUrl = (imageUrl: string) => {
+        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+            return imageUrl;
+        }
+
+        const baseUrl = import.meta.env.VITE_API_URL as string;
+        if (imageUrl.startsWith("/api/") && baseUrl.endsWith("/api")) {
+            return `${baseUrl}${imageUrl.slice(4)}`;
+        }
+
+        return `${baseUrl}${imageUrl}`;
     };
 
     const handleCreateOrUpdate = async () => {
         try {
-            const formDataToSend = new FormData();
-
-            if (selectedFile) {
-                formDataToSend.append("file", selectedFile);
-            }
-
-            formDataToSend.append("title", formData.title);
-            formDataToSend.append("description", formData.description);
-            formDataToSend.append("type", formData.type);
-            formDataToSend.append("published", String(formData.published));
-            formDataToSend.append("target", formData.target);
+            const payload = {
+                title: formData.title,
+                description: formData.description,
+                type: formData.type,
+                published: formData.published,
+                target: formData.target,
+            };
 
             let response;
             if (editingId) {
-                formDataToSend.append("id", String(editingId));
-                response = await updateNews(formDataToSend);
+                const uploadedImageUrl = submitDraftImage
+                    ? await submitDraftImage(String(editingId))
+                    : null;
+
+                const image_url = uploadedImageUrl
+                    ? uploadedImageUrl
+                    : editingImageUrl === null
+                        ? null
+                        : undefined;
+
+                response = await updateNews({
+                    ...payload,
+                    id: String(editingId),
+                    image_url,
+                });
             } else {
-                response = await createNews(formDataToSend);
+                response = await createNews(payload);
+
+                const createdId = response?.data?.id;
+                if (createdId && submitDraftImage) {
+                    const image_url = await submitDraftImage(String(createdId));
+                    if (image_url) {
+                        await updateNews({
+                            ...payload,
+                            id: String(createdId),
+                            image_url,
+                        });
+                    }
+                }
             }
 
             await Swal.fire("✅ Succès", response.message, "success");
             resetForm();
             fetchNews();
-        } catch (err: any) {
-            Swal.fire("❌ Erreur", err.response?.data?.msg || "Erreur lors de la sauvegarde", "error");
+        } catch (err: unknown) {
+            Swal.fire("❌ Erreur", getErrorMessage(err, "Erreur lors de la sauvegarde"), "error");
         }
     };
 
@@ -137,8 +176,8 @@ export const AdminNews = () => {
             const response = await publishNews(news, sendEmail.isConfirmed);
             await Swal.fire("✅ Publiée", response.message, "success");
             fetchNews();
-        } catch (err: any) {
-            Swal.fire("❌ Erreur", err.response?.data?.msg || "Erreur lors de la publication", "error");
+        } catch (err: unknown) {
+            Swal.fire("❌ Erreur", getErrorMessage(err, "Erreur lors de la publication"), "error");
         }
     };
 
@@ -151,6 +190,7 @@ export const AdminNews = () => {
             target: news.target,
         });
         setEditingId(news.id);
+        setEditingImageUrl(news.image_url ?? null);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
@@ -162,14 +202,10 @@ export const AdminNews = () => {
             published: false,
             target: "Tous",
         });
-        setSelectedFile(null);
-        setPreviewUrl(null);
         setEditingId(null);
+        setEditingImageUrl(null);
     };
 
-    const handleRemoveImage = () => {
-        setPreviewUrl(null);
-    };
     return (
         <Card className="w-full max-w-3xl mx-auto">
             <CardHeader>
@@ -194,48 +230,19 @@ export const AdminNews = () => {
                         placeholder="Contenu de l'actu"
                     />
 
-                    {/* Image upload amélioré */}
-                    <div className="flex flex-col items-start gap-2">
-                        <Button
-                            type="button"
-                            onClick={() => document.getElementById("fileInput")?.click()}
-                            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold"
-                        >
-                            Choisir une image
-                        </Button>
-
-                        <input
-                            id="fileInput"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            className="hidden"
-                        />
-
-                        {selectedFile && (
-                            <p className="text-sm text-gray-600">{selectedFile.name}</p>
-                        )}
-
-                        {previewUrl && (
-                            <div className="flex flex-col items-center mt-2">
-                                <div className="w-48 h-48 rounded-xl overflow-hidden shadow-lg border border-gray-300">
-                                    <img
-                                        src={previewUrl}
-                                        alt="Aperçu"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                                <Button
-                                    type="button"
-                                    variant="destructive"
-                                    onClick={handleRemoveImage}
-                                    className="mt-2"
-                                >
-                                    Retirer l'image
-                                </Button>
-                            </div>
-                        )}
-                    </div>
+                    <AdminFileImport
+                        category="news"
+                        item={editingId ? String(editingId) : "image"}
+                        title="Image de l'actu"
+                        acceptedTypes={[MIMEType.JPEG, MIMEType.PNG]}
+                        draft
+                        draftInitialUrl={editingImageUrl}
+                        onDraftDelete={() => {
+                            setEditingImageUrl(null);
+                            setSubmitDraftImage(null);
+                        }}
+                        onDraftSubmitReady={(submit) => setSubmitDraftImage(() => submit)}
+                    />
 
                     <select
                         name="type"
@@ -292,7 +299,7 @@ export const AdminNews = () => {
                                         </p>
                                         {news.image_url && (
                                             <img
-                                                src={news.image_url}
+                                                src={resolveNewsImageUrl(news.image_url)}
                                                 alt={news.title}
                                                 className="w-32 h-auto rounded mb-2"
                                             />

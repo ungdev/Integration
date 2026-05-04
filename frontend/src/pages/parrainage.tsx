@@ -1,12 +1,11 @@
-import { Navbar } from "../components/navbar";
 import { useNavigate } from "react-router-dom";
+
+import { Footer } from "../components/footer";
+import { Navbar } from "../components/navbar";
 import { ParrainageNewStudent, ParrainageStudent } from "../components/Parrainnage/parrainageForm";
 import { getPermission } from "../services/requests/user.service";
-import { Footer } from "../components/footer";
 
-
-export const ParrainagePage = () => {
-
+const ParrainagePage = () => {
     const navigate = useNavigate();
     const permission = getPermission();
 
@@ -14,6 +13,7 @@ export const ParrainagePage = () => {
         navigate("/");
         return null;
     }
+
     return (
         <div>
             <Navbar />
@@ -31,3 +31,5 @@ export const ParrainagePage = () => {
         </div>
     );
 }
+
+export default ParrainagePage;

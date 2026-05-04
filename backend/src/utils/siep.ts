@@ -1,75 +1,75 @@
-import { api_utt_admis_url_ismajor, api_utt_auth_url, api_utt_password, api_utt_username } from "./secret";
 import axios from 'axios';
+import { api_utt_admis_url_ismajor, api_utt_auth_url, api_utt_password, api_utt_username } from "./secret";
 
-export const getTokenUTTAPI = async() => {
+export const getTokenUTTAPI = async () => {
     try {
         const response = await axios.post(api_utt_auth_url, {
-          login: api_utt_username,
-          password: api_utt_password,
+            login: api_utt_username,
+            password: api_utt_password,
         }, {
-          headers: {
-            'accept': 'application/json',
-            'Content-Type': 'application/json',
-          }
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
         });
         return response.data.token;
-      } catch (error) {
+    } catch (error) {
         console.error('Error during POST request:', error);
-      }
+    }
 }
 
-export const getNewStudentsFromUTTAPI_PAGE = async (token: string, date : string) => {
-  const allNewStudents: any[] = [];
-  let currentPage = 1;
-  let hasNextPage = true;
+export const getNewStudentsFromUTTAPI_PAGE = async (token: string, date: string) => {
+    const allNewStudents: any[] = [];
+    let currentPage = 1;
+    let hasNextPage = true;
 
-  try {
-    while (hasNextPage) {
-      const response = await axios.get(api_utt_admis_url_ismajor+date+"?page="+currentPage, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    try {
+        while (hasNextPage) {
+            const response = await axios.get(api_utt_admis_url_ismajor + date + "?page=" + currentPage, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
-      const data = response.data;
-      const students = data['hydra:member'];
-      const nextPage = data['hydra:view']?.['hydra:next'];
+            const data = response.data;
+            const students = data['hydra:member'];
+            const nextPage = data['hydra:view']?.['hydra:next'];
 
-      allNewStudents.push(...students);
+            allNewStudents.push(...students);
 
-      if (nextPage) {
-        currentPage++;
-      } else {
-        hasNextPage = false;
-      }
+            if (nextPage) {
+                currentPage++;
+            } else {
+                hasNextPage = false;
+            }
+        }
+        console.log(allNewStudents);
+        return allNewStudents;
+    } catch (error) {
+        console.error('Error during GET request:', error);
+        return [];
     }
-    console.log(allNewStudents);
-    return allNewStudents;
-  } catch (error) {
-    console.error('Error during GET request:', error);
-    return [];
-  }
 };
 
-export const getNewStudentsFromUTTAPI_NOPAGE = async (token: string, date : string) => {
-  const allNewStudents: any[] = [];
+export const getNewStudentsFromUTTAPI_NOPAGE = async (token: string, date: string) => {
+    const allNewStudents: any[] = [];
 
-  try {
+    try {
 
-    const response = await axios.get(api_utt_admis_url_ismajor+date, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+        const response = await axios.get(api_utt_admis_url_ismajor + date, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
 
-    const data = response.data;
-    const students = data['hydra:member'];
+        const data = response.data;
+        const students = data['hydra:member'];
 
-    allNewStudents.push(...students);
+        allNewStudents.push(...students);
 
-    return allNewStudents;
-  } catch (error) {
-    console.error('Error during GET request:', error);
-    return [];
-  }
+        return allNewStudents;
+    } catch (error) {
+        console.error('Error during GET request:', error);
+        return [];
+    }
 };

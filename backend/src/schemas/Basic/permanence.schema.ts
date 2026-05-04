@@ -1,22 +1,22 @@
 import {
-  pgTable,
-  serial,
-  text,
-  timestamp,
-  integer,
-  boolean,
+    boolean,
+    integer,
+    pgTable,
+    serial,
+    text,
+    timestamp,
 } from "drizzle-orm/pg-core";
 
 export const permanenceSchema = pgTable("permanences", {
-  id: serial("id").primaryKey(),
-  name: text("name"),
-  description: text("description"),
-  location: text("location"),
-  start_at: timestamp("start_at"),
-  end_at: timestamp("end_at"),
-  capacity: integer("capacity"),
-  is_open: boolean("is_open").default(false),
-  difficulty: integer("difficulty")
+    id: serial("id").primaryKey(),
+    name: text("name"),
+    description: text("description"),
+    location: text("location"),
+    start_at: timestamp("start_at"),
+    end_at: timestamp("end_at"),
+    capacity: integer("capacity"),
+    is_open: boolean("is_open").default(false),
+    difficulty: integer("difficulty")
 });
 
 export type Permanence = typeof permanenceSchema.$inferSelect;

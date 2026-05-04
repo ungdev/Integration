@@ -1,5 +1,5 @@
+import { type HTMLMotionProps, motion, type Transition } from "framer-motion";
 import * as React from "react";
-import { motion, type HTMLMotionProps, type Transition } from "framer-motion";
 
 import { cn } from "../../lib/utils";
 

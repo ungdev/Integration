@@ -1,12 +1,9 @@
-// pages/LoginPage.tsx
-import {AuthForm} from '../components/auth/authForm';
+import { AuthForm } from '../components/auth/authForm';
 
-const LoginPage = () => {
-  return (
+const LoginPage = () => (
     <div>
         <AuthForm />
     </div>
-  );
-};
+);
 
 export default LoginPage;

@@ -1,26 +1,25 @@
+import { and, desc, eq, isNotNull, not, sum } from "drizzle-orm";
 import { db } from "../database/db";
 import { challengeSchema } from "../schemas/Basic/challenge.schema";
-import { challengeValidationSchema } from "../schemas/Relational/challengevalidation.schema"; // Schéma combiné
-import { and, desc, eq, isNotNull, isNull, sum, not } from "drizzle-orm";
-import * as team_service from "./team.service";
-import * as faction_service from "./faction.service";
-import { userSchema } from "../schemas/Basic/user.schema";
-import { teamSchema } from "../schemas/Basic/team.schema";
 import { factionSchema } from "../schemas/Basic/faction.schema";
+import { teamSchema } from "../schemas/Basic/team.schema";
+import { userSchema } from "../schemas/Basic/user.schema";
+import { challengeValidationSchema } from "../schemas/Relational/challengevalidation.schema"; // Schéma combiné
+import * as team_service from "./team.service";
 
 // 1. Créer un challenge
 export const createChallenge = async (
-    title: string, 
-    description: string, 
-    category: string, 
-    points: number, 
-    created_by: number 
+    title: string,
+    description: string,
+    category: string,
+    points: number,
+    created_by: number
 ) => {
     const challengeValues = {
-        title, 
-        description, 
-        category, 
-        points, 
+        title,
+        description,
+        category,
+        points,
         created_by
     };
     const result = await db.insert(challengeSchema).values(challengeValues).returning();
@@ -67,14 +66,14 @@ export const validateChallenge = async ({
     let target_team_id = null;
     let target_faction_id = null;
 
-    switch(type) {
+    switch (type) {
         case "user":
             target_team_id = await team_service.getUserTeam(targetId);
             target_faction_id = await team_service.getTeamFaction(target_team_id);
             break;
         case "team":
             target_faction_id = await team_service.getTeamFaction(targetId);
-            if(target_faction_id === 0)throw new Error("Il n'y a pas de faction associée");
+            if (target_faction_id === 0) throw new Error("Il n'y a pas de faction associée");
             break;
         case "faction":
             target_faction_id = targetId;
@@ -103,23 +102,20 @@ export const validateChallenge = async ({
 
 // 5. Ajouter ou retirer des points manuellement
 export const modifyFactionPoints = async ({
-    title, 
-    factionId, 
-    points, 
-    reason, 
+    title,
+    factionId,
+    points,
+    reason,
     adminId
 }: {
-    title : string;
+    title: string;
     factionId: number;
     points: number;
     reason: string;
     adminId: number;
     challengeId?: number; // Optional, lié au challenge pour ajouter des points à une faction spécifique
 }) => {
-
-
     const newchall = await createChallenge(title, reason, "Free", points, adminId)
-
     const newChallengeValidationPoints = {
         challenge_id: newchall.id,
         validated_by_admin_id: adminId,
@@ -131,7 +127,6 @@ export const modifyFactionPoints = async ({
 
     // 4. Insérer la validation du challenge dans la base de données
     const insert = await db.insert(challengeValidationSchema).values(newChallengeValidationPoints).returning();
-
 
     return insert[0];
 };
@@ -171,7 +166,6 @@ export const modifyChallenge = async ({
     return updatedChallenge[0];
 };
 
-
 export const unvalidateChallenge = async ({
     challengeId,
     factionId,
@@ -184,72 +178,70 @@ export const unvalidateChallenge = async ({
     userId: number;
 }) => {
     const rowToDelete = await db.select().from(challengeValidationSchema)
-    .where(and(
-        eq(challengeValidationSchema.challenge_id, challengeId),
-        eq(challengeValidationSchema.target_faction_id, factionId),
-        // Vérification de la présence de teamId et userId avant de les ajouter à la requête
-        ...(teamId ? [eq(challengeValidationSchema.target_team_id, teamId)] : []),
-        ...(userId ? [eq(challengeValidationSchema.target_user_id, userId)] : [])
-    ))
-    .limit(1); // Limite à une seule ligne
+        .where(and(
+            eq(challengeValidationSchema.challenge_id, challengeId),
+            eq(challengeValidationSchema.target_faction_id, factionId),
+            // Vérification de la présence de teamId et userId avant de les ajouter à la requête
+            ...(teamId ? [eq(challengeValidationSchema.target_team_id, teamId)] : []),
+            ...(userId ? [eq(challengeValidationSchema.target_user_id, userId)] : [])
+        ))
+        .limit(1); // Limite à une seule ligne
     if (rowToDelete.length > 0) {
         await db.delete(challengeValidationSchema)
             .where(eq(challengeValidationSchema.id, rowToDelete[0].id));
     }
-;
+    ;
 };
-
 
 export const getValidatedChallenges = async () => {
     try {
-      // Effectuer une jointure entre les tables pour récupérer toutes les informations pertinentes
-      const validatedChallenges = await db
-        .select({
-          challenge_id: challengeValidationSchema.challenge_id,
-          challenge_name : challengeSchema.title,
-          challenge_categorie : challengeSchema.category,
-          challenge_description : challengeSchema.description,
-          points: challengeValidationSchema.points,
-          validated_at: challengeValidationSchema.validated_at,
-          target_user_id: challengeValidationSchema.target_user_id,
-          target_team_id: challengeValidationSchema.target_team_id,
-          target_faction_id: challengeValidationSchema.target_faction_id,
-          target_user_firstname: userSchema.first_name,  // ou d'autres champs de user
-          target_user_lastname: userSchema.last_name,
-          target_team_name: teamSchema.name,  // ou d'autres champs de team
-          target_faction_name: factionSchema.name,  // ou d'autres champs de faction
-        })
-        .from(challengeValidationSchema)
-        .leftJoin(challengeSchema, eq(challengeValidationSchema.challenge_id, challengeSchema.id))
-        .leftJoin(userSchema, and(eq(challengeValidationSchema.target_user_id, userSchema.id), isNotNull(challengeValidationSchema.target_user_id)))
-        .leftJoin(teamSchema, and(eq(challengeValidationSchema.target_team_id,(teamSchema.id)), isNotNull(challengeValidationSchema.target_team_id)))
-        .leftJoin(factionSchema, and(eq(challengeValidationSchema.target_faction_id, factionSchema.id), isNotNull(challengeValidationSchema.target_faction_id)))
-        .orderBy(desc(challengeValidationSchema.validated_at));  // Trier par date de validation (si nécessaire)
-  
-      // Retourner les résultats
-      return validatedChallenges;
+        // Effectuer une jointure entre les tables pour récupérer toutes les informations pertinentes
+        const validatedChallenges = await db
+            .select({
+                challenge_id: challengeValidationSchema.challenge_id,
+                challenge_name: challengeSchema.title,
+                challenge_categorie: challengeSchema.category,
+                challenge_description: challengeSchema.description,
+                points: challengeValidationSchema.points,
+                validated_at: challengeValidationSchema.validated_at,
+                target_user_id: challengeValidationSchema.target_user_id,
+                target_team_id: challengeValidationSchema.target_team_id,
+                target_faction_id: challengeValidationSchema.target_faction_id,
+                target_user_firstname: userSchema.first_name,  // ou d'autres champs de user
+                target_user_lastname: userSchema.last_name,
+                target_team_name: teamSchema.name,  // ou d'autres champs de team
+                target_faction_name: factionSchema.name,  // ou d'autres champs de faction
+            })
+            .from(challengeValidationSchema)
+            .leftJoin(challengeSchema, eq(challengeValidationSchema.challenge_id, challengeSchema.id))
+            .leftJoin(userSchema, and(eq(challengeValidationSchema.target_user_id, userSchema.id), isNotNull(challengeValidationSchema.target_user_id)))
+            .leftJoin(teamSchema, and(eq(challengeValidationSchema.target_team_id, (teamSchema.id)), isNotNull(challengeValidationSchema.target_team_id)))
+            .leftJoin(factionSchema, and(eq(challengeValidationSchema.target_faction_id, factionSchema.id), isNotNull(challengeValidationSchema.target_faction_id)))
+            .orderBy(desc(challengeValidationSchema.validated_at));  // Trier par date de validation (si nécessaire)
+
+        // Retourner les résultats
+        return validatedChallenges;
     } catch (error) {
-      console.error("Error retrieving validated challenges:", error);
-      throw new Error("Error retrieving validated challenges");
+        console.error("Error retrieving validated challenges:", error);
+        throw new Error("Error retrieving validated challenges");
     }
 };
 
-
 export const getTotalFactionPoints = async (factionId: number): Promise<number> => {
     try {
-      const result = await db
-        .select({
-            totalPoints: sum(challengeValidationSchema.points) // Somme des points
-           , // Filtre par l'ID de la faction
-        })
-        .from(challengeValidationSchema).where(eq(challengeValidationSchema.target_faction_id, factionId));
-  
-      // Récupérer le total des points
-      
-      const totalPoints = Number(result[0]?.totalPoints) || 0;
-      return totalPoints;
+        const result = await db
+            .select({
+                totalPoints: sum(challengeValidationSchema.points) // Somme des points
+                , // Filtre par l'ID de la faction
+            })
+            .from(challengeValidationSchema).where(eq(challengeValidationSchema.target_faction_id, factionId));
+
+        // Récupérer le total des points
+
+        const totalPoints = Number(result[0]?.totalPoints) || 0;
+        return totalPoints;
     } catch (error) {
-      console.error("Erreur lors de la récupération des points de la faction:", error);
-      throw new Error("Impossible de récupérer les points de la faction");
+        console.error("Erreur lors de la récupération des points de la faction:", error);
+        throw new Error("Impossible de récupérer les points de la faction");
     }
-  };
+};

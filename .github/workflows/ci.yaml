@@ -10,18 +10,61 @@ on:
       - prod
       - dev
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
-  build-api:
+  lint-api:
     runs-on: self-hosted
-    if : github.event_name == 'pull_request' 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
-          node-version: '23'
+          node-version: '24'
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Lint
+        working-directory: ./backend
+        run: npm run lint
+
+  lint-front:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Lint
+        working-directory: ./frontend
+        run: npm run lint
+
+  build-api:
+    runs-on: self-hosted
+    if : github.event_name == 'pull_request'
+    needs:
+      - lint-api
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
 
       - name: Install dependencies
         working-directory: ./backend
@@ -35,14 +78,16 @@ jobs:
   build-front:
     runs-on: self-hosted
     if : github.event_name == 'pull_request' 
+    needs:
+      - lint-front
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
-          node-version: '23'
+          node-version: '24'
 
       - name: Install dependencies
         working-directory: ./frontend
@@ -56,10 +101,11 @@ jobs:
   deploy-api:
     runs-on: self-hosted
     if : github.event_name == 'push'
-
+    needs:
+      - lint-api
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Login to registry
         uses: docker/login-action@v3
@@ -82,10 +128,11 @@ jobs:
   deploy-front:
     runs-on: self-hosted
     if : github.event_name == 'push'
-
+    needs:
+      - lint-front
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Login to registry
         uses: docker/login-action@v3

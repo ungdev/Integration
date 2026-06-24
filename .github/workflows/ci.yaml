@@ -77,7 +77,7 @@ jobs:
 
   build-front:
     runs-on: self-hosted
-    if : github.event_name == 'pull_request' 
+    if : github.event_name == 'pull_request'
     needs:
       - lint-front
     steps:
@@ -101,6 +101,7 @@ jobs:
   deploy-api:
     runs-on: self-hosted
     if : github.event_name == 'push'
+    environment: ${{ github.ref == 'refs/heads/dev' && 'development' || 'production' }}
     needs:
       - lint-api
     steps:
@@ -128,6 +129,7 @@ jobs:
   deploy-front:
     runs-on: self-hosted
     if : github.event_name == 'push'
+    environment: ${{ github.ref == 'refs/heads/dev' && 'development' || 'production' }}
     needs:
       - lint-front
     steps:
@@ -150,11 +152,11 @@ jobs:
           context: ./frontend
           push: true
           build-args: |
-            VITE_API_URL=${{ github.ref == 'refs/heads/prod' && 'https://integration.utt.fr/api' || 'https://integration.dev.uttnetgroup.fr/api' }}
-            VITE_SERVICE_URL=${{ github.ref == 'refs/heads/prod' && 'https://integration.utt.fr/' || 'https://integration.dev.uttnetgroup.fr/' }}
-            VITE_ANALYTICS_WEBSITE_ID=${{ github.ref == 'refs/heads/prod' && secrets.ANALYTICS_WEBSITE_ID_PROD || secrets.ANALYTICS_WEBSITE_ID_DEV }}
-            VITE_ROADBOOK_URL_FRENCH=${{ secrets.ROADBOOK_URL_FRENCH }}
-            VITE_ROADBOOK_URL_ENGLISH=${{ secrets.ROADBOOK_URL_ENGLISH }}
-            VITE_CAS_LOGIN_URL=${{ secrets.CAS_LOGIN_URL }}
+            VITE_API_URL=${{ vars.API_URL }}
+            VITE_SERVICE_URL=${{ vars.SERVICE_URL }}
+            VITE_ANALYTICS_WEBSITE_ID=${{ secrets.ANALYTICS_WEBSITE_ID }}
+            VITE_ROADBOOK_URL_FRENCH=${{ vars.ROADBOOK_URL_FRENCH }}
+            VITE_ROADBOOK_URL_ENGLISH=${{ vars.ROADBOOK_URL_ENGLISH }}
+            VITE_CAS_LOGIN_URL=${{ vars.CAS_LOGIN_URL }}
           tags: |
             ${{ secrets.REGISTRY_URL }}/integration/front:${{ github.ref == 'refs/heads/prod' && 'prod' || 'dev' }}

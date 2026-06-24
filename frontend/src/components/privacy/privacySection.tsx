@@ -1,4 +1,12 @@
-export const PrivacySection = () => (
+export const PrivacySection = () => {
+
+    const ASSOCIATION_NAME = import.meta.env.VITE_ASSOCIATION_NAME
+    const ASSOCIATION_ADDRESS = import.meta.env.VITE_ASSOCIATION_ADDRESS
+    const BDE_NAME = import.meta.env.VITE_BDE_NAME;
+    const DPO_EMAIL = import.meta.env.VITE_DPO_EMAIL;
+    const DPO_NAME = import.meta.env.VITE_DPO_NAME;
+
+    return (
     <div className="bg-slate-50 text-slate-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="rounded-2xl bg-gradient-to-r from-blue-700 to-indigo-700 text-center p-8 sm:p-10 mb-10 shadow-lg text-white">
@@ -10,7 +18,7 @@ export const PrivacySection = () => (
                 <section className="surface-card p-6 sm:p-8">
                     <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Vie Privée et Données à Caractère Personnel</h2>
                     <p className="text-slate-700">
-                        A l'Université de Technologie de Troyes et au sein des associations BDE UTT et UTT Net Group, nous respectons votre vie privée. Les données collectées et utilisées par la plateforme Integration UTT sont nécessaires pour la gestion des membres, des inscriptions aux évènements et des services propoés pendant l'intégration.
+                        A l'Université de Technologie de Troyes et au sein des associations {BDE_NAME} et {ASSOCIATION_NAME}, nous respectons votre vie privée. Les données collectées et utilisées par la plateforme Integration UTT sont nécessaires pour la gestion des membres, des inscriptions aux évènements et des services propoés pendant l'intégration.
                     </p>
                 </section>
 
@@ -80,12 +88,12 @@ export const PrivacySection = () => (
                         </li>
                         <li>
                             Contacter le délégué à la protection des données :{" "}
-                            <a href="mailto:ung+dpo@utt.fr" className="font-semibold text-blue-700 hover:text-blue-900 transition-colors">
-                                ung+dpo@utt.fr
+                            <a href={`mailto:${DPO_EMAIL}`} className="font-semibold text-blue-700 hover:text-blue-900 transition-colors">
+                                {DPO_EMAIL}
                             </a>
                         </li>
                         <li>
-                            Par courrier : UTT Net Group, 12 rue Marie Curie, CS 42060, 10004 TROYES CEDEX
+                            Par courrier : {ASSOCIATION_NAME}, {ASSOCIATION_ADDRESS}
                         </li>
                     </ul>
                     <p className="text-sm text-slate-600 mt-3">
@@ -96,7 +104,7 @@ export const PrivacySection = () => (
                 <section className="surface-card p-6 sm:p-8">
                     <h2 className="text-xl sm:text-2xl font-bold mb-4 text-slate-900">Responsable du Traitement</h2>
                     <p className="text-slate-700 mb-2">
-                        Le responsable du traitement des données pour la plateforme Intégration UTT est <strong>Arthur Dodin</strong>, Président de l'association UTT Net Group.
+                        Le responsable du traitement des données pour la plateforme Intégration UTT est <strong>{DPO_NAME}</strong>, Président de l'association {ASSOCIATION_NAME}.
                     </p>
                     <p className="text-slate-700">
                         L'équipe technique et les administrateurs du site pourront accéder aux données dans le cadre de la gestion de la plateforme et du support technique.
@@ -123,4 +131,4 @@ export const PrivacySection = () => (
             </div>
         </div>
     </div>
-);
+)};

@@ -18,7 +18,7 @@ const acceptedMIMETypesByItem: Record<string, Record<string, MIMEType[]>> = {
     news: {},
     plannings: {
         tc: [MIMEType.PDF],
-        bacheloria: [MIMEType.PDF],
+        bachelor_ia: [MIMEType.PDF],
         fise: [MIMEType.PDF],
         fisea: [MIMEType.PDF],
         master: [MIMEType.PDF],

@@ -26,7 +26,7 @@ type ValidationTarget = "user" | "team" | "faction";
 const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, factions, users }: Props) => {
     const [showValidationFormForId, setShowValidationFormForId] = useState<number | null>(null);
     const [validationType, setValidationType] = useState<ValidationTarget | null>(null);
-    const [selectedTargetId, setSelectedTargetId] = useState<number | null>(null);
+    const [selectedTargetIds, setSelectedTargetIds] = useState<number[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
 
 
@@ -68,13 +68,14 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
     }
 
     const handleValidate = async () => {
-        if (!showValidationFormForId || !validationType || !selectedTargetId) return;
-
+        if (!showValidationFormForId || !validationType || selectedTargetIds.length === 0) return;
+        
+        for (const targetId of selectedTargetIds) {
         try {
             const res = await validateChallenge({
                 challengeId: showValidationFormForId,
                 type: validationType,
-                targetId: selectedTargetId,
+                targetId: targetId, 
             });
 
             Swal.fire({
@@ -87,20 +88,21 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
 
             setShowValidationFormForId(null);
             setValidationType(null);
-            setSelectedTargetId(null);
+            setSelectedTargetIds([]);
             refreshChallenges();
         } catch (err) {
             console.error("Erreur lors de la validation du challenge", err);
             Swal.fire({
                 icon: "error",
                 title: "Erreur ❌",
-                text: "Impossible de valider ce challenge. Réessaie plus tard.",
+                text: "Impossible de valider ce challenge. Réessaie plus tard. (cette erreur peut survenir si le challenge a déjà été validé pour cet utilisateur/équipe/faction)",
             });
         }
+    }
     };
 
     return (
-        <Card className="w-full max-w-3xl mx-auto">
+        <Card className="w-full max-w-7xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                     📜 Challenges
@@ -165,8 +167,9 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
 
                                                 {validationType === "user" && (
                                                     <Select
+                                                        isMulti
                                                         placeholder="Sélectionner un utilisateur"
-                                                        onChange={(option) => setSelectedTargetId(Number(option?.value))}
+                                                        onChange={(options) => setSelectedTargetIds(options.map((o) => Number(o.value)))}
                                                         options={users.map((u: User) => ({
                                                             value: u.userId,
                                                             label: `${u.firstName} ${u.lastName}`,
@@ -176,8 +179,9 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
 
                                                 {validationType === "team" && (
                                                     <Select
+                                                        isMulti
                                                         placeholder="Sélectionner une équipe"
-                                                        onChange={(option) => setSelectedTargetId(Number(option?.value))}
+                                                        onChange={(options) => setSelectedTargetIds(options.map((o) => Number(o.value)))}
                                                         options={teams.map((t: Team) => ({
                                                             value: t.teamId,
                                                             label: t.name,
@@ -187,8 +191,9 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
 
                                                 {validationType === "faction" && (
                                                     <Select
+                                                        isMulti
                                                         placeholder="Sélectionner une faction"
-                                                        onChange={(option) => setSelectedTargetId(Number(option?.value))}
+                                                        onChange={(options) => setSelectedTargetIds(options.map((o) => Number(o.value)))}
                                                         options={factions.map((f: Faction) => ({
                                                             value: f.factionId,
                                                             label: f.name,
@@ -207,7 +212,7 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                                                         onClick={() => {
                                                             setShowValidationFormForId(null);
                                                             setValidationType(null);
-                                                            setSelectedTargetId(null);
+                                                            setSelectedTargetIds([]);
                                                         }}
                                                         className="bg-gray-400 hover:bg-gray-500 text-white"
                                                     >

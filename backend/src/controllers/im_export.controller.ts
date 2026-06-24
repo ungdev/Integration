@@ -163,8 +163,8 @@ export const getUploadedDocumentStatus = async (req: Request, res: Response) => 
         Ok(res, {
             data: toUploadedDocumentStatus(category, latestDocument),
         });
-    } catch (err: any) {
-        if (err?.code === "ENOENT") {
+    } catch (err: unknown) {
+        if ((err as NodeJS.ErrnoException)?.code === "ENOENT") {
             Ok(res, {
                 data: toUploadedDocumentStatus(category, null),
             });
@@ -192,8 +192,8 @@ export const deleteDocument = async (req: Request, res: Response) => {
         }
 
         Ok(res, {});
-    } catch (err: any) {
-        if (err?.code === "ENOENT") {
+    } catch (err: unknown) {
+        if ((err as NodeJS.ErrnoException)?.code === "ENOENT") {
             Ok(res, {});
             return;
         }

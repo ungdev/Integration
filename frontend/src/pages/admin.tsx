@@ -14,6 +14,7 @@ import { AdminFactionManagement } from '../components/Admin/adminFaction';
 import { AdminRolePointsManager } from '../components/Admin/adminGames';
 import { AdminLayout } from '../components/Admin/adminLayout';
 import { AdminNews } from '../components/Admin/adminNews';
+import { AdminImportNotebooks } from '../components/Admin/adminNotebooks';
 //--------------Perm Import--------------//
 import PermanenceActions from '../components/Admin/AdminPerm/adminPermAction';
 import PermanenceForm from '../components/Admin/AdminPerm/adminPermForm';
@@ -108,6 +109,10 @@ export const AdminPageExport: React.FC = () => (
 
             <RevealSection delay={0.2}>
                 <AdminImportPlannings />
+            </RevealSection>
+
+            <RevealSection delay={0.3}>
+                <AdminImportNotebooks />
             </RevealSection>
         </div>
     </AdminLayout>

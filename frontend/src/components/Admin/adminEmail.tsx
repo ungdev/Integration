@@ -9,14 +9,20 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from '../ui/input';
 
+type SelectOption = {
+    value: string;
+    label: string;
+};
+
 export const AdminEmail = () => {
     const [subject, setSubject] = useState('');
     const [templateName, setTemplateName] = useState('');
     const [format] = useState<'html' | 'txt'>('html');
     const [isCustom, setIsCustom] = useState(false);
+    const [customTitle, setCustomTitle] = useState('');
     const [customContent, setCustomContent] = useState('');
     const [permission, setPermission] = useState<string | null>(null);
-    const [sendTo, setSendTo] = useState<any[]>([]);
+    const [sendTo, setSendTo] = useState<SelectOption[]>([]);
     const [preview, setPreview] = useState('');
     const [users, setUsers] = useState<User[]>([]);
 
@@ -48,9 +54,14 @@ export const AdminEmail = () => {
     const handlePreview = async () => {
         try {
             if (isCustom) {
-                setPreview(customContent);
+                const html = await emailPreview({
+                    templateName: 'custom',
+                    title: customTitle || subject,
+                    content: customContent,
+                });
+                setPreview(html);
             } else {
-                const html = await emailPreview(templateName);
+                const html = await emailPreview({ templateName });
                 setPreview(html);
             }
         } catch {
@@ -63,22 +74,31 @@ export const AdminEmail = () => {
 
         const emails = sendTo.map((u) => u.value);
 
-
         const payload = {
             subject,
             templateName: isCustom ? 'custom' : templateName,
             format,
             permission,
             sendTo: permission ? null : emails,
+            title: isCustom ? customTitle || subject : undefined,
+            content: isCustom ? customContent : undefined,
             html: isCustom ? customContent : undefined,
         };
 
-        const res = await sendEmail(payload);
-        Swal.fire({
-            icon: 'success',
-            title: 'Email envoyé',
-            text: res.message,
-        });
+        try {
+            const res = await sendEmail(payload);
+            Swal.fire({
+                icon: 'success',
+                title: 'Email envoyé',
+                text: res.message,
+            });
+        } catch(error) {
+            Swal.fire({
+                title: "Erreur ❌",
+                text: error?.response?.data?.message || "Une erreur est survenue.",
+                icon: "error",
+            });
+        }
     };
 
     const confirmSend = async () => {
@@ -121,6 +141,13 @@ export const AdminEmail = () => {
                     />
                     <label htmlFor="customEmailCheckbox">✏️ Rédiger un mail personnalisé</label>
                 </div>
+                {isCustom && (
+                    <Input
+                        placeholder="Titre du mail"
+                        value={customTitle}
+                        onChange={(e) => setCustomTitle(e.target.value)}
+                    />
+                )}
                 {!isCustom ? (
                     <Select
                         placeholder="Nom du template"
@@ -150,7 +177,7 @@ export const AdminEmail = () => {
                     <Select
                         isMulti
                         options={users.map((u) => ({ value: u.email, label: `${u.firstName} ${u.lastName}` }))}
-                        onChange={(val) => setSendTo(val as any)}
+                        onChange={(val) => setSendTo((val ?? []) as SelectOption[])}
                     />
                 )}
                 <Button onClick={confirmSend} className="bg-blue-600 text-white">

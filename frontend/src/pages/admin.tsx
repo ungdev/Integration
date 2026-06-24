@@ -8,7 +8,7 @@ import ChallengeEditor from "../components/Admin/AdminChallenge/adminChallengeEd
 import { AdminValidatedChallengesList } from "../components/Admin/AdminChallenge/adminChallengeValidatedList";
 import { AdminEmail } from "../components/Admin/adminEmail";
 import { AdminEvents } from "../components/Admin/adminEvent";
-import { AdminExportConnect, AdminImportFoodMenu, AdminImportPlannings } from "../components/Admin/adminExportImport";
+import { AdminExportConnect, AdminImportFoodMenu, AdminImportNotebooks, AdminImportPlannings } from "../components/Admin/adminExportImport";
 import { AdminFactionManagement } from "../components/Admin/adminFaction";
 import { AdminRolePointsManager } from "../components/Admin/adminGames";
 import { AdminLayout } from "../components/Admin/adminLayout";
@@ -106,6 +106,10 @@ export const AdminPageExport: React.FC = () => (
 
             <RevealSection delay={0.2}>
                 <AdminImportPlannings />
+            </RevealSection>
+
+            <RevealSection delay={0.3}>
+                <AdminImportNotebooks />
             </RevealSection>
         </div>
     </AdminLayout>

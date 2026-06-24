@@ -136,3 +136,19 @@ export const AdminImportPlannings = () => {
         </Card>
     );
 };
+
+export const AdminImportNotebooks = () => {
+    return (
+        <Card className="w-full max-w-3xl mx-auto">
+            <CardHeader>
+                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+                    Importer les cahiers de vacances
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <AdminFileImport category="notebooks" item="fr" title="Cahier de vacances (FR)" />
+                <AdminFileImport category="notebooks" item="en" title="Cahier de vacances (EN)" />
+            </CardContent>
+        </Card>
+    );
+};

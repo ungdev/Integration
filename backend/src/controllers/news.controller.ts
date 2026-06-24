@@ -4,8 +4,8 @@ import path from "path";
 import * as email_service from "../services/email.service";
 import * as news_service from "../services/news.service";
 import * as user_service from '../services/user.service';
-import * as template from "../utils/emailtemplates";
 import { Error, Ok } from "../utils/responses";
+import { generateEmailHtml } from './email.controller';
 
 const toStoredUploadPath = (imageUrl: string) => {
     if (!imageUrl) {
@@ -120,8 +120,12 @@ export const publishNews = async (req: Request, res: Response) => {
 
         const news = await news_service.getNewsById(Number(id));
         if (sendEmail) {
-            // Génération du mail HTML
-            const html = template.compileTemplate({ title: news.title }, template.templateNotifyNews);
+            const html = generateEmailHtml('templateNotifyNews', { title: news.title });
+
+            if (!html) {
+                Error(res, { msg: 'Template de notification introuvable.' });
+                return;
+            }
 
             const recipients = news.target === "Tous"
                 ? (await user_service.getUsersAdmin()).map(u => u.email)

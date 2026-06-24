@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { zimbra_host, zimbra_password, zimbra_user } from '../utils/secret';
+import { email_from, email_host, email_password, email_user } from '../utils/secret';
 
 interface EmailOptions {
     from: string;
@@ -14,12 +14,12 @@ interface EmailOptions {
 export const sendEmail = async (options: EmailOptions): Promise<void> => {
     try {
         const transporter = nodemailer.createTransport({
-            host: zimbra_host,
+            host: email_host,
             port: 587,
             secure: false,
             auth: {
-                user: zimbra_user,
-                pass: zimbra_password,
+                user: email_user,
+                pass: email_password,
             },
             tls: {
                 rejectUnauthorized: false,
@@ -27,7 +27,7 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
         });
 
         const mailOptions = {
-            from: options.from,
+            from: options.from || email_from,
             to: options.to ? options.to.join(', ') : '',
             subject: options.subject,
             text: options.text,

@@ -1,0 +1,20 @@
+<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>
+    <cas:authenticationSuccess>
+        <cas:user>dodinart</cas:user>
+        <cas:attributes>
+            <cas:clientIpAddress>10.18.5.22</cas:clientIpAddress>
+            <cas:isFromNewLogin>false</cas:isFromNewLogin>
+            <cas:authenticationDate>2026-04-29T14:15:17.903700123Z</cas:authenticationDate>
+            <cas:bypassMultifactorAuthentication>false</cas:bypassMultifactorAuthentication>
+            <cas:authnContextClass>mfa-esupotp</cas:authnContextClass>
+            <cas:successfulAuthenticationHandlers>EsupOtpAuthenticationHandler</cas:successfulAuthenticationHandlers>
+            <cas:userAgent>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0</cas:userAgent>
+            <cas:credentialType>EsupOtpCredential</cas:credentialType>
+            <cas:uid>dodinart</cas:uid>
+            <cas:authenticationMethod>EsupOtpAuthenticationHandler</cas:authenticationMethod>
+            <cas:geoLocation>unknown</cas:geoLocation>
+            <cas:serverIpAddress>193.50.230.213</cas:serverIpAddress>
+            <cas:longTermAuthenticationRequestTokenUsed>false</cas:longTermAuthenticationRequestTokenUsed>
+        </cas:attributes>
+    </cas:authenticationSuccess>
+</cas:serviceResponse>

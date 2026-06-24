@@ -1,0 +1,11 @@
+<cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'>
+    <cas:authenticationSuccess>
+        <cas:user>dodinart</cas:user>
+        <cas:attributes>
+            <cas:uid>dodinart</cas:uid>
+            <cas:mail>arthur.dodin@utt.fr</cas:mail>
+            <cas:sn>DODIN</cas:sn>
+            <cas:givenName>Arthur</cas:givenName>
+        </cas:attributes>
+    </cas:authenticationSuccess>
+</cas:serviceResponse>

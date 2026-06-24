@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 
-export const RoadBookCard = () => (
+export const RoadBookCard = () => {
+
+    const roadbookUrlFrench = import.meta.env.VITE_ROADBOOK_URL_FRENCH;
+    const roadbookUrlEnglish = import.meta.env.VITE_ROADBOOK_URL_ENGLISH;
+
+    return (
     <div className="flex flex-col items-center px-4 py-8 space-y-8 max-w-full min-h-screen mx-auto">
         <Card className="w-full p-6 rounded-2xl shadow-md space-y-4">
             <h2 className="text-3xl font-bold text-center">
@@ -27,19 +32,28 @@ export const RoadBookCard = () => (
             </div>
 
             <div className="flex flex-col items-center space-y-4">
-                <Link to={import.meta.env.VITE_ROADBOOK_URL_FRENCH}>
-                    <Button className="cursor-pointer">
-                        <span role="img" aria-label="lien" className="mr-2">🔗</span>
-                        Accéder à la version Française
-                    </Button>
-                </Link>
-                {/* <Link to={import.meta.env.VITE_ROADBOOK_URL_ENGLISH}>
-                    <Button variant="link" className="cursor-pointer">
-                    English Version
-                    </Button>
-                </Link> */}
-                <p className="text-destructive">An english version will be available soon !</p>
+                {roadbookUrlFrench ? (
+                    <Link to={roadbookUrlFrench}>
+                        <Button className="cursor-pointer">
+                            <span role="img" aria-label="lien" className="mr-2">🔗</span>
+                            Accéder à la version Française
+                        </Button>
+                    </Link>
+                ) : (
+                    <p className="text-red-500 font-medium text-center">
+                        Le Roadbook n'est pas encore disponible.
+                    </p>
+                )}
+                {roadbookUrlEnglish ? (
+                    <Link to={roadbookUrlEnglish}>
+                        <Button variant="link" className="cursor-pointer">
+                        English Version
+                        </Button>
+                    </Link>
+                ) : (
+                    <p className="text-destructive">An english version will be available soon !</p>
+                )}
             </div>
         </Card>
     </div>
-);
+)};

@@ -70,7 +70,7 @@ export const MyNews = () => {
                         >
                             {news.image_url && (
                                 <img
-                                    src={news.image_url}
+                                    src={`${import.meta.env.VITE_API_URL}${news.image_url}`}
                                     alt={news.title}
                                     className="w-full h-auto rounded-xl mb-4"
                                 />

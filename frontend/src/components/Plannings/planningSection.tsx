@@ -14,11 +14,11 @@ const plannings: Planning[] = [
     },
     {
         name: "Planning Bachelor IA",
-        url: `${import.meta.env.VITE_API_URL}/uploads/plannings/bachelor.pdf`,
+        url: `${import.meta.env.VITE_API_URL}/uploads/plannings/bachelor_ia.pdf`,
     },
     {
         name: "Planning Branche (non-alternant)",
-        url: `${import.meta.env.VITE_API_URL}/uploads/plannings/branche.pdf`,
+        url: `${import.meta.env.VITE_API_URL}/uploads/plannings/fise.pdf`,
     },
     {
         name: "Planning Branche FISEA (alternants)",

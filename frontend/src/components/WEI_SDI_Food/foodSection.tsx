@@ -9,7 +9,7 @@ export const FoodSection = () => {
     const [isMenuAvailable, setIsMenuAvailable] = useState(false);
 
     const permission = getPermission();
-    const menuUrl = `${import.meta.env.VITE_API_URL}/uploads/foodmenu/FoodMenu.pdf`;
+    const menuUrl = `${import.meta.env.VITE_API_URL}/uploads/foodmenu/menu.pdf`;
 
     useEffect(() => {
         const script = document.createElement("script");

@@ -28,6 +28,12 @@ export const Unauthorized = (res: Response, details: { data?: any, msg?: string 
     res.status(Code.UNAUTHORIZED).json(new HttpResponse(Code.UNAUTHORIZED, msg, details.data));
 };
 
+export const Forbidden = (res: Response, details: { data?: any, msg?: string }) => {
+    const msg = details.msg || 'Forbidden';
+    res.status(Code.FORBIDDEN).json(new HttpResponse(Code.FORBIDDEN, msg, details.data));
+};
+
+
 export const Conflict = (res: Response, details: { data?: any, msg?: string }) => {
     const msg = details.msg || "Conflict";
     res.status(Code.CONFLICT).json(new HttpResponse(Code.CONFLICT, msg, details.data));
@@ -40,11 +46,12 @@ export const Teapot = (res: Response, details: { data?: any, msg?: string }) => 
 
 export enum Code {
     OK = 200,
+    CREATED = 201,
     ACCEPTED = 202,
-    NOT_FOUND = 404,
     BAD_REQUEST = 400,
     UNAUTHORIZED = 401,
-    CREATED = 201,
+    FORBIDDEN = 403,
+    NOT_FOUND = 404,
     CONFLICT = 409,
     IM_A_TEAPOT = 418,
     ISE = 500
@@ -76,6 +83,8 @@ export class HttpResponse {
                 return 'INTERNAL_SERVER_ERROR';
             case Code.UNAUTHORIZED:
                 return 'UNAUTHORIZED';
+            case Code.FORBIDDEN:
+                return 'FORBIDDEN';
             case Code.CONFLICT:
                 return 'CONFLICT';
             case Code.IM_A_TEAPOT:

@@ -1,5 +1,4 @@
 import { existsSync, mkdirSync, writeFileSync } from "fs";
-import { JWT } from 'google-auth-library';
 import { google } from 'googleapis';
 import { parse } from "json2csv";
 import * as user_service from './user.service';
@@ -9,7 +8,7 @@ import path from 'path';
 const keyFilePath = path.resolve(__dirname, '../utils/google_credentials.json');
 
 // Crée une instance JWT en utilisant la clé du service account
-const jwtClient = new JWT({
+const jwtClient = new google.auth.JWT({
     keyFile: keyFilePath,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });

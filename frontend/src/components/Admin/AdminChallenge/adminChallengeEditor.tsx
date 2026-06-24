@@ -42,9 +42,19 @@ const ChallengeEditor = ({ editingChallenge, setEditingChallenge, refreshChallen
         setEditingChallenge(null);
     };
 
+    const resetFormPostCreation = () => {
+        setForm({ title: "", description: "", category: form.category, points: 0 });
+        setEditingChallenge(null);
+    };
+
+
     const handleSubmit = async () => {
         setLoading(true);
         try {
+            if (!form.title || !form.description || !form.category) {
+                Swal.fire({ icon: "error", title: "Tous les champs doivent être remplis" });
+                return;
+            } 
             if (editingChallenge) {
                 await updateChallenge({ id: editingChallenge.id, ...form });
                 Swal.fire({ icon: "success", title: "Challenge mis à jour !" });
@@ -53,7 +63,7 @@ const ChallengeEditor = ({ editingChallenge, setEditingChallenge, refreshChallen
                 Swal.fire({ icon: "success", title: "Challenge créé !" });
             }
             refreshChallenges();
-            resetForm();
+            resetFormPostCreation();
         } catch {
             Swal.fire({ icon: "error", title: "Erreur lors de l'enregistrement" });
         } finally {

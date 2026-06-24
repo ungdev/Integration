@@ -1,6 +1,6 @@
 import { CheckCircle2, Edit, Search, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import Select, { type SingleValue } from "react-select";
+import Select from "react-select";
 import Swal from "sweetalert2";
 
 import { type Challenge } from "../../../interfaces/challenge.interface";
@@ -61,6 +61,11 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
             Swal.fire("Erreur ❌", "Impossible de supprimer le challenge.", "error");
         }
     };
+
+    const handleValidationCLick = async (c: Challenge) => {
+        setShowValidationFormForId(c.id);
+        setValidationType(c.category.toLowerCase() as ValidationTarget);
+    }
 
     const handleValidate = async () => {
         if (!showValidationFormForId || !validationType || !selectedTargetId) return;
@@ -145,7 +150,7 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                                             <Trash2 className="w-4 h-4" /> Supprimer
                                         </Button>
                                         <Button
-                                            onClick={() => setShowValidationFormForId(c.id)}
+                                            onClick={() => {handleValidationCLick(c)}}
                                             className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
                                         >
                                             <CheckCircle2 className="w-4 h-4" /> Valider
@@ -157,18 +162,6 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                                             <CardContent className="p-4 space-y-4">
                                                 <h4 className="font-bold text-lg">✅ Valider le challenge</h4>
 
-                                                <Select
-                                                    placeholder="Choisir le type de cible"
-                                                    onChange={(option: SingleValue<{ value: ValidationTarget; label: string }>) => {
-                                                        setValidationType(option?.value ?? null);
-                                                        setSelectedTargetId(null);
-                                                    }}
-                                                    options={[
-                                                        { value: "user", label: "Utilisateur" },
-                                                        { value: "team", label: "Équipe" },
-                                                        { value: "faction", label: "Faction" },
-                                                    ]}
-                                                />
 
                                                 {validationType === "user" && (
                                                     <Select

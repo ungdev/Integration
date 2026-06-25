@@ -341,7 +341,7 @@ export const templateNotifyTentConfirmation = `
       <p style="margin: 10px 0; font-size: 16px;">
         La tente entre <strong>{{user1}}</strong> et <strong>{{user2}}</strong> a été 
         <strong style="color: {{#if confirmed}}green{{else}}red{{/if}};">
-          {{#if confirmed}}validée{{else}}dévalidée{{/if}}
+          {{#if confirmed}}validée{{else}}invalidée{{/if}}
         </strong>.
       </p>
 

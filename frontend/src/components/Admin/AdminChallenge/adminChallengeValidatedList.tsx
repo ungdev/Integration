@@ -102,23 +102,23 @@ export const AdminValidatedChallengesList = ({
     const handleUnvalidate = async (
     ) => {
         const confirm = await Swal.fire({
-            title: "Confirmer la dévalidation ?",
+            title: "Confirmer la invalidation ?",
             text: "Cette action retirera la validation du challenge.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#e3342f",
             cancelButtonColor: "#6b7280",
-            confirmButtonText: "Oui, dévalider",
+            confirmButtonText: "Oui, invalider",
             cancelButtonText: "Annuler",
         });
         if (!confirm.isConfirmed) return;
         for (const targetId of selectedUnvalidationTargetIds) {
-            console.log("Dévalidation du challenge pour l'ID cible :", targetId);
+            console.log("Invalidation du challenge pour l'ID cible :", targetId);
             console.log(validatedChallenges);
             const challengeToUnvalidate = validatedChallenges.find(
                 (c) => c.challenge_id === showUnvalidationFormForId
             );
-            console.log("Challenge à dévalider :", challengeToUnvalidate);
+            console.log("Challenge à invalider :", challengeToUnvalidate);
             if (!challengeToUnvalidate) {
                 Swal.fire({ icon: "error", title: "Erreur", text: "Challenge non trouvé." });
                 return;
@@ -130,7 +130,7 @@ export const AdminValidatedChallengesList = ({
                     teamId: challengeToUnvalidate.target_team_id ?? 0,
                     userId: challengeToUnvalidate.target_user_id ?? 0,
                 });
-                console.log("Réponse de la dévalidation :", res);
+                console.log("Réponse de la invalidation :", res);
                 validatedChallenges = validatedChallenges.filter(
                     (c) =>
                         c.challenge_id === showUnvalidationFormForId &&
@@ -139,14 +139,14 @@ export const AdminValidatedChallengesList = ({
                         c.target_faction_id !== targetId
                 );
             } catch {
-                Swal.fire({ icon: "error", title: "Erreur", text: "Impossible de dévalider ce challenge." });
+                Swal.fire({ icon: "error", title: "Erreur", text: "Impossible de invalider ce challenge." });
             }
         }
 
         Swal.fire({
             icon: "success",
-            title: "Dévalidé",
-            text: "Les challenges ont été dévalidés.",
+            title: "Invalidé",
+            text: "Les challenges ont été invalidés.",
             timer: 1800,
             showConfirmButton: false,
         });
@@ -157,13 +157,13 @@ export const AdminValidatedChallengesList = ({
 
     const handleUnvalidateAll = async () => {
         const confirm = await Swal.fire({
-            title: "Confirmer la dévalidation ?",
+            title: "Confirmer la invalidation ?",
             text: "Cette action retirera la validation du challenge.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#e3342f",
             cancelButtonColor: "#6b7280",
-            confirmButtonText: "Oui, dévalider",
+            confirmButtonText: "Oui, invalider",
             cancelButtonText: "Annuler",
         });
 
@@ -185,7 +185,7 @@ export const AdminValidatedChallengesList = ({
                 Swal.fire({
                     icon: "error",
                     title: "Erreur",
-                    text: "Impossible de dévalider un ou plusieurs challenges.",
+                    text: "Impossible de invalider un ou plusieurs challenges.",
                 });
                 return;
             }
@@ -193,8 +193,8 @@ export const AdminValidatedChallengesList = ({
 
         Swal.fire({
             icon: "success",
-            title: "Dévalidé",
-            text: "Les challenges ont été dévalidés.",
+            title: "Invalidé",
+            text: "Les challenges ont été invalidés.",
             timer: 1800,
             showConfirmButton: false,
         });

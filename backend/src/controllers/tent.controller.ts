@@ -90,7 +90,7 @@ export const toggleTentConfirmation = async (req: Request, res: Response) => {
             to: [user1.email, user2.email],
             subject: confirmed
                 ? "🎉 Votre tente a été validée !"
-                : "⛺ Votre tente a été dévalidée",
+                : "⛺ Votre tente a été invalidée",
             text: "", // optionnel
             html: htmlEmail,
         };
@@ -101,7 +101,7 @@ export const toggleTentConfirmation = async (req: Request, res: Response) => {
         Ok(res, {
             msg: confirmed
                 ? "Tente validée et email envoyé."
-                : "Tente dévalidée et email envoyé.",
+                : "Tente invalidée et email envoyé.",
         });
     } catch (err: any) {
         console.error(err);

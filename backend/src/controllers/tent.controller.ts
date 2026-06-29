@@ -1,9 +1,9 @@
 import { type Request, type Response } from "express";
-import { sendEmail } from "../services/email.service";
+import { generateEmailHtml, sendEmail } from "../services/email.service";
 import * as tent_service from "../services/tent.service";
 import { getUserById } from "../services/user.service";
 import { Error, Ok } from "../utils/responses";
-import { generateEmailHtml } from "./email.controller";
+import { email_from } from "../utils/secret";
 
 export const createTent = async (req: Request, res: Response) => {
     const { userId2 } = req.body;
@@ -86,7 +86,7 @@ export const toggleTentConfirmation = async (req: Request, res: Response) => {
 
         // Options d'email
         const emailOptions = {
-            from: "integration@utt.fr",
+            from: email_from,
             to: [user1.email, user2.email],
             subject: confirmed
                 ? "🎉 Votre tente a été validée !"

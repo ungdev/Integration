@@ -10,7 +10,9 @@ import { initUser } from './src/database/initdb/initUser';
 import { initEvent } from './src/database/initdb/initevent';
 import { initRoles } from './src/database/initdb/initrole';
 import { authenticateUser } from './src/middlewares/auth.middleware';
+import { authenticateAutomation } from './src/middlewares/automation.middleware';
 import authRoutes from './src/routes/auth.routes';
+import automationRoutes from './src/routes/automation.routes';
 import busRoutes from './src/routes/bus.routes';
 import challengeRoutes from './src/routes/challenge.routes';
 import defaultRoute from './src/routes/default.routes';
@@ -49,6 +51,7 @@ async function startServer() {
         // Utilisation des routes d'authentification
         app.use('/api', defaultRoute);
         app.use('/api/auth', authRoutes);
+        app.use('/api/automation', authenticateAutomation, automationRoutes);
         app.use('/api/authadmin', authenticateUser, authRoutes);
         app.use('/api/banned', authenticateUser, bannedRoutes);
         app.use('/api/role', authenticateUser, roleRoutes);

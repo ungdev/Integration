@@ -2,10 +2,11 @@ import { type Request, type Response } from "express";
 import fs from "fs";
 import path from "path";
 import * as email_service from "../services/email.service";
+import { generateEmailHtml } from "../services/email.service";
 import * as news_service from "../services/news.service";
 import * as user_service from '../services/user.service';
 import { Error, Ok } from "../utils/responses";
-import { generateEmailHtml } from './email.controller';
+import { email_from } from "../utils/secret";
 
 const toStoredUploadPath = (imageUrl: string) => {
     if (!imageUrl) {
@@ -136,7 +137,7 @@ export const publishNews = async (req: Request, res: Response) => {
             }
 
             const email = {
-                from: "integration@utt.fr",
+                from: email_from,
                 to: [],
                 subject: `[INTEGRATION UTT] Nouvelle actu : ${news.title}`,
                 html: html,

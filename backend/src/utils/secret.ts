@@ -30,3 +30,4 @@ export const discord_client_id = process.env.DISCORD_CLIENT_ID || "default";
 export const discord_client_secret = process.env.DISCORD_CLIENT_SECRET || "default";
 export const discord_redirect_uri = process.env.DISCORD_REDIRECT_URI || "default";
 export const shotgun_password = process.env.SHOTGUN_PASSWORD || "";
+export const automation_token = process.env.AUTOMATION_TOKEN || "";

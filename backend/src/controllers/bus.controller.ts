@@ -1,8 +1,8 @@
 import { type Request, type Response } from "express";
 import * as bus_service from "../services/bus.service";
-import { sendEmail } from "../services/email.service";
+import { generateEmailHtml, sendEmail } from "../services/email.service";
 import { Error, Ok } from "../utils/responses";
-import { generateEmailHtml } from "./email.controller";
+import { email_from } from "../utils/secret";
 
 interface MulterRequest extends Request {
     file?: Express.Multer.File;
@@ -23,7 +23,7 @@ export const sendBusAttributionEmails = async (req: Request, res: Response) => {
             });
 
             const emailOptions = {
-                from: "integration@utt.fr",
+                from: email_from,
                 to: [attr.email],
                 cc: [],
                 bcc: [],

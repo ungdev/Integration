@@ -1,30 +1,15 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
 import fs from "fs";
 import Papa from "papaparse";
+import type { PermanenceEmailData } from "../../types/email";
+import type { CsvPermanence, LightUser, Notification, Permanence } from "../../types/permanence";
 import { db } from "../database/db";
+import { AlreadyRegisteredError, PermanenceClosedError, PermanenceFullError, PermanenceNotFoundError, RegisterDeadlineError, UnauthorizedError, UnregisterDeadlineError } from "../errors/permanence.error";
 import { permanenceSchema } from "../schemas/Basic/permanence.schema";
 import { userSchema } from "../schemas/Basic/user.schema";
 import { respoPermanenceSchema, userPermanenceSchema } from "../schemas/Relational/userpermanences.schema";
-
-type CsvPermanence = {
-    name: string;
-    description: string;
-    location: string;
-    start_at: string;
-    end_at: string;
-    capacity: string;
-    is_open: string;
-    difficulty: string;
-};
-
-// Classes d'erreurs personnalisées
-class UnauthorizedError extends Error { }
-class AlreadyRegisteredError extends Error { }
-class PermanenceNotFoundError extends Error { }
-class PermanenceClosedError extends Error { }
-class PermanenceFullError extends Error { }
-class UnregisterDeadlineError extends Error { }
-class RegisterDeadlineError extends Error { }
+import { email_from } from "../utils/secret";
+import { generateEmailHtml, sendEmail } from "./email.service";
 
 export const getPermanenceById = async (permId: number) => {
     const permanence = await db.query.permanenceSchema.findFirst({
@@ -492,4 +477,110 @@ export const claimMember = async (userId: number, permId: number, claimed: boole
                 eq(userPermanenceSchema.permanence_id, permId)
             )
         );
+};
+
+export const getDailyNotifications = async (): Promise<Notification[]>  => {
+    const permanences = await db.query.permanenceSchema.findMany({
+        where: sql`
+            ${permanenceSchema.start_at} >= CURRENT_DATE + INTERVAL '1 day'
+            AND ${permanenceSchema.start_at} < CURRENT_DATE + INTERVAL '2 day'
+        `,
+        orderBy: permanenceSchema.start_at,
+    });
+
+    return getMembersFromPermanences(permanences);
+}
+
+export const getHourlyNotifications = async (): Promise<Notification[]> => {
+    const permanences = await db.query.permanenceSchema.findMany({
+        where: sql`
+            ${permanenceSchema.start_at} >= date_trunc('hour', now()) + interval '1 hour'
+            AND ${permanenceSchema.start_at} < date_trunc('hour', now()) + interval '2 hour'
+        `,
+        orderBy: permanenceSchema.start_at,
+    });
+
+    return getMembersFromPermanences(permanences);
+};
+
+// Cette fonction est vouée à disparaitre lors du passage à Prisma, avec un simple "with"
+export const getMembersFromPermanences = async (permanences: Permanence[]): Promise<{
+    permanence: Permanence,
+    members: LightUser[]
+}[]> => {
+    return await Promise.all(
+        permanences.map(async (perm) => {
+            const members = await db
+                .select({
+                    id: userSchema.id,
+                    firstName: userSchema.first_name,
+                    lastName: userSchema.last_name,
+                    email: userSchema.email,
+                })
+                .from(userPermanenceSchema)
+                .innerJoin(userSchema, eq(userSchema.id, userPermanenceSchema.user_id))
+                .where(eq(userPermanenceSchema.permanence_id, perm.id));
+
+            return {
+                permanence: perm,
+                members: members
+            };
+        })
+    );
+}
+
+export const sendNotifications = async (
+    notifications: Notification[]
+) => {
+    for (const notification of notifications) {
+        
+        const permanenceEmailData: PermanenceEmailData = {
+            permName: notification.permanence.name,
+            permBeginDate:
+                new Intl.DateTimeFormat("fr-FR", {
+                    day: "2-digit",
+                    month: "long",
+                }).format(notification.permanence.start_at),
+            permBeginHour: 
+                new Intl.DateTimeFormat("fr-FR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                }).format(notification.permanence.start_at),
+            permEndDate: 
+                new Intl.DateTimeFormat("fr-FR", {
+                    day: "2-digit",
+                    month: "long",
+                }).format(notification.permanence.end_at),
+            permEndHour: 
+                new Intl.DateTimeFormat("fr-FR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                }).format(notification.permanence.end_at),
+            permLocation: notification.permanence.location,
+            permDescription: notification.permanence.description
+        }
+        const subject = `[RAPPEL] Permanence - ${notification.permanence.name}`
+
+        const htmlEmail = generateEmailHtml(
+            "templateNotifyPermanenceReminder",
+            permanenceEmailData
+        );
+
+        for (const member of notification.members) {
+            try {
+
+                const emailOptions = {
+                    from: email_from,
+                    to: [member.email],
+                    subject: subject,
+                    text: "",
+                    html: htmlEmail,
+                };
+
+                await sendEmail(emailOptions);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
 };

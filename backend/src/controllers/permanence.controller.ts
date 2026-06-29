@@ -371,3 +371,31 @@ export const claimMember = async (req: Request, res: Response) => {
         Error(res, { msg: "Erreur lors de la mise à jour du statut du membre" });
     }
 };
+
+export const sendHourlyNotificationToUsers = async (req: Request, res: Response) => {
+
+    const notifications = await permanence_service.getHourlyNotifications();
+
+    if (notifications.length === 0) {
+        Ok(res, { msg: "Aucune notification horaire à envoyer." });
+        return;
+    }
+
+    permanence_service.sendNotifications(notifications);
+
+    Ok(res, { msg: "Notifications horaires envoyées avec succès" });
+};
+
+export const sendDailyNotificationToUsers = async (req: Request, res: Response) => {
+
+    const notifications = await permanence_service.getDailyNotifications();
+
+    if (notifications.length === 0) {
+        Ok(res, { msg: "Aucune notification quotidienne à envoyer." });
+        return;
+    }
+
+    permanence_service.sendNotifications(notifications);
+
+    Ok(res, { msg: "Notifications quotidiennes envoyées avec succès" });
+};

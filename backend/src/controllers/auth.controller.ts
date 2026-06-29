@@ -2,16 +2,17 @@ import bcrypt from 'bcryptjs';
 import bigInt from 'big-integer';
 import { type Request, type Response } from 'express';
 import { sign, verify } from 'jsonwebtoken';
+import type { EmailOptions } from '../../types/email';
+import { templateResetPassword } from '../email/email.registry';
+import { compileTemplate } from '../email/email.renderer';
 import * as auth_service from '../services/auth.service';
 import * as email_service from '../services/email.service';
 import * as registration_service from '../services/registration.service';
 import * as role_service from '../services/role.service';
 import * as user_service from '../services/user.service';
-import * as template from '../utils/emailtemplates';
 import { Error, Ok, Unauthorized } from '../utils/responses';
-import { jwtSecret, service_url } from '../utils/secret';
+import { email_from, jwtSecret, service_url } from '../utils/secret';
 import { decodeToken } from '../utils/token';
-import { type EmailOptions } from './email.controller';
 
 // Fonction de connexion
 export const login = async (req: Request, res: Response) => {
@@ -166,7 +167,7 @@ export const requestPasswordUser = async (req: Request, res: Response) => {
 
 
     // Générer le contenu HTML du mail
-    const htmlEmail = template.compileTemplate({ resetLink: resetLink }, template.templateResetPassword);
+    const htmlEmail = compileTemplate({ resetLink: resetLink }, templateResetPassword);
 
     if (!htmlEmail) {
         Error(res, { msg: "Nom de template invalide" });
@@ -175,7 +176,7 @@ export const requestPasswordUser = async (req: Request, res: Response) => {
 
     // Préparer les options d'email
     const emailOptions: EmailOptions = {
-        from: "integration@utt.fr",
+        from: email_from,
         to: [user_email],
         cc: [],
         bcc: [],

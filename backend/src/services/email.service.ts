@@ -1,15 +1,22 @@
 import nodemailer from 'nodemailer';
+import type { EmailOptions, TemplateData } from "../../types/email";
+import { templateRenderers } from "../email/email.registry";
+import { compileTemplate } from "../email/email.renderer";
 import { email_from, email_host, email_password, email_user } from '../utils/secret';
 
-interface EmailOptions {
-    from: string;
-    to: string[];
-    subject: string;
-    text?: string;
-    html?: string;
-    cc?: string[];
-    bcc?: string[];
-}
+export const generateEmailHtml = (
+    templateName: string,
+    data: TemplateData
+) => {
+    const renderer = templateRenderers[templateName];
+
+    if (!renderer) return null;
+
+    return compileTemplate(
+        renderer.buildData(data),
+        renderer.fileName
+    );
+};
 
 export const sendEmail = async (options: EmailOptions): Promise<void> => {
     try {

@@ -7,6 +7,7 @@ const templateWelcome = 'welcome.html';
 const templateNotifyNews = 'notify-news.html';
 const templateNotifyTentConfirmation = 'notify-tent-confirmation.html';
 const templateNotifyPermanenceReminder = 'notify-permanence-reminder.html';
+const templateMentorReminder = 'mentor-reminder.html';
 
 export const templateRenderers: Record<string, TemplateRenderer> = {
     custom: {
@@ -76,6 +77,12 @@ export const templateRenderers: Record<string, TemplateRenderer> = {
         buildData: (data) => {
             const typedData = data as PermanenceEmailData;
             return typedData;
+        },
+    },
+    templateMentorReminder: {
+        fileName: templateMentorReminder,
+        buildData: () => {
+            return {};
         },
     },
 };

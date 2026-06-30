@@ -31,4 +31,5 @@ export const defaultPreviewData: Record<string, TemplateData> = {
     templateNotifyPermanenceReminder: {
         permanence: {},
     },
+    templateMentorReminder: {},
 };

@@ -1,120 +1,279 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intégration UTT</title>
-</head>
-<body style="font-family: Arial, sans-serif; font-size: 16px; margin: 0; padding: 0; background-color: #ffffff; text-align: center; color: #222;">
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
-        <tr>
-            <td align="center" style="padding: 24px;">
-                <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 100%; margin: 0 auto; background-color: #f8f8f8; border-radius: 8px; overflow: hidden;">
-                    <tr>
-                        <td align="center" style="padding: 10px;">
-                            <img src="https://integration.utt.fr/img/logo_original.png" alt="Logo Intégration UTT" style="width: 104px; height: auto;">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 21px; font-weight: bold; line-height: 1.4; padding: 10px 0; text-align: center;">
-                            INTEGRATION UTT
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="line-height: 1.6; padding: 0 12px 12px; text-align: center;">
-                            <h2 style="font-size: 24px; margin: 0 0 16px; text-align: center;">Le Week-End d'Intégration approhe à grands pas !</h2>
-                            <p>Si tu reçois ce message c'est que tu pars au WEI (youhouu !), tu trouveras dans celui-ci le bus avec lequel tu vas te rendre sur le lieu pour ce week-end.</p>
-                            <p>Fais bien attention à ne <strong>pas être en retard</strong> sous peine de rater ton bus, ça serait embêtant à la fois pour toi et pour nous.</p>
-                            <p>Autre point très important : les essentiels pour le WEI. Tu trouveras ci-dessous un rappel des objets obligatoires à ramener pour passer un bon week-end. Il risque de pleuvoir alors prévoyez bien en conséquence !</p>
-                            <ul style="list-style-type: disc; padding: 0 0 0 20px; margin: 0 auto; text-align: left; display: inline-block;">
-                                <li style="margin-bottom: 5px;">Duvet et matelas gonflable/tapis de sol 🛏️ (si vous n'avez pas de duvet, vous ne partirez pas)</li>
-                                <li style="margin-bottom: 5px;">Gourde, Tupperware, couverts, gobby (=écocup) 🍴</li>
-                                <li style="margin-bottom: 5px;">Vêtements : changes pour 2 jours, pull, maillot de bain 👙</li>
-                                <li style="margin-bottom: 5px;">Manteau imperméable 🧥</li>
-                                <li style="margin-bottom: 5px;">Affaires salissables : change complet &amp; chaussures (à mettre dès le départ en bus) 🚌</li>
-                                <li style="margin-bottom: 5px;">Produits d'hygiène : brosse à dent, serviette, nécessaire de toilette 🪥</li>
-                                <li style="margin-bottom: 5px;">Tongues/crocs pour les douches 🩴</li>
-                                <li style="margin-bottom: 5px;">Papiers importants : Carte d'identité, CB &amp; liquide, autorisation parentale (pour les mineurs) 💳</li>
-                                <li style="margin-bottom: 5px;">Ta place au WEI 📩</li>
-                                <li style="margin-bottom: 5px;">Crème solaire &amp; anti-moustique ☀️</li>
-                                <li style="margin-bottom: 5px;">De quoi grignoter (prenez un pique-nique à manger avant de prendre le bus, pas dans le bus) 😋</li>
-                            </ul>
-                            <p style="margin-top: 20px; font-weight: bold; color: #d00000;">🚫 Affaires interdites :</p>
-                            <ul style="list-style-type: disc; padding: 0 0 0 20px; margin: 0 auto; text-align: left; display: inline-block; color: #d00000;">
-                                <li style="margin-bottom: 5px;">Boissons autres que de l'eau</li>
-                                <li style="margin-bottom: 5px;">Substances illicites</li>
-                                <li style="margin-bottom: 5px;">Armes blanches</li>
-                                <li style="margin-bottom: 5px;">Déodorant en spray</li>
-                            </ul>
-                            <p style="margin-top: 20px;">Pour rappel, voici la vidéo des indispensables du WEI <a href="https://drive.google.com/file/d/1IzeIgHVcoFB4Wk4ngky1HicoBbd08zHO/view?usp=drivesdk" target="_blank" rel="noopener noreferrer">ici</a></p>
-                            <p>Concernant ton bus, tu as été attribué au bus <strong>{{bus}}</strong></p>
-                            <p>Maintenant il faut que tu sois présent en amphi de verdure à l'UTT à <strong>{{time}}</strong></p>
-                            <p>Voilà, toute l'équipe de l'intégration te souhaite un excellent WEI ;)</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0 24px 24px;">
-                            <h3 style="text-align: center;">Retrouve des informations utiles sur notre Instagram !</h3>
-                            <div style="margin: auto; width: fit-content;">
-                                <a href="https://www.instagram.com/bde.utt" target="_blank">
-                                    <img src="https://cdn.tools.unlayer.com/social/icons/rounded/instagram.png" alt="Instagram" style="width: 30px; height: 30px; margin: 5px;">
-                                </a>
-                            </div>
-                            <p>Cordialement,<br>L'équipe intégration UTT</p>
-                            <p style="font-size: 12px; color: #999999; margin: 0;text-align: center;">Si vous avez des questions, n'hésitez pas à <a href="mailto:integration@utt.fr" style="color: #e74160; text-decoration: none;">nous contacter</a>.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="border-top: 2px solid #ccc; padding: 20px 0;"></td>
-                    </tr>
-                    <tr>
-                        <td style="line-height: 1.6; padding: 0 12px 12px; text-align: center;">
-                            <h2 style="font-size: 24px; margin: 0 0 16px; text-align: center;">The Integration Weekend is just around the corner!</h2>
-                            <p>If you are receiving this message, it means you're coming to the WEI (woohoo!). In this email, you'll find the bus you have been assigned to travel to the venue for the weekend.</p>
-                            <p>Please make sure <strong>not to be late</strong>, otherwise you may miss your bus, which would be inconvenient for both you and us.</p>
-                            <p>Another very important point: the WEI essentials. Below, you'll find a reminder of the mandatory items you need to bring to have a great weekend. Rain is possible, so make sure to pack accordingly!</p>
-                            <ul style="list-style-type: disc; padding: 0 0 0 20px; margin: 0 auto; text-align: left; display: inline-block;">
-                                <li style="margin-bottom: 5px;">Sleeping bag and inflatable mattress/sleeping mat 🛏️ (if you do not have a sleeping bag, you will not be allowed to leave)</li>
-                                <li style="margin-bottom: 5px;">Water bottle, Tupperware container, cutlery, gobby (= reusable cup) 🍴</li>
-                                <li style="margin-bottom: 5px;">Clothing: changes of clothes for 2 days, sweater, swimsuit 👙</li>
-                                <li style="margin-bottom: 5px;">Waterproof jacket 🧥</li>
-                                <li style="margin-bottom: 5px;">Clothes you don't mind getting dirty: a full change of clothes &amp; shoes (to be worn from the moment you board the bus) 🚌</li>
-                                <li style="margin-bottom: 5px;">Toiletries: toothbrush, towel, personal hygiene essentials 🪥</li>
-                                <li style="margin-bottom: 5px;">Flip-flops/Crocs for the showers 🩴</li>
-                                <li style="margin-bottom: 5px;">Important documents: ID card, bank card &amp; cash, parental authorization form (for minors) 💳</li>
-                                <li style="margin-bottom: 5px;">Your WEI ticket 📩</li>
-                                <li style="margin-bottom: 5px;">Sunscreen &amp; mosquito repellent ☀️</li>
-                                <li style="margin-bottom: 5px;">Something to snack on (bring a picnic to eat before boarding the bus, not on the bus) 😋</li>
-                            </ul>
-                            <p style="margin-top: 20px; font-weight: bold; color: #d00000;">🚫 Prohibited items:</p>
-                            <ul style="list-style-type: disc; padding: 0 0 0 20px; margin: 0 auto; text-align: left; display: inline-block; color: #d00000;">
-                                <li style="margin-bottom: 5px;">Any drinks other than water</li>
-                                <li style="margin-bottom: 5px;">Illegal substances</li>
-                                <li style="margin-bottom: 5px;">Bladed weapons</li>
-                                <li style="margin-bottom: 5px;">Spray deodorant</li>
-                            </ul>
-                            <p style="margin-top: 20px;">As a reminder, you can find the WEI essentials video <a href="https://drive.google.com/file/d/1IzeIgHVcoFB4Wk4ngky1HicoBbd08zHO/view?usp=drivesdk" target="_blank" rel="noopener noreferrer">here</a></p>
-                            <p>Regarding your bus assignment, you have been assigned to <strong>{{bus}}</strong></p>
-                            <p>You must now be present at the UTT Green Amphitheater at <strong>{{time}}</strong></p>
-                            <p>That's it! The entire Integration Team wishes you an amazing WEI ;)</p>
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0 24px 24px;">
-                            <h3 style="text-align: center;">Find useful updates on our Instagram!</h3>
-                            <div style="margin: auto; width: fit-content;">
-                                <a href="https://www.instagram.com/bde.utt" target="_blank">
-                                    <img src="https://cdn.tools.unlayer.com/social/icons/rounded/instagram.png" alt="Instagram" style="width: 30px; height: 30px; margin: 5px;">
-                                </a>
-                            </div>
-                            <p>Regards,<br>The UTT's Integration Team</p>
-                            <p style="font-size: 12px; color: #999999; margin: 0;text-align: center;">If you have any questions, feel free to <a href="mailto:integration@utt.fr" style="color: #e74160; text-decoration: none;">contact us</a>.</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Intégration UTT</title>
+    </head>
+    <body
+        style="
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            text-align: center;
+            color: #222;
+        ">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse">
+            <tr>
+                <td align="center" style="padding: 24px">
+                    <table
+                        width="600"
+                        cellpadding="0"
+                        cellspacing="0"
+                        border="0"
+                        style="
+                            max-width: 100%;
+                            margin: 0 auto;
+                            background-color: #f8f8f8;
+                            border-radius: 8px;
+                            overflow: hidden;
+                        ">
+                        <tr>
+                            <td align="center" style="padding: 10px">
+                                <img
+                                    src="https://integration.utt.fr/img/logo_original.png"
+                                    alt="Logo Intégration UTT"
+                                    style="width: 104px; height: auto" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                style="
+                                    font-size: 21px;
+                                    font-weight: bold;
+                                    line-height: 1.4;
+                                    padding: 10px 0;
+                                    text-align: center;
+                                ">
+                                INTEGRATION UTT
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="line-height: 1.6; padding: 0 12px 12px; text-align: center">
+                                <h2 style="font-size: 24px; margin: 0 0 16px; text-align: center">
+                                    Le Week-End d'Intégration approhe à grands pas !
+                                </h2>
+                                <p>
+                                    Si tu reçois ce message c'est que tu pars au WEI (youhouu !), tu trouveras dans
+                                    celui-ci le bus avec lequel tu vas te rendre sur le lieu pour ce week-end.
+                                </p>
+                                <p>
+                                    Fais bien attention à ne <strong>pas être en retard</strong> sous peine de rater ton
+                                    bus, ça serait embêtant à la fois pour toi et pour nous.
+                                </p>
+                                <p>
+                                    Autre point très important : les essentiels pour le WEI. Tu trouveras ci-dessous un
+                                    rappel des objets obligatoires à ramener pour passer un bon week-end. Il risque de
+                                    pleuvoir alors prévoyez bien en conséquence !
+                                </p>
+                                <ul
+                                    style="
+                                        list-style-type: disc;
+                                        padding: 0 0 0 20px;
+                                        margin: 0 auto;
+                                        text-align: left;
+                                        display: inline-block;
+                                    ">
+                                    <li style="margin-bottom: 5px">
+                                        Duvet et matelas gonflable/tapis de sol 🛏️ (si vous n'avez pas de duvet, vous ne
+                                        partirez pas)
+                                    </li>
+                                    <li style="margin-bottom: 5px">Gourde, Tupperware, couverts, gobby (=écocup) 🍴</li>
+                                    <li style="margin-bottom: 5px">
+                                        Vêtements : changes pour 2 jours, pull, maillot de bain 👙
+                                    </li>
+                                    <li style="margin-bottom: 5px">Manteau imperméable 🧥</li>
+                                    <li style="margin-bottom: 5px">
+                                        Affaires salissables : change complet &amp; chaussures (à mettre dès le départ
+                                        en bus) 🚌
+                                    </li>
+                                    <li style="margin-bottom: 5px">
+                                        Produits d'hygiène : brosse à dent, serviette, nécessaire de toilette 🪥
+                                    </li>
+                                    <li style="margin-bottom: 5px">Tongues/crocs pour les douches 🩴</li>
+                                    <li style="margin-bottom: 5px">
+                                        Papiers importants : Carte d'identité, CB &amp; liquide, autorisation parentale
+                                        (pour les mineurs) 💳
+                                    </li>
+                                    <li style="margin-bottom: 5px">Ta place au WEI 📩</li>
+                                    <li style="margin-bottom: 5px">Crème solaire &amp; anti-moustique ☀️</li>
+                                    <li style="margin-bottom: 5px">
+                                        De quoi grignoter (prenez un pique-nique à manger avant de prendre le bus, pas
+                                        dans le bus) 😋
+                                    </li>
+                                </ul>
+                                <p style="margin-top: 20px; font-weight: bold; color: #d00000">
+                                    🚫 Affaires interdites :
+                                </p>
+                                <ul
+                                    style="
+                                        list-style-type: disc;
+                                        padding: 0 0 0 20px;
+                                        margin: 0 auto;
+                                        text-align: left;
+                                        display: inline-block;
+                                        color: #d00000;
+                                    ">
+                                    <li style="margin-bottom: 5px">Boissons autres que de l'eau</li>
+                                    <li style="margin-bottom: 5px">Substances illicites</li>
+                                    <li style="margin-bottom: 5px">Armes blanches</li>
+                                    <li style="margin-bottom: 5px">Déodorant en spray</li>
+                                </ul>
+                                <p style="margin-top: 20px">
+                                    Pour rappel, voici la vidéo des indispensables du WEI
+                                    <a
+                                        href="https://drive.google.com/file/d/1IzeIgHVcoFB4Wk4ngky1HicoBbd08zHO/view?usp=drivesdk"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        >ici</a
+                                    >
+                                </p>
+                                <p>Concernant ton bus, tu as été attribué au bus <strong>{{bus}}</strong></p>
+                                <p>
+                                    Maintenant il faut que tu sois présent en amphi de verdure à l'UTT à
+                                    <strong>{{time}}</strong>
+                                </p>
+                                <p>Voilà, toute l'équipe de l'intégration te souhaite un excellent WEI ;)</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0 24px 24px">
+                                <h3 style="text-align: center">
+                                    Retrouve des informations utiles sur notre Instagram !
+                                </h3>
+                                <div style="margin: auto; width: fit-content">
+                                    <a href="https://www.instagram.com/bde.utt" target="_blank">
+                                        <img
+                                            src="https://cdn.tools.unlayer.com/social/icons/rounded/instagram.png"
+                                            alt="Instagram"
+                                            style="width: 30px; height: 30px; margin: 5px" />
+                                    </a>
+                                </div>
+                                <p>Cordialement,<br />L'équipe intégration UTT</p>
+                                <p style="font-size: 12px; color: #999999; margin: 0; text-align: center">
+                                    Si vous avez des questions, n'hésitez pas à
+                                    <a href="mailto:integration@utt.fr" style="color: #e74160; text-decoration: none"
+                                        >nous contacter</a
+                                    >.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border-top: 2px solid #ccc; padding: 20px 0"></td>
+                        </tr>
+                        <tr>
+                            <td style="line-height: 1.6; padding: 0 12px 12px; text-align: center">
+                                <h2 style="font-size: 24px; margin: 0 0 16px; text-align: center">
+                                    The Integration Weekend is just around the corner!
+                                </h2>
+                                <p>
+                                    If you are receiving this message, it means you're coming to the WEI (woohoo!). In
+                                    this email, you'll find the bus you have been assigned to travel to the venue for
+                                    the weekend.
+                                </p>
+                                <p>
+                                    Please make sure <strong>not to be late</strong>, otherwise you may miss your bus,
+                                    which would be inconvenient for both you and us.
+                                </p>
+                                <p>
+                                    Another very important point: the WEI essentials. Below, you'll find a reminder of
+                                    the mandatory items you need to bring to have a great weekend. Rain is possible, so
+                                    make sure to pack accordingly!
+                                </p>
+                                <ul
+                                    style="
+                                        list-style-type: disc;
+                                        padding: 0 0 0 20px;
+                                        margin: 0 auto;
+                                        text-align: left;
+                                        display: inline-block;
+                                    ">
+                                    <li style="margin-bottom: 5px">
+                                        Sleeping bag and inflatable mattress/sleeping mat 🛏️ (if you do not have a
+                                        sleeping bag, you will not be allowed to leave)
+                                    </li>
+                                    <li style="margin-bottom: 5px">
+                                        Water bottle, Tupperware container, cutlery, gobby (= reusable cup) 🍴
+                                    </li>
+                                    <li style="margin-bottom: 5px">
+                                        Clothing: changes of clothes for 2 days, sweater, swimsuit 👙
+                                    </li>
+                                    <li style="margin-bottom: 5px">Waterproof jacket 🧥</li>
+                                    <li style="margin-bottom: 5px">
+                                        Clothes you don't mind getting dirty: a full change of clothes &amp; shoes (to
+                                        be worn from the moment you board the bus) 🚌
+                                    </li>
+                                    <li style="margin-bottom: 5px">
+                                        Toiletries: toothbrush, towel, personal hygiene essentials 🪥
+                                    </li>
+                                    <li style="margin-bottom: 5px">Flip-flops/Crocs for the showers 🩴</li>
+                                    <li style="margin-bottom: 5px">
+                                        Important documents: ID card, bank card &amp; cash, parental authorization form
+                                        (for minors) 💳
+                                    </li>
+                                    <li style="margin-bottom: 5px">Your WEI ticket 📩</li>
+                                    <li style="margin-bottom: 5px">Sunscreen &amp; mosquito repellent ☀️</li>
+                                    <li style="margin-bottom: 5px">
+                                        Something to snack on (bring a picnic to eat before boarding the bus, not on the
+                                        bus) 😋
+                                    </li>
+                                </ul>
+                                <p style="margin-top: 20px; font-weight: bold; color: #d00000">🚫 Prohibited items:</p>
+                                <ul
+                                    style="
+                                        list-style-type: disc;
+                                        padding: 0 0 0 20px;
+                                        margin: 0 auto;
+                                        text-align: left;
+                                        display: inline-block;
+                                        color: #d00000;
+                                    ">
+                                    <li style="margin-bottom: 5px">Any drinks other than water</li>
+                                    <li style="margin-bottom: 5px">Illegal substances</li>
+                                    <li style="margin-bottom: 5px">Bladed weapons</li>
+                                    <li style="margin-bottom: 5px">Spray deodorant</li>
+                                </ul>
+                                <p style="margin-top: 20px">
+                                    As a reminder, you can find the WEI essentials video
+                                    <a
+                                        href="https://drive.google.com/file/d/1IzeIgHVcoFB4Wk4ngky1HicoBbd08zHO/view?usp=drivesdk"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        >here</a
+                                    >
+                                </p>
+                                <p>Regarding your bus assignment, you have been assigned to <strong>{{bus}}</strong></p>
+                                <p>
+                                    You must now be present at the UTT Green Amphitheater at <strong>{{time}}</strong>
+                                </p>
+                                <p>That's it! The entire Integration Team wishes you an amazing WEI ;)</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0 24px 24px">
+                                <h3 style="text-align: center">Find useful updates on our Instagram!</h3>
+                                <div style="margin: auto; width: fit-content">
+                                    <a href="https://www.instagram.com/bde.utt" target="_blank">
+                                        <img
+                                            src="https://cdn.tools.unlayer.com/social/icons/rounded/instagram.png"
+                                            alt="Instagram"
+                                            style="width: 30px; height: 30px; margin: 5px" />
+                                    </a>
+                                </div>
+                                <p>Regards,<br />The UTT's Integration Team</p>
+                                <p style="font-size: 12px; color: #999999; margin: 0; text-align: center">
+                                    If you have any questions, feel free to
+                                    <a href="mailto:integration@utt.fr" style="color: #e74160; text-decoration: none"
+                                        >contact us</a
+                                    >.
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
 </html>

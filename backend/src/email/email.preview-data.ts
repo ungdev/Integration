@@ -1,4 +1,4 @@
-import type { TemplateData } from "../../types/email";
+import type { TemplateData } from '../../types/email';
 import { service_url } from '../utils/secret';
 
 export const defaultPreviewData: Record<string, TemplateData> = {
@@ -8,7 +8,7 @@ export const defaultPreviewData: Record<string, TemplateData> = {
     },
     templateNotebook: {
         notebook_fr: `${service_url}api/uploads/notebooks/fr.pdf`,
-        notebook_en: `${service_url}api/uploads/notebooks/en.pdf`
+        notebook_en: `${service_url}api/uploads/notebooks/en.pdf`,
     },
     templateAttributionBus: {
         bus: 'bus',
@@ -29,8 +29,6 @@ export const defaultPreviewData: Record<string, TemplateData> = {
         resetLink: `${service_url}resetpassword?token=preview-token`,
     },
     templateNotifyPermanenceReminder: {
-        permanence: {
-
-        }
-    }
+        permanence: {},
+    },
 };

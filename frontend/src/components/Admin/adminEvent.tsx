@@ -1,6 +1,6 @@
-import { CheckCircle, Loader2, XCircle } from "lucide-react";
-import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
+import { CheckCircle, Loader2, XCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 
 import {
     checkChallengeStatus,
@@ -15,9 +15,9 @@ import {
     toggleSDI,
     toggleShotgun,
     toggleWEI,
-} from "../../services/requests/event.service";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+} from '../../services/requests/event.service';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const AdminEvents = () => {
     const [loading, setLoading] = useState(false);
@@ -42,7 +42,7 @@ export const AdminEvents = () => {
                     checkSDIStatus(),
                     checkWEIStatus(),
                     checkFoodStatus(),
-                    checkChallengeStatus()
+                    checkChallengeStatus(),
                 ]);
 
                 setStatuses({
@@ -55,9 +55,9 @@ export const AdminEvents = () => {
                 });
             } catch {
                 Swal.fire({
-                    icon: "error",
-                    title: "Erreur",
-                    text: "Impossible de récupérer les statuts.",
+                    icon: 'error',
+                    title: 'Erreur',
+                    text: 'Impossible de récupérer les statuts.',
                 });
             } finally {
                 setLoadingStatuses(false);
@@ -70,24 +70,24 @@ export const AdminEvents = () => {
     const handleToggle = async (
         key: keyof typeof statuses,
         toggleFn: (value: boolean) => Promise<any>,
-        successMsg: string
+        successMsg: string,
     ) => {
         setLoading(true);
         try {
             await toggleFn(!statuses[key]);
             setStatuses((prev) => ({ ...prev, [key]: !prev[key] }));
             Swal.fire({
-                icon: "success",
-                title: "Succès",
+                icon: 'success',
+                title: 'Succès',
                 text: successMsg,
                 timer: 1500,
                 showConfirmButton: false,
             });
         } catch (error: any) {
             Swal.fire({
-                icon: "error",
-                title: "Erreur",
-                text: error.response?.data?.message || "Une erreur est survenue",
+                icon: 'error',
+                title: 'Erreur',
+                text: error.response?.data?.message || 'Une erreur est survenue',
             });
         } finally {
             setLoading(false);
@@ -97,33 +97,33 @@ export const AdminEvents = () => {
     // Configuration des événements
     const events = [
         {
-            key: "preRegistration" as const,
-            label: "Pré-inscription",
+            key: 'preRegistration' as const,
+            label: 'Pré-inscription',
             toggleFn: togglePreRegistration,
         },
         {
-            key: "shotgun" as const,
-            label: "Shotgun",
+            key: 'shotgun' as const,
+            label: 'Shotgun',
             toggleFn: toggleShotgun,
         },
         {
-            key: "sdi" as const,
-            label: "SDI (Billetterie)",
+            key: 'sdi' as const,
+            label: 'SDI (Billetterie)',
             toggleFn: toggleSDI,
         },
         {
-            key: "wei" as const,
-            label: "WEI (Billetterie + Tentes)",
+            key: 'wei' as const,
+            label: 'WEI (Billetterie + Tentes)',
             toggleFn: toggleWEI,
         },
         {
-            key: "food" as const,
-            label: "Nourriture (Billetterie)",
+            key: 'food' as const,
+            label: 'Nourriture (Billetterie)',
             toggleFn: toggleFood,
         },
         {
-            key: "chall" as const,
-            label: "Challenges (Affichage des challenges)",
+            key: 'chall' as const,
+            label: 'Challenges (Affichage des challenges)',
             toggleFn: toggleChallenge,
         },
     ];
@@ -132,9 +132,7 @@ export const AdminEvents = () => {
         return (
             <div className="flex justify-center items-center min-h-screen bg-gray-100">
                 <Loader2 className="animate-spin text-gray-600 w-8 h-8 mr-2" />
-                <span className="text-xl font-semibold text-gray-600">
-                    Chargement des statuts...
-                </span>
+                <span className="text-xl font-semibold text-gray-600">Chargement des statuts...</span>
             </div>
         );
     }
@@ -152,8 +150,7 @@ export const AdminEvents = () => {
                     return (
                         <div
                             key={key}
-                            className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200"
-                        >
+                            className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
                             <div className="flex items-center gap-2 text-gray-700">
                                 {isActive ? (
                                     <CheckCircle className="text-green-600 w-5 h-5" />
@@ -164,21 +161,19 @@ export const AdminEvents = () => {
                             </div>
 
                             <Button
-                                onClick={() =>
-                                    handleToggle(key, toggleFn, `${label} mis à jour !`)
-                                }
+                                onClick={() => handleToggle(key, toggleFn, `${label} mis à jour !`)}
                                 disabled={loading}
-                                className={`transition-colors duration-300 ${isActive
-                                    ? "bg-red-600 text-white hover:bg-red-700"
-                                    : "bg-blue-500 text-white hover:bg-blue-600"
-                                    } p-2 rounded-lg min-w-[110px] flex items-center justify-center`}
-                            >
+                                className={`transition-colors duration-300 ${
+                                    isActive
+                                        ? 'bg-red-600 text-white hover:bg-red-700'
+                                        : 'bg-blue-500 text-white hover:bg-blue-600'
+                                } p-2 rounded-lg min-w-[110px] flex items-center justify-center`}>
                                 {loading ? (
                                     <Loader2 className="animate-spin w-4 h-4" />
                                 ) : isActive ? (
-                                    "Désactiver"
+                                    'Désactiver'
                                 ) : (
-                                    "Activer"
+                                    'Activer'
                                 )}
                             </Button>
                         </div>

@@ -1,45 +1,45 @@
-import { useEffect, useState } from "react";
-import Select from "react-select";
-import Swal from "sweetalert2";
+import { useEffect, useState } from 'react';
+import Select from 'react-select';
+import Swal from 'sweetalert2';
 
-import { type User } from "../../interfaces/user.interface";
-import { renewTokenUser, requestPasswordUser } from "../../services/requests/auth.service";
+import { type User } from '../../interfaces/user.interface';
+import { renewTokenUser, requestPasswordUser } from '../../services/requests/auth.service';
 import {
     deleteUserByAdmin,
     getUsersAdmin,
     syncnewStudent,
     updateUserByAdmin,
-} from "../../services/requests/user.service";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Input } from "../ui/input";
+} from '../../services/requests/user.service';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Input } from '../ui/input';
 
 const permissionOptions = [
-    { value: "Admin", label: "Admin" },
-    { value: "Student", label: "Étudiant" },
-    { value: "Nouveau", label: "Nouveau" },
+    { value: 'Admin', label: 'Admin' },
+    { value: 'Student', label: 'Étudiant' },
+    { value: 'Nouveau', label: 'Nouveau' },
 ];
 
 const branchOptions = [
-    { value: "TC", label: "Tronc Commun" },
-    { value: "RT", label: "Réseaux et Télécommunications" },
-    { value: "ISI", label: "Informatique et Systèmes d'Information" },
-    { value: "GM", label: "Génie Mécanique" },
-    { value: "GI", label: "Génie Industriel" },
-    { value: "MTE", label: "Matériaux : Technologie et Économie" },
-    { value: "A2I", label: "Automatique & Informatique Industrielle" },
-    { value: "GI_APPR", label: "Génie Industriel en Apprentissage" },
-    { value: "GM_APPR", label: "Génie Mécanique en Apprentissage" },
-    { value: "SN_APPR", label: "Système Numérique en Apprentissage" },
-    { value: "Branch", label: "Branche" },
-    { value: "MM", label: "Mécanique et Matériaux" },
-    { value: "MA", label: "Master" },
-    { value: "RI", label: "Ressources Internationales" },
+    { value: 'TC', label: 'Tronc Commun' },
+    { value: 'RT', label: 'Réseaux et Télécommunications' },
+    { value: 'ISI', label: "Informatique et Systèmes d'Information" },
+    { value: 'GM', label: 'Génie Mécanique' },
+    { value: 'GI', label: 'Génie Industriel' },
+    { value: 'MTE', label: 'Matériaux : Technologie et Économie' },
+    { value: 'A2I', label: 'Automatique & Informatique Industrielle' },
+    { value: 'GI_APPR', label: 'Génie Industriel en Apprentissage' },
+    { value: 'GM_APPR', label: 'Génie Mécanique en Apprentissage' },
+    { value: 'SN_APPR', label: 'Système Numérique en Apprentissage' },
+    { value: 'Branch', label: 'Branche' },
+    { value: 'MM', label: 'Mécanique et Matériaux' },
+    { value: 'MA', label: 'Master' },
+    { value: 'RI', label: 'Ressources Internationales' },
 ];
 
 const majeurOptions = [
-    { value: true, label: "Majeur" },
-    { value: false, label: "Mineur" },
+    { value: true, label: 'Majeur' },
+    { value: false, label: 'Mineur' },
 ];
 
 export const AdminUser = () => {
@@ -76,10 +76,10 @@ export const AdminUser = () => {
         const response = await updateUserByAdmin(selectedUser.userId, formData);
 
         Swal.fire({
-            icon: "success",
-            title: "Utilisateur mis à jour",
+            icon: 'success',
+            title: 'Utilisateur mis à jour',
             text: response.message,
-            confirmButtonColor: "#16a34a",
+            confirmButtonColor: '#16a34a',
         });
     };
 
@@ -88,13 +88,13 @@ export const AdminUser = () => {
 
         const result = await Swal.fire({
             title: `Supprimer ${selectedUser.firstName} ${selectedUser.lastName} ?`,
-            text: "Cette action est irréversible !",
-            icon: "warning",
+            text: 'Cette action est irréversible !',
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Oui, supprimer",
-            cancelButtonText: "Annuler",
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Oui, supprimer',
+            cancelButtonText: 'Annuler',
         });
 
         if (result.isConfirmed) {
@@ -104,10 +104,10 @@ export const AdminUser = () => {
             setFormData({});
 
             Swal.fire({
-                icon: "success",
-                title: "Supprimé",
+                icon: 'success',
+                title: 'Supprimé',
                 text: response.message,
-                confirmButtonColor: "#16a34a",
+                confirmButtonColor: '#16a34a',
             });
         }
     };
@@ -117,23 +117,23 @@ export const AdminUser = () => {
 
         const result = await Swal.fire({
             title: `Renouveler le token de ${selectedUser.firstName} ${selectedUser.lastName} ?`,
-            text: "Un nouveau token sera généré.",
-            icon: "question",
+            text: 'Un nouveau token sera généré.',
+            icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: "#2563eb",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Oui, renouveler",
-            cancelButtonText: "Annuler",
+            confirmButtonColor: '#2563eb',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Oui, renouveler',
+            cancelButtonText: 'Annuler',
         });
 
         if (result.isConfirmed) {
             const res = await renewTokenUser(selectedUser.userId);
 
             Swal.fire({
-                icon: "success",
-                title: "Token renouvelé 🔑",
+                icon: 'success',
+                title: 'Token renouvelé 🔑',
                 text: res.message,
-                confirmButtonColor: "#16a34a",
+                confirmButtonColor: '#16a34a',
             });
         }
     };
@@ -144,29 +144,28 @@ export const AdminUser = () => {
         const result = await Swal.fire({
             title: `Envoyer une demande de reset password à ${selectedUser.email} ?`,
             text: "L'utilisateur recevra un email pour réinitialiser son mot de passe.",
-            icon: "question",
+            icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: "#2563eb",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Oui, envoyer",
-            cancelButtonText: "Annuler",
+            confirmButtonColor: '#2563eb',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Oui, envoyer',
+            cancelButtonText: 'Annuler',
         });
 
         if (result.isConfirmed) {
             const res = await requestPasswordUser(selectedUser.email);
 
             Swal.fire({
-                icon: "success",
-                title: "Email envoyé 📩",
+                icon: 'success',
+                title: 'Email envoyé 📩',
                 text: res.msg,
-                confirmButtonColor: "#16a34a",
+                confirmButtonColor: '#16a34a',
             });
         }
     };
 
-
     return (
-        <Card className="w-full max-w-3xl mx-auto">
+        <Card className="w-full max-w-7xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                     👤 Gérer un utilisateur
@@ -187,45 +186,33 @@ export const AdminUser = () => {
                     <form className="space-y-3 mt-4">
                         <Input
                             name="firstName"
-                            value={formData.firstName || ""}
+                            value={formData.firstName || ''}
                             onChange={handleInputChange}
                             placeholder="Prénom"
                         />
                         <Input
                             name="lastName"
-                            value={formData.lastName || ""}
+                            value={formData.lastName || ''}
                             onChange={handleInputChange}
                             placeholder="Nom"
                         />
-                        <Input
-                            name="email"
-                            value={formData.email || ""}
-                            disabled
-                            placeholder="Email"
-                        />
+                        <Input name="email" value={formData.email || ''} disabled placeholder="Email" />
 
                         <p className="text-sm text-red-500 underline mt-2">
-                            <strong>
-                                Attention : la donnée récupérée dépend de la date de synchro
-                                choisie
-                            </strong>
+                            <strong>Attention : la donnée récupérée dépend de la date de synchro choisie</strong>
                         </p>
 
                         <Select
                             placeholder="Majeur ?"
                             options={majeurOptions}
-                            value={
-                                majeurOptions.find((opt) => opt.value === formData.majeur) || null
-                            }
-                            onChange={handleSelectChange("majeur")}
+                            value={majeurOptions.find((opt) => opt.value === formData.majeur) || null}
+                            onChange={handleSelectChange('majeur')}
                             isClearable
                         />
 
                         <Select
-                            value={
-                                branchOptions.find((b) => b.value === formData.branch) || null
-                            }
-                            onChange={handleSelectChange("branch")}
+                            value={branchOptions.find((b) => b.value === formData.branch) || null}
+                            onChange={handleSelectChange('branch')}
                             options={branchOptions}
                             placeholder="Choisir une filière"
                             isClearable
@@ -233,7 +220,7 @@ export const AdminUser = () => {
 
                         <Input
                             name="contact"
-                            value={formData.contact || ""}
+                            value={formData.contact || ''}
                             onChange={handleInputChange}
                             placeholder="Contact"
                         />
@@ -241,12 +228,8 @@ export const AdminUser = () => {
                         <Select
                             placeholder="Permission"
                             options={permissionOptions}
-                            value={
-                                permissionOptions.find(
-                                    (opt) => opt.value === formData.permission
-                                ) || null
-                            }
-                            onChange={handleSelectChange("permission")}
+                            value={permissionOptions.find((opt) => opt.value === formData.permission) || null}
+                            onChange={handleSelectChange('permission')}
                             isClearable
                         />
 
@@ -254,29 +237,25 @@ export const AdminUser = () => {
                             <Button
                                 type="button"
                                 onClick={handleSave}
-                                className="bg-green-600 hover:bg-green-700 text-white"
-                            >
+                                className="bg-green-600 hover:bg-green-700 text-white">
                                 💾 Sauvegarder
                             </Button>
                             <Button
                                 type="button"
                                 onClick={handleDelete}
-                                className="bg-red-600 hover:bg-red-700 text-white"
-                            >
+                                className="bg-red-600 hover:bg-red-700 text-white">
                                 🗑 Supprimer
                             </Button>
                             <Button
                                 type="button"
                                 onClick={handleRenewToken}
-                                className="bg-blue-500 hover:bg-blue-600 text-white"
-                            >
+                                className="bg-blue-500 hover:bg-blue-600 text-white">
                                 🔄 Reset Token
                             </Button>
                             <Button
                                 type="button"
                                 onClick={handleRequestPassword}
-                                className="bg-purple-500 hover:bg-purple-600 text-white"
-                            >
+                                className="bg-purple-500 hover:bg-purple-600 text-white">
                                 📧 Reset Password (mail)
                             </Button>
                         </div>
@@ -289,32 +268,32 @@ export const AdminUser = () => {
 
 export const AdminSyncNewStudent = () => {
     const [loading, setLoading] = useState(false);
-    const [selectedDate, setSelectedDate] = useState<string>("");
+    const [selectedDate, setSelectedDate] = useState<string>('');
 
     const handleSync = async () => {
         setLoading(true);
 
         try {
-            let formattedDate = "";
+            let formattedDate = '';
             if (selectedDate) {
-                const [year, month, day] = selectedDate.split("-");
+                const [year, month, day] = selectedDate.split('-');
                 formattedDate = `${year}.${month}${day}`;
             }
 
             const response = await syncnewStudent(formattedDate);
 
             Swal.fire({
-                icon: "success",
-                title: "Synchronisation réussie",
+                icon: 'success',
+                title: 'Synchronisation réussie',
                 text: response.message,
-                confirmButtonColor: "#2563eb",
+                confirmButtonColor: '#2563eb',
             });
         } catch {
             Swal.fire({
-                icon: "error",
-                title: "Erreur",
-                text: "Erreur lors de la tentative de connexion.",
-                confirmButtonColor: "#d33",
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Erreur lors de la tentative de connexion.',
+                confirmButtonColor: '#d33',
             });
         } finally {
             setLoading(false);
@@ -322,12 +301,10 @@ export const AdminSyncNewStudent = () => {
     };
 
     return (
-        <Card className="w-full max-w-3xl mx-auto">
+        <Card className="w-full max-w-7xl mx-auto">
             <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
-                    🔄 Synchro API SIEP
-                </CardTitle>
-            </CardHeader >
+                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">🔄 Synchro API SIEP</CardTitle>
+            </CardHeader>
 
             <CardContent className="space-y-4">
                 <label htmlFor="date" className="block text-gray-700 font-medium">
@@ -345,12 +322,11 @@ export const AdminSyncNewStudent = () => {
                     <Button
                         onClick={handleSync}
                         disabled={loading || !selectedDate}
-                        className="bg-blue-500 text-white hover:bg-blue-600 p-3 rounded-lg shadow"
-                    >
-                        {loading ? "Chargement..." : "🚀 Lancer la synchro"}
+                        className="bg-blue-500 text-white hover:bg-blue-600 p-3 rounded-lg shadow">
+                        {loading ? 'Chargement...' : '🚀 Lancer la synchro'}
                     </Button>
                 </div>
             </CardContent>
-        </Card >
+        </Card>
     );
 };

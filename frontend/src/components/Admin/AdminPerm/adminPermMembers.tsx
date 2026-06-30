@@ -1,17 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
-import Select, { type SingleValue } from "react-select";
-import Swal from "sweetalert2";
+import { useEffect, useMemo, useState } from 'react';
+import Select, { type SingleValue } from 'react-select';
+import Swal from 'sweetalert2';
 
-import { Button } from "../../../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
-import { type Permanence } from "../../../interfaces/permanence.interface";
-import { type User } from "../../../interfaces/user.interface";
+import { Button } from '../../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { type Permanence } from '../../../interfaces/permanence.interface';
+import { type User } from '../../../interfaces/user.interface';
 import {
     addUserToPermanence,
     claimedMemberAdmin,
     getUsersByPermanence,
     removeUserFromPermanence,
-} from "../../../services/requests/permanence.service";
+} from '../../../services/requests/permanence.service';
 
 interface PermanenceMembersProps {
     perm: Permanence;
@@ -41,8 +41,8 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
             .map((u) => ({
                 value: u,
                 label:
-                    (u.firstName || u.lastName)
-                        ? `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim()
+                    u.firstName || u.lastName
+                        ? `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim()
                         : `Utilisateur ${u.userId}`,
             }));
     }, [users, members]);
@@ -53,7 +53,7 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
             const res = await getUsersByPermanence(perm.id);
             setMembers((res.data as PermanenceMember[]) ?? []);
         } catch {
-            Swal.fire("Erreur", "Impossible de récupérer les membres", "error");
+            Swal.fire('Erreur', 'Impossible de récupérer les membres', 'error');
         } finally {
             setLoading(false);
         }
@@ -70,33 +70,33 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
         if (!selectedUser) return;
         try {
             await addUserToPermanence(perm.id, selectedUser.userId);
-            await Swal.fire("Ajouté", "Membre ajouté à la permanence", "success");
+            await Swal.fire('Ajouté', 'Membre ajouté à la permanence', 'success');
             setSelectedUser(null);
             await fetchMembers();
             onRefresh();
         } catch {
-            Swal.fire("Erreur", "Impossible d'ajouter ce membre", "error");
+            Swal.fire('Erreur', "Impossible d'ajouter ce membre", 'error');
         }
     };
 
     const handleRemove = async (userId: number): Promise<void> => {
         const result = await Swal.fire({
-            title: "Retirer ce membre ?",
-            icon: "warning",
+            title: 'Retirer ce membre ?',
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: "Retirer",
-            cancelButtonText: "Annuler",
+            confirmButtonText: 'Retirer',
+            cancelButtonText: 'Annuler',
         });
 
         if (!result.isConfirmed) return;
 
         try {
             await removeUserFromPermanence(perm.id, userId);
-            await Swal.fire("Retiré", "Membre retiré de la permanence", "success");
+            await Swal.fire('Retiré', 'Membre retiré de la permanence', 'success');
             await fetchMembers();
             onRefresh();
         } catch {
-            Swal.fire("Erreur", "Suppression impossible", "error");
+            Swal.fire('Erreur', 'Suppression impossible', 'error');
         }
     };
 
@@ -106,15 +106,15 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
             await claimedMemberAdmin(user.userId, perm.id, newClaimedStatus);
 
             await Swal.fire(
-                newClaimedStatus ? "Présence confirmée" : "Présence retirée",
-                `Le membre est marqué comme ${newClaimedStatus ? "présent" : "absent"}`,
-                newClaimedStatus ? "success" : "info"
+                newClaimedStatus ? 'Présence confirmée' : 'Présence retirée',
+                `Le membre est marqué comme ${newClaimedStatus ? 'présent' : 'absent'}`,
+                newClaimedStatus ? 'success' : 'info',
             );
 
             await fetchMembers();
             onRefresh();
         } catch {
-            Swal.fire("Erreur", "Impossible de modifier la présence", "error");
+            Swal.fire('Erreur', 'Impossible de modifier la présence', 'error');
         }
     };
 
@@ -124,7 +124,7 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-md font-semibold">Membres</CardTitle>
                     <Button variant="secondary" onClick={() => setExpanded((e) => !e)}>
-                        {expanded ? "Masquer" : "👥 Voir membres"}
+                        {expanded ? 'Masquer' : '👥 Voir membres'}
                     </Button>
                 </div>
             </CardHeader>
@@ -140,24 +140,23 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
                             {members.map((user) => (
                                 <li key={user.userId} className="flex justify-between items-center">
                                     <span>
-                                        {(user.firstName || user.lastName)
-                                            ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim()
+                                        {user.firstName || user.lastName
+                                            ? `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim()
                                             : `Utilisateur ${user.userId}`}
                                     </span>
                                     <div className="flex gap-2 items-center">
                                         <Button
                                             onClick={() => void handleToggleClaim(user)}
-                                            className={`text-xs px-2 py-1 ${user.claimed
-                                                ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                                                : "bg-blue-500 hover:bg-blue-600 text-white"
-                                                }`}
-                                        >
-                                            {user.claimed ? "❌ Marquer absent" : "✅ Marquer présent"}
+                                            className={`text-xs px-2 py-1 ${
+                                                user.claimed
+                                                    ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                                                    : 'bg-blue-500 hover:bg-blue-600 text-white'
+                                            }`}>
+                                            {user.claimed ? '❌ Marquer absent' : '✅ Marquer présent'}
                                         </Button>
                                         <Button
                                             onClick={() => void handleRemove(user.userId)}
-                                            className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1"
-                                        >
+                                            className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1">
                                             Retirer
                                         </Button>
                                     </div>
@@ -170,7 +169,16 @@ const PermanenceMembers: React.FC<PermanenceMembersProps> = ({ perm, users, onRe
                         <div className="flex-1 w-full">
                             <Select<Option, false>
                                 options={options}
-                                value={selectedUser ? { value: selectedUser, label: options.find(o => o.value.userId === selectedUser.userId)?.label ?? "" } : null}
+                                value={
+                                    selectedUser
+                                        ? {
+                                              value: selectedUser,
+                                              label:
+                                                  options.find((o) => o.value.userId === selectedUser.userId)?.label ??
+                                                  '',
+                                          }
+                                        : null
+                                }
                                 onChange={(opt: SingleValue<Option>) => setSelectedUser(opt?.value ?? null)}
                                 placeholder="Sélectionner un utilisateur à ajouter"
                                 isClearable

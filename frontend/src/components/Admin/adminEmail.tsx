@@ -38,6 +38,7 @@ export const AdminEmail = () => {
         { name: 'Personnalisé', value: 'custom' },
         { name: 'Welcome', value: 'templateWelcome' },
         { name: 'Cahier de Vacances', value: 'templateNotebook' },
+        { name: 'Rappel Parrainage', value: 'templateMentorReminder' },
     ];
 
     useEffect(() => {

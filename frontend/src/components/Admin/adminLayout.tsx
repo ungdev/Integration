@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { decodeToken, getToken } from "../../services/requests/auth.service";
-import { Navbar } from "../navbar";
+import { decodeToken, getToken } from '../../services/requests/auth.service';
+import { Navbar } from '../navbar';
 
 interface AdminLayoutProps {
     children: React.ReactNode;
@@ -22,7 +22,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, allowedRoles
         const token = getToken();
 
         if (!token) {
-            navigate("/");
+            navigate('/');
             return;
         }
 
@@ -30,19 +30,16 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, allowedRoles
         try {
             decoded = decodeToken(token);
         } catch {
-            navigate("/");
+            navigate('/');
             return;
         }
 
-        const userRoles = [
-            ...(decoded.userRoles?.map((r) => r.roleName) || []),
-            decoded.userPermission || "",
-        ];
+        const userRoles = [...(decoded.userRoles?.map((r) => r.roleName) || []), decoded.userPermission || ''];
 
         const hasAccess = userRoles.some((role) => allowedRoles.includes(role));
 
         if (!hasAccess) {
-            navigate("/");
+            navigate('/');
             return;
         }
 

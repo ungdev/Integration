@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import Select, { type SingleValue } from 'react-select';
+import Select from 'react-select';
+import { type SingleValue } from 'react-select';
 import Swal from 'sweetalert2';
 
 import { type User } from '../../interfaces/user.interface';
@@ -170,7 +171,7 @@ export const AdminUser = () => {
     };
 
     return (
-        <Card className="w-full max-w-3xl mx-auto">
+        <Card className="w-full max-w-7xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                     👤 Gérer un utilisateur
@@ -306,7 +307,7 @@ export const AdminSyncNewStudent = () => {
     };
 
     return (
-        <Card className="w-full max-w-3xl mx-auto">
+        <Card className="w-full max-w-7xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">🔄 Synchro API SIEP</CardTitle>
             </CardHeader>

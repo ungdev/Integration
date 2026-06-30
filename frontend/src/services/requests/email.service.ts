@@ -1,10 +1,10 @@
-import api from "../api";
+import api from '../api';
 
 type SendEmailPayload = {
     subject: string;
     templateName: string;
     format?: 'html' | 'txt';
-    permission: string | null;
+    recipientsGroups: string[] | null;
     sendTo: string[] | null;
     title?: string;
     content?: string;
@@ -24,5 +24,5 @@ export const sendEmail = async (payload: SendEmailPayload) => {
 
 export const emailPreview = async (payload: PreviewEmailPayload) => {
     const response = await api.post('/email/admin/previewemail', { payload });
-    return response.data.data
-}
+    return response.data.data;
+};

@@ -1,8 +1,8 @@
-import { type Request, type Response } from "express";
-import * as bus_service from "../services/bus.service";
-import { generateEmailHtml, sendEmail } from "../services/email.service";
-import { Error, Ok } from "../utils/responses";
-import { email_from } from "../utils/secret";
+import { type Request, type Response } from 'express';
+import * as bus_service from '../services/bus.service';
+import { generateEmailHtml, sendEmail } from '../services/email.service';
+import { Error, Ok } from '../utils/responses';
+import { email_from } from '../utils/secret';
 
 interface MulterRequest extends Request {
     file?: Express.Multer.File;
@@ -13,13 +13,14 @@ export const sendBusAttributionEmails = async (req: Request, res: Response) => {
         const attributions = await bus_service.getAllBusAttributions();
 
         if (!attributions.length) {
-            Error(res, { msg: "Aucune attribution de bus trouvée." });
+            Error(res, { msg: 'Aucune attribution de bus trouvée.' });
             return;
         }
 
         for (const attr of attributions) {
-            const htmlEmail = generateEmailHtml("templateAttributionBus", {
-                bus: attr.bus, time: attr.departure_time
+            const htmlEmail = generateEmailHtml('templateAttributionBus', {
+                bus: attr.bus,
+                time: attr.departure_time,
             });
 
             const emailOptions = {
@@ -27,9 +28,9 @@ export const sendBusAttributionEmails = async (req: Request, res: Response) => {
                 to: [attr.email],
                 cc: [],
                 bcc: [],
-                subject: `Attribution Bus - ${attr.firstName ?? ""} ${attr.lastName ?? ""}`,
+                subject: `Attribution Bus - ${attr.firstName ?? ''} ${attr.lastName ?? ''}`,
                 text: `Votre bus attribué est le numéro ${attr.bus}`,
-                html: htmlEmail || "",
+                html: htmlEmail || '',
             };
 
             await sendEmail(emailOptions);
@@ -46,13 +47,13 @@ export const uploadbusCSV = async (req: MulterRequest, res: Response) => {
     try {
         const file = req.file;
         if (!file) {
-            Error(res, { msg: "Fichier CSV manquant." });
+            Error(res, { msg: 'Fichier CSV manquant.' });
         }
 
         await bus_service.importBusFromCSV(file.path);
-        Ok(res, { msg: "Importation réalisée avec succès." });
+        Ok(res, { msg: 'Importation réalisée avec succès.' });
     } catch (error) {
-        console.error("Erreur import CSV :", error);
+        console.error('Erreur import CSV :', error);
         Error(res, { msg: "Échec de l'importation." });
     }
 };

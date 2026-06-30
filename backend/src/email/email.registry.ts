@@ -1,4 +1,4 @@
-import type { PermanenceEmailData, TemplateRenderer } from "../../types/email";
+import type { PermanenceEmailData, TemplateRenderer } from '../../types/email';
 
 export const templateResetPassword = 'reset-password.html';
 const templateNotebook = 'notebook.html';
@@ -26,9 +26,9 @@ export const templateRenderers: Record<string, TemplateRenderer> = {
                 notebook_fr?: string;
                 notebook_en?: string;
             };
-            return { 
+            return {
                 notebook_fr: typedData.notebook_fr,
-                notebook_en: typedData.notebook_en
+                notebook_en: typedData.notebook_en,
             };
         },
     },
@@ -77,5 +77,5 @@ export const templateRenderers: Record<string, TemplateRenderer> = {
             const typedData = data as PermanenceEmailData;
             return typedData;
         },
-    }
+    },
 };

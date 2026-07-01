@@ -9,12 +9,16 @@ import ChallengeEditor from '../components/Admin/AdminChallenge/adminChallengeEd
 import { AdminValidatedChallengesList } from '../components/Admin/AdminChallenge/adminChallengeValidatedList';
 import { AdminEmail } from '../components/Admin/adminEmail';
 import { AdminEvents } from '../components/Admin/adminEvent';
-import { AdminExportConnect, AdminImportFoodMenu, AdminImportPlannings } from '../components/Admin/adminExportImport';
+import {
+    AdminExportConnect,
+    AdminImportFoodMenu,
+    AdminImportNotebooks,
+    AdminImportPlannings,
+} from '../components/Admin/adminExportImport';
 import { AdminFactionManagement } from '../components/Admin/adminFaction';
 import { AdminRolePointsManager } from '../components/Admin/adminGames';
 import { AdminLayout } from '../components/Admin/adminLayout';
 import { AdminNews } from '../components/Admin/adminNews';
-import { AdminImportNotebooks } from '../components/Admin/adminNotebooks';
 //--------------Perm Import--------------//
 import PermanenceActions from '../components/Admin/AdminPerm/adminPermAction';
 import PermanenceForm from '../components/Admin/AdminPerm/adminPermForm';

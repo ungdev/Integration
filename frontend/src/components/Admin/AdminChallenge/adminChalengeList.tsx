@@ -95,7 +95,7 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
             Swal.fire({
                 icon: "error",
                 title: "Erreur ❌",
-                text: "Impossible de valider ce challenge. Réessaie plus tard. (cette erreur peut survenir si le challenge a déjà été validé pour cet utilisateur/équipe/faction)",
+                text: err as string,
             });
         }
     }

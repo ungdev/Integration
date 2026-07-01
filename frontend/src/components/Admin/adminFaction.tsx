@@ -57,7 +57,7 @@ export const AdminFactionManagement = () => {
     return (
         // <div className="flex flex-col items-center px-4 py-8 space-y-8 max-w-7xl mx-auto">
         <>
-            <Card className="w-full max-w-7xl mx-auto">
+            <Card className="w-full max-w-3xl mx-auto">
                 <CardHeader>
                     <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                         🛡️ Créer une Faction
@@ -78,7 +78,7 @@ export const AdminFactionManagement = () => {
                 </CardContent>
             </Card>
 
-            <Card className="w-full max-w-7xl mx-auto">
+            <Card className="w-full max-w-3xl mx-auto">
                 <CardHeader>
                     <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                         📜 Factions existantes

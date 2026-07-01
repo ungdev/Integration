@@ -35,7 +35,7 @@ export const AdminExportConnect = () => {
     };
 
     return (
-        <Card className="w-full max-w-7xl mx-auto">
+        <Card className="w-full max-w-3xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                     ⚡ Exporter les données
@@ -83,7 +83,7 @@ export const AdminExportConnect = () => {
 
 export const AdminImportFoodMenu = () => {
     return (
-        <Card className="w-full max-w-7xl mx-auto">
+        <Card className="w-full max-w-3xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">Importer le menu</CardTitle>
             </CardHeader>
@@ -96,7 +96,7 @@ export const AdminImportFoodMenu = () => {
 
 export const AdminImportPlannings = () => {
     return (
-        <Card className="w-full max-w-7xl mx-auto">
+        <Card className="w-full max-w-3xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                     Importer les plannings

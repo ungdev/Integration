@@ -161,7 +161,7 @@ export const AdminTeamManagement = () => {
 
     return (
         <div className="flex flex-col items-center px-4 py-5 space-y-10">
-            <Card className="w-full max-w-7xl mx-auto">
+            <Card className="w-full max-w-3xl mx-auto">
                 <CardHeader>
                     <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                         🎯 Créer une équipe
@@ -188,7 +188,7 @@ export const AdminTeamManagement = () => {
                 </CardContent>
             </Card>
 
-            <Card className="w-full max-w-7xl mx-auto">
+            <Card className="w-full max-w-3xl mx-auto">
                 <CardHeader>
                     <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                         🛠️ Modifier une équipe
@@ -213,7 +213,7 @@ export const AdminTeamManagement = () => {
             </Card>
 
             {selectedTeam && (
-                <Card className="w-full max-w-7xl mx-auto">
+                <Card className="w-full max-w-3xl mx-auto">
                     <CardHeader>
                         <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                             ✏️ Éditer l'équipe
@@ -336,7 +336,7 @@ export const DistributeTeam = () => {
     };
 
     return (
-        <Card className="w-full max-w-7xl mx-auto">
+        <Card className="w-full max-w-3xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                     🔀 Répartition automatique

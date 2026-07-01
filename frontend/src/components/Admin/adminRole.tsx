@@ -55,7 +55,7 @@ export const AdminRolePreferences = () => {
     }));
 
     return (
-        <Card className="w-full max-w-7xl mx-auto">
+        <Card className="w-full max-w-3xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                     Gestion des Préférences de Rôle
@@ -176,7 +176,7 @@ export const AdminRoleManagement = () => {
     };
 
     return (
-        <Card className="w-full max-w-7xl mx-auto">
+        <Card className="w-full max-w-3xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">Gestion des rôles</CardTitle>
             </CardHeader>

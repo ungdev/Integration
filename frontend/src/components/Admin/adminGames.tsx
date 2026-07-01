@@ -73,7 +73,7 @@ export const AdminRolePointsManager = () => {
     };
 
     return (
-        <Card className="w-full max-w-7xl mx-auto">
+        <Card className="w-full max-w-3xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
                     Gestion des Points par Rôle

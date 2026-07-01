@@ -99,7 +99,7 @@ export const AdminEmail = () => {
                 title: 'Email envoyé',
                 text: res.message,
             });
-        } catch (error) {
+        } catch (error: any) {
             Swal.fire({
                 title: 'Erreur ❌',
                 text: error?.response?.data?.message || 'Une erreur est survenue.',

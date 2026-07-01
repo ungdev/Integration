@@ -1,42 +1,42 @@
 //--------------Challenge Import--------------//
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import { AdminBusTools } from "../components/Admin/adminBus";
-import AdminChallengeList from "../components/Admin/AdminChallenge/adminChalengeList";
-import { AdminChallengeAddPointsForm } from "../components/Admin/AdminChallenge/adminChallengeAddPointsForm";
-import ChallengeEditor from "../components/Admin/AdminChallenge/adminChallengeEditor";
-import { AdminValidatedChallengesList } from "../components/Admin/AdminChallenge/adminChallengeValidatedList";
-import { AdminEmail } from "../components/Admin/adminEmail";
-import { AdminEvents } from "../components/Admin/adminEvent";
-import { AdminExportConnect, AdminImportFoodMenu, AdminImportPlannings } from "../components/Admin/adminExportImport";
-import { AdminFactionManagement } from "../components/Admin/adminFaction";
-import { AdminRolePointsManager } from "../components/Admin/adminGames";
-import { AdminLayout } from "../components/Admin/adminLayout";
-import { AdminNews } from "../components/Admin/adminNews";
+import { AdminBusTools } from '../components/Admin/adminBus';
+import AdminChallengeList from '../components/Admin/AdminChallenge/adminChalengeList';
+import { AdminChallengeAddPointsForm } from '../components/Admin/AdminChallenge/adminChallengeAddPointsForm';
+import ChallengeEditor from '../components/Admin/AdminChallenge/adminChallengeEditor';
+import { AdminValidatedChallengesList } from '../components/Admin/AdminChallenge/adminChallengeValidatedList';
+import { AdminEmail } from '../components/Admin/adminEmail';
+import { AdminEvents } from '../components/Admin/adminEvent';
+import { AdminExportConnect, AdminImportFoodMenu, AdminImportPlannings } from '../components/Admin/adminExportImport';
+import { AdminFactionManagement } from '../components/Admin/adminFaction';
+import { AdminRolePointsManager } from '../components/Admin/adminGames';
+import { AdminLayout } from '../components/Admin/adminLayout';
+import { AdminNews } from '../components/Admin/adminNews';
 //--------------Perm Import--------------//
-import PermanenceActions from "../components/Admin/AdminPerm/adminPermAction";
-import PermanenceForm from "../components/Admin/AdminPerm/adminPermForm";
-import { ImportPermCSV } from "../components/Admin/AdminPerm/adminPermImport";
-import PermanenceList from "../components/Admin/AdminPerm/adminPermList";
-import { AdminRoleManagement, AdminRolePreferences } from "../components/Admin/adminRole";
-import { AdminShotgunRanking } from "../components/Admin/adminShotgun";
-import { AdminTeamManagement, DistributeTeam } from "../components/Admin/adminTeam";
-import { TentAdmin } from "../components/Admin/adminTent";
-import { AdminSyncNewStudent, AdminUser } from "../components/Admin/adminUser";
-import { RevealSection } from "../components/ui/revealSection";
-import { type Challenge, type ValidatedChallenge } from "../interfaces/challenge.interface";
-import { type Faction } from "../interfaces/faction.interface";
-import { type Permanence } from "../interfaces/permanence.interface";
-import { type Team } from "../interfaces/team.interface";
-import { type User } from "../interfaces/user.interface";
-import { getAllChallenges, getAllChallengesValidates } from "../services/requests/challenge.service";
-import { getAllFactionsUser } from "../services/requests/faction.service";
-import { getAllPermanences } from "../services/requests/permanence.service";
-import { getAllTeams } from "../services/requests/team.service";
-import { getUsers, getUsersAdmin } from "../services/requests/user.service";
+import PermanenceActions from '../components/Admin/AdminPerm/adminPermAction';
+import PermanenceForm from '../components/Admin/AdminPerm/adminPermForm';
+import { ImportPermCSV } from '../components/Admin/AdminPerm/adminPermImport';
+import PermanenceList from '../components/Admin/AdminPerm/adminPermList';
+import { AdminRoleManagement, AdminRolePreferences } from '../components/Admin/adminRole';
+import { AdminShotgunRanking } from '../components/Admin/adminShotgun';
+import { AdminTeamManagement, DistributeTeam } from '../components/Admin/adminTeam';
+import { TentAdmin } from '../components/Admin/adminTent';
+import { AdminRegisterNewStudent, AdminSyncNewStudent, AdminUser } from '../components/Admin/adminUser';
+import { RevealSection } from '../components/ui/revealSection';
+import { type Challenge, type ValidatedChallenge } from '../interfaces/challenge.interface';
+import { type Faction } from '../interfaces/faction.interface';
+import { type Permanence } from '../interfaces/permanence.interface';
+import { type Team } from '../interfaces/team.interface';
+import { type User } from '../interfaces/user.interface';
+import { getAllChallenges, getAllChallengesValidates } from '../services/requests/challenge.service';
+import { getAllFactionsUser } from '../services/requests/faction.service';
+import { getAllPermanences } from '../services/requests/permanence.service';
+import { getAllTeams } from '../services/requests/team.service';
+import { getUsers, getUsersAdmin } from '../services/requests/user.service';
 
 export const AdminPageTeam: React.FC = () => (
-    <AdminLayout allowedRoles={["Admin", "Respo CE"]}>
+    <AdminLayout allowedRoles={['Admin', 'Respo CE']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
                 <AdminTeamManagement />
@@ -50,7 +50,7 @@ export const AdminPageTeam: React.FC = () => (
 );
 
 export const AdminPageFaction: React.FC = () => (
-    <AdminLayout allowedRoles={["Admin", "Respo CE"]}>
+    <AdminLayout allowedRoles={['Admin', 'Respo CE']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
                 <AdminFactionManagement />
@@ -60,7 +60,7 @@ export const AdminPageFaction: React.FC = () => (
 );
 
 export const AdminPageRole: React.FC = () => (
-    <AdminLayout allowedRoles={["Admin"]}>
+    <AdminLayout allowedRoles={['Admin']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
                 <AdminRolePreferences />
@@ -74,7 +74,7 @@ export const AdminPageRole: React.FC = () => (
 );
 
 export const AdminPageEvents: React.FC = () => (
-    <AdminLayout allowedRoles={["Admin"]}>
+    <AdminLayout allowedRoles={['Admin']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
                 <AdminEvents />
@@ -84,7 +84,7 @@ export const AdminPageEvents: React.FC = () => (
 );
 
 export const AdminPageShotgun: React.FC = () => (
-    <AdminLayout allowedRoles={["Admin", "Respo CE"]}>
+    <AdminLayout allowedRoles={['Admin', 'Respo CE']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
                 <AdminShotgunRanking />
@@ -94,7 +94,7 @@ export const AdminPageShotgun: React.FC = () => (
 );
 
 export const AdminPageExport: React.FC = () => (
-    <AdminLayout allowedRoles={["Admin"]}>
+    <AdminLayout allowedRoles={['Admin']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
                 <AdminExportConnect />
@@ -135,9 +135,8 @@ export const AdminPagePerm: React.FC = () => {
     };
 
     return (
-        <AdminLayout allowedRoles={["Admin", "Respo CE"]}>
+        <AdminLayout allowedRoles={['Admin', 'Respo CE']}>
             <div className="flex flex-col gap-10 px-4 py-6 max-w-7xl mx-auto">
-
                 {/* Formulaire (créer/éditer) */}
                 <RevealSection>
                     <PermanenceForm
@@ -161,7 +160,7 @@ export const AdminPagePerm: React.FC = () => {
                             setEditMode(true);
                             setEditPermanence(perm);
                             setTimeout(() => {
-                                editorRef.current?.scrollIntoView({ behavior: "smooth" });
+                                editorRef.current?.scrollIntoView({ behavior: 'smooth' });
                             }, 100);
                         }}
                     />
@@ -169,10 +168,7 @@ export const AdminPagePerm: React.FC = () => {
 
                 {/* Actions globales */}
                 <RevealSection delay={0.2}>
-                    <PermanenceActions
-                        permanences={permanences}
-                        onRefresh={fetchPermanences}
-                    />
+                    <PermanenceActions permanences={permanences} onRefresh={fetchPermanences} />
                 </RevealSection>
 
                 {/* Import CSV (si dispo) */}
@@ -195,20 +191,18 @@ export const AdminPageChall: React.FC = () => {
 
     const fetchChallengesUsersTeamsFactions = async () => {
         try {
-
             const challsRes = await getAllChallenges();
             const usersRes = await getUsers();
             const teamsRes = await getAllTeams();
             const factionsRes = await getAllFactionsUser();
 
-            const challsResFiltered = challsRes.filter((c: Challenge) => c.category != "Free")
+            const challsResFiltered = challsRes.filter((c: Challenge) => c.category != 'Free');
             setChallenges(challsResFiltered);
             setUsers(usersRes);
             setTeams(teamsRes);
             setFactions(factionsRes);
-
         } catch (err) {
-            console.error("Erreur chargement challenges", err);
+            console.error('Erreur chargement challenges', err);
         }
     };
 
@@ -217,7 +211,7 @@ export const AdminPageChall: React.FC = () => {
             const res = await getAllChallengesValidates();
             setValidatedChallenges(res);
         } catch (err) {
-            console.error("Erreur chargement challenges validés", err);
+            console.error('Erreur chargement challenges validés', err);
         }
     };
 
@@ -228,11 +222,11 @@ export const AdminPageChall: React.FC = () => {
 
     const handleEdit = (challenge: Challenge) => {
         setEditingChallenge(challenge);
-        editorRef.current?.scrollIntoView({ behavior: "smooth" });
+        editorRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
     return (
-        <AdminLayout allowedRoles={["Admin", "Arbitre"]}>
+        <AdminLayout allowedRoles={['Admin', 'Arbitre']}>
             <div className="flex flex-col gap-6">
                 <RevealSection>
                     {/* Formulaire création / édition */}
@@ -263,7 +257,6 @@ export const AdminPageChall: React.FC = () => {
                     <AdminChallengeAddPointsForm />
                 </RevealSection>
 
-
                 <RevealSection delay={0.3}>
                     {/* Liste des challenges validés */}
                     <AdminValidatedChallengesList
@@ -277,7 +270,7 @@ export const AdminPageChall: React.FC = () => {
 };
 
 export const AdminPageEmail: React.FC = () => (
-    <AdminLayout allowedRoles={["Admin"]}>
+    <AdminLayout allowedRoles={['Admin']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
                 <AdminEmail />
@@ -287,7 +280,7 @@ export const AdminPageEmail: React.FC = () => (
 );
 
 export const AdminPageUser: React.FC = () => (
-    <AdminLayout allowedRoles={["Admin"]}>
+    <AdminLayout allowedRoles={['Admin']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
                 <AdminUser />
@@ -296,12 +289,16 @@ export const AdminPageUser: React.FC = () => (
             <RevealSection delay={0.1}>
                 <AdminSyncNewStudent />
             </RevealSection>
+
+            <RevealSection delay={0.2}>
+                <AdminRegisterNewStudent />
+            </RevealSection>
         </div>
     </AdminLayout>
 );
 
 export const AdminPageNews: React.FC = () => (
-    <AdminLayout allowedRoles={["Admin", "Communication"]}>
+    <AdminLayout allowedRoles={['Admin', 'Communication']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
                 <AdminNews />
@@ -311,7 +308,7 @@ export const AdminPageNews: React.FC = () => (
 );
 
 export const AdminPageTent: React.FC = () => (
-    <AdminLayout allowedRoles={["Admin"]}>
+    <AdminLayout allowedRoles={['Admin']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
                 <TentAdmin />
@@ -321,7 +318,7 @@ export const AdminPageTent: React.FC = () => (
 );
 
 export const AdminPageBus: React.FC = () => (
-    <AdminLayout allowedRoles={["Admin"]}>
+    <AdminLayout allowedRoles={['Admin']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
                 <AdminBusTools />
@@ -331,7 +328,7 @@ export const AdminPageBus: React.FC = () => (
 );
 
 export const AdminPageGames: React.FC = () => (
-    <AdminLayout allowedRoles={["Admin"]}>
+    <AdminLayout allowedRoles={['Admin']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
                 <AdminRolePointsManager />

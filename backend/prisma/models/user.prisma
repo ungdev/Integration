@@ -1,0 +1,80 @@
+model users {
+  id                                                                     Int                    @id @default(autoincrement())
+  first_name                                                             String?
+  last_name                                                              String?
+  email                                                                  String?                @unique(map: "users_email_unique")
+  majeur                                                                 Boolean?
+  branch                                                                 String?
+  contact                                                                String?
+  password                                                               String?
+  permission                                                             String?                @default("Nouveau")                 // Par défaut, le rôle sera "Nouveau"
+  created_at                                                             DateTime?              @default(now()) @db.Timestamp(6)
+  discord_id                                                             String?
+  bus_attribution                                                        bus_attribution?
+  challenge_validation_challenge_validation_added_by_admin_idTousers     challenge_validation[] @relation("challenge_validation_added_by_admin_idTousers")
+  challenge_validation_challenge_validation_target_user_idTousers        challenge_validation[] @relation("challenge_validation_target_user_idTousers")
+  challenge_validation_challenge_validation_validated_by_admin_idTousers challenge_validation[] @relation("challenge_validation_validated_by_admin_idTousers")
+  challenges                                                             challenges[]
+  registration_tokens                                                    registration_tokens[]
+  respo_permanences                                                      respo_permanences[]
+  user_permanences                                                       user_permanences[]
+  user_preferences                                                       user_preferences[]
+  user_roles                                                             user_roles[]           
+  user_teams                                                             user_teams[]
+  user_tent_user_tent_user_id_1Tousers                                   user_tent[]            @relation("user_tent_user_id_1Tousers")
+  user_tent_user_tent_user_id_2Tousers                                   user_tent[]            @relation("user_tent_user_id_2Tousers")
+}
+
+model user_preferences {
+  user_id Int
+  role_id Int
+  roles   roles @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_preferences_role_id_roles_id_fk")
+  users   users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_preferences_user_id_users_id_fk")
+
+  @@id([user_id, role_id], map: "user_preferences_user_id_role_id_pk")
+}
+
+model registration_tokens {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  token      String    @unique(map: "registration_tokens_token_unique")
+  expires_at DateTime  @db.Timestamp(6)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  users      users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "registration_tokens_user_id_users_id_fk")
+}
+
+model user_roles {
+  user_id Int
+  role_id Int
+  roles   roles @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_roles_role_id_roles_id_fk")
+  users   users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_roles_user_id_users_id_fk")
+
+  @@id([user_id, role_id], map: "user_roles_user_id_role_id_pk")
+}
+
+model user_teams {
+  user_id Int
+  team_id Int
+  teams   teams @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_teams_team_id_teams_id_fk")
+  users   users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_teams_user_id_users_id_fk")
+
+  @@id([user_id, team_id], map: "user_teams_user_id_team_id_pk")
+}
+
+model bus_attribution {
+  user_id        Int    @id
+  bus            Int
+  departure_time String
+  users          users  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "bus_attribution_user_id_users_id_fk")
+}
+
+model user_tent {
+  user_id_1                        Int
+  user_id_2                        Int
+  confirmed                        Boolean?  @default(false)                        // optionnel : pour savoir si les deux ont validé
+  created_at                       DateTime? @default(now()) @db.Timestamp(6)
+  users_user_tent_user_id_1Tousers users     @relation("user_tent_user_id_1Tousers", fields: [user_id_1], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_tent_user_id_1_users_id_fk")
+  users_user_tent_user_id_2Tousers users     @relation("user_tent_user_id_2Tousers", fields: [user_id_2], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_tent_user_id_2_users_id_fk")
+
+  @@id([user_id_1, user_id_2], map: "user_tent_user_id_1_user_id_2_pk")
+}

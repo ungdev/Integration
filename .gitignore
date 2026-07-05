@@ -8,8 +8,16 @@ backend/uploads/
 backend/exports/
 backend/dist
 
+# Prisma generated files
+backend/src/prisma/build/**/*.ts
+
 # Autres fichiers à ignorer
 .DS_Store
 *.log
 *.env
 google_credentials.json
+
+
+# Ignorer les clés NGINX pour simuler la prod
+integration.utt.fr-key.pem
+integration.utt.fr.pem

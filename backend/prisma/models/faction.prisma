@@ -1,0 +1,7 @@
+model factions {
+  id                   Int                    @id @default(autoincrement())
+  name                 String?                @unique(map: "factions_name_unique")
+  description          String?
+  challenge_validation challenge_validation[]
+  team_faction         team_faction[]
+}

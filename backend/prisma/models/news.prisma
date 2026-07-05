@@ -1,0 +1,10 @@
+model news {
+  id          Int       @id @default(autoincrement())
+  title       String?
+  description String?
+  type        String?
+  published   Boolean?  @default(false)
+  target      String?   // "Tous", "Nouveau", "CE", "Orgas", "Admin", ...
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  image_url   String?
+}

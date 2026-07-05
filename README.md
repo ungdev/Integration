@@ -13,7 +13,7 @@ Ce projet est une plateforme pour le site d'intégration de l'Université de Tec
 - **Backend** :
   - Node.js
   - Express.js
-  - Drizzle ORM
+  - Prisma ORM
   - PostgreSQL client
   - Docker
 
@@ -57,7 +57,7 @@ docker-compose up --build
 
 Cette commande :
 - Lance PostgreSQL
-- Démarre le backend avec migration automatique via Drizzle ORM
+- Démarre le backend avec synchronisation du schéma Prisma et seed automatique
 - Compile et sert le frontend
 
 ### 4. Accéder aux services
@@ -68,15 +68,17 @@ Cette commande :
 
 ---
 
-## 🧪 Gestion des migrations
+## 🧪 Gestion du schéma et des seeds
 
-Le backend utilise **Drizzle ORM** pour la gestion des migrations.
+Le backend utilise **Prisma ORM** pour synchroniser le schéma et injecter les données de base.
 
 La commande suivante est exécutée automatiquement au démarrage :
 
 ```bash
 npm run migrate
 ```
+
+Elle exécute `prisma generate`, `prisma db push`, puis `prisma db seed`.
 
 ---
 

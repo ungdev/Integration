@@ -1,0 +1,28 @@
+model challenges {
+  id                   Int                    @id @default(autoincrement())
+  title                String
+  description          String
+  category             String
+  points               Int
+  created_by           Int?                         // l'admin qui a créé le challenge
+  challenge_validation challenge_validation[]
+  users                users?                 @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenges_created_by_users_id_fk")
+}
+
+model challenge_validation {
+  id                                                      Int        @id @default(autoincrement())
+  challenge_id                                            Int
+  validated_by_admin_id                                   Int
+  validated_at                                            DateTime   @default(now()) @db.Timestamptz(6)
+  target_user_id                                          Int?
+  target_team_id                                          Int?
+  target_faction_id                                       Int?
+  points                                                  Int               // Nombre de points validés
+  added_by_admin_id                                       Int               // Qui a validé les points
+  users_challenge_validation_added_by_admin_idTousers     users      @relation("challenge_validation_added_by_admin_idTousers", fields: [added_by_admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_validation_added_by_admin_id_users_id_fk")
+  challenges                                              challenges @relation(fields: [challenge_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_validation_challenge_id_challenges_id_fk")
+  factions                                                factions?  @relation(fields: [target_faction_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_validation_target_faction_id_factions_id_fk")
+  teams                                                   teams?     @relation(fields: [target_team_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_validation_target_team_id_teams_id_fk")
+  users_challenge_validation_target_user_idTousers        users?     @relation("challenge_validation_target_user_idTousers", fields: [target_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_validation_target_user_id_users_id_fk")
+  users_challenge_validation_validated_by_admin_idTousers users      @relation("challenge_validation_validated_by_admin_idTousers", fields: [validated_by_admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_validation_validated_by_admin_id_users_id_fk")
+}

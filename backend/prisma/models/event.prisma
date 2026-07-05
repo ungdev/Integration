@@ -1,0 +1,9 @@
+model events {
+  id                    Int      @id @default(autoincrement())
+  pre_registration_open Boolean? @default(false)
+  shotgun_open          Boolean? @default(false)
+  sdi_open              Boolean? @default(false)
+  wei_open              Boolean? @default(false)
+  food_open             Boolean? @default(false)
+  chall_open            Boolean? @default(false)
+}

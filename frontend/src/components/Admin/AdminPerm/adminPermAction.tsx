@@ -1,9 +1,9 @@
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2';
 
-import { Button } from "../../../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
-import { type PermanenceActionsProps } from "../../../interfaces/permanence.interface";
-import { closePermanence, openPermanence } from "../../../services/requests/permanence.service";
+import { Button } from '../../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { type PermanenceActionsProps } from '../../../interfaces/permanence.interface';
+import { closePermanence, openPermanence } from '../../../services/requests/permanence.service';
 
 // Fonction utilitaire pour "normaliser" une date au début de journée (00:00:00)
 const normalizeDate = (d: Date): Date => {
@@ -19,12 +19,12 @@ const inSevenDays = (): Date => {
 const PermanenceActions: React.FC<PermanenceActionsProps> = ({ permanences, onRefresh }) => {
     const handleOpenAll = async (): Promise<void> => {
         const confirm = await Swal.fire({
-            title: "Ouvrir toutes à J+7 ?",
-            text: "Toutes les permanences commençant avant J+7 seront ouvertes.",
-            icon: "question",
+            title: 'Ouvrir toutes à J+7 ?',
+            text: 'Toutes les permanences commençant avant J+7 seront ouvertes.',
+            icon: 'question',
             showCancelButton: true,
-            confirmButtonText: "Ouvrir",
-            cancelButtonText: "Annuler",
+            confirmButtonText: 'Ouvrir',
+            cancelButtonText: 'Annuler',
         });
         if (!confirm.isConfirmed) return;
 
@@ -38,21 +38,21 @@ const PermanenceActions: React.FC<PermanenceActionsProps> = ({ permanences, onRe
 
         try {
             await Promise.all(toOpen.map((p) => openPermanence(p.id)));
-            await Swal.fire("Ouvertes", "Toutes les permanences ont été ouvertes !", "success");
+            await Swal.fire('Ouvertes', 'Toutes les permanences ont été ouvertes !', 'success');
             onRefresh();
         } catch {
-            Swal.fire("Erreur", "Une erreur est survenue lors de l'ouverture", "error");
+            Swal.fire('Erreur', "Une erreur est survenue lors de l'ouverture", 'error');
         }
     };
 
     const handleCloseAll = async (): Promise<void> => {
         const confirm = await Swal.fire({
-            title: "Fermer toutes à J+7 ?",
-            text: "Toutes les permanences commençant avant J+7 seront fermées.",
-            icon: "warning",
+            title: 'Fermer toutes à J+7 ?',
+            text: 'Toutes les permanences commençant avant J+7 seront fermées.',
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: "Fermer",
-            cancelButtonText: "Annuler",
+            confirmButtonText: 'Fermer',
+            cancelButtonText: 'Annuler',
         });
         if (!confirm.isConfirmed) return;
 
@@ -63,26 +63,28 @@ const PermanenceActions: React.FC<PermanenceActionsProps> = ({ permanences, onRe
         });
         try {
             await Promise.all(toClose.map((p) => closePermanence(p.id)));
-            await Swal.fire("Fermées", "Toutes les permanences ont été fermées !", "success");
+            await Swal.fire('Fermées', 'Toutes les permanences ont été fermées !', 'success');
             onRefresh();
         } catch {
-            Swal.fire("Erreur", "Une erreur est survenue lors de la fermeture", "error");
+            Swal.fire('Erreur', 'Une erreur est survenue lors de la fermeture', 'error');
         }
     };
 
     return (
-        <Card className="w-full max-w-3xl mx-auto">
+        <Card className="w-full max-w-7xl mx-auto">
             <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
-                    ⚡ Actions rapides
-                </CardTitle>
+                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">⚡ Actions rapides</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="flex flex-col md:flex-row gap-4 justify-center">
-                    <Button onClick={() => void handleOpenAll()} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl">
+                    <Button
+                        onClick={() => void handleOpenAll()}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl">
                         📅 Ouvrir toutes à J+7
                     </Button>
-                    <Button onClick={() => void handleCloseAll()} className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-xl">
+                    <Button
+                        onClick={() => void handleCloseAll()}
+                        className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-xl">
                         🛑 Fermer toutes à J+7
                     </Button>
                 </div>

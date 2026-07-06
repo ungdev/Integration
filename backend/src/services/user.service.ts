@@ -6,6 +6,7 @@ import { registrationSchema } from '../schemas/Relational/registration.schema';
 import { getFaction } from './faction.service';
 import { getUserRoles } from './role.service';
 import { getTeam, getTeamFaction, getUserTeam } from './team.service';
+import { userInformationSchema } from '../schemas/Relational/userinformation.schema';
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
@@ -137,11 +138,11 @@ export const getUserContactInformation = async (userId: number) => {
     try {
         const user = await db.select(
             {
-                userId: userSchema.id,
-                urgency_contact_name: userSchema.contact,
-                urgency_contact_phone: userSchema.contact
+                userId: userInformationSchema.user_id,
+                urgency_contact_name: userInformationSchema.urgency_contact_name,
+                urgency_contact_phone: userInformationSchema.urgency_contact_phone
             }
-        ).from(userSchema).where(eq(userSchema.id, userId));
+        ).from(userInformationSchema).where(eq(userInformationSchema.user_id, userId));
         return user[0];
     } catch (err) {
         console.error('Erreur lors de la récupération des informations de contact de l\'utilisateur ', err);

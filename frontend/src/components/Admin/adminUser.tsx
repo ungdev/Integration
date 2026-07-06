@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 
-import { type User } from '../../interfaces/user.interface';
+import { type User,type UserContactInformation } from '../../interfaces/user.interface';
 import { renewTokenUser, requestPasswordUser } from '../../services/requests/auth.service';
 import {
     deleteUserByAdmin,
+    getUserContactInformation,
     getUsersAdmin,
     syncnewStudent,
     updateUserByAdmin,
@@ -46,6 +47,7 @@ export const AdminUser = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [formData, setFormData] = useState<Partial<User>>({});
+    const [contactInformation, setContactInformation] = useState<Partial<UserContactInformation>>({});
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -55,11 +57,12 @@ export const AdminUser = () => {
         fetchUsers();
     }, []);
 
-    const handleUserSelect = (option: any) => {
+    const handleUserSelect = async (option: any) => {
         const user = users.find((u) => u.userId === option.value);
         if (user) {
             setSelectedUser(user);
             setFormData({ ...user });
+            setContactInformation({ ...(await getUserContactInformation(user.userId)) });
         }
     };
 
@@ -165,104 +168,132 @@ export const AdminUser = () => {
     };
 
     return (
-        <Card className="w-full max-w-3xl mx-auto">
-            <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
-                    👤 Gérer un utilisateur
-                </CardTitle>
-            </CardHeader>
+        <div className="flex flex-col gap-6">
+            <Card className="w-full max-w-3xl mx-auto">
+                <CardHeader>
+                    <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+                        👤 Gérer un utilisateur
+                    </CardTitle>
+                </CardHeader>
 
-            <CardContent className="space-y-4">
-                <Select
-                    placeholder="Sélectionner un utilisateur"
-                    options={users.map((u) => ({
-                        value: u.userId,
-                        label: `${u.firstName} ${u.lastName} (${u.email})`,
-                    }))}
-                    onChange={handleUserSelect}
-                />
+                <CardContent className="space-y-4">
+                    <Select
+                        placeholder="Sélectionner un utilisateur"
+                        options={users.map((u) => ({
+                            value: u.userId,
+                            label: `${u.firstName} ${u.lastName} (${u.email})`,
+                        }))}
+                        onChange={handleUserSelect}
+                    />
 
-                {selectedUser && (
-                    <form className="space-y-3 mt-4">
-                        <Input
-                            name="firstName"
-                            value={formData.firstName || ''}
-                            onChange={handleInputChange}
-                            placeholder="Prénom"
-                        />
-                        <Input
-                            name="lastName"
-                            value={formData.lastName || ''}
-                            onChange={handleInputChange}
-                            placeholder="Nom"
-                        />
-                        <Input name="email" value={formData.email || ''} disabled placeholder="Email" />
+                    {selectedUser && (
+                        <form className="space-y-3 mt-4">
+                            <Input
+                                name="firstName"
+                                value={formData.firstName || ''}
+                                onChange={handleInputChange}
+                                placeholder="Prénom"
+                            />
+                            <Input
+                                name="lastName"
+                                value={formData.lastName || ''}
+                                onChange={handleInputChange}
+                                placeholder="Nom"
+                            />
+                            <Input name="email" value={formData.email || ''} disabled placeholder="Email" />
 
-                        <p className="text-sm text-red-500 underline mt-2">
-                            <strong>Attention : la donnée récupérée dépend de la date de synchro choisie</strong>
-                        </p>
+                            <p className="text-sm text-red-500 underline mt-2">
+                                <strong>Attention : la donnée récupérée dépend de la date de synchro choisie</strong>
+                            </p>
 
-                        <Select
-                            placeholder="Majeur ?"
-                            options={majeurOptions}
-                            value={majeurOptions.find((opt) => opt.value === formData.majeur) || null}
-                            onChange={handleSelectChange('majeur')}
-                            isClearable
-                        />
+                            <Select
+                                placeholder="Majeur ?"
+                                options={majeurOptions}
+                                value={majeurOptions.find((opt) => opt.value === formData.majeur) || null}
+                                onChange={handleSelectChange('majeur')}
+                                isClearable
+                            />
 
-                        <Select
-                            value={branchOptions.find((b) => b.value === formData.branch) || null}
-                            onChange={handleSelectChange('branch')}
-                            options={branchOptions}
-                            placeholder="Choisir une filière"
-                            isClearable
-                        />
+                            <Select
+                                value={branchOptions.find((b) => b.value === formData.branch) || null}
+                                onChange={handleSelectChange('branch')}
+                                options={branchOptions}
+                                placeholder="Choisir une filière"
+                                isClearable
+                            />
 
-                        <Input
-                            name="contact"
-                            value={formData.contact || ''}
-                            onChange={handleInputChange}
-                            placeholder="Contact"
-                        />
+                            <Input
+                                name="contact"
+                                value={formData.contact || ''}
+                                onChange={handleInputChange}
+                                placeholder="Contact"
+                            />
 
-                        <Select
-                            placeholder="Permission"
-                            options={permissionOptions}
-                            value={permissionOptions.find((opt) => opt.value === formData.permission) || null}
-                            onChange={handleSelectChange('permission')}
-                            isClearable
-                        />
+                            <Select
+                                placeholder="Permission"
+                                options={permissionOptions}
+                                value={permissionOptions.find((opt) => opt.value === formData.permission) || null}
+                                onChange={handleSelectChange('permission')}
+                                isClearable
+                            />
 
-                        <div className="flex gap-4 mt-4">
-                            <Button
-                                type="button"
-                                onClick={handleSave}
-                                className="bg-green-600 hover:bg-green-700 text-white">
-                                💾 Sauvegarder
-                            </Button>
-                            <Button
-                                type="button"
-                                onClick={handleDelete}
-                                className="bg-red-600 hover:bg-red-700 text-white">
-                                🗑 Supprimer
-                            </Button>
-                            <Button
-                                type="button"
-                                onClick={handleRenewToken}
-                                className="bg-blue-500 hover:bg-blue-600 text-white">
-                                🔄 Reset Token
-                            </Button>
-                            <Button
-                                type="button"
-                                onClick={handleRequestPassword}
-                                className="bg-purple-500 hover:bg-purple-600 text-white">
-                                📧 Reset Password (mail)
-                            </Button>
+                            <div className="flex gap-4 mt-4">
+                                <Button
+                                    type="button"
+                                    onClick={handleSave}
+                                    className="bg-green-600 hover:bg-green-700 text-white">
+                                    💾 Sauvegarder
+                                </Button>
+                                <Button
+                                    type="button"
+                                    onClick={handleDelete}
+                                    className="bg-red-600 hover:bg-red-700 text-white">
+                                    🗑 Supprimer
+                                </Button>
+                                <Button
+                                    type="button"
+                                    onClick={handleRenewToken}
+                                    className="bg-blue-500 hover:bg-blue-600 text-white">
+                                    🔄 Reset Token
+                                </Button>
+                                <Button
+                                    type="button"
+                                    onClick={handleRequestPassword}
+                                    className="bg-purple-500 hover:bg-purple-600 text-white">
+                                    📧 Reset Password (mail)
+                                </Button>
+                            </div>
+                        </form>
+                    )}
+                </CardContent>
+            </Card>
+
+            {selectedUser && (
+                <Card className="w-full max-w-3xl mx-auto">
+                    <CardHeader>
+                        <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+                            📞 Information De Contact
+                        </CardTitle>
+
+                        <div className="space-y-3 mt-4">
+                            <Input 
+                                name="Urgency Contact Name" 
+                                value={contactInformation.urgency_contact_name || ''} 
+                                disabled 
+                                placeholder="Nom du contact d'urgence" 
+                            />
+                            <Input 
+                                name="Urgency Contact Phone" 
+                                value={contactInformation.urgency_contact_phone || ''} 
+                                disabled 
+                                placeholder="Téléphone du contact d'urgence" 
+                            />
                         </div>
-                    </form>
-                )}
-            </CardContent>
-        </Card>
+                        
+                    </CardHeader>
+                </Card>
+            )}
+        </div>
     );
 };
 

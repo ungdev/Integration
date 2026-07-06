@@ -9,3 +9,9 @@ export interface User {
     contact: string;
     discord_id: string;
 }
+
+export interface UserContactInformation {
+    userId: number;
+    urgency_contact_name: string;
+    urgency_contact_phone: number;
+}

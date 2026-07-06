@@ -1,4 +1,4 @@
-import { type User } from '../../interfaces/user.interface';
+import { type User, type UserContactInformation } from '../../interfaces/user.interface';
 import api from '../api';
 
 export const getPermission = (): string | null => {
@@ -44,6 +44,12 @@ export const getUsersByPermission = async () => {
 export const getCurrentUser = async () => {
     const res = await api.get("/user/user/me");
     return res.data.data;
+};
+
+export const getUserContactInformation = async (userId: number) => {
+    const response = await api.get(`/user/admin/getusercontactinformation/${userId}`);
+    const users: UserContactInformation = response.data.data;
+    return users;
 };
 
 export const updateCurrentUser = async (data: Partial<User>) => {

@@ -5,6 +5,7 @@ import { Fragment, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
 import { decodeToken, getToken } from "../services/requests/auth.service";
+import { getCurrentUserContactInformation } from "../services/requests/user.service";
 
 interface NavItem {
     label: string;
@@ -25,6 +26,7 @@ export const Navbar = () => {
     const isAuthenticated = Boolean(token);
     const { userPermission, userRoles = [] } = token ? decodeToken(token) : { userPermission: undefined, userRoles: [] };
     const roles = [userPermission, ...userRoles.map(r => r.roleName)].filter(Boolean) as string[];
+    const [hasContactInformation, setHasContactInformation] = useState(false);
 
     const handleLogout = () => {
         localStorage.removeItem("authToken");
@@ -33,6 +35,18 @@ export const Navbar = () => {
 
     useEffect(() => {
         setMenuOpen(false);
+        const fetchContactInformation = async () => {
+            try {
+                const contactInfo = await getCurrentUserContactInformation();
+                setHasContactInformation(contactInfo.urgency_contact_phone !== null);
+            } catch (error) {
+                console.error("Erreur lors de la récupération des informations de contact :", error);
+            }
+        };
+
+        if (isAuthenticated) {
+            fetchContactInformation();
+        }
     }, [pathname]);
 
     const navItems: NavItem[] = [
@@ -126,72 +140,80 @@ export const Navbar = () => {
     };
 
     return (
-        <nav className="bg-blue-800 text-white shadow-lg">
-            <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-                {/* Logo */}
-                <NavLink to="/home" className="text-2xl font-bold">
-                    UTT Integration
-                </NavLink>
+        <div>
+            <nav className="bg-blue-800 text-white shadow-lg">
+                <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
+                    {/* Logo */}
+                    <NavLink to="/home" className="text-2xl font-bold">
+                        UTT Integration
+                    </NavLink>
 
-                {/* Hamburger mobile */}
-                <button
-                    onClick={() => setMenuOpen(!menuOpen)}
-                    className="lg:hidden p-2 focus:outline-none"
-                    aria-label="Toggle menu"
-                >
-                    {menuOpen ? (
-                        <XMarkIcon className="w-6 h-6" />
-                    ) : (
-                        <Bars4Icon className="w-6 h-6" />
-                    )}
-                </button>
-
-                {/* Menu desktop */}
-                <ul className="hidden lg:flex items-center space-x-6">
-                    {navItems.map(item =>
-                        canShowItem(item) ? (
-                            <li key={item.label} className="relative group">
-                                {item.children ? (
-                                    <Dropdown item={item} canShowItem={canShowItem} />
-                                ) : item.kind === "action" ? (
-                                    <NavActionItem item={item} />
-                                ) : (
-                                    <MenuItem item={item} active={pathname === item.to} />
-                                )}
-                            </li>
-                        ) : null
-                    )}
-                </ul>
-            </div>
-
-            {/* Menu mobile */}
-            <AnimatePresence>
-                {menuOpen && (
-                    <motion.ul
-                        initial={{ height: 0 }}
-                        animate={{ height: "auto" }}
-                        exit={{ height: 0 }}
-                        className="lg:hidden bg-blue-700 overflow-hidden"
+                    {/* Hamburger mobile */}
+                    <button
+                        onClick={() => setMenuOpen(!menuOpen)}
+                        className="lg:hidden p-2 focus:outline-none"
+                        aria-label="Toggle menu"
                     >
+                        {menuOpen ? (
+                            <XMarkIcon className="w-6 h-6" />
+                        ) : (
+                            <Bars4Icon className="w-6 h-6" />
+                        )}
+                    </button>
+
+                    {/* Menu desktop */}
+                    <ul className="hidden lg:flex items-center space-x-6">
                         {navItems.map(item =>
                             canShowItem(item) ? (
-                                <Fragment key={item.label}>
-                                    {!item.children ? (
-                                        item.kind === "action" ? (
-                                            <NavActionItem item={item} mobile />
-                                        ) : (
-                                            <MenuItem item={item} mobile />
-                                        )
+                                <li key={item.label} className="relative group">
+                                    {item.children ? (
+                                        <Dropdown item={item} canShowItem={canShowItem} />
+                                    ) : item.kind === "action" ? (
+                                        <NavActionItem item={item} />
                                     ) : (
-                                        <Dropdown item={item} mobile canShowItem={canShowItem} />
+                                        <MenuItem item={item} active={pathname === item.to} />
                                     )}
-                                </Fragment>
+                                </li>
                             ) : null
                         )}
-                    </motion.ul>
-                )}
-            </AnimatePresence>
-        </nav>
+                    </ul>
+                </div>
+
+                {/* Menu mobile */}
+                <AnimatePresence>
+                    {menuOpen && (
+                        <motion.ul
+                            initial={{ height: 0 }}
+                            animate={{ height: "auto" }}
+                            exit={{ height: 0 }}
+                            className="lg:hidden bg-blue-700 overflow-hidden"
+                        >
+                            {navItems.map(item =>
+                                canShowItem(item) ? (
+                                    <Fragment key={item.label}>
+                                        {!item.children ? (
+                                            item.kind === "action" ? (
+                                                <NavActionItem item={item} mobile />
+                                            ) : (
+                                                <MenuItem item={item} mobile />
+                                            )
+                                        ) : (
+                                            <Dropdown item={item} mobile canShowItem={canShowItem} />
+                                        )}
+                                    </Fragment>
+                                ) : null
+                            )}
+                        </motion.ul>
+                    )}
+                </AnimatePresence>
+            </nav>
+
+            {/* Contact Information Warning */ hasContactInformation === false && isAuthenticated && (
+                <div className="bg-red-800 text-white shadow-lg">
+                    <p className="py-2 px-4 text-center">ATTENTION : Tu n'as pas complété le formulaire VSS ainsi que tes informations d'urgence. Merci de le faire au plus vite !</p>
+                </div>
+            )}
+        </div>
     );
 };
 

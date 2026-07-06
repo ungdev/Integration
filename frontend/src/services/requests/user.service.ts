@@ -41,13 +41,19 @@ export const getUsersByPermission = async () => {
     return users;
 }
 
+export const getUserContactInformation = async (userId: number) => {
+    const response = await api.get(`/user/admin/getusercontactinformation/${userId}`);
+    const users: UserContactInformation = response.data.data;
+    return users;
+};
+
 export const getCurrentUser = async () => {
     const res = await api.get("/user/user/me");
     return res.data.data;
 };
 
-export const getUserContactInformation = async (userId: number) => {
-    const response = await api.get(`/user/admin/getusercontactinformation/${userId}`);
+export const getCurrentUserContactInformation = async () => {
+    const response = await api.get(`/user/user/getusercontactinformation`);
     const users: UserContactInformation = response.data.data;
     return users;
 };

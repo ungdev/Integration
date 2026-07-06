@@ -6,7 +6,7 @@ import { type User } from '../../interfaces/user.interface';
 import { emailPreview, sendEmail } from '../../services/requests/email.service';
 import { getUsers } from '../../services/requests/user.service';
 import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 
 export const AdminEmail = () => {
@@ -41,7 +41,7 @@ export const AdminEmail = () => {
             const usersRes = await getUsers();
             setUsers(usersRes);
         } catch (err) {
-            console.error("Erreur lors du chargement des données", err);
+            console.error('Erreur lors du chargement des données', err);
         }
     };
 
@@ -63,7 +63,6 @@ export const AdminEmail = () => {
 
         const emails = sendTo.map((u) => u.value);
 
-
         const payload = {
             subject,
             templateName: isCustom ? 'custom' : templateName,
@@ -83,7 +82,7 @@ export const AdminEmail = () => {
 
     const confirmSend = async () => {
         const result = await Swal.fire({
-            title: 'Confirmer l\'envoi',
+            title: "Confirmer l'envoi",
             text: 'Êtes-vous sûr de vouloir envoyer cet email ?',
             icon: 'warning',
             showCancelButton: true,
@@ -98,14 +97,10 @@ export const AdminEmail = () => {
         }
     };
 
-
-
     return (
-        <Card className="w-full max-w-3xl mx-auto">
+        <Card className="w-full max-w-7xl mx-auto">
             <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
-                    📬 Envoi d'e-mail
-                </CardTitle>
+                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">📬 Envoi d'e-mail</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <Input placeholder="Sujet" value={subject} onChange={(e) => setSubject(e.target.value)} />

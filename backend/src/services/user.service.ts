@@ -6,8 +6,8 @@ import type { AdminCreateUserDto } from '../dto/user.dto';
 import { type User, userSchema } from '../schemas/Basic/user.schema';
 import { registrationSchema } from '../schemas/Relational/registration.schema';
 import * as auth_service from '../services/auth.service';
-import { noSyncEmails } from '../utils/no_sync_list';
 import * as SIEP_Utils from '../utils/siep';
+import * as Banned_Service from './banned.service';
 import { createRegistrationToken } from './auth.service';
 import { getFaction } from './faction.service';
 import { getUserRoles } from './role.service';
@@ -51,6 +51,10 @@ export const syncNewStudents = async (data: string) => {
     const token = await SIEP_Utils.getTokenUTTAPI();
 
     const newStudents = await SIEP_Utils.getNewStudentsFromUTTAPI_NOPAGE(token, data);
+
+    const noSyncEmails = await Banned_Service.getAllBanned().then((bannedList) =>
+        bannedList.map((banned) => banned.email),
+    );
 
     const filteredStudents = newStudents.filter((student: any) => !noSyncEmails.includes(student.email));
 

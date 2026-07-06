@@ -1,6 +1,7 @@
 //--------------Challenge Import--------------//
 import { useEffect, useRef, useState } from 'react';
 
+import { AdminBannedAddEmail, AdminBannedList } from '../components/Admin/adminBanned';
 import { AdminBusTools } from '../components/Admin/adminBus';
 import AdminChallengeList from '../components/Admin/AdminChallenge/adminChalengeList';
 import { AdminChallengeAddPointsForm } from '../components/Admin/AdminChallenge/adminChallengeAddPointsForm';
@@ -24,6 +25,7 @@ import { AdminTeamManagement, DistributeTeam } from '../components/Admin/adminTe
 import { TentAdmin } from '../components/Admin/adminTent';
 import { AdminRegisterNewStudent, AdminSyncNewStudent, AdminUser } from '../components/Admin/adminUser';
 import { RevealSection } from '../components/ui/revealSection';
+import { type Banned } from '../interfaces/banned.interface';
 import { type Challenge, type ValidatedChallenge } from '../interfaces/challenge.interface';
 import { type Faction } from '../interfaces/faction.interface';
 import { type Permanence } from '../interfaces/permanence.interface';
@@ -336,3 +338,21 @@ export const AdminPageGames: React.FC = () => (
         </div>
     </AdminLayout>
 );
+
+export const AdminBanned: React.FC = () => {
+    const [bannedList, setBannedList] = useState<Banned[]>([]);
+
+    return (
+        <AdminLayout allowedRoles={['Admin']}>
+            <div className="flex flex-col gap-6">
+                <RevealSection>
+                    <AdminBannedList bannedList={bannedList} setBannedList={setBannedList} />
+                </RevealSection>
+
+                <RevealSection delay={0.1}>
+                    <AdminBannedAddEmail bannedList={bannedList} setBannedList={setBannedList} />
+                </RevealSection>
+            </div>
+        </AdminLayout>
+    );
+};

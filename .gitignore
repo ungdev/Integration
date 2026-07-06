@@ -11,4 +11,5 @@ backend/exports/
 .DS_Store
 *.log
 *.env
+*.pem
 google_credentials.json

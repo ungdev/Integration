@@ -1,13 +1,9 @@
 import bcrypt from 'bcryptjs';
 import { randomBytes } from "crypto";
-import { eq } from "drizzle-orm";
 import { JSDOM } from 'jsdom';
 import jwt from 'jsonwebtoken';
-import { cas_validate_url } from '../../src/utils/secret';
-import { db } from '../database/db';
-import { type User, userSchema } from '../schemas/Basic/user.schema';
-import { registrationSchema } from '../schemas/Relational/registration.schema';
-import { jwtSecret } from '../utils/secret';
+import { db } from '../prisma/db';
+import { cas_validate_url, jwtSecret } from '../utils/secret';
 import * as role_service from './role.service';
 import * as user_service from './user.service';
 
@@ -22,14 +18,14 @@ export const comparePassword = async (password: string, hashedPassword: string):
     return bcrypt.compare(password, hashedPassword);
 };
 
-// Fonction pour générer un JWT
-export const generateToken = (user: User & { roles: { roleId: number; roleName: string }[] }) => {
+// Fonction pour générer un token JWT
+export const generateToken = (user: { id: number; email: string | null; permission: string | null; roles: { roleId: number; roleName: string }[] }) => {
     return jwt.sign(
         {
             userId: user.id,
             userEmail: user.email,
             userPermission: user.permission,
-            userRoles: user.roles, // Ajout des rôles dans le token
+            userRoles: user.roles,
         },
         jwtSecret,
         { expiresIn: "1h" }
@@ -50,14 +46,9 @@ export const loginUser = async (email: string, password: string) => {
         throw new Error("Mot de passe incorrect");
     }
 
-    // Récupérer les rôles de l'utilisateur
-    const userRoles = await role_service.getUserRoles(user.id); // [{ roleId, roleName }]
+    const userRoles = await role_service.getUserRoles(user.id);
 
-    // Ajouter les rôles à l'objet utilisateur
-    const enrichedUser = {
-        ...user,
-        roles: userRoles,
-    };
+    const enrichedUser = { ...user, roles: userRoles };
 
     // Générer un token JWT avec les rôles inclus
     const token = generateToken(enrichedUser);
@@ -75,17 +66,17 @@ export const registerUser = async (firstName: string, lastName: string, email: s
     // Hacher le mot de passe avant de l'enregistrer
     const hashedPassword = await hashPassword(password);
 
-    // Créer un nouvel utilisateur dans la base de données
-    const result = await db.insert(userSchema).values({
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        password: hashedPassword,
-        permission: 'Nouveau',
+    // Créer l'utilisateur dans la base de données
+    const newUser = await db.users.create({
+        data: {
+            first_name: firstName,
+            last_name: lastName,
+            email: email,
+            password: hashedPassword,
+            permission: 'Nouveau',
+        }
     });
 
-    // Retourner le nouvel utilisateur
-    const newUser = result[0];  // `result` est un tableau avec l'utilisateur inséré
     return newUser;
 };
 
@@ -111,7 +102,7 @@ export const validateCASTicket = async (ticket: string) => {
     } catch {
         throw new Error("Failed to fetch CAS. Please try again later.");
     }
-}
+};
 
 export const parseUsernameFromCASResponse = async (response: string) => {
     const dom = new JSDOM(response, { contentType: "application/xml" });
@@ -128,13 +119,10 @@ export const parseUsernameFromCASResponse = async (response: string) => {
             };
         }
     }
-}
-
-/*================================================================================================================*/
+};
 
 export const completeRegistration = async (token: string, password: string) => {
-
-    const [tokenRow] = await db.select().from(registrationSchema).where(eq(registrationSchema.token, token));
+    const tokenRow = await db.registration_tokens.findFirst({ where: { token } });
 
     if (!tokenRow || new Date(tokenRow.expires_at) < new Date()) {
         throw new Error("Token invalide ou expiré.");
@@ -142,23 +130,20 @@ export const completeRegistration = async (token: string, password: string) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await db.update(userSchema)
-        .set({ password: hashedPassword, permission: "Nouveau" })
-        .where(eq(userSchema.id, tokenRow.user_id));
+    await db.users.update({
+        where: { id: tokenRow.user_id },
+        data: { password: hashedPassword, permission: "Nouveau" }
+    });
 
-    // Supprimer le token
-    await db.delete(registrationSchema).where(eq(registrationSchema.id, tokenRow.id));
-
-}
+    await db.registration_tokens.delete({ where: { id: tokenRow.id } });
+};
 
 export const createRegistrationToken = async (userId: number) => {
-    const token = randomBytes(32).toString("hex"); // Jeton bien sécurisé
+    const token = randomBytes(32).toString("hex");
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 90); // 90 jours
 
-    await db.insert(registrationSchema).values({
-        user_id: userId,
-        token,
-        expires_at: expiresAt,
+    await db.registration_tokens.create({
+        data: { user_id: userId, token, expires_at: expiresAt }
     });
 
     return token;
@@ -166,10 +151,8 @@ export const createRegistrationToken = async (userId: number) => {
 
 export const deleteUserRegistrationToken = async (userId: number) => {
     try {
-        await db.delete(registrationSchema).where(eq(registrationSchema.user_id, userId));
-        return;
-    }
-    catch (error) {
+        await db.registration_tokens.deleteMany({ where: { user_id: userId } });
+    } catch (error) {
         throw new Error(error);
     }
 };

@@ -1,15 +1,12 @@
-import { eq } from "drizzle-orm";
 import fs from "fs";
 import Papa from "papaparse";
-import { db } from "../database/db";
-import { userSchema } from "../schemas/Basic/user.schema";
-import { busAttributionSchema } from "../schemas/Relational/busattribution.schema";
+import { db } from "../prisma/db";
 
 export interface BusAttribution {
     userId: number;
     firstName: string | null;
     lastName: string | null;
-    email: string;
+    email: string | null;
     bus: number;
     departure_time: string;
 }
@@ -22,42 +19,41 @@ type CsvBus = {
 
 // Récupérer toutes les attributions bus + user
 export const getAllBusAttributions = async (): Promise<BusAttribution[]> => {
-    const results = await db
-        .select({
-            userId: userSchema.id,
-            firstName: userSchema.first_name,
-            lastName: userSchema.last_name,
-            email: userSchema.email,
-            bus: busAttributionSchema.bus,
-            departure_time: busAttributionSchema.departure_time
-        })
-        .from(busAttributionSchema)
-        .innerJoin(userSchema, eq(userSchema.id, busAttributionSchema.user_id));
-
-    return results;
+    const results = await db.bus_attribution.findMany({
+        include: {
+            users: { select: { id: true, first_name: true, last_name: true, email: true } }
+        }
+    });
+    return results.map(r => ({
+        userId: r.users.id,
+        firstName: r.users.first_name,
+        lastName: r.users.last_name,
+        email: r.users.email,
+        bus: r.bus,
+        departure_time: r.departure_time,
+    }));
 };
 
 // Récupérer une attribution précise par userId
 export const getBusAttributionByUserId = async (userId: number): Promise<BusAttribution | null> => {
-    const result = await db
-        .select({
-            userId: userSchema.id,
-            firstName: userSchema.first_name,
-            lastName: userSchema.last_name,
-            email: userSchema.email,
-            bus: busAttributionSchema.bus,
-            departure_time: busAttributionSchema.departure_time,
-        })
-        .from(busAttributionSchema)
-        .innerJoin(userSchema, eq(userSchema.id, busAttributionSchema.user_id))
-        .where(eq(busAttributionSchema.user_id, userId));
-
-    return result.length > 0 ? result[0] : null;
+    const result = await db.bus_attribution.findUnique({
+        where: { user_id: userId },
+        include: {
+            users: { select: { id: true, first_name: true, last_name: true, email: true } }
+        }
+    });
+    if (!result) return null;
+    return {
+        userId: result.users.id,
+        firstName: result.users.first_name,
+        lastName: result.users.last_name,
+        email: result.users.email,
+        bus: result.bus,
+        departure_time: result.departure_time,
+    };
 };
 
-export const importBusFromCSV = async (
-    filePath: string
-): Promise<void> => {
+export const importBusFromCSV = async (filePath: string): Promise<void> => {
     const fileContent = fs.readFileSync(filePath, "utf8");
 
     const { data, errors } = Papa.parse<CsvBus>(fileContent, {
@@ -71,11 +67,10 @@ export const importBusFromCSV = async (
     }
 
     const parsedData = data.map((r) => ({
-        user_id: r.user_id,
-        bus: r.bus,
+        user_id: Number(r.user_id),
+        bus: Number(r.bus),
         departure_time: r.departure_time,
-
     }));
 
-    await db.insert(busAttributionSchema).values(parsedData);
+    await db.bus_attribution.createMany({ data: parsedData, skipDuplicates: true });
 };

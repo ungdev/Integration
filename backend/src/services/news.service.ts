@@ -1,6 +1,13 @@
-import { and, desc, eq } from "drizzle-orm";
-import { db } from "../database/db";
-import { type News, newsSchema } from "../schemas/Basic/news.schema";
+import { db } from '../prisma/db';
+
+type NewsUpdateFields = Partial<{
+    title: string | null;
+    description: string | null;
+    type: string | null;
+    published: boolean | null;
+    target: string | null;
+    image_url: string | null;
+}>;
 
 // Créer une actu
 export const createNews = async (
@@ -11,59 +18,50 @@ export const createNews = async (
     target: string,
     image_url?: string
 ) => {
-    const newNews = {
-        title,
-        description,
-        type,
-        published,
-        target,
-        image_url
-    };
-
-    const result = await db.insert(newsSchema).values(newNews).returning();
-    return result[0];
+    return await db.news.create({
+        data: { title, description, type, published, target, image_url }
+    });
 };
 
 // Lister les actus
 export const getAllNews = async () => {
-    return await db.select().from(newsSchema).orderBy(desc(newsSchema.created_at));
+    return await db.news.findMany({ orderBy: { created_at: 'desc' } });
 };
 
 // Lister les actus publiées (pour l'onglet côté utilisateur)
 export const getPublishedNews = async () => {
-    return await db.select().from(newsSchema).where(eq(newsSchema.published, true)).orderBy(desc(newsSchema.created_at));
+    return await db.news.findMany({
+        where: { published: true },
+        orderBy: { created_at: 'desc' }
+    });
 };
 
 // Filtrer par type
 export const getPublishedNewsByType = async (type: string) => {
-    return await db.select().from(newsSchema)
-        .where(and(eq(newsSchema.published, true), eq(newsSchema.type, type)))
-        .orderBy(desc(newsSchema.created_at));
+    return await db.news.findMany({
+        where: { published: true, type },
+        orderBy: { created_at: 'desc' }
+    });
 };
 
 // Publier une actu
 export const publishNews = async (id: number) => {
-    await db.update(newsSchema).set({ published: true }).where(eq(newsSchema.id, id)).returning();
+    await db.news.update({ where: { id }, data: { published: true } });
 };
 
+// Dépublier une actu
 export const deleteNews = async (newsId: number) => {
-    await db.delete(newsSchema).where(eq(newsSchema.id, newsId));
-}
-
-export const updateNews = async (
-    id: number,
-    updates: Partial<News>
-) => {
-    const result = await db
-        .update(newsSchema)
-        .set(updates)
-        .where(eq(newsSchema.id, id))
-        .returning();
-
-    return result[0] ?? null;
+    await db.news.delete({ where: { id: newsId } });
 };
 
+// Mettre à jour une actu
+export const updateNews = async (id: number, updates: NewsUpdateFields) => {
+    const result = await db.news.update({ where: { id }, data: updates });
+    return result ?? null;
+};
+
+// Récupérer une actu par son ID
 export const getNewsById = async (id: number) => {
-    const result = await db.select().from(newsSchema).where(eq(newsSchema.id, id));
-    return result[0] ?? null;
+    const result = await db.news.findUnique({ where: { id } });
+    return result ?? null;
 };

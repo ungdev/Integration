@@ -1,8 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { eq } from 'drizzle-orm';
-import { db } from '../database/db'; // Import de la connexion PostgreSQL
-import { type User, userSchema } from '../schemas/Basic/user.schema';
-import { registrationSchema } from '../schemas/Relational/registration.schema';
+import { db } from '../prisma/db';
 import { getFaction } from './faction.service';
 import { getUserRoles } from './role.service';
 import { getTeam, getTeamFaction, getUserTeam } from './team.service';
@@ -10,32 +7,45 @@ import { getTeam, getTeamFaction, getUserTeam } from './team.service';
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
     try {
-        const users = await db.select().from(userSchema).where(eq(userSchema.email, email));
-        return users[0];
+        const user = await db.users.findFirst({ where: { email } });
+        return user ?? undefined;
     } catch (err) {
         console.error('Erreur lors de la récupération de l\'utilisateur par email:', err);
         throw new Error('Erreur de base de données');
     }
 };
 
+// Fonction pour récupérer un utilisateur par ID
 export const getUserById = async (userId: number) => {
     try {
-        const user = await db.select(
-            {
-                userId: userSchema.id,
-                firstName: userSchema.first_name,
-                lastName: userSchema.last_name,
-                email: userSchema.email,
-                majeur: userSchema.majeur,
-                branch: userSchema.branch,
-                contact: userSchema.contact,
-                permission: userSchema.permission,
-                discord_id: userSchema.discord_id
+        const user = await db.users.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                email: true,
+                majeur: true,
+                branch: true,
+                contact: true,
+                permission: true,
+                discord_id: true,
             }
-        ).from(userSchema).where(eq(userSchema.id, userId));
-        return user[0];
+        });
+        if (!user) return undefined;
+        return {
+            userId: user.id,
+            firstName: user.first_name,
+            lastName: user.last_name,
+            email: user.email,
+            majeur: user.majeur,
+            branch: user.branch,
+            contact: user.contact,
+            permission: user.permission,
+            discord_id: user.discord_id,
+        };
     } catch (err) {
-        console.error('Erreur lors de la récupération de l\'utilisateur par email:', err);
+        console.error('Erreur lors de la récupération de l\'utilisateur par id:', err);
         throw new Error('Erreur de base de données');
     }
 };
@@ -48,24 +58,22 @@ export const createUser = async (
     majeur: boolean,
     permission: string,
     branch: string,
-    password: string) => {
+    password: string
+) => {
     try {
-        // Hacher le mot de passe
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        const newUser: Partial<User> = {
-            first_name: firstName,
-            last_name: lastName,
-            email: email,
-            branch: branch === "CV_ING" ? "RI" : branch,
-            majeur: majeur,
-            password: hashedPassword,
-            permission: permission
-        };
-        // Insérer un nouvel utilisateur dans la base de données
-        const result = await db.insert(userSchema).values(newUser).returning()
-
-        return result[0];
+        const newUser = await db.users.create({
+            data: {
+                first_name: firstName,
+                last_name: lastName,
+                email: email,
+                branch: branch === "CV_ING" ? "RI" : branch,
+                majeur: majeur,
+                password: hashedPassword,
+                permission: permission,
+            }
+        });
+        return newUser;
     } catch (err) {
         console.error('Erreur lors de la création de l\'utilisateur:', err);
         throw new Error('Erreur de base de données');
@@ -79,86 +87,98 @@ export const comparePassword = async (enteredPassword: string, storedPassword: s
 
 export const updateUserStudent = async (firstName: string, lastName: string, email: string) => {
     try {
-        const result = await db.update(userSchema)
-            .set({
-                first_name: firstName,
-                last_name: lastName
-            })
-            .where(eq(userSchema.email, email));
-
-        return result.rows[0];
+        await db.users.updateMany({
+            where: { email },
+            data: { first_name: firstName, last_name: lastName }
+        });
     } catch (err) {
-        console.error('Erreur lors de la récupération et de l\'update de l\'utilisateur par email:', err);
+        console.error('Erreur lors de l\'update de l\'utilisateur par email:', err);
         throw new Error('Erreur de base de données');
     }
-}
+};
 
 export const getUsersAdmin = async () => {
     try {
-        const users = await db.select(
-            {
-                userId: userSchema.id,
-                firstName: userSchema.first_name,
-                lastName: userSchema.last_name,
-                email: userSchema.email,
-                majeur: userSchema.majeur,
-                branch: userSchema.branch,
-                contact: userSchema.contact,
-                permission: userSchema.permission,
-                discord_id: userSchema.discord_id
+        const users = await db.users.findMany({
+            select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                email: true,
+                majeur: true,
+                branch: true,
+                contact: true,
+                permission: true,
+                discord_id: true,
             }
-        ).from(userSchema);
-        return users;
+        });
+        return users.map(u => ({
+            userId: u.id,
+            firstName: u.first_name,
+            lastName: u.last_name,
+            email: u.email,
+            majeur: u.majeur,
+            branch: u.branch,
+            contact: u.contact,
+            permission: u.permission,
+            discord_id: u.discord_id,
+        }));
     } catch (err) {
-        console.error('Erreur lors de la récupération des utilisateurs ', err);
+        console.error('Erreur lors de la récupération des utilisateurs:', err);
         throw new Error('Erreur de base de données');
     }
 };
 
 export const getUsers = async () => {
     try {
-        const users = await db.select(
-            {
-                userId: userSchema.id,
-                firstName: userSchema.first_name,
-                lastName: userSchema.last_name,
-                permission: userSchema.permission,
-                email: userSchema.email
+        const users = await db.users.findMany({
+            select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                permission: true,
+                email: true,
             }
-        ).from(userSchema);
-        return users;
+        });
+        return users.map(u => ({
+            userId: u.id,
+            firstName: u.first_name,
+            lastName: u.last_name,
+            permission: u.permission,
+            email: u.email,
+        }));
     } catch (err) {
-        console.error('Erreur lors de la récupération des utilisateurs ', err);
+        console.error('Erreur lors de la récupération des utilisateurs:', err);
         throw new Error('Erreur de base de données');
     }
 };
 
 export const getUsersAll = async () => {
     try {
-        const users = await db.select().from(userSchema);
+        const users = await db.users.findMany();
 
         const userWithTeam = await Promise.all(
             users.map(async (user) => {
                 const roles = await getUserRoles(user.id);
                 let teamId = await getUserTeam(user.id);
-                teamId = teamId ?? null;
+                const resolvedTeamId = teamId ?? null;
 
                 let teamName: string | null = null;
                 let factionId: number | null = null;
                 let factionName: string | null = null;
 
-                if (teamId) {
-                    const team = await getTeam(teamId);
+                if (resolvedTeamId) {
+                    const team = await getTeam(resolvedTeamId);
                     teamName = team?.teamName ?? null;
 
-                    factionId = await getTeamFaction(teamId);
+                    factionId = await getTeamFaction(resolvedTeamId);
                     const faction = await getFaction(factionId);
                     factionName = faction?.name ?? null;
                 }
 
                 return {
                     ...user,
-                    teamId,
+                    teamId: resolvedTeamId,
                     teamName,
                     factionId,
                     factionName,
@@ -167,46 +187,46 @@ export const getUsersAll = async () => {
             })
         );
 
-
         return userWithTeam;
     } catch (err) {
-        console.error('Erreur lors de la récupération des utilisateurs ', err);
+        console.error('Erreur lors de la récupération des utilisateurs:', err);
         throw new Error('Erreur de base de données');
     }
 };
 
 export const getUsersbyPermission = async (permission: string) => {
     try {
-        const users = await db.select(
-            {
-                userId: userSchema.id,
-                firstName: userSchema.first_name,
-                lastName: userSchema.last_name,
-                email: userSchema.email,
-                branch: userSchema.branch
+        const users = await db.users.findMany({
+            where: { permission },
+            select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                email: true,
+                branch: true,
             }
-        ).from(userSchema).where(eq(userSchema.permission, permission));
-        return users;
+        });
+        return users.map(u => ({
+            userId: u.id,
+            firstName: u.first_name,
+            lastName: u.last_name,
+            email: u.email,
+            branch: u.branch,
+        }));
     } catch (err) {
-        console.error('Erreur lors de la récupération des utilisateurs ', err);
+        console.error('Erreur lors de la récupération des utilisateurs:', err);
         throw new Error('Erreur de base de données');
     }
 };
 
 export const updateUserPassword = async (userId: number, password: string) => {
     try {
-        const result = await db.update(userSchema)
-            .set({
-                password: password
-            })
-            .where(eq(userSchema.id, userId));
-
-        return result.rows[0];
+        await db.users.update({ where: { id: userId }, data: { password } });
     } catch (err) {
-        console.error('Erreur lors de la récupération et de l\'update de l\'utilisateur par email:', err);
+        console.error('Erreur lors de l\'update du mot de passe:', err);
         throw new Error('Erreur de base de données');
     }
-}
+};
 
 export const updateUserInfoByUserId = async (
     userId: number,
@@ -214,14 +234,7 @@ export const updateUserInfoByUserId = async (
     contact?: string
 ) => {
     try {
-        const result = await db.update(userSchema)
-            .set({
-                branch: branch,
-                contact: contact
-            })
-            .where(eq(userSchema.id, userId));
-
-        return result;
+        await db.users.update({ where: { id: userId }, data: { branch, contact } });
     } catch (err) {
         console.error('Erreur lors de la mise à jour des infos utilisateur:', err);
         throw new Error('Erreur de base de données');
@@ -230,21 +243,13 @@ export const updateUserInfoByUserId = async (
 
 export const updateUserByAdmin = async (
     userId: number,
-    updates: Partial<User>
+    updates: Record<string, any>
 ) => {
     try {
-
         if (Object.keys(updates).length === 0) {
             throw new Error('Aucune donnée à mettre à jour');
         }
-
-        const result = await db.update(userSchema)
-            .set(
-                updates
-            )
-            .where(eq(userSchema.id, userId));
-
-        return result;
+        await db.users.update({ where: { id: userId }, data: updates });
     } catch (err) {
         console.error('Erreur lors de la mise à jour par l\'admin:', err);
         throw new Error('Erreur de base de données');
@@ -253,15 +258,8 @@ export const updateUserByAdmin = async (
 
 export const deleteUserById = async (userId: number) => {
     try {
-
-        const user_registration_token = await db.select({ user_id: registrationSchema.user_id }).from(registrationSchema).where(eq(registrationSchema.user_id, userId));
-
-        if (user_registration_token.length > 0) {
-            await db.delete(registrationSchema).where(eq(registrationSchema.user_id, userId));
-        }
-
-        const result = await db.delete(userSchema).where(eq(userSchema.id, userId));
-        return result;
+        await db.registration_tokens.deleteMany({ where: { user_id: userId } });
+        await db.users.delete({ where: { id: userId } });
     } catch (err) {
         console.error('Erreur lors de la suppression de l\'utilisateur:', err);
         throw new Error('Erreur de base de données');

@@ -1,7 +1,5 @@
 import axios from 'axios';
-import { eq } from 'drizzle-orm';
-import { db } from '../database/db'; // Import de la connexion PostgreSQL
-import { userSchema } from '../schemas/Basic/user.schema';
+import { db } from '../prisma/db';
 import { discord_client_id, discord_client_secret, discord_redirect_uri } from '../utils/secret';
 
 export const syncDiscordUserId = async (code: string, userId: number) => {
@@ -28,10 +26,11 @@ export const syncDiscordUserId = async (code: string, userId: number) => {
         }
     });
 
-    //Etape 3 : Update le discord_id de l'user
-    await db.update(userSchema)
-        .set({ discord_id: userResponse.data.id, })
-        .where(eq(userSchema.id, userId));
+    // Étape 3 : met à jour l'utilisateur dans la base de données avec l'ID Discord
+    await db.users.update({
+        where: { id: userId },
+        data: { discord_id: userResponse.data.id },
+    });
 
-    return userResponse.data; // { id, username, discriminator, ... }
+    return userResponse.data;
 };

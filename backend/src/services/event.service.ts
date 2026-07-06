@@ -1,83 +1,64 @@
-import { asc, eq } from "drizzle-orm";
-import { db } from "../database/db";
-import { eventSchema } from "../schemas/Basic/event.schema";
-import { teamSchema } from "../schemas/Basic/team.schema";
-import { teamShotgunSchema } from "../schemas/Relational/teamshotgun.schema";
+import { db } from "../prisma/db";
 
 export const getEventsStatus = async () => {
-    const events = await db.select().from(eventSchema);
-    if (events.length > 0) {
-        return events[0];  // Renvoie le premier événement s'il existe
-    } else {
-        return null;  // ou une valeur par défaut
-    }
+    const event = await db.events.findFirst();
+    return event ?? null;
 };
 
 export const validateShotgun = async (teamId: number) => {
-    await db.transaction(async (tx) => {
-        await tx.insert(teamShotgunSchema).values({ team_id: teamId });
-    })
+    await db.$transaction(async (tx) => {
+        await tx.team_shotgun.create({ data: { team_id: teamId } });
+    });
 };
 
 export const alreadyShotgun = async (teamId: number) => {
-    const shotgunTeam = await db.select({ shotgunId: teamShotgunSchema.id })
-        .from(teamShotgunSchema)
-        .where(eq(teamShotgunSchema.team_id, teamId));
-
-    if (shotgunTeam[0]) {
-        return true
-    }
-    else {
-        return false
-    }
+    const shotgunTeam = await db.team_shotgun.findFirst({
+        where: { team_id: teamId },
+        select: { id: true }
+    });
+    return !!shotgunTeam;
 };
 
 export const updatepreRegistrationStatus = async (preRegistrationOpen: boolean) => {
-    return await db.update(eventSchema)
-        .set({ pre_registration_open: preRegistrationOpen })
-        .returning();
+    await db.events.updateMany({ data: { pre_registration_open: preRegistrationOpen } });
+    return await db.events.findMany();
 };
 
 export const updateShotgunStatus = async (shotgunOpen: boolean) => {
-    return await db.update(eventSchema)
-        .set({ shotgun_open: shotgunOpen })
-        .returning();
+    await db.events.updateMany({ data: { shotgun_open: shotgunOpen } });
+    return await db.events.findMany();
 };
 
 export const getAllTeamShotguns = async () => {
-    return await db
-        .select({
-            id: teamShotgunSchema.id,
-            teamId: teamShotgunSchema.team_id,
-            timestamp: teamShotgunSchema.timestamp,
-            teamName: teamSchema.name,
-            teamType: teamSchema.type,
-        })
-        .from(teamShotgunSchema)
-        .leftJoin(teamSchema, eq(teamShotgunSchema.team_id, teamSchema.id))
-        .orderBy(asc(teamShotgunSchema.timestamp), asc(teamShotgunSchema.id));
+    const results = await db.team_shotgun.findMany({
+        orderBy: [{ timestamp: 'asc' }, { id: 'asc' }],
+        include: { teams: { select: { name: true, type: true } } }
+    });
+    return results.map(r => ({
+        id: r.id,
+        teamId: r.team_id,
+        timestamp: r.timestamp,
+        teamName: r.teams?.name ?? null,
+        teamType: r.teams?.type ?? null,
+    }));
 };
 
 export const updateSDIStatus = async (sdiOpen: boolean) => {
-    return await db.update(eventSchema)
-        .set({ sdi_open: sdiOpen })
-        .returning();
+    await db.events.updateMany({ data: { sdi_open: sdiOpen } });
+    return await db.events.findMany();
 };
 
 export const updateWEIStatus = async (weiOpen: boolean) => {
-    return await db.update(eventSchema)
-        .set({ wei_open: weiOpen })
-        .returning();
+    await db.events.updateMany({ data: { wei_open: weiOpen } });
+    return await db.events.findMany();
 };
 
 export const updateFoodStatus = async (foodOpen: boolean) => {
-    return await db.update(eventSchema)
-        .set({ food_open: foodOpen })
-        .returning();
+    await db.events.updateMany({ data: { food_open: foodOpen } });
+    return await db.events.findMany();
 };
 
 export const updateChallStatus = async (challOpen: boolean) => {
-    return await db.update(eventSchema)
-        .set({ chall_open: challOpen })
-        .returning();
+    await db.events.updateMany({ data: { chall_open: challOpen } });
+    return await db.events.findMany();
 };

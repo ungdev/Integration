@@ -1,10 +1,4 @@
-import { and, desc, eq, isNotNull, not, sum } from "drizzle-orm";
-import { db } from "../database/db";
-import { challengeSchema } from "../schemas/Basic/challenge.schema";
-import { factionSchema } from "../schemas/Basic/faction.schema";
-import { teamSchema } from "../schemas/Basic/team.schema";
-import { userSchema } from "../schemas/Basic/user.schema";
-import { challengeValidationSchema } from "../schemas/Relational/challengevalidation.schema"; // Schéma combiné
+import { db } from "../prisma/db";
 import * as team_service from "./team.service";
 
 // 1. Créer un challenge
@@ -15,35 +9,28 @@ export const createChallenge = async (
     points: number,
     created_by: number
 ) => {
-    const challengeValues = {
-        title,
-        description,
-        category,
-        points,
-        created_by
-    };
-    const result = await db.insert(challengeSchema).values(challengeValues).returning();
-    return result[0];
+    return await db.challenges.create({
+        data: { title, description, category, points, created_by }
+    });
 };
 
 // 2. Supprimer un challenge
 export const deleteChallenge = async (challengeId: number) => {
-    // Récupère le challenge depuis la base de données
-    const challenge = await db.select().from(challengeSchema).where(eq(challengeSchema.id, challengeId));
-    if (!challenge[0]) throw new Error("Challenge introuvable");
+    // Vérifier si le challenge existe
+    const challenge = await db.challenges.findUnique({ where: { id: challengeId } });
+    if (!challenge) throw new Error("Challenge introuvable");
 
-    // Supprime les validations et les points associés à ce challenge
-    await db.delete(challengeValidationSchema).where(eq(challengeValidationSchema.challenge_id, challengeId));
-
-    // Supprime le challenge de la base de données
-    await db.delete(challengeSchema).where(eq(challengeSchema.id, challengeId));
+    // Supprimer les validations associées avant de supprimer le challenge
+    await db.challenge_validation.deleteMany({ where: { challenge_id: challengeId } });
+    // Supprimer le challenge
+    await db.challenges.delete({ where: { id: challengeId } });
 
     return { message: `Challenge avec ID ${challengeId} supprimé` };
 };
 
 // 3. Récupérer tous les challenges sauf le free
 export const getAllChallenges = async () => {
-    return await db.select().from(challengeSchema).where(not(eq(challengeSchema.id, 1)));
+    return await db.challenges.findMany({ where: { id: { not: 1 } } });
 };
 
 // 4. Valider un challenge et attribuer des points
@@ -58,18 +45,18 @@ export const validateChallenge = async ({
     targetId: number;
     validatedBy: number;
 }) => {
-    // 1. Récupérer le challenge
-    const challenge = await db.select().from(challengeSchema).where(eq(challengeSchema.id, challengeId));
-    if (!challenge[0]) throw new Error("Challenge introuvable");
+    // 1. Vérifier si le challenge existe
+    const challenge = await db.challenges.findUnique({ where: { id: challengeId } });
+    if (!challenge) throw new Error("Challenge introuvable");
 
-    // 2. Déterminer le team_id et faction_id en fonction du type
-    let target_team_id = null;
-    let target_faction_id = null;
+    // 2. Déterminer les IDs de l'équipe et de la faction en fonction du type
+    let target_team_id: number | null = null;
+    let target_faction_id: number | null = null;
 
     switch (type) {
         case "user":
-            target_team_id = await team_service.getUserTeam(targetId);
-            target_faction_id = await team_service.getTeamFaction(target_team_id);
+            target_team_id = await team_service.getUserTeam(targetId) ?? null;
+            target_faction_id = target_team_id ? await team_service.getTeamFaction(target_team_id) : null;
             break;
         case "team":
             target_faction_id = await team_service.getTeamFaction(targetId);
@@ -82,22 +69,21 @@ export const validateChallenge = async ({
             throw new Error("Type de challenge non valide");
     }
 
-    // 3. Créer l'objet de validation du challenge
-    const newChallengeValidationPoints = {
-        challenge_id: challengeId,
-        validated_by_admin_id: validatedBy,
-        validated_at: new Date(),
-        points: challenge[0].points,
-        added_by_admin_id: validatedBy,
-        target_user_id: type === "user" ? targetId : null,
-        target_team_id: target_team_id ? target_team_id : (type === "team" ? targetId : null),
-        target_faction_id: target_faction_id,
-    };
+    // 3. Créer l'entrée dans challenge_validation
+    const inserted = await db.challenge_validation.create({
+        data: {
+            challenge_id: challengeId,
+            validated_by_admin_id: validatedBy,
+            validated_at: new Date(),
+            points: challenge.points,
+            added_by_admin_id: validatedBy,
+            target_user_id: type === "user" ? targetId : null,
+            target_team_id: target_team_id ? target_team_id : (type === "team" ? targetId : null),
+            target_faction_id: target_faction_id ?? null,
+        }
+    });
 
-    // 4. Insérer la validation du challenge dans la base de données
-    const inserted = await db.insert(challengeValidationSchema).values(newChallengeValidationPoints).returning();
-
-    return inserted[0];
+    return inserted;
 };
 
 // 5. Ajouter ou retirer des points manuellement
@@ -113,22 +99,19 @@ export const modifyFactionPoints = async ({
     points: number;
     reason: string;
     adminId: number;
-    challengeId?: number; // Optional, lié au challenge pour ajouter des points à une faction spécifique
 }) => {
-    const newchall = await createChallenge(title, reason, "Free", points, adminId)
-    const newChallengeValidationPoints = {
-        challenge_id: newchall.id,
-        validated_by_admin_id: adminId,
-        validated_at: new Date(),
-        points: points,
-        added_by_admin_id: adminId,
-        target_faction_id: factionId,
-    };
-
-    // 4. Insérer la validation du challenge dans la base de données
-    const insert = await db.insert(challengeValidationSchema).values(newChallengeValidationPoints).returning();
-
-    return insert[0];
+    const newchall = await createChallenge(title, reason, "Free", points, adminId);
+    const insert = await db.challenge_validation.create({
+        data: {
+            challenge_id: newchall.id,
+            validated_by_admin_id: adminId,
+            validated_at: new Date(),
+            points: points,
+            added_by_admin_id: adminId,
+            target_faction_id: factionId,
+        }
+    });
+    return insert;
 };
 
 export const modifyChallenge = async ({
@@ -144,9 +127,9 @@ export const modifyChallenge = async ({
     category?: string;
     points?: number;
 }) => {
-    // 1. Récupérer le challenge à modifier
-    const challenge = await db.select().from(challengeSchema).where(eq(challengeSchema.id, challengeId));
-    if (!challenge[0]) throw new Error("Challenge introuvable");
+    // 1. Vérifier si le challenge existe
+    const challenge = await db.challenges.findUnique({ where: { id: challengeId } });
+    if (!challenge) throw new Error("Challenge introuvable");
 
     // 2. Construire l'objet de mise à jour
     const updateValues: any = {};
@@ -155,15 +138,8 @@ export const modifyChallenge = async ({
     if (category) updateValues.category = category;
     if (points !== undefined) updateValues.points = points;
 
-    // 3. Mettre à jour les données du challenge
-    const updatedChallenge = await db
-        .update(challengeSchema)
-        .set(updateValues)
-        .where(eq(challengeSchema.id, challengeId))
-        .returning();
-
-    // 4. Retourner le challenge mis à jour
-    return updatedChallenge[0];
+    // 3. Mettre à jour le challenge
+    return await db.challenges.update({ where: { id: challengeId }, data: updateValues });
 };
 
 export const unvalidateChallenge = async ({
@@ -177,50 +153,49 @@ export const unvalidateChallenge = async ({
     teamId: number;
     userId: number;
 }) => {
-    const rowToDelete = await db.select().from(challengeValidationSchema)
-        .where(and(
-            eq(challengeValidationSchema.challenge_id, challengeId),
-            eq(challengeValidationSchema.target_faction_id, factionId),
-            // Vérification de la présence de teamId et userId avant de les ajouter à la requête
-            ...(teamId ? [eq(challengeValidationSchema.target_team_id, teamId)] : []),
-            ...(userId ? [eq(challengeValidationSchema.target_user_id, userId)] : [])
-        ))
-        .limit(1); // Limite à une seule ligne
-    if (rowToDelete.length > 0) {
-        await db.delete(challengeValidationSchema)
-            .where(eq(challengeValidationSchema.id, rowToDelete[0].id));
+    const rowToDelete = await db.challenge_validation.findFirst({
+        where: {
+            AND: [
+                { challenge_id: challengeId },
+                { target_faction_id: factionId },
+                ...(teamId ? [{ target_team_id: teamId }] : []),
+                ...(userId ? [{ target_user_id: userId }] : []),
+            ]
+        }
+    });
+    if (rowToDelete) {
+        await db.challenge_validation.delete({ where: { id: rowToDelete.id } });
     }
-    ;
 };
 
 export const getValidatedChallenges = async () => {
     try {
-        // Effectuer une jointure entre les tables pour récupérer toutes les informations pertinentes
-        const validatedChallenges = await db
-            .select({
-                challenge_id: challengeValidationSchema.challenge_id,
-                challenge_name: challengeSchema.title,
-                challenge_categorie: challengeSchema.category,
-                challenge_description: challengeSchema.description,
-                points: challengeValidationSchema.points,
-                validated_at: challengeValidationSchema.validated_at,
-                target_user_id: challengeValidationSchema.target_user_id,
-                target_team_id: challengeValidationSchema.target_team_id,
-                target_faction_id: challengeValidationSchema.target_faction_id,
-                target_user_firstname: userSchema.first_name,  // ou d'autres champs de user
-                target_user_lastname: userSchema.last_name,
-                target_team_name: teamSchema.name,  // ou d'autres champs de team
-                target_faction_name: factionSchema.name,  // ou d'autres champs de faction
-            })
-            .from(challengeValidationSchema)
-            .leftJoin(challengeSchema, eq(challengeValidationSchema.challenge_id, challengeSchema.id))
-            .leftJoin(userSchema, and(eq(challengeValidationSchema.target_user_id, userSchema.id), isNotNull(challengeValidationSchema.target_user_id)))
-            .leftJoin(teamSchema, and(eq(challengeValidationSchema.target_team_id, (teamSchema.id)), isNotNull(challengeValidationSchema.target_team_id)))
-            .leftJoin(factionSchema, and(eq(challengeValidationSchema.target_faction_id, factionSchema.id), isNotNull(challengeValidationSchema.target_faction_id)))
-            .orderBy(desc(challengeValidationSchema.validated_at));  // Trier par date de validation (si nécessaire)
-
-        // Retourner les résultats
-        return validatedChallenges;
+        const rows = await db.challenge_validation.findMany({
+            orderBy: { validated_at: 'desc' },
+            include: {
+                challenges: { select: { title: true, category: true, description: true } },
+                users_challenge_validation_target_user_idTousers: {
+                    select: { first_name: true, last_name: true }
+                },
+                teams: { select: { name: true } },
+                factions: { select: { name: true } },
+            }
+        });
+        return rows.map(vc => ({
+            challenge_id: vc.challenge_id,
+            challenge_name: vc.challenges?.title ?? null,
+            challenge_categorie: vc.challenges?.category ?? null,
+            challenge_description: vc.challenges?.description ?? null,
+            points: vc.points,
+            validated_at: vc.validated_at,
+            target_user_id: vc.target_user_id,
+            target_team_id: vc.target_team_id,
+            target_faction_id: vc.target_faction_id,
+            target_user_firstname: vc.users_challenge_validation_target_user_idTousers?.first_name ?? null,
+            target_user_lastname: vc.users_challenge_validation_target_user_idTousers?.last_name ?? null,
+            target_team_name: vc.teams?.name ?? null,
+            target_faction_name: vc.factions?.name ?? null,
+        }));
     } catch (error) {
         console.error("Error retrieving validated challenges:", error);
         throw new Error("Error retrieving validated challenges");
@@ -229,17 +204,11 @@ export const getValidatedChallenges = async () => {
 
 export const getTotalFactionPoints = async (factionId: number): Promise<number> => {
     try {
-        const result = await db
-            .select({
-                totalPoints: sum(challengeValidationSchema.points) // Somme des points
-                , // Filtre par l'ID de la faction
-            })
-            .from(challengeValidationSchema).where(eq(challengeValidationSchema.target_faction_id, factionId));
-
-        // Récupérer le total des points
-
-        const totalPoints = Number(result[0]?.totalPoints) || 0;
-        return totalPoints;
+        const result = await db.challenge_validation.aggregate({
+            where: { target_faction_id: factionId },
+            _sum: { points: true }
+        });
+        return Number(result._sum.points) || 0;
     } catch (error) {
         console.error("Erreur lors de la récupération des points de la faction:", error);
         throw new Error("Impossible de récupérer les points de la faction");

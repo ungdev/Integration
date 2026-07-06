@@ -1,35 +1,25 @@
-import { eq } from "drizzle-orm";
-import { db } from "../database/db";
-import { factionSchema } from "../schemas/Basic/faction.schema";
+import { db } from '../prisma/db';
 
 export const getFactions = async () => {
-    const factions = await db.select(
-        {
-            factionId: factionSchema.id,
-            name: factionSchema.name,
-            description: factionSchema.description
-        }).from(factionSchema);
-
-    return factions
-}
+    const factions = await db.factions.findMany({
+        select: { id: true, name: true, description: true }
+    });
+    return factions.map(f => ({ factionId: f.id, name: f.name, description: f.description }));
+};
 
 export const getFaction = async (factionId: any) => {
-    const faction = await db.select(
-        {
-            factionId: factionSchema.id,
-            name: factionSchema.name,
-            description: factionSchema.description
-        }).from(factionSchema).where(eq(factionSchema.id, factionId));
-
-    return faction[0]
-}
+    const faction = await db.factions.findUnique({
+        where: { id: factionId },
+        select: { id: true, name: true, description: true }
+    });
+    return faction ? { factionId: faction.id, name: faction.name, description: faction.description } : undefined;
+};
 
 export const createFaction = async (factionName: string) => {
-    const faction = await db.insert(factionSchema).values({ name: factionName }).returning();
-
-    return faction
-}
+    const faction = await db.factions.create({ data: { name: factionName } });
+    return [faction];
+};
 
 export const deleteFaction = async (factionId: number) => {
-    await db.delete(factionSchema).where(eq(factionSchema.id, factionId));
-}
+    await db.factions.delete({ where: { id: factionId } });
+};

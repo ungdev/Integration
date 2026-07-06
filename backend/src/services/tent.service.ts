@@ -1,8 +1,4 @@
-import { and, eq, or } from "drizzle-orm";
-import { alias } from "drizzle-orm/pg-core";
-import { db } from "../database/db";
-import { userSchema } from "../schemas/Basic/user.schema";
-import { userTentSchema } from "../schemas/Relational/usertent.schema";
+import { db } from "../prisma/db";
 
 /**
  * Créer une réservation de tente entre 2 utilisateurs.
@@ -13,72 +9,79 @@ export const createTent = async (userId1: number, userId2: number) => {
     }
 
     // Vérifier si l'un des deux a déjà une tente
-    const existing = await db
-        .select()
-        .from(userTentSchema)
-        .where(
-            or(
-                eq(userTentSchema.user_id_1, userId1),
-                eq(userTentSchema.user_id_2, userId1),
-                eq(userTentSchema.user_id_1, userId2),
-                eq(userTentSchema.user_id_2, userId2)
-            )
-        );
+    const existing = await db.user_tent.findMany({
+        where: {
+            OR: [
+                { user_id_1: userId1 },
+                { user_id_2: userId1 },
+                { user_id_1: userId2 },
+                { user_id_2: userId2 },
+            ]
+        }
+    });
 
     if (existing.length > 0) {
         throw new Error("Un des utilisateurs a déjà une tente.");
     }
 
-    return await db.insert(userTentSchema).values({
-        user_id_1: userId1,
-        user_id_2: userId2,
-    });
+    return await db.user_tent.create({ data: { user_id_1: userId1, user_id_2: userId2 } });
 };
 
 /**
  * Annuler une tente (par l'un ou l'autre des utilisateurs).
  */
 export const cancelTent = async (userId1: number) => {
-    return await db
-        .delete(userTentSchema)
-        .where(
-            or(eq(userTentSchema.user_id_1, userId1), eq(userTentSchema.user_id_2, userId1)),
-        );
+    return await db.user_tent.deleteMany({
+        where: {
+            OR: [
+                { user_id_1: userId1 },
+                { user_id_2: userId1 }
+            ]
+        }
+    });
 };
 
 /**
  * Récupérer la tente d'un utilisateur.
  */
 export const getTentByUser = async (userId: number) => {
-    return await db
-        .select()
-        .from(userTentSchema)
-        .where(or(eq(userTentSchema.user_id_1, userId), eq(userTentSchema.user_id_2, userId)));
+    return await db.user_tent.findMany({
+        where: {
+            OR: [
+                { user_id_1: userId },
+                { user_id_2: userId }
+            ]
+        }
+    });
 };
 
 /**
  * Récupérer toutes les tentes (avec infos des 2 utilisateurs).
  */
 export const getAllTents = async () => {
-    const user2 = alias(userSchema, "user2");
-
-    return await db
-        .select({
-            user1_id: userTentSchema.user_id_1,
-            user2_id: userTentSchema.user_id_2,
-            user1_first_name: userSchema.first_name,
-            user1_last_name: userSchema.last_name,
-            user1_email: userSchema.email,
-            user1_majeur: userSchema.majeur,
-            user2_first_name: user2.first_name,
-            user2_last_name: user2.last_name,
-            user2_email: user2.email,
-            user2_majeur: user2.majeur,
-            confirmed: userTentSchema.confirmed
-        })
-        .from(userTentSchema)
-        .innerJoin(userSchema, eq(userTentSchema.user_id_1, userSchema.id))
-        .innerJoin(user2, eq(userTentSchema.user_id_2, user2.id));
+    const tents = await db.user_tent.findMany({
+        include: {
+            users_user_tent_user_id_1Tousers: {
+                select: { first_name: true, last_name: true, email: true, majeur: true }
+            },
+            users_user_tent_user_id_2Tousers: {
+                select: { first_name: true, last_name: true, email: true, majeur: true }
+            },
+        }
+    });
+    return tents.map(t => ({
+        user1_id: t.user_id_1,
+        user2_id: t.user_id_2,
+        user1_first_name: t.users_user_tent_user_id_1Tousers.first_name,
+        user1_last_name: t.users_user_tent_user_id_1Tousers.last_name,
+        user1_email: t.users_user_tent_user_id_1Tousers.email,
+        user1_majeur: t.users_user_tent_user_id_1Tousers.majeur,
+        user2_first_name: t.users_user_tent_user_id_2Tousers.first_name,
+        user2_last_name: t.users_user_tent_user_id_2Tousers.last_name,
+        user2_email: t.users_user_tent_user_id_2Tousers.email,
+        user2_majeur: t.users_user_tent_user_id_2Tousers.majeur,
+        confirmed: t.confirmed,
+    }));
 };
 
 /**
@@ -94,42 +97,28 @@ export const toggleTentConfirmation = async (
     }
 
     // Vérifier si la tente existe
-    const existingTent = await db
-        .select()
-        .from(userTentSchema)
-        .where(
-            or(
-                and(
-                    eq(userTentSchema.user_id_1, userId1),
-                    eq(userTentSchema.user_id_2, userId2)
-                ),
-                and(
-                    eq(userTentSchema.user_id_1, userId2),
-                    eq(userTentSchema.user_id_2, userId1)
-                )
-            )
-        );
+    const existingTent = await db.user_tent.findFirst({
+        where: {
+            OR: [
+                { user_id_1: userId1, user_id_2: userId2 },
+                { user_id_1: userId2, user_id_2: userId1 },
+            ]
+        }
+    });
 
-    if (existingTent.length === 0) {
+    if (!existingTent) {
         throw new Error("La tente entre ces deux utilisateurs n'existe pas.");
     }
 
-    // Mettre à jour la confirmation
-    await db
-        .update(userTentSchema)
-        .set({ confirmed })
-        .where(
-            or(
-                and(
-                    eq(userTentSchema.user_id_1, userId1),
-                    eq(userTentSchema.user_id_2, userId2)
-                ),
-                and(
-                    eq(userTentSchema.user_id_1, userId2),
-                    eq(userTentSchema.user_id_2, userId1)
-                )
-            )
-        );
+    await db.user_tent.updateMany({
+        where: {
+            OR: [
+                { user_id_1: userId1, user_id_2: userId2 },
+                { user_id_1: userId2, user_id_2: userId1 },
+            ]
+        },
+        data: { confirmed }
+    });
 
     return { success: true, message: confirmed ? "Tente validée." : "Tente dévalidée." };
 };

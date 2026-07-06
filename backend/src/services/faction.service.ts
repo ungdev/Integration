@@ -7,7 +7,7 @@ export const getFactions = async () => {
     return factions.map(f => ({ factionId: f.id, name: f.name, description: f.description }));
 };
 
-export const getFaction = async (factionId: any) => {
+export const getFaction = async (factionId: number) => {
     const faction = await db.factions.findUnique({
         where: { id: factionId },
         select: { id: true, name: true, description: true }

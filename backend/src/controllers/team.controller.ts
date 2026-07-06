@@ -97,7 +97,7 @@ export const getTeamUsers = async (req: Request, res: Response) => {
     const { teamId } = req.query;
 
     try {
-        const teamUsers = await team_service.getTeamUsers(teamId);
+        const teamUsers = await team_service.getTeamUsers(Number(teamId));
         Ok(res, { data: teamUsers });
         return;
     } catch (error) {
@@ -123,7 +123,7 @@ export const getTeamFaction = async (req: Request, res: Response) => {
     const { teamId } = req.query;
 
     try {
-        const factionId = await team_service.getTeamFaction(teamId);
+        const factionId = await team_service.getTeamFaction(Number(teamId));
         const teamFaction = await faction_service.getFaction(factionId);
         Ok(res, { data: teamFaction });
         return;

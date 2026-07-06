@@ -16,7 +16,7 @@ export const getFaction = async (req: Request, res: Response) => {
     const { factionId } = req.query;
 
     try {
-        const faction = await faction_service.getFaction(factionId);
+        const faction = await faction_service.getFaction(Number(factionId));
         Ok(res, { data: faction });
         return;
     } catch {

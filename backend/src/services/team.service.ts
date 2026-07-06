@@ -87,7 +87,7 @@ export const modifyTeam = async (teamID: number, teamMembers: number[], factionI
     return await db.teams.findUnique({ where: { id: teamID } });
 };
 
-export const getTeamUsers = async (teamId: any) => {
+export const getTeamUsers = async (teamId: number) => {
     const users = await db.users.findMany({
         where: { user_teams: { some: { team_id: teamId } } },
         select: {
@@ -140,7 +140,7 @@ export const getAllTeamsWithUsers = async () => {
         }));
 };
 
-export const getTeamFaction = async (teamId: any) => {
+export const getTeamFaction = async (teamId: number) => {
     const tf = await db.team_faction.findFirst({
         where: { team_id: teamId },
         select: { faction_id: true }
@@ -180,7 +180,7 @@ export const getUsersWithTeam = async () => {
     }
 };
 
-export const getTeam = async (teamId: any) => {
+export const getTeam = async (teamId: number) => {
     try {
         const team = await db.teams.findUnique({
             where: { id: teamId },

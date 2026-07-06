@@ -16,6 +16,10 @@ const acceptedMIMETypesByItem: Record<string, Record<string, MIMEType[]>> = {
         menu: [MIMEType.PDF],
     },
     news: {},
+    notebooks: {
+        fr: [MIMEType.PDF],
+        en: [MIMEType.PDF],
+    },
     plannings: {
         tc: [MIMEType.PDF],
         bachelor_ia: [MIMEType.PDF],

@@ -1,11 +1,12 @@
-import { type Request, type Response } from "express";
-import fs from "fs";
-import path from "path";
-import * as email_service from "../services/email.service";
-import * as news_service from "../services/news.service";
+import { type Request, type Response } from 'express';
+import fs from 'fs';
+import path from 'path';
+import * as email_service from '../services/email.service';
+import { generateEmailHtml } from '../services/email.service';
+import * as news_service from '../services/news.service';
 import * as user_service from '../services/user.service';
-import * as template from "../utils/emailtemplates";
-import { Error, Ok } from "../utils/responses";
+import { Error, Ok } from '../utils/responses';
+import { email_from } from '../utils/secret';
 
 const toStoredUploadPath = (imageUrl: string) => {
     if (!imageUrl) {
@@ -18,7 +19,7 @@ const toStoredUploadPath = (imageUrl: string) => {
     }
 
     // Accept absolute URLs and keep only the pathname part.
-    if (normalized.startsWith("http://") || normalized.startsWith("https://")) {
+    if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
         try {
             normalized = new URL(normalized).pathname;
         } catch {
@@ -26,11 +27,11 @@ const toStoredUploadPath = (imageUrl: string) => {
         }
     }
 
-    if (normalized.startsWith("/api/")) {
+    if (normalized.startsWith('/api/')) {
         normalized = normalized.slice(4);
     }
 
-    if (!normalized.startsWith("/uploads/")) {
+    if (!normalized.startsWith('/uploads/')) {
         return null;
     }
 
@@ -43,7 +44,7 @@ const resolveStoredImagePath = (imageUrl: string) => {
         return null;
     }
 
-    return path.resolve(process.cwd(), storedPath.replace(/^\//, ""));
+    return path.resolve(process.cwd(), storedPath.replace(/^\//, ''));
 };
 
 const deleteImageIfExists = (imageUrl: string) => {
@@ -62,18 +63,17 @@ export const createNews = async (req: Request, res: Response) => {
     const file = req.file;
 
     try {
-        const resolvedImageUrl = file
-            ? `/uploads/news/${file.filename}`
-            : image_url;
+        const resolvedImageUrl = file ? `/uploads/news/${file.filename}` : image_url;
 
         const news = await news_service.createNews(
             title,
             description,
             type,
-            published === true || published === "true",
+            published === true || published === 'true',
             target,
-            resolvedImageUrl);
-        Ok(res, { msg: "Actu créée avec succès", data: news });
+            resolvedImageUrl,
+        );
+        Ok(res, { msg: 'Actu créée avec succès', data: news });
     } catch (err) {
         console.error(err);
         Error(res, { msg: "Erreur lors de la création de l'actu" });
@@ -86,7 +86,7 @@ export const listAllNews = async (_req: Request, res: Response) => {
         Ok(res, { data: news });
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la récupération des actus" });
+        Error(res, { msg: 'Erreur lors de la récupération des actus' });
     }
 };
 
@@ -96,7 +96,7 @@ export const listPublishedNews = async (_req: Request, res: Response) => {
         Ok(res, { data: news });
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la récupération des actus publiées" });
+        Error(res, { msg: 'Erreur lors de la récupération des actus publiées' });
     }
 };
 
@@ -108,7 +108,7 @@ export const listPublishedNewsByType = async (req: Request, res: Response) => {
         Ok(res, { data: news });
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la récupération des actus par type" });
+        Error(res, { msg: 'Erreur lors de la récupération des actus par type' });
     }
 };
 
@@ -120,19 +120,24 @@ export const publishNews = async (req: Request, res: Response) => {
 
         const news = await news_service.getNewsById(Number(id));
         if (sendEmail) {
-            // Génération du mail HTML
-            const html = template.compileTemplate({ title: news.title }, template.templateNotifyNews);
+            const html = generateEmailHtml('templateNotifyNews', { title: news.title });
 
-            const recipients = news.target === "Tous"
-                ? (await user_service.getUsersAdmin()).map(u => u.email)
-                : (await user_service.getUsersbyPermission(news.target)).map(u => u.email);
+            if (!html) {
+                Error(res, { msg: 'Template de notification introuvable.' });
+                return;
+            }
+
+            const recipients =
+                news.target === 'Tous'
+                    ? (await user_service.getUsersAdmin()).map((u) => u.email)
+                    : (await user_service.getUsersbyPermission(news.target)).map((u) => u.email);
 
             if (recipients.length === 0) {
-                Error(res, { msg: "No recipients" });
+                Error(res, { msg: 'No recipients' });
             }
 
             const email = {
-                from: "integration@utt.fr",
+                from: email_from,
                 to: [],
                 subject: `[INTEGRATION UTT] Nouvelle actu : ${news.title}`,
                 html: html,
@@ -143,15 +148,15 @@ export const publishNews = async (req: Request, res: Response) => {
             await email_service.sendEmail(email);
         }
 
-        Ok(res, { msg: "Actu publiée" });
+        Ok(res, { msg: 'Actu publiée' });
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la publication ou de la notification" });
+        Error(res, { msg: 'Erreur lors de la publication ou de la notification' });
     }
 };
 
 export const deleteNews = async (req: Request, res: Response) => {
-    const { newsId } = req.query
+    const { newsId } = req.query;
 
     try {
         const existing = await news_service.getNewsById(Number(newsId));
@@ -160,8 +165,7 @@ export const deleteNews = async (req: Request, res: Response) => {
         }
 
         await news_service.deleteNews(Number(newsId));
-        Ok(res, { msg: "Actus supprimée avec succès !" });
-
+        Ok(res, { msg: 'Actus supprimée avec succès !' });
     } catch (err) {
         console.error(err);
         Error(res, { msg: "Erreur lors de la suppression de l'actus" });
@@ -171,25 +175,28 @@ export const deleteNews = async (req: Request, res: Response) => {
 export const updateNews = async (req: Request, res: Response) => {
     const { id, title, description, type, target, image_url } = req.body;
     const file = req.file;
-    const hasImageUrlField = Object.prototype.hasOwnProperty.call(req.body, "image_url");
+    const hasImageUrlField = Object.prototype.hasOwnProperty.call(req.body, 'image_url');
     const resolvedImageUrl = file
         ? `/uploads/news/${file.filename}`
         : hasImageUrlField
-            ? (image_url ?? null)
-            : undefined;
+          ? (image_url ?? null)
+          : undefined;
 
     try {
         const existing = await news_service.getNewsById(Number(id));
         if (!existing) {
-            Error(res, { msg: "Actu introuvable" });
+            Error(res, { msg: 'Actu introuvable' });
             return;
         }
 
-        const shouldReplaceImage = typeof resolvedImageUrl === "string";
+        const shouldReplaceImage = typeof resolvedImageUrl === 'string';
         const shouldRemoveImage = resolvedImageUrl === null;
 
         // Supprimer l'ancienne image si elle est remplacée ou explicitement supprimée.
-        if (existing.image_url && ((shouldReplaceImage && existing.image_url !== resolvedImageUrl) || shouldRemoveImage)) {
+        if (
+            existing.image_url &&
+            ((shouldReplaceImage && existing.image_url !== resolvedImageUrl) || shouldRemoveImage)
+        ) {
             deleteImageIfExists(existing.image_url);
         }
 
@@ -206,7 +213,7 @@ export const updateNews = async (req: Request, res: Response) => {
 
         const updated = await news_service.updateNews(Number(id), updates);
 
-        Ok(res, { msg: "Actu mise à jour avec succès", data: updated });
+        Ok(res, { msg: 'Actu mise à jour avec succès', data: updated });
     } catch (err) {
         console.error(err);
         Error(res, { msg: "Erreur lors de la mise à jour de l'actu" });

@@ -10,7 +10,9 @@ import { initUser } from './src/database/initdb/initUser';
 import { initEvent } from './src/database/initdb/initevent';
 import { initRoles } from './src/database/initdb/initrole';
 import { authenticateUser } from './src/middlewares/auth.middleware';
+import { authenticateAutomation } from './src/middlewares/automation.middleware';
 import authRoutes from './src/routes/auth.routes';
+import automationRoutes from './src/routes/automation.routes';
 import busRoutes from './src/routes/bus.routes';
 import challengeRoutes from './src/routes/challenge.routes';
 import defaultRoute from './src/routes/default.routes';
@@ -48,6 +50,7 @@ async function startServer() {
         // Utilisation des routes d'authentification
         app.use('/api', defaultRoute)
         app.use('/api/auth', authRoutes);
+        app.use('/api/automation', authenticateAutomation, automationRoutes);
         app.use('/api/authadmin', authenticateUser, authRoutes);
         app.use('/api/role', authenticateUser, roleRoutes);
         app.use('/api/user', authenticateUser, userRoutes);
@@ -63,6 +66,7 @@ async function startServer() {
         app.use('/api/tent', authenticateUser, tentRoutes);
         app.use('/api/bus', authenticateUser, busRoutes);
         app.use("/api/uploads/news", express.static(path.join(__dirname, "/uploads/news")));
+        app.use("/api/uploads/notebooks", express.static(path.join(__dirname, "/uploads/notebooks")));
         app.use("/api/uploads/foodmenu", express.static(path.join(__dirname, "/uploads/foodmenu")));
         app.use("/api/uploads/plannings", express.static(path.join(__dirname, "/uploads/plannings")));
         app.use("/api/exports/bus", express.static(path.join(__dirname, "/exports/bus")));

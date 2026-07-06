@@ -87,6 +87,17 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     }
 };
 
+export const getUserContactInformation = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+
+    try {
+        const userContactInfo = await user_service.getUserContactInformation(parseInt(userId));
+        Ok(res, { data: userContactInfo });
+    } catch {
+        Error(res, { msg: 'Erreur lors de la récupération des informations de contact de l\'utilisateur.' });
+    }
+};
+
 export const updateProfile = async (req: Request, res: Response) => {
     const userId = req.user?.userId;
     const { branch, contact } = req.body;

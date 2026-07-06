@@ -133,6 +133,22 @@ export const getUsers = async () => {
     }
 };
 
+export const getUserContactInformation = async (userId: number) => {
+    try {
+        const user = await db.select(
+            {
+                userId: userSchema.id,
+                urgency_contact_name: userSchema.contact,
+                urgency_contact_phone: userSchema.contact
+            }
+        ).from(userSchema).where(eq(userSchema.id, userId));
+        return user[0];
+    } catch (err) {
+        console.error('Erreur lors de la récupération des informations de contact de l\'utilisateur ', err);
+        throw new Error('Erreur de base de données');
+    }
+};
+
 export const getUsersAll = async () => {
     try {
         const users = await db.select().from(userSchema);

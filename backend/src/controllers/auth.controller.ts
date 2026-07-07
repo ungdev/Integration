@@ -10,7 +10,6 @@ import * as email_service from '../services/email.service';
 import * as registration_service from '../services/registration.service';
 import * as role_service from '../services/role.service';
 import * as user_service from '../services/user.service';
-import * as banned_service from '../services/banned.service';
 import { Error, Ok, Unauthorized } from '../utils/responses';
 import { email_from, jwtSecret, service_url } from '../utils/secret';
 import { decodeToken } from '../utils/token';

@@ -67,11 +67,11 @@ async function startServer() {
         app.use('/api/discord', authenticateUser, discordRoutes);
         app.use('/api/tent', authenticateUser, tentRoutes);
         app.use('/api/bus', authenticateUser, busRoutes);
-        app.use('/api/uploads/news', express.static(path.join(__dirname, '/uploads/news')));
-        app.use('/api/uploads/notebooks', express.static(path.join(__dirname, '/uploads/notebooks')));
-        app.use('/api/uploads/foodmenu', express.static(path.join(__dirname, '/uploads/foodmenu')));
-        app.use('/api/uploads/plannings', express.static(path.join(__dirname, '/uploads/plannings')));
-        app.use('/api/exports/bus', express.static(path.join(__dirname, '/exports/bus')));
+        app.use("/api/uploads/news", express.static(path.join(__dirname, "/uploads/news")));
+        app.use("/api/uploads/notebooks", express.static(path.join(__dirname, "/uploads/notebooks")));
+        app.use("/api/uploads/foodmenu", express.static(path.join(__dirname, "/uploads/foodmenu")));
+        app.use("/api/uploads/plannings", express.static(path.join(__dirname, "/uploads/plannings")));
+        app.use("/api/exports/bus", express.static(path.join(__dirname, "/exports/bus")));
 
         // Démarrage du serveur
         app.listen(server_port, () => {

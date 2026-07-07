@@ -354,21 +354,29 @@ export const AdminRegisterNewStudent = () => {
             return;
         }
 
-        const response = await createUserByAdmin({
-            firstName: newFirstName,
-            lastName: newLastName,
-            email: newEmail.toLowerCase(),
-            major: newMajorState.value,
-            branch: newBranch.value,
-            withNotification,
-        });
+        try {
+            const response = await createUserByAdmin({
+                firstName: newFirstName,
+                lastName: newLastName,
+                email: newEmail.toLowerCase(),
+                major: newMajorState.value,
+                branch: newBranch.value,
+                withNotification,
+            });
 
-        Swal.fire({
-            icon: 'success',
-            title: 'Utilisateur mis à jour',
-            text: response.message,
-            confirmButtonColor: '#16a34a',
-        });
+            Swal.fire({
+                icon: 'success',
+                title: 'Utilisateur mis à jour',
+                text: response.message,
+                confirmButtonColor: '#16a34a',
+            });
+        } catch (error: any) {
+            Swal.fire({
+                title: 'Erreur ❌',
+                text: error?.response?.data?.message || 'Une erreur est survenue.',
+                icon: 'error',
+            });
+        }
     };
 
     return (

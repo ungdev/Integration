@@ -46,6 +46,6 @@ export const getAllBanned = async () => {
 };
 
 export const getBannedByEmail = async (email: string) => {
-    const result = await db.select().from(bannedAddressesSchema).where(eq(bannedAddressesSchema.email, email));
+    const result = (await db.select().from(bannedAddressesSchema).where(eq(bannedAddressesSchema.email, email)))[0];
     return result;
 };

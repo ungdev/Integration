@@ -12,6 +12,8 @@ import { createRegistrationToken } from './auth.service';
 import { getFaction } from './faction.service';
 import { getUserRoles } from './role.service';
 import { getTeam, getTeamFaction, getUserTeam } from './team.service';
+import { generateEmailHtml, sendEmail } from './email.service';
+import { email_from } from '../utils/secret';
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
@@ -137,10 +139,18 @@ export const updateUserStudent = async (firstName: string, lastName: string, ema
 };
 
 export const adminCreateUser = async (data: AdminCreateUserDto) => {
-    const userInDb = await getUserByEmail(data.email.toLowerCase());
+    const email = data.email.toLowerCase();
+
+    const userInDb = await getUserByEmail(email);
 
     if (userInDb) {
         throw new Error('Utilisateur déjà existant');
+    }
+
+    const isBanned = await Banned_Service.getBannedByEmail(email);
+
+    if (isBanned) {
+        throw new Error('Adresse email bannie. Rendez vous dans la page Admin/Bannis.');
     }
 
     const tmpPassword = randomstring.generate(48);
@@ -148,18 +158,32 @@ export const adminCreateUser = async (data: AdminCreateUserDto) => {
     const newUser = await createUser(
         data.firstName,
         data.lastName,
-        data.email.toLowerCase(),
+        email,
         data.major,
         'Nouveau',
         data.branch === 'MA' ? 'Master' : data.branch,
         tmpPassword,
     );
 
-    await createRegistrationToken(newUser.id);
+    const registrationToken = await createRegistrationToken(newUser.id);
 
-    // TODO: envoi de mail Welcome si la notification est demandée.
-    // J'attend de pouvoir me rebase sur la dev avec les modifications de mails fonctionnelles.
-    // if (data.withNotification) {}
+    if (data.withNotification) {
+        const htmlEmail = generateEmailHtml('templateWelcome', {
+            token: registrationToken,
+        });
+
+        const emailOptions = {
+            from: email_from,
+            to: [email],
+            cc: [],
+            bcc: [],
+            subject: `[EN BELOW] Bienvenue à l'UTT !`,
+            text: ``,
+            html: htmlEmail || '',
+        };
+
+        await sendEmail(emailOptions);
+    }
 
     return newUser;
 };

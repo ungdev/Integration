@@ -98,10 +98,8 @@ export const adminCreateUser = async (req: Request<unknown, unknown, AdminCreate
             msg: 'Utilisateur créé',
             data: user,
         });
-    } catch {
-        Error(res, {
-            msg: "Erreur lors de la création de l'utilisateur",
-        });
+    } catch (err) {
+        Error(res, { msg: err.message });
     }
 };
 

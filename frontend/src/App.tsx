@@ -5,6 +5,7 @@ import AdminRoute from './components/utils/adminroute';
 import PrivateRoute from './components/utils/privateroute';
 import ProtectedRoute from './components/utils/protectedroute';
 import {
+    AdminBanned,
     AdminPageBus,
     AdminPageChall,
     AdminPageEmail,
@@ -307,6 +308,14 @@ const App: React.FC = () => {
                     element={
                         <AdminRoute>
                             <AdminPageBus />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/banned"
+                    element={
+                        <AdminRoute>
+                            <AdminBanned />
                         </AdminRoute>
                     }
                 />

@@ -1,11 +1,7 @@
-import bcrypt from 'bcryptjs';
 import { type Request, type Response } from 'express';
-import * as randomstring from 'randomstring';
-import * as auth_service from '../services/auth.service';
+import type { AdminCreateUserDto } from '../dto/user.dto';
 import * as user_service from '../services/user.service';
-import { noSyncEmails } from '../utils/no_sync_list';
 import { Error, Ok } from '../utils/responses';
-import * as SIEP_Utils from '../utils/siep';
 
 export const getUsersAdmin = async (req: Request, res: Response) => {
     try {
@@ -49,28 +45,11 @@ export const syncNewstudent = async (req: Request, res: Response) => {
     const { date } = req.body;
 
     try {
-        const token = await SIEP_Utils.getTokenUTTAPI();
-        const newStudents = await SIEP_Utils.getNewStudentsFromUTTAPI_NOPAGE(token, date);
-        const newStudentfiltered = newStudents.filter((student: any) => !noSyncEmails.includes(student.email)); //Nouveau à ne pas sync (Démissionnaires, etc)
+        await user_service.syncNewStudents(date);
 
-        for (const element of newStudentfiltered) {
-            const userInDb = await user_service.getUserByEmail(element.email.toLowerCase());
-            if (userInDb === undefined) {
-                const tmpPassword = await bcrypt.hash(randomstring.generate(48), 10);
-                const newUser = await user_service.createUser(
-                    element.prenom,
-                    element.nom,
-                    element.email.toLowerCase(),
-                    element.Majeur,
-                    'Nouveau',
-                    element.diplome === 'MA' ? 'Master' : element.specialite,
-                    tmpPassword,
-                );
-
-                await auth_service.createRegistrationToken(newUser.id);
-            }
-        }
-        Ok(res, { msg: 'All NewStudent created and synced' });
+        Ok(res, {
+            msg: 'All NewStudent created and synced',
+        });
     } catch (error) {
         Error(res, { error });
     }
@@ -108,6 +87,19 @@ export const adminUpdateUser = async (req: Request, res: Response) => {
         Ok(res, { msg: 'Utilisateur mis à jour', data: result });
     } catch {
         Error(res, { msg: "Erreur lors de la mise à jour de l'utilisateur." });
+    }
+};
+
+export const adminCreateUser = async (req: Request<unknown, unknown, AdminCreateUserDto>, res: Response) => {
+    try {
+        const user = await user_service.adminCreateUser(req.body);
+
+        Ok(res, {
+            msg: 'Utilisateur créé',
+            data: user,
+        });
+    } catch (err) {
+        Error(res, { msg: err.message });
     }
 };
 

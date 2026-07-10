@@ -6,6 +6,7 @@ import type { EmailOptions } from '../../types/email';
 import { templateResetPassword } from '../email/email.registry';
 import { compileTemplate } from '../email/email.renderer';
 import * as auth_service from '../services/auth.service';
+import * as banned_service from '../services/banned.service';
 import * as email_service from '../services/email.service';
 import * as registration_service from '../services/registration.service';
 import * as role_service from '../services/role.service';
@@ -52,6 +53,12 @@ export const handlecasticket = async (req: Request, res: Response) => {
                 // Assurez-vous que user.email est un string
                 let user = await user_service.getUserByEmail(CASuser.email.toLowerCase());
                 if (!user) {
+                    const isBanned = await banned_service.getBannedByEmail(CASuser.email);
+
+                    if (isBanned) {
+                        Unauthorized(res, { msg: 'Unauthorized: user email prohibited' });
+                    }
+
                     const password = bigInt.randBetween(bigInt(2).pow(255), bigInt(2).pow(256).minus(1)).toString();
                     await user_service.createUser(
                         CASuser.givenName,

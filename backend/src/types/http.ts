@@ -1,9 +1,8 @@
-import type { ParamsDictionary, RequestHandler } from 'express-serve-static-core';
-import type { ParsedQs } from 'qs';
+import type { RequestHandler } from 'express';
 
 export type AppRequestHandler<
     ReqBody = unknown,
-    ReqQuery = ParsedQs,
-    Params = ParamsDictionary,
+    ReqQuery = Record<string, string | string[] | undefined>,
+    Params = Record<string, string>,
     ResBody = unknown,
 > = RequestHandler<Params, ResBody, ReqBody, ReqQuery>;

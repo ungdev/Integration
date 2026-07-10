@@ -5,7 +5,7 @@ import { JSDOM } from 'jsdom';
 import jwt from 'jsonwebtoken';
 import { cas_validate_url } from '../../src/utils/secret';
 import { db } from '../database/db';
-import { type User, userSchema } from '../schemas/Basic/user.schema';
+import { userSchema } from '../schemas/Basic/user.schema';
 import { registrationSchema } from '../schemas/Relational/registration.schema';
 import { jwtSecret } from '../utils/secret';
 import type { AuthTokenUser } from '../types/auth';

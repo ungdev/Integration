@@ -1,12 +1,11 @@
-import { type Request, type Response } from 'express';
 import * as event_service from '../services/event.service';
 import * as team_service from '../services/team.service';
 import { Conflict, Error, Ok, Teapot, Unauthorized } from '../utils/responses';
 import { shotgun_password } from '../utils/secret';
+import type { AppRequestHandler } from '../types/http';
+import type { ShotgunBody, ToggleStatusBody } from '../dto/event.dto';
 
-type AuthenticatedRequest = Request & { user?: { userId?: number } };
-
-export const checkShotgunStatus = async (req: Request, res: Response) => {
+export const checkShotgunStatus: AppRequestHandler = async (_req, res) => {
     try {
         const status = await event_service.getEventsStatus();
         Ok(res, {
@@ -17,7 +16,7 @@ export const checkShotgunStatus = async (req: Request, res: Response) => {
     }
 };
 
-export const checkPreRegisterStatus = async (req: Request, res: Response) => {
+export const checkPreRegisterStatus: AppRequestHandler = async (_req, res) => {
     try {
         const status = await event_service.getEventsStatus();
         Ok(res, { data: status?.pre_registration_open });
@@ -26,7 +25,7 @@ export const checkPreRegisterStatus = async (req: Request, res: Response) => {
     }
 };
 
-export const checkSDIStatus = async (req: Request, res: Response) => {
+export const checkSDIStatus: AppRequestHandler = async (_req, res) => {
     try {
         const status = await event_service.getEventsStatus();
         Ok(res, { data: status?.sdi_open });
@@ -35,7 +34,7 @@ export const checkSDIStatus = async (req: Request, res: Response) => {
     }
 };
 
-export const checkWEIStatus = async (req: Request, res: Response) => {
+export const checkWEIStatus: AppRequestHandler = async (_req, res) => {
     try {
         const status = await event_service.getEventsStatus();
         Ok(res, { data: status?.wei_open });
@@ -44,7 +43,7 @@ export const checkWEIStatus = async (req: Request, res: Response) => {
     }
 };
 
-export const checkFoodStatus = async (req: Request, res: Response) => {
+export const checkFoodStatus: AppRequestHandler = async (_req, res) => {
     try {
         const status = await event_service.getEventsStatus();
         Ok(res, { data: status?.food_open });
@@ -53,7 +52,7 @@ export const checkFoodStatus = async (req: Request, res: Response) => {
     }
 };
 
-export const checkChallStatus = async (req: Request, res: Response) => {
+export const checkChallStatus: AppRequestHandler = async (_req, res) => {
     try {
         const status = await event_service.getEventsStatus();
         Ok(res, { data: status?.chall_open });
@@ -62,7 +61,7 @@ export const checkChallStatus = async (req: Request, res: Response) => {
     }
 };
 
-export const getShotgunAttempts = async (req: Request, res: Response) => {
+export const getShotgunAttempts: AppRequestHandler = async (_req, res) => {
     try {
         const shotgunAttempts = await event_service.getAllTeamShotguns();
         const shotgunAttemptsWithLeaders = await Promise.all(
@@ -84,10 +83,10 @@ export const getShotgunAttempts = async (req: Request, res: Response) => {
     }
 };
 
-export const shotgunAttempt = async (req: Request, res: Response) => {
-    const { password } = req.body as { password?: string };
+export const shotgunAttempt: AppRequestHandler<ShotgunBody> = async (req, res) => {
+    const { password } = req.body;
 
-    const userId = (req as AuthenticatedRequest).user?.userId;
+    const userId = req.user?.userId;
 
     if (!userId) {
         Unauthorized(res, { msg: 'Utilisateur non authentifié.' });
@@ -133,7 +132,7 @@ export const shotgunAttempt = async (req: Request, res: Response) => {
     }
 };
 
-export const togglePreRegistration = async (req: Request, res: Response) => {
+export const togglePreRegistration: AppRequestHandler<ToggleStatusBody> = async (req, res) => {
     const { preRegistrationOpen } = req.body;
 
     try {
@@ -144,7 +143,7 @@ export const togglePreRegistration = async (req: Request, res: Response) => {
     }
 };
 
-export const toggleShotgun = async (req: Request, res: Response) => {
+export const toggleShotgun: AppRequestHandler<ToggleStatusBody> = async (req, res) => {
     const { shotgunOpen } = req.body;
 
     try {
@@ -155,7 +154,7 @@ export const toggleShotgun = async (req: Request, res: Response) => {
     }
 };
 
-export const toggleSDI = async (req: Request, res: Response) => {
+export const toggleSDI: AppRequestHandler<ToggleStatusBody> = async (req, res) => {
     const { sdiOpen } = req.body;
 
     try {
@@ -166,7 +165,7 @@ export const toggleSDI = async (req: Request, res: Response) => {
     }
 };
 
-export const toggleWEI = async (req: Request, res: Response) => {
+export const toggleWEI: AppRequestHandler<ToggleStatusBody> = async (req, res) => {
     const { weiOpen } = req.body;
 
     try {
@@ -177,7 +176,7 @@ export const toggleWEI = async (req: Request, res: Response) => {
     }
 };
 
-export const toggleFood = async (req: Request, res: Response) => {
+export const toggleFood: AppRequestHandler<ToggleStatusBody> = async (req, res) => {
     const { foodOpen } = req.body;
 
     try {
@@ -188,7 +187,7 @@ export const toggleFood = async (req: Request, res: Response) => {
     }
 };
 
-export const toggleChall = async (req: Request, res: Response) => {
+export const toggleChall: AppRequestHandler<ToggleStatusBody> = async (req, res) => {
     const { challOpen } = req.body;
 
     try {

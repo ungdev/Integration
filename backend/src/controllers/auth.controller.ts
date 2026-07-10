@@ -1,6 +1,5 @@
 import bcrypt from 'bcryptjs';
 import bigInt from 'big-integer';
-import { type Request, type Response } from 'express';
 import { sign, verify } from 'jsonwebtoken';
 import type { EmailOptions } from '../../types/email';
 import { templateResetPassword } from '../email/email.registry';
@@ -14,9 +13,18 @@ import * as user_service from '../services/user.service';
 import { Error, Ok, Unauthorized } from '../utils/responses';
 import { email_from, jwtSecret, service_url } from '../utils/secret';
 import { decodeToken } from '../utils/token';
+import type { AppRequestHandler } from '../types/http';
+import type {
+    LoginBody,
+    RegisterBody,
+    CasTicketQuery,
+    RegistrationBody,
+    PasswordResetBody,
+    RenewTokenBody,
+} from '../dto/auth.dto';
 
 // Fonction de connexion
-export const login = async (req: Request, res: Response) => {
+export const login: AppRequestHandler<LoginBody> = async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -28,7 +36,7 @@ export const login = async (req: Request, res: Response) => {
 };
 
 // Fonction d'inscription
-export const register = async (req: Request, res: Response) => {
+export const register: AppRequestHandler<RegisterBody> = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
 
     try {
@@ -42,7 +50,7 @@ export const register = async (req: Request, res: Response) => {
     }
 };
 
-export const handlecasticket = async (req: Request, res: Response) => {
+export const handlecasticket: AppRequestHandler<unknown, CasTicketQuery> = async (req, res) => {
     try {
         const ticket = req.query.ticket as string;
 
@@ -104,7 +112,7 @@ export const handlecasticket = async (req: Request, res: Response) => {
     }
 };
 
-export const isTokenValid = async (req: Request, res: Response) => {
+export const isTokenValid: AppRequestHandler = async (req, res) => {
     try {
         const authHeader = req.headers['authorization'];
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -145,7 +153,7 @@ export const isTokenValid = async (req: Request, res: Response) => {
     }
 };
 
-export const completeRegistration = async (req: Request, res: Response) => {
+export const completeRegistration: AppRequestHandler<RegistrationBody> = async (req, res) => {
     const { token, password } = req.body;
 
     try {
@@ -156,7 +164,7 @@ export const completeRegistration = async (req: Request, res: Response) => {
     }
 };
 
-export const requestPasswordUser = async (req: Request, res: Response) => {
+export const requestPasswordUser: AppRequestHandler<PasswordResetBody> = async (req, res) => {
     const { user_email } = req.body;
     const user = await user_service.getUserByEmail(user_email);
 
@@ -200,7 +208,7 @@ export const requestPasswordUser = async (req: Request, res: Response) => {
     }
 };
 
-export const resetPasswordUser = async (req: Request, res: Response) => {
+export const resetPasswordUser: AppRequestHandler<RegistrationBody> = async (req, res) => {
     const { token, password } = req.body;
 
     try {
@@ -228,7 +236,7 @@ export const resetPasswordUser = async (req: Request, res: Response) => {
     }
 };
 
-export const renewToken = async (req: Request, res: Response) => {
+export const renewToken: AppRequestHandler<RenewTokenBody> = async (req, res) => {
     const { userId } = req.body;
 
     try {

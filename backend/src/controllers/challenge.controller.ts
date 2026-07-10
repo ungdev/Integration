@@ -1,8 +1,17 @@
-import { type Request, type Response } from 'express';
 import * as challenge_service from '../services/challenge.service';
 import { Created, Error, Ok, Unauthorized } from '../utils/responses';
+import type { AppRequestHandler } from '../types/http';
+import type {
+    CreateChallengeBody,
+    DeleteChallengeQuery,
+    ValidateChallengeBody,
+    UnvalidateChallengeBody,
+    PointsBody,
+    UpdateChallengeBody,
+    FactionQuery,
+} from '../dto/challenge.dto';
 
-export const createChallenge = async (req: Request, res: Response) => {
+export const createChallenge: AppRequestHandler<CreateChallengeBody> = async (req, res) => {
     const { title, description, category, points } = req.body;
     const adminId = req.user.userId;
 
@@ -14,7 +23,7 @@ export const createChallenge = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteChallenge = async (req: Request, res: Response) => {
+export const deleteChallenge: AppRequestHandler<unknown, DeleteChallengeQuery> = async (req, res) => {
     const { challengeId } = req.query;
 
     try {
@@ -25,7 +34,7 @@ export const deleteChallenge = async (req: Request, res: Response) => {
     }
 };
 
-export const validateChallenge = async (req: Request, res: Response) => {
+export const validateChallenge: AppRequestHandler<ValidateChallengeBody> = async (req, res) => {
     const adminId = req.user.userId;
     const { challengeId, type, targetId } = req.body;
 
@@ -45,7 +54,7 @@ export const validateChallenge = async (req: Request, res: Response) => {
         Error(res, { msg: 'Erreur lors de la validation du challenge : ' + err });
     }
 };
-export const unvalidateChallenge = async (req: Request, res: Response) => {
+export const unvalidateChallenge: AppRequestHandler<UnvalidateChallengeBody> = async (req, res) => {
     const { challengeId, factionId, teamId, userId } = req.body;
 
     try {
@@ -56,7 +65,7 @@ export const unvalidateChallenge = async (req: Request, res: Response) => {
     }
 };
 
-export const addPointsToFaction = async (req: Request, res: Response) => {
+export const addPointsToFaction: AppRequestHandler<PointsBody> = async (req, res) => {
     const adminId = req.user.userId;
     const { title, factionId, points, reason } = req.body;
 
@@ -68,7 +77,7 @@ export const addPointsToFaction = async (req: Request, res: Response) => {
     }
 };
 
-export const removePointsFromFaction = async (req: Request, res: Response) => {
+export const removePointsFromFaction: AppRequestHandler<PointsBody> = async (req, res) => {
     const adminId = req.user.userId;
     const { title, factionId, points, reason } = req.body;
 
@@ -86,7 +95,7 @@ export const removePointsFromFaction = async (req: Request, res: Response) => {
     }
 };
 
-export const updateChallenge = async (req: Request, res: Response) => {
+export const updateChallenge: AppRequestHandler<UpdateChallengeBody> = async (req, res) => {
     const { id, title, description, category, points } = req.body;
     try {
         const updated = await challenge_service.modifyChallenge({
@@ -101,7 +110,7 @@ export const updateChallenge = async (req: Request, res: Response) => {
         Error(res, { msg: 'Erreur lors de la mise à jour : ' + err });
     }
 };
-export const getValidatedChallenges = async (req: Request, res: Response) => {
+export const getValidatedChallenges: AppRequestHandler = async (_req, res) => {
     try {
         const challengesValidated = await challenge_service.getValidatedChallenges();
         Ok(res, { data: challengesValidated });
@@ -112,7 +121,7 @@ export const getValidatedChallenges = async (req: Request, res: Response) => {
 
 // === PUBLIC ===
 
-export const getAllChallenges = async (req: Request, res: Response) => {
+export const getAllChallenges: AppRequestHandler = async (_req, res) => {
     try {
         const challenges = await challenge_service.getAllChallenges();
         Ok(res, { data: challenges });
@@ -121,7 +130,7 @@ export const getAllChallenges = async (req: Request, res: Response) => {
     }
 };
 
-export const getTotalFactionPoints = async (req: Request, res: Response) => {
+export const getTotalFactionPoints: AppRequestHandler<unknown, FactionQuery> = async (req, res) => {
     const { factionId } = req.query;
 
     try {

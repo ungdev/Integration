@@ -1,4 +1,3 @@
-import { type Request, type Response } from 'express';
 import type { EmailOptions } from '../../types/email';
 import { defaultPreviewData } from '../email/email.preview-data';
 import { generateEmailHtml, getRecipients, sendEmail } from '../services/email.service';
@@ -7,9 +6,11 @@ import * as user_service from '../services/user.service';
 import { Error, Ok } from '../utils/responses';
 import { email_from, service_url } from '../utils/secret';
 import { getLatestUploadedDocument } from '../utils/uploadDocuments';
+import type { AppRequestHandler } from '../types/http';
+import type { EmailRequestBody } from '../dto/email.dto';
 
-export const handleSendEmail = async (req: Request, res: Response) => {
-    const { subject, templateName, recipientsGroups, sendTo, html, title, content } = req.body.payload;
+export const handleSendEmail: AppRequestHandler<EmailRequestBody> = async (req, res) => {
+    const { subject, templateName, recipientsGroups, sendTo, html, title, content } = req.body.payload!;
 
     try {
         // Récupérer les destinataires
@@ -87,7 +88,7 @@ export const handleSendEmail = async (req: Request, res: Response) => {
     }
 };
 
-export const handlePreviewEmail = async (req: Request, res: Response) => {
+export const handlePreviewEmail: AppRequestHandler<EmailRequestBody> = async (req, res) => {
     const { templateName, title, content, ...rest } = req.body.payload ?? req.body;
 
     try {

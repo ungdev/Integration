@@ -1,4 +1,3 @@
-import { type Request, type Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 import * as event_service from '../services/event.service';
@@ -14,8 +13,10 @@ import {
     removeUploadedDocuments,
     toUploadedDocumentStatus,
 } from '../utils/uploadDocuments';
+import type { AppRequestHandler } from '../types/http';
+import type { UploadedDocumentParams } from '../dto/im_export.dto';
 
-export const exportAllDataToSheets = async (req: Request, res: Response) => {
+export const exportAllDataToSheets: AppRequestHandler = async (_req, res) => {
     try {
         // 1. Récupération depuis la DB
         const userList = await user_service.getUsersAll();
@@ -129,7 +130,7 @@ export const exportAllDataToSheets = async (req: Request, res: Response) => {
     }
 };
 
-export const updateFoodMenu = async (req: Request, res: Response) => {
+export const updateFoodMenu: AppRequestHandler = async (req, res) => {
     const file = req.file;
 
     try {
@@ -151,7 +152,7 @@ export const updateFoodMenu = async (req: Request, res: Response) => {
     }
 };
 
-export const updatePlannings = async (req: Request, res: Response) => {
+export const updatePlannings: AppRequestHandler = async (_req, res) => {
     try {
         Ok(res, { msg: 'Planning mis à jour avec succès' });
         return;
@@ -161,7 +162,7 @@ export const updatePlannings = async (req: Request, res: Response) => {
     }
 };
 
-export const exportUsersCSV = async (req: Request, res: Response) => {
+export const exportUsersCSV: AppRequestHandler = async (_req, res) => {
     try {
         await export_service.exportUsersToCSV();
         Ok(res, { msg: 'CSV des bus généré' });
@@ -171,7 +172,10 @@ export const exportUsersCSV = async (req: Request, res: Response) => {
     }
 };
 
-export const getUploadedDocumentStatus = async (req: Request, res: Response) => {
+export const getUploadedDocumentStatus: AppRequestHandler<unknown, unknown, UploadedDocumentParams> = async (
+    req,
+    res,
+) => {
     const { category, item } = req.params;
 
     if (!isSafeUploadSegment(category) || !isSafeUploadSegment(item)) {
@@ -198,7 +202,7 @@ export const getUploadedDocumentStatus = async (req: Request, res: Response) => 
     }
 };
 
-export const deleteDocument = async (req: Request, res: Response) => {
+export const deleteDocument: AppRequestHandler<unknown, unknown, UploadedDocumentParams> = async (req, res) => {
     const { category, item } = req.params;
 
     if (!isSafeUploadSegment(category) || !isSafeUploadSegment(item)) {

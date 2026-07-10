@@ -1,17 +1,17 @@
 {
-  "compilerOptions": {
-    "typeRoots": ["./types", "./node_modules/@types"],
-    "strict": false,
-    "target": "ES2020",
-    "module": "node16",
-    "moduleResolution": "node16",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "resolveJsonModule": true
-  },
-  "include": ["src/**/*.ts", "types/permanence.d.ts"],
-  "exclude": ["node_modules"]
+    "compilerOptions": {
+        "typeRoots": ["./types", "./node_modules/@types"],
+        "strict": false,
+        "target": "ES2020",
+        "module": "node16",
+        "moduleResolution": "node16",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "resolveJsonModule": true
+    },
+    "include": ["src/**/*.ts", "types/**/*.d.ts"],
+    "exclude": ["node_modules"]
 }

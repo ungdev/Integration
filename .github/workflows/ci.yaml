@@ -79,7 +79,7 @@ jobs:
 
       - name: Build
         working-directory: ./backend
-        run: pnpm run build
+        run: pnpm run build-test
 
   build-front:
     runs-on: self-hosted

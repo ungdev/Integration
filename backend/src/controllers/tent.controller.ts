@@ -1,11 +1,12 @@
-import { type Request, type Response } from 'express';
 import { generateEmailHtml, sendEmail } from '../services/email.service';
 import * as tent_service from '../services/tent.service';
 import { getUserById } from '../services/user.service';
 import { Error, Ok } from '../utils/responses';
 import { email_from } from '../utils/secret';
+import type { AppRequestHandler } from '../types/http';
+import type { CreateTentBody, ToggleTentBody } from '../dto/tent.dto';
 
-export const createTent = async (req: Request, res: Response) => {
+export const createTent: AppRequestHandler<CreateTentBody> = async (req, res) => {
     const { userId2 } = req.body;
     const userId1 = req.user?.userId; // Créateur = utilisateur connecté
 
@@ -21,7 +22,7 @@ export const createTent = async (req: Request, res: Response) => {
     }
 };
 
-export const cancelTent = async (req: Request, res: Response) => {
+export const cancelTent: AppRequestHandler = async (req, res) => {
     const userId1 = req.user?.userId;
 
     if (!userId1) {
@@ -36,7 +37,7 @@ export const cancelTent = async (req: Request, res: Response) => {
     }
 };
 
-export const getUserTent = async (req: Request, res: Response) => {
+export const getUserTent: AppRequestHandler = async (req, res) => {
     const userId = req.user?.userId;
 
     if (!userId) Error(res, { msg: 'Utilisateur non authentifié.' });
@@ -49,7 +50,7 @@ export const getUserTent = async (req: Request, res: Response) => {
     }
 };
 
-export const getAllTentPairs = async (req: Request, res: Response) => {
+export const getAllTentPairs: AppRequestHandler = async (_req, res) => {
     try {
         const tents = await tent_service.getAllTents();
         Ok(res, { data: tents });
@@ -58,7 +59,7 @@ export const getAllTentPairs = async (req: Request, res: Response) => {
     }
 };
 
-export const toggleTentConfirmation = async (req: Request, res: Response) => {
+export const toggleTentConfirmation: AppRequestHandler<ToggleTentBody> = async (req, res) => {
     const { userId1, userId2, confirmed } = req.body;
 
     if (!userId1 || !userId2 || typeof confirmed !== 'boolean') {

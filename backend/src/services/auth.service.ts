@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
-import { randomBytes } from "crypto";
-import { eq } from "drizzle-orm";
+import { randomBytes } from 'crypto';
+import { eq } from 'drizzle-orm';
 import { JSDOM } from 'jsdom';
 import jwt from 'jsonwebtoken';
 import { cas_validate_url } from '../../src/utils/secret';
@@ -8,6 +8,7 @@ import { db } from '../database/db';
 import { type User, userSchema } from '../schemas/Basic/user.schema';
 import { registrationSchema } from '../schemas/Relational/registration.schema';
 import { jwtSecret } from '../utils/secret';
+import type { AuthTokenUser } from '../types/auth';
 import * as role_service from './role.service';
 import * as user_service from './user.service';
 
@@ -23,7 +24,7 @@ export const comparePassword = async (password: string, hashedPassword: string):
 };
 
 // Fonction pour générer un JWT
-export const generateToken = (user: User & { roles: { roleId: number; roleName: string }[] }) => {
+export const generateToken = (user: AuthTokenUser) => {
     return jwt.sign(
         {
             userId: user.id,
@@ -32,7 +33,7 @@ export const generateToken = (user: User & { roles: { roleId: number; roleName: 
             userRoles: user.roles, // Ajout des rôles dans le token
         },
         jwtSecret,
-        { expiresIn: "1h" }
+        { expiresIn: '1h' },
     );
 };
 
@@ -41,13 +42,13 @@ export const loginUser = async (email: string, password: string) => {
     // Chercher l'utilisateur par email
     const user = await user_service.getUserByEmail(email);
     if (!user) {
-        throw new Error("Utilisateur non trouvé");
+        throw new Error('Utilisateur non trouvé');
     }
 
     // Vérifier le mot de passe
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
-        throw new Error("Mot de passe incorrect");
+        throw new Error('Mot de passe incorrect');
     }
 
     // Récupérer les rôles de l'utilisateur
@@ -69,7 +70,7 @@ export const registerUser = async (firstName: string, lastName: string, email: s
     // Vérifier si l'email est déjà pris
     const existingUser = await user_service.getUserByEmail(email);
     if (existingUser) {
-        throw new Error('L\'email est déjà pris');
+        throw new Error("L'email est déjà pris");
     }
 
     // Hacher le mot de passe avant de l'enregistrer
@@ -85,7 +86,7 @@ export const registerUser = async (firstName: string, lastName: string, email: s
     });
 
     // Retourner le nouvel utilisateur
-    const newUser = result[0];  // `result` est un tableau avec l'utilisateur inséré
+    const newUser = result[0]; // `result` est un tableau avec l'utilisateur inséré
     return newUser;
 };
 
@@ -98,61 +99,60 @@ export const validateCASTicket = async (ticket: string) => {
             /*console.log("====================validateCASTicket")
             console.log(text)
             console.log("validateCASTicket====================")*/
-            const isValid = text.includes("authenticationSuccess");
+            const isValid = text.includes('authenticationSuccess');
             if (isValid) {
                 // User is authenticated
                 return await parseUsernameFromCASResponse(text);
             } else {
-                console.error("CAS ticket validation failed");
+                console.error('CAS ticket validation failed');
             }
         } else {
-            console.error("Failed to validate CAS ticket");
+            console.error('Failed to validate CAS ticket');
         }
     } catch {
-        throw new Error("Failed to fetch CAS. Please try again later.");
+        throw new Error('Failed to fetch CAS. Please try again later.');
     }
-}
+};
 
 export const parseUsernameFromCASResponse = async (response: string) => {
-    const dom = new JSDOM(response, { contentType: "application/xml" });
+    const dom = new JSDOM(response, { contentType: 'application/xml' });
     const document = dom.window.document;
-    const authSuccessNode = document.getElementsByTagName("cas:authenticationSuccess")[0];
+    const authSuccessNode = document.getElementsByTagName('cas:authenticationSuccess')[0];
     if (authSuccessNode) {
-        const attributesNode = authSuccessNode.getElementsByTagName("cas:attributes")[0];
+        const attributesNode = authSuccessNode.getElementsByTagName('cas:attributes')[0];
         if (attributesNode) {
             return {
-                uid: attributesNode.getElementsByTagName("cas:uid")[0]?.textContent,
-                email: attributesNode.getElementsByTagName("cas:mail")[0]?.textContent,
-                sn: attributesNode.getElementsByTagName("cas:sn")[0]?.textContent,
-                givenName: attributesNode.getElementsByTagName("cas:givenName")[0]?.textContent,
+                uid: attributesNode.getElementsByTagName('cas:uid')[0]?.textContent,
+                email: attributesNode.getElementsByTagName('cas:mail')[0]?.textContent,
+                sn: attributesNode.getElementsByTagName('cas:sn')[0]?.textContent,
+                givenName: attributesNode.getElementsByTagName('cas:givenName')[0]?.textContent,
             };
         }
     }
-}
+};
 
 /*================================================================================================================*/
 
 export const completeRegistration = async (token: string, password: string) => {
-
     const [tokenRow] = await db.select().from(registrationSchema).where(eq(registrationSchema.token, token));
 
     if (!tokenRow || new Date(tokenRow.expires_at) < new Date()) {
-        throw new Error("Token invalide ou expiré.");
+        throw new Error('Token invalide ou expiré.');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await db.update(userSchema)
-        .set({ password: hashedPassword, permission: "Nouveau" })
+    await db
+        .update(userSchema)
+        .set({ password: hashedPassword, permission: 'Nouveau' })
         .where(eq(userSchema.id, tokenRow.user_id));
 
     // Supprimer le token
     await db.delete(registrationSchema).where(eq(registrationSchema.id, tokenRow.id));
-
-}
+};
 
 export const createRegistrationToken = async (userId: number) => {
-    const token = randomBytes(32).toString("hex"); // Jeton bien sécurisé
+    const token = randomBytes(32).toString('hex'); // Jeton bien sécurisé
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 90); // 90 jours
 
     await db.insert(registrationSchema).values({
@@ -168,8 +168,7 @@ export const deleteUserRegistrationToken = async (userId: number) => {
     try {
         await db.delete(registrationSchema).where(eq(registrationSchema.user_id, userId));
         return;
-    }
-    catch (error) {
+    } catch (error) {
         throw new Error(error);
     }
 };

@@ -1,9 +1,9 @@
-import { type Request, type Response } from 'express';
-import type { AdminCreateUserDto } from '../dto/user.dto';
+import type { AdminCreateUserDto, PermissionParams, ProfileBody, SyncBody, UserIdParams } from '../dto/user.dto';
 import * as user_service from '../services/user.service';
 import { Error, Ok } from '../utils/responses';
+import type { AppRequestHandler } from '../types/http';
 
-export const getUsersAdmin = async (req: Request, res: Response) => {
+export const getUsersAdmin: AppRequestHandler = async (_req, res) => {
     try {
         const users = await user_service.getUsersAdmin();
         Ok(res, { data: users });
@@ -15,7 +15,7 @@ export const getUsersAdmin = async (req: Request, res: Response) => {
     }
 };
 
-export const getUsers = async (req: Request, res: Response) => {
+export const getUsers: AppRequestHandler = async (_req, res) => {
     try {
         const users = await user_service.getUsers();
         Ok(res, { data: users });
@@ -27,7 +27,7 @@ export const getUsers = async (req: Request, res: Response) => {
     }
 };
 
-export const getUsersByPermission = async (req: Request, res: Response) => {
+export const getUsersByPermission: AppRequestHandler<unknown, unknown, PermissionParams> = async (req, res) => {
     const { permission } = req.params;
 
     try {
@@ -41,7 +41,7 @@ export const getUsersByPermission = async (req: Request, res: Response) => {
     }
 };
 
-export const syncNewstudent = async (req: Request, res: Response) => {
+export const syncNewstudent: AppRequestHandler<SyncBody> = async (req, res) => {
     const { date } = req.body;
 
     try {
@@ -55,7 +55,7 @@ export const syncNewstudent = async (req: Request, res: Response) => {
     }
 };
 
-export const getCurrentUser = async (req: Request, res: Response) => {
+export const getCurrentUser: AppRequestHandler = async (req, res) => {
     const userId = req.user?.userId;
 
     try {
@@ -66,7 +66,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     }
 };
 
-export const updateProfile = async (req: Request, res: Response) => {
+export const updateProfile: AppRequestHandler<ProfileBody> = async (req, res) => {
     const userId = req.user?.userId;
     const { branch, contact } = req.body;
 
@@ -78,7 +78,7 @@ export const updateProfile = async (req: Request, res: Response) => {
     }
 };
 
-export const adminUpdateUser = async (req: Request, res: Response) => {
+export const adminUpdateUser: AppRequestHandler<unknown, unknown, UserIdParams> = async (req, res) => {
     const { userId } = req.params;
     const updates = req.body;
 
@@ -90,7 +90,7 @@ export const adminUpdateUser = async (req: Request, res: Response) => {
     }
 };
 
-export const adminCreateUser = async (req: Request<unknown, unknown, AdminCreateUserDto>, res: Response) => {
+export const adminCreateUser: AppRequestHandler<AdminCreateUserDto> = async (req, res) => {
     try {
         const user = await user_service.adminCreateUser(req.body);
 
@@ -103,7 +103,7 @@ export const adminCreateUser = async (req: Request<unknown, unknown, AdminCreate
     }
 };
 
-export const adminDeleteUser = async (req: Request, res: Response) => {
+export const adminDeleteUser: AppRequestHandler<unknown, unknown, UserIdParams> = async (req, res) => {
     const { userId } = req.params;
 
     try {

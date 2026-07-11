@@ -31,7 +31,7 @@ export const AuthForm = () => {
             const token = await loginUser(formData.email, formData.password);
             if (token) {
                 localStorage.setItem("authToken", token);
-                window.location.href = "/home";
+                window.location.href = "/home?login=true";
             }
         } catch (err: any) {
             console.error(err);

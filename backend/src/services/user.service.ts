@@ -140,7 +140,8 @@ export const getUserContactInformation = async (userId: number) => {
             {
                 userId: userInformationSchema.user_id,
                 urgency_contact_name: userInformationSchema.urgency_contact_name,
-                urgency_contact_phone: userInformationSchema.urgency_contact_phone
+                urgency_contact_phone: userInformationSchema.urgency_contact_phone,
+                contact_CE: userInformationSchema.contact_CE
             }
         ).from(userInformationSchema).where(eq(userInformationSchema.user_id, userId));
         return user[0];

@@ -160,9 +160,9 @@ export const createUserContactInformation = async (userId: number, contact: User
     try {
         const newContactInfo = {
             user_id: userId,
-            urgency_contact_name: contact.UrgencyContactName,
-            urgency_contact_phone: contact.UrgencyContactPhone,
-            contact_CE: contact.ContactCE,
+            urgency_contact_name: contact.urgency_contact_name,
+            urgency_contact_phone: contact.urgency_contact_phone,
+            contact_CE: contact.contact_CE,
         };
 
         const result = await db.insert(userInformationSchema).values(newContactInfo).returning();

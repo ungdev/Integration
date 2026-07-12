@@ -99,9 +99,20 @@ export const getUserContactInformation = async (req: Request, res: Response) => 
     }
 };
 
+export const getCurrentUserContactInformation = async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
+
+    try {
+        const userContactInfo = await user_service.getUserContactInformation(parseInt(userId));
+        Ok(res, { data: userContactInfo });
+    } catch {
+        Error(res, { msg: "Erreur lors de la récupération des informations de contact de l'utilisateur." });
+    }
+};
+
 export const createUserContactInformation = async (req: Request, res: Response) => {
     const userId = req.user?.userId;
-    const { contact }: { contact: UserContactInformation } = req.body;
+    const contact: UserContactInformation = req.body;
 
     try {
         const result = await user_service.createUserContactInformation(parseInt(userId), contact);

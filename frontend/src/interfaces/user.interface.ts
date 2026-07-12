@@ -13,5 +13,12 @@ export interface User {
 export interface UserContactInformation {
     userId: number;
     urgency_contact_name: string;
-    urgency_contact_phone: number;
+    urgency_contact_phone: string;
+    contact_CE: string;
+}
+
+export interface CreateUserContactInformationRequest {
+    urgency_contact_name: string;
+    urgency_contact_phone: string;
+    contact_CE: string;
 }

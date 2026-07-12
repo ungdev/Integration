@@ -43,6 +43,7 @@ export const Navbar = () => {
             try {
                 const contactInfo = await getCurrentUserContactInformation();
                 setHasContactInformation(contactInfo.urgency_contact_phone !== null);
+                console.log('Contact Information:', contactInfo);
             } catch (error) {
                 console.error('Erreur lors de la récupération des informations de contact :', error);
             }

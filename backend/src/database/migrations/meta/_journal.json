@@ -169,6 +169,13 @@
       "when": 1782943789540,
       "tag": "0023_zippy_colonel_america",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1783776285772,
+      "tag": "0024_optimal_garia",
+      "breakpoints": true
     }
   ]
 }

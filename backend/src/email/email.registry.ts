@@ -1,4 +1,4 @@
-import type { PermanenceEmailData, TemplateRenderer } from '../../types/email';
+import type { PermanenceEmailData, TemplateRenderer, TeamAssignmentEmailData } from '../../types/email';
 
 export const templateResetPassword = 'reset-password.html';
 const templateNotebook = 'notebook.html';
@@ -7,6 +7,7 @@ const templateWelcome = 'welcome.html';
 const templateNotifyNews = 'notify-news.html';
 const templateNotifyTentConfirmation = 'notify-tent-confirmation.html';
 const templateNotifyPermanenceReminder = 'notify-permanence-reminder.html';
+const templateNotifyTeamAssignment = 'notify-team-assignment.html';
 const templateMentorReminder = 'mentor-reminder.html';
 
 export const templateRenderers: Record<string, TemplateRenderer> = {
@@ -83,6 +84,13 @@ export const templateRenderers: Record<string, TemplateRenderer> = {
         fileName: templateMentorReminder,
         buildData: () => {
             return {};
+        },
+    },
+    templateNotifyTeamAssignment: {
+        fileName: templateNotifyTeamAssignment,
+        buildData: (data) => {
+            const typedData = data as TeamAssignmentEmailData;
+            return typedData;
         },
     },
 };

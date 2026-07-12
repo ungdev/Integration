@@ -13,8 +13,7 @@ import * as user_service from '../services/user.service';
 import type { StudentRow, TeamMemberRow, TeamRow, TeamSizeRow, TeamAssignmentNotification } from '../dto/team.dto';
 import { email_from, email_concurrency } from '../utils/secret';
 import type { TeamAssignmentEmailData } from '../../types/email';
-
-import pLimit from 'p-limit';
+import getPLimit from '../utils/pLimit';
 
 export const createTeam = async (teamName: string, members: number[]) => {
     const newTeam = await db.insert(teamSchema).values({ name: teamName }).returning();
@@ -432,6 +431,7 @@ const sendEmailToNewAssignedStudents = async (notifications: TeamAssignmentNotif
         htmlCache.set(team.teamId, generateEmailHtml('templateNotifyTeamAssignment', data));
     }
 
+    const pLimit = await getPLimit();
     const limit = pLimit(Number(email_concurrency));
 
     const results = await Promise.allSettled(

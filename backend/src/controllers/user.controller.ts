@@ -6,6 +6,7 @@ import * as user_service from '../services/user.service';
 import { noSyncEmails } from '../utils/no_sync_list';
 import { Error, Ok } from '../utils/responses';
 import * as SIEP_Utils from '../utils/siep';
+import { type UserContactInformation } from '../../types/user';
 
 export const getUsersAdmin = async (req: Request, res: Response) => {
     try {
@@ -94,7 +95,19 @@ export const getUserContactInformation = async (req: Request, res: Response) => 
         const userContactInfo = await user_service.getUserContactInformation(parseInt(userId));
         Ok(res, { data: userContactInfo });
     } catch {
-        Error(res, { msg: 'Erreur lors de la récupération des informations de contact de l\'utilisateur.' });
+        Error(res, { msg: "Erreur lors de la récupération des informations de contact de l'utilisateur." });
+    }
+};
+
+export const createUserContactInformation = async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
+    const { contact }: { contact: UserContactInformation } = req.body;
+
+    try {
+        const result = await user_service.createUserContactInformation(parseInt(userId), contact);
+        Ok(res, { msg: 'Informations de contact créées', data: result });
+    } catch {
+        Error(res, { msg: 'Erreur lors de la création des informations de contact.' });
     }
 };
 

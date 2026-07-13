@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { api_billetweb_token, api_billetweb_url, api_billetweb_respondent_students_list_id } from './secret';
-import type { BilletwebUser, BilletwebMember } from '../../types/billetweb';
+import type { BilletwebUser } from '../../types/billetweb';
 
 const headers = {
     accept: 'application/json',
@@ -29,18 +29,16 @@ const removeUserFromList = async (listId: string, email: string) => {
     try {
         if (!api_billetweb_url || !api_billetweb_token || !api_billetweb_respondent_students_list_id) return;
 
-        const { data } = await axios.get<BilletwebMember[]>(`${api_billetweb_url}/list/${listId}/data`, { headers });
-
-        const members = data.filter(([memberEmail]) => memberEmail !== email);
-
-        // Ne rien faire si l'utilisateur n'était pas dans la liste
-        if (members.length === data.length) {
-            return;
-        }
-
-        await axios.post(`${api_billetweb_url}/list/${listId}/replace`, { data: members }, { headers });
+        const response = await axios.post(
+            `${api_billetweb_url}/list/${listId}/remove`,
+            {
+                data: [[email]],
+            },
+            { headers },
+        );
+        return response;
     } catch (error) {
-        console.error('Error removing user from list:', error);
+        console.error(`Error removing ${email} from list ${listId}:`, error);
         throw error;
     }
 };

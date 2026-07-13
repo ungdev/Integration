@@ -24,7 +24,7 @@ export const getAllTentPairs = async () => {
     return response.data;
 };
 
-// Valider ou dévalider une tente (admin)
+// Valider ou invalider une tente (admin)
 export const toggleTentConfirmation = async (
     userId1: number,
     userId2: number,

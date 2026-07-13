@@ -41,7 +41,7 @@ export const TentAdmin = () => {
     };
 
     const handleToggle = async (pair: TentPair) => {
-        const action = pair.confirmed ? 'dévalider' : 'valider';
+        const action = pair.confirmed ? "invalider" : "valider";
 
         const confirm = await Swal.fire({
             title: '⚠️ Confirmation requise',
@@ -70,7 +70,11 @@ export const TentAdmin = () => {
         try {
             await toggleTentConfirmation(pair.user1_id, pair.user2_id, !pair.confirmed);
 
-            Swal.fire('Succès ✅', `La tente a bien été ${pair.confirmed ? 'dévalidée' : 'validée'}.`, 'success');
+            Swal.fire(
+                "Succès ✅",
+                `La tente a bien été ${pair.confirmed ? "invalidée" : "validée"}.`,
+                "success"
+            );
 
             fetchPairs();
         } catch {
@@ -186,10 +190,11 @@ export const TentAdmin = () => {
                                                 onClick={() => handleToggle(pair)}
                                                 className={
                                                     pair.confirmed
-                                                        ? 'bg-red-600 hover:bg-red-700 text-white'
-                                                        : 'bg-green-600 hover:bg-green-700 text-white'
-                                                }>
-                                                {pair.confirmed ? '❌ Dévalider' : '✅ Valider'}
+                                                        ? "bg-red-600 hover:bg-red-700 text-white"
+                                                        : "bg-green-600 hover:bg-green-700 text-white"
+                                                }
+                                            >
+                                                {pair.confirmed ? "❌ Invalidée" : "✅ Validée"}
                                             </Button>
                                         </td>
                                     </tr>

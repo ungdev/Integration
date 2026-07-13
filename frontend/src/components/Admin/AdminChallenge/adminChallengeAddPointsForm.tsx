@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
-import Select from "react-select";
-import Swal from "sweetalert2";
+import { useEffect, useState } from 'react';
+import Select from 'react-select';
+import Swal from 'sweetalert2';
 
-import { type Faction } from "../../../interfaces/faction.interface";
-import { addPointsToFaction } from "../../../services/requests/challenge.service";
-import { getAllFactionsAdmin } from "../../../services/requests/faction.service";
-import { Button } from "../../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import { Input } from "../../ui/input";
+import { type Faction } from '../../../interfaces/faction.interface';
+import { addPointsToFaction } from '../../../services/requests/challenge.service';
+import { getAllFactionsAdmin } from '../../../services/requests/faction.service';
+import { Button } from '../../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
+import { Input } from '../../ui/input';
 
 export const AdminChallengeAddPointsForm = () => {
     const [factions, setFactions] = useState<Faction[]>([]);
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState('');
     const [factionId, setFactionId] = useState<number | null>(null);
-    const [points, setPoints] = useState<number | string>("");
-    const [reason, setReason] = useState("");
+    const [points, setPoints] = useState<number | string>('');
+    const [reason, setReason] = useState('');
 
     useEffect(() => {
         const fetchFactions = async () => {
@@ -22,7 +22,7 @@ export const AdminChallengeAddPointsForm = () => {
                 const response = await getAllFactionsAdmin();
                 setFactions(response);
             } catch {
-                Swal.fire("Erreur", "Impossible de récupérer les factions", "error");
+                Swal.fire('Erreur', 'Impossible de récupérer les factions', 'error');
             }
         };
         fetchFactions();
@@ -30,13 +30,13 @@ export const AdminChallengeAddPointsForm = () => {
 
     const handleSubmit = async () => {
         if (!title || !factionId || !points || !reason) {
-            Swal.fire("Champs manquants", "Tous les champs doivent être remplis", "warning");
+            Swal.fire('Champs manquants', 'Tous les champs doivent être remplis', 'warning');
             return;
         }
 
         const pointsNumber = Number(points);
         if (isNaN(pointsNumber)) {
-            Swal.fire("Erreur", "Veuillez entrer un nombre valide pour les points", "error");
+            Swal.fire('Erreur', 'Veuillez entrer un nombre valide pour les points', 'error');
             return;
         }
 
@@ -49,19 +49,19 @@ export const AdminChallengeAddPointsForm = () => {
             });
 
             Swal.fire({
-                icon: "success",
-                title: "Succès",
+                icon: 'success',
+                title: 'Succès',
                 text: result.message,
                 timer: 1500,
                 showConfirmButton: false,
             });
 
-            setTitle("");
+            setTitle('');
             setFactionId(null);
-            setPoints("");
-            setReason("");
+            setPoints('');
+            setReason('');
         } catch {
-            Swal.fire("Erreur", "❌ Une erreur est survenue lors de l'ajout des points", "error");
+            Swal.fire('Erreur', "❌ Une erreur est survenue lors de l'ajout des points", 'error');
         }
     };
 
@@ -74,16 +74,17 @@ export const AdminChallengeAddPointsForm = () => {
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-
                     <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titre du challenge" />
 
                     <Select
                         value={
                             factionId
                                 ? {
-                                    value: factionId,
-                                    label: factions.find((f) => f.factionId === factionId)?.name || "Faction non trouvée",
-                                }
+                                      value: factionId,
+                                      label:
+                                          factions.find((f) => f.factionId === factionId)?.name ||
+                                          'Faction non trouvée',
+                                  }
                                 : null
                         }
                         onChange={(option) => setFactionId(option ? option.value : null)}
@@ -91,7 +92,12 @@ export const AdminChallengeAddPointsForm = () => {
                         placeholder="Sélectionner une faction"
                     />
 
-                    <Input type="number" value={points} onChange={(e) => setPoints(e.target.value)} placeholder="Nombre de points" />
+                    <Input
+                        type="number"
+                        value={points}
+                        onChange={(e) => setPoints(e.target.value)}
+                        placeholder="Nombre de points"
+                    />
 
                     <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Raison" />
 

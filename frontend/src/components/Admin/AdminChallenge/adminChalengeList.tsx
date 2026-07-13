@@ -21,7 +21,7 @@ interface Props {
     users: User[];
 }
 
-type ValidationTarget = "user" | "team" | "faction";
+type ValidationTarget = 'user' | 'team' | 'faction';
 
 const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, factions, users }: Props) => {
     const [showValidationFormForId, setShowValidationFormForId] = useState<number | null>(null);
@@ -35,30 +35,30 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
             (c) =>
                 c.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 c.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                c.category.toLowerCase().includes(searchTerm.toLowerCase())
+                c.category.toLowerCase().includes(searchTerm.toLowerCase()),
         );
     }, [challenges, searchTerm]);
 
     const handleDelete = async (id: number) => {
         const confirm = await Swal.fire({
-            title: "Supprimer ce challenge ?",
-            text: "Cette action est irréversible 🚨",
-            icon: "warning",
+            title: 'Supprimer ce challenge ?',
+            text: 'Cette action est irréversible 🚨',
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: "#e3342f",
-            cancelButtonColor: "#6b7280",
-            confirmButtonText: "Oui, supprimer",
-            cancelButtonText: "Annuler",
+            confirmButtonColor: '#e3342f',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Oui, supprimer',
+            cancelButtonText: 'Annuler',
         });
 
         if (!confirm.isConfirmed) return;
 
         try {
             await deleteChallenge(id);
-            Swal.fire("Supprimé ✅", "Le challenge a bien été supprimé.", "success");
+            Swal.fire('Supprimé ✅', 'Le challenge a bien été supprimé.', 'success');
             refreshChallenges();
         } catch {
-            Swal.fire("Erreur ❌", "Impossible de supprimer le challenge.", "error");
+            Swal.fire('Erreur ❌', 'Impossible de supprimer le challenge.', 'error');
         }
     };
 
@@ -79,8 +79,8 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
             });
 
             Swal.fire({
-                icon: "success",
-                title: "Challenge validé ✅",
+                icon: 'success',
+                title: 'Challenge validé ✅',
                 text: res.message,
                 timer: 2000,
                 showConfirmButton: false,
@@ -91,7 +91,7 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
             setSelectedTargetIds([]);
             refreshChallenges();
         } catch (err) {
-            console.error("Erreur lors de la validation du challenge", err);
+            console.error('Erreur lors de la validation du challenge', err);
             Swal.fire({
                 icon: "error",
                 title: "Erreur ❌",
@@ -104,12 +104,9 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
     return (
         <Card className="w-full max-w-7xl mx-auto">
             <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
-                    📜 Challenges
-                </CardTitle>
+                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">📜 Challenges</CardTitle>
             </CardHeader>
             <CardContent>
-
                 {/* 🔎 Barre de recherche */}
                 <div className="flex items-center gap-3 mb-6">
                     <Search className="w-5 h-5 text-gray-500" />
@@ -126,10 +123,7 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredChallenges.length > 0 ? (
                         filteredChallenges.map((c) => (
-                            <Card
-                                key={c.id}
-                                className="bg-gray-100 border shadow flex flex-col justify-between"
-                            >
+                            <Card key={c.id} className="bg-gray-100 border shadow flex flex-col justify-between">
                                 <CardContent className="p-4">
                                     <div>
                                         <h4 className="font-bold text-lg">{c.title}</h4>
@@ -141,14 +135,12 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                                     <div className="flex flex-wrap gap-2 mt-4">
                                         <Button
                                             onClick={() => onEdit(c)}
-                                            className="bg-yellow-600 hover:bg-yellow-700 text-white flex items-center gap-2"
-                                        >
+                                            className="bg-yellow-600 hover:bg-yellow-700 text-white flex items-center gap-2">
                                             <Edit className="w-4 h-4" /> Modifier
                                         </Button>
                                         <Button
                                             onClick={() => handleDelete(c.id)}
-                                            className="bg-red-600 hover:bg-red-700 text-white flex items-center gap-2"
-                                        >
+                                            className="bg-red-600 hover:bg-red-700 text-white flex items-center gap-2">
                                             <Trash2 className="w-4 h-4" /> Supprimer
                                         </Button>
                                         <Button
@@ -165,7 +157,7 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                                                 <h4 className="font-bold text-lg">✅ Valider le challenge</h4>
 
 
-                                                {validationType === "user" && (
+                                                {validationType === 'user' && (
                                                     <Select
                                                         isMulti
                                                         placeholder="Sélectionner un utilisateur"
@@ -177,7 +169,7 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                                                     />
                                                 )}
 
-                                                {validationType === "team" && (
+                                                {validationType === 'team' && (
                                                     <Select
                                                         isMulti
                                                         placeholder="Sélectionner une équipe"
@@ -189,7 +181,7 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                                                     />
                                                 )}
 
-                                                {validationType === "faction" && (
+                                                {validationType === 'faction' && (
                                                     <Select
                                                         isMulti
                                                         placeholder="Sélectionner une faction"
@@ -204,8 +196,7 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                                                 <div className="flex gap-4">
                                                     <Button
                                                         onClick={handleValidate}
-                                                        className="bg-blue-600 hover:bg-blue-700 text-white"
-                                                    >
+                                                        className="bg-blue-600 hover:bg-blue-700 text-white">
                                                         ✅ Valider
                                                     </Button>
                                                     <Button
@@ -214,8 +205,7 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                                                             setValidationType(null);
                                                             setSelectedTargetIds([]);
                                                         }}
-                                                        className="bg-gray-400 hover:bg-gray-500 text-white"
-                                                    >
+                                                        className="bg-gray-400 hover:bg-gray-500 text-white">
                                                         ❌ Annuler
                                                     </Button>
                                                 </div>

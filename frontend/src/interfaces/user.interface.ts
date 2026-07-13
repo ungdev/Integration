@@ -9,3 +9,12 @@ export interface User {
     contact: string;
     discord_id: string;
 }
+
+export interface NewUser {
+    firstName: string;
+    lastName: string;
+    email: string;
+    major: boolean;
+    branch: string;
+    withNotification: boolean;
+}

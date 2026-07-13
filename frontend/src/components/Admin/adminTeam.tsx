@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import Select from "react-select";
-import Swal from "sweetalert2";
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import Select from 'react-select';
+import Swal from 'sweetalert2';
 
-import { type Faction } from "../../interfaces/faction.interface";
-import { type Team } from "../../interfaces/team.interface";
-import { type User } from "../../interfaces/user.interface";
-import { getAllFactionsAdmin } from "../../services/requests/faction.service";
+import { type Faction } from '../../interfaces/faction.interface';
+import { type Team } from '../../interfaces/team.interface';
+import { type User } from '../../interfaces/user.interface';
+import { getAllFactionsAdmin } from '../../services/requests/faction.service';
 import {
     createTeamLight,
     deleteTeam,
@@ -15,11 +15,11 @@ import {
     getTeamUsers,
     teamDistribution,
     updateTeam,
-} from "../../services/requests/team.service";
-import { getUsersAdmin } from "../../services/requests/user.service";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Input } from "../ui/input";
+} from '../../services/requests/team.service';
+import { getUsersAdmin } from '../../services/requests/user.service';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Input } from '../ui/input';
 
 export const AdminTeamManagement = () => {
     const [searchParams] = useSearchParams();
@@ -28,24 +28,22 @@ export const AdminTeamManagement = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
 
-    const [editName, setEditName] = useState<string>("");
-    const [editType, setEditType] = useState<string>("");
+    const [editName, setEditName] = useState<string>('');
+    const [editType, setEditType] = useState<string>('');
     const [editFactionId, setEditFactionId] = useState<number | null>(null);
     const [editLeaders, setEditLeaders] = useState<number[]>([]);
     const [editNewMembers, setEditNewMembers] = useState<number[]>([]);
 
-    const [newTeamName, setNewTeamName] = useState("");
+    const [newTeamName, setNewTeamName] = useState('');
     const [newFactionId, setNewFactionId] = useState<number | null>(null);
-
-
 
     const selectedTeam = teams.find((t) => t.teamId === selectedTeamId);
 
     const typeOptions = [
-        { value: "TC", label: "TC" },
-        { value: "RI", label: "RI" },
-        { value: "MM", label: "MM" },
-        { value: "Branch", label: "Branch" },
+        { value: 'TC', label: 'TC' },
+        { value: 'RI', label: 'RI' },
+        { value: 'MM', label: 'MM' },
+        { value: 'Branch', label: 'Branch' },
     ];
 
     useEffect(() => {
@@ -53,7 +51,7 @@ export const AdminTeamManagement = () => {
     }, []);
 
     useEffect(() => {
-        const teamIdParam = searchParams.get("teamId");
+        const teamIdParam = searchParams.get('teamId');
         if (!teamIdParam) {
             return;
         }
@@ -69,13 +67,13 @@ export const AdminTeamManagement = () => {
             if (!selectedTeamId) return;
             const team = teams.find((t) => t.teamId === selectedTeamId);
             if (team) {
-                const faction = team.faction_id ?? ((await getTeamFaction(team.teamId))?.factionId);
+                const faction = team.faction_id ?? (await getTeamFaction(team.teamId))?.factionId;
                 const members: [User] = await getTeamUsers(team.teamId);
                 setEditName(team.name);
                 setEditType(team.type);
                 setEditFactionId(faction || null);
-                setEditLeaders(members.filter(m => m.permission !== "Nouveau").map(m => m.userId));
-                setEditNewMembers(members.filter(m => m.permission === "Nouveau").map(m => m.userId));
+                setEditLeaders(members.filter((m) => m.permission !== 'Nouveau').map((m) => m.userId));
+                setEditNewMembers(members.filter((m) => m.permission === 'Nouveau').map((m) => m.userId));
             }
         };
         loadTeamDetails();
@@ -92,7 +90,7 @@ export const AdminTeamManagement = () => {
             setFactions(factionRes);
             setUsers(usersRes);
         } catch (err) {
-            console.error("Erreur lors du chargement des données", err);
+            console.error('Erreur lors du chargement des données', err);
         }
     };
 
@@ -106,20 +104,20 @@ export const AdminTeamManagement = () => {
                 teamMembers: [...editLeaders, ...editNewMembers],
                 type: editType,
             });
-            await Swal.fire("✅ Équipe mise à jour", "", "success");
+            await Swal.fire('✅ Équipe mise à jour', '', 'success');
             fetchData();
         } catch {
-            Swal.fire("❌ Erreur", "Erreur lors de la mise à jour", "error");
+            Swal.fire('❌ Erreur', 'Erreur lors de la mise à jour', 'error');
         }
     };
 
     const handleCreateTeam = async () => {
         if (teams.find((t) => t.name === newTeamName)) {
-            Swal.fire("❌ Nom déjà utilisé", "Une équipe avec ce nom existe déjà", "warning");
+            Swal.fire('❌ Nom déjà utilisé', 'Une équipe avec ce nom existe déjà', 'warning');
             return;
         }
         if (!newTeamName) {
-            Swal.fire("⚠️ Nom requis", "Veuillez renseigner un nom d'équipe", "info");
+            Swal.fire('⚠️ Nom requis', "Veuillez renseigner un nom d'équipe", 'info');
             return;
         }
 
@@ -128,26 +126,25 @@ export const AdminTeamManagement = () => {
                 teamName: newTeamName,
                 factionId: newFactionId,
             });
-            await Swal.fire("✅ Équipe créée", "", "success");
-            setNewTeamName("");
+            await Swal.fire('✅ Équipe créée', '', 'success');
+            setNewTeamName('');
             setNewFactionId(null);
             fetchData();
         } catch {
-            Swal.fire("❌ Erreur", "Erreur lors de la création de l'équipe", "error");
+            Swal.fire('❌ Erreur', "Erreur lors de la création de l'équipe", 'error');
         }
     };
-
 
     const handleDeleteConfirm = async () => {
         if (!selectedTeamId) return;
 
         const confirm = await Swal.fire({
-            title: "🛑 Supprimer cette équipe ?",
-            text: "Cette action est irréversible. Es-tu sûr(e) ?",
-            icon: "warning",
+            title: '🛑 Supprimer cette équipe ?',
+            text: 'Cette action est irréversible. Es-tu sûr(e) ?',
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: "Oui",
-            cancelButtonText: "Non",
+            confirmButtonText: 'Oui',
+            cancelButtonText: 'Non',
         });
 
         if (!confirm.isConfirmed) return;
@@ -156,9 +153,9 @@ export const AdminTeamManagement = () => {
             await deleteTeam(selectedTeamId);
             setTeams(teams.filter((t) => t.teamId !== selectedTeamId));
             setSelectedTeamId(null);
-            await Swal.fire("✅ Équipe supprimée", "", "success");
+            await Swal.fire('✅ Équipe supprimée', '', 'success');
         } catch {
-            Swal.fire("❌ Erreur", "Erreur lors de la suppression", "error");
+            Swal.fire('❌ Erreur', 'Erreur lors de la suppression', 'error');
         }
     };
 
@@ -180,7 +177,7 @@ export const AdminTeamManagement = () => {
                         />
                         <Select
                             onChange={(selectedOption: any) => setNewFactionId(selectedOption.value)}
-                            options={factions.map(f => ({ value: f.factionId, label: f.name }))}
+                            options={factions.map((f) => ({ value: f.factionId, label: f.name }))}
                             className="w-full md:w-64"
                             placeholder="Sélectionner une faction"
                         />
@@ -199,12 +196,14 @@ export const AdminTeamManagement = () => {
                 </CardHeader>
                 <CardContent>
                     <Select
-                        value={selectedTeamId
-                            ? {
-                                value: selectedTeamId,
-                                label: teams.find((team) => team.teamId === selectedTeamId)?.name,
-                            }
-                            : null}
+                        value={
+                            selectedTeamId
+                                ? {
+                                      value: selectedTeamId,
+                                      label: teams.find((team) => team.teamId === selectedTeamId)?.name,
+                                  }
+                                : null
+                        }
                         onChange={(selectedOption: any) => setSelectedTeamId(selectedOption.value)}
                         options={teams.map((team) => ({ value: team.teamId, label: team.name }))}
                         className="w-full md:w-96 mx-auto"
@@ -230,22 +229,26 @@ export const AdminTeamManagement = () => {
                         <Select
                             options={typeOptions}
                             value={
-                                typeOptions.find(option => option.value === editType) ??
-                                { value: "", label: "Aucun type" }
+                                typeOptions.find((option) => option.value === editType) ?? {
+                                    value: '',
+                                    label: 'Aucun type',
+                                }
                             }
-                            onChange={(selectedOption) => setEditType(selectedOption?.value || "")}
+                            onChange={(selectedOption) => setEditType(selectedOption?.value || '')}
                             className="w-full md:w-96 mx-auto"
                             placeholder="Type d'équipe"
                         />
                         <Select
-                            value={editFactionId
-                                ? {
-                                    value: editFactionId,
-                                    label: factions.find(f => f.factionId === editFactionId)?.name,
-                                }
-                                : null}
+                            value={
+                                editFactionId
+                                    ? {
+                                          value: editFactionId,
+                                          label: factions.find((f) => f.factionId === editFactionId)?.name,
+                                      }
+                                    : null
+                            }
                             onChange={(selectedOption: any) => setEditFactionId(selectedOption.value)}
-                            options={factions.map(f => ({ value: f.factionId, label: f.name }))}
+                            options={factions.map((f) => ({ value: f.factionId, label: f.name }))}
                             className="w-full md:w-96 mx-auto"
                             placeholder="Sélectionner une faction"
                         />
@@ -256,14 +259,14 @@ export const AdminTeamManagement = () => {
                                 isMulti
                                 value={editLeaders.map((id) => {
                                     const user = users.find((u) => u.userId === id);
-                                    return { value: id, label: user ? `${user.firstName} ${user.lastName}` : "" };
+                                    return { value: id, label: user ? `${user.firstName} ${user.lastName}` : '' };
                                 })}
                                 onChange={(newValues: any) => {
                                     const selectedIds = newValues.map((val: any) => val.value);
                                     setEditLeaders(selectedIds);
                                 }}
                                 options={users
-                                    .filter((user) => user.permission !== "Nouveau")
+                                    .filter((user) => user.permission !== 'Nouveau')
                                     .map((user) => ({
                                         value: user.userId,
                                         label: `${user.firstName} ${user.lastName}`,
@@ -279,14 +282,14 @@ export const AdminTeamManagement = () => {
                                 isMulti
                                 value={editNewMembers.map((id) => {
                                     const user = users.find((u) => u.userId === id);
-                                    return { value: id, label: user ? `${user.firstName} ${user.lastName}` : "" };
+                                    return { value: id, label: user ? `${user.firstName} ${user.lastName}` : '' };
                                 })}
                                 onChange={(newValues: any) => {
                                     const selectedIds = newValues.map((val: any) => val.value);
                                     setEditNewMembers(selectedIds);
                                 }}
                                 options={users
-                                    .filter((user) => user.permission === "Nouveau")
+                                    .filter((user) => user.permission === 'Nouveau')
                                     .map((user) => ({
                                         value: user.userId,
                                         label: `${user.firstName} ${user.lastName}`,
@@ -314,21 +317,21 @@ export const AdminTeamManagement = () => {
 export const DistributeTeam = () => {
     const handleConfirmDistribution = async () => {
         const confirm = await Swal.fire({
-            title: "⚠️ Confirmation",
-            text: "Cette action va affecter tous les utilisateurs sans équipe. Souhaitez-vous vraiment continuer ?",
-            icon: "warning",
+            title: '⚠️ Confirmation',
+            text: 'Cette action va affecter tous les utilisateurs sans équipe. Souhaitez-vous vraiment continuer ?',
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: "Oui",
-            cancelButtonText: "Non",
+            confirmButtonText: 'Oui',
+            cancelButtonText: 'Non',
         });
 
         if (!confirm.isConfirmed) return;
 
         try {
             const response = await teamDistribution();
-            await Swal.fire("✅ Répartition effectuée", response.message, "success");
+            await Swal.fire('✅ Répartition effectuée', response.message, 'success');
         } catch (error: any) {
-            Swal.fire("❌ Erreur", error.response?.data?.message || "Une erreur est survenue", "error");
+            Swal.fire('❌ Erreur', error.response?.data?.message || 'Une erreur est survenue', 'error');
         }
     };
 
@@ -347,10 +350,7 @@ export const DistributeTeam = () => {
                     </p>
                 </div>
                 <div className="flex justify-center pt-2">
-                    <Button
-                        className="bg-blue-600 hover:bg-blue-700 text-white"
-                        onClick={handleConfirmDistribution}
-                    >
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleConfirmDistribution}>
                         🔁 Lancer la répartition
                     </Button>
                 </div>

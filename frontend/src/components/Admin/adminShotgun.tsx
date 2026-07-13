@@ -1,19 +1,19 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import { type ShotgunAttemptRow } from "../../interfaces/event.interface";
-import { getShotgunAttemptsAdmin } from "../../services/requests/event.service";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { type ShotgunAttemptRow } from '../../interfaces/event.interface';
+import { getShotgunAttemptsAdmin } from '../../services/requests/event.service';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 const formatResponseTime = (timestamp: string | null, baseline: number | null): string => {
     if (!timestamp || baseline === null) {
-        return "-";
+        return '-';
     }
 
     const current = new Date(timestamp).getTime();
     if (Number.isNaN(current)) {
-        return "-";
+        return '-';
     }
 
     const diffMs = Math.max(0, current - baseline);
@@ -21,9 +21,9 @@ const formatResponseTime = (timestamp: string | null, baseline: number | null): 
     const seconds = Math.floor((diffMs % 60000) / 1000);
     const milliseconds = diffMs % 1000;
 
-    return `${minutes.toString().padStart(2, "0")}:${seconds
+    return `${minutes.toString().padStart(2, '0')}:${seconds
         .toString()
-        .padStart(2, "0")}.${milliseconds.toString().padStart(3, "0")}`;
+        .padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
 };
 
 export const AdminShotgunRanking = () => {
@@ -37,7 +37,7 @@ export const AdminShotgunRanking = () => {
                 const data = await getShotgunAttemptsAdmin();
                 setAttempts(data);
             } catch {
-                setError("Impossible de récupérer les résultats du shotgun.");
+                setError('Impossible de récupérer les résultats du shotgun.');
             } finally {
                 setLoading(false);
             }
@@ -86,13 +86,17 @@ export const AdminShotgunRanking = () => {
                                 {attempts.map((attempt, index) => (
                                     <tr key={attempt.id} className="border-t border-gray-200">
                                         <td className="px-4 py-3 font-semibold">{index + 1}</td>
-                                        <td className="px-4 py-3">{attempt.teamName || "Equipe inconnue"}</td>
+                                        <td className="px-4 py-3">{attempt.teamName || 'Equipe inconnue'}</td>
                                         <td className="px-4 py-3">{attempt.leaderCount}</td>
-                                        <td className="px-4 py-3">{formatResponseTime(attempt.timestamp, baselineTimestamp)}</td>
+                                        <td className="px-4 py-3">
+                                            {formatResponseTime(attempt.timestamp, baselineTimestamp)}
+                                        </td>
                                         <td className="px-4 py-3">
                                             {attempt.teamId ? (
                                                 <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">
-                                                    <Link to={`/admin/teams?teamId=${attempt.teamId}`}>Voir l'equipe</Link>
+                                                    <Link to={`/admin/teams?teamId=${attempt.teamId}`}>
+                                                        Voir l'equipe
+                                                    </Link>
                                                 </Button>
                                             ) : (
                                                 <span className="text-gray-500">Aucun lien</span>

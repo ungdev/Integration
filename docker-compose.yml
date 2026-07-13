@@ -36,12 +36,11 @@ services:
       - db
     networks:
       - app-network
-    command:
-      [
+    command: [
         "sh",
         "-c",
         "until pg_isready -h db -p 5432; do echo 'Waiting for DB...'; sleep 2;
-          done && npx drizzle-kit migrate && npm run dev",
+        done && npx drizzle-kit migrate && npm run dev",
       ]
 
   frontend:
@@ -49,7 +48,7 @@ services:
       context: ./frontend
     container_name: integration-frontend
     ports:
-      - "4000:4000"
+      - "4000:80"
     networks:
       - app-network
     depends_on:

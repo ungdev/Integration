@@ -1,10 +1,7 @@
-import { type Request, type Response } from "express";
-import * as permanence_service from "../services/permanence.service";
-import { Error, Ok } from "../utils/responses";
-
-interface MulterRequest extends Request {
-    file?: Express.Multer.File;
-}
+import * as permanence_service from '../services/permanence.service';
+import { Error, Ok } from '../utils/responses';
+import type { AppRequestHandler } from '../types/http';
+import type { PermanenceBody, PermQuery } from '../dto/permanence.dto';
 
 // Validation des données de permanence
 const validatePermanenceData = (start_at: string, end_at: string) => {
@@ -12,22 +9,22 @@ const validatePermanenceData = (start_at: string, end_at: string) => {
     const endDate = new Date(end_at);
 
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-        return { valid: false, msg: "Les dates de début et de fin doivent être valides" };
+        return { valid: false, msg: 'Les dates de début et de fin doivent être valides' };
     }
 
     if (startDate >= endDate) {
-        return { valid: false, msg: "La date de début doit être avant la date de fin" };
+        return { valid: false, msg: 'La date de début doit être avant la date de fin' };
     }
 
     return { valid: true };
 };
 
 // ➕ Créer une permanence
-export const createPermanence = async (req: Request, res: Response) => {
+export const createPermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { name, description, location, start_at, end_at, capacity, difficulty, respoId } = req.body;
 
     if (!name || !location || !start_at || !end_at || !capacity || !difficulty) {
-        Error(res, { msg: "Tous les champs sont requis" });
+        Error(res, { msg: 'Tous les champs sont requis' });
         return;
     }
 
@@ -48,16 +45,15 @@ export const createPermanence = async (req: Request, res: Response) => {
             Number(difficulty),
             Number(respoId),
         );
-        Ok(res, { msg: "Permanence créée avec succès" });
+        Ok(res, { msg: 'Permanence créée avec succès' });
         return;
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la création de la permanence" });
+        Error(res, { msg: 'Erreur lors de la création de la permanence' });
     }
 };
 
-
-export const updatePermanence = async (req: Request, res: Response) => {
+export const updatePermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId, name, description, location, start_at, end_at, capacity, difficulty, respoId } = req.body;
 
     const validation = validatePermanenceData(start_at, end_at);
@@ -67,10 +63,12 @@ export const updatePermanence = async (req: Request, res: Response) => {
     }
 
     try {
-        const perm = await permanence_service.getPermanenceById(permId);
+        const permIdNumber = Number(permId);
+        const respoIdNumber = Number(respoId);
+        const perm = await permanence_service.getPermanenceById(permIdNumber);
 
         await permanence_service.updatePermanence(
-            permId ?? perm.id,
+            permIdNumber || perm.id,
             name ?? perm.name,
             description ?? perm.description,
             location ?? perm.location,
@@ -78,34 +76,32 @@ export const updatePermanence = async (req: Request, res: Response) => {
             end_at ? new Date(end_at) : perm.end_at,
             capacity !== undefined ? Number(capacity) : perm.capacity,
             difficulty !== undefined ? Number(difficulty) : perm.difficulty,
-            Number(respoId)
+            respoIdNumber,
         );
 
-        Ok(res, { msg: "Permanence mise à jour avec succès" });
+        Ok(res, { msg: 'Permanence mise à jour avec succès' });
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la mise à jour de la permanence" });
+        Error(res, { msg: 'Erreur lors de la mise à jour de la permanence' });
     }
 };
 
-
 // ➕ Créer une permanence
-export const deletePermanence = async (req: Request, res: Response) => {
-
+export const deletePermanence: AppRequestHandler<unknown, PermQuery> = async (req, res) => {
     const { permId } = req.query;
 
     try {
         await permanence_service.deletePermanence(Number(permId));
-        Ok(res, { msg: "Permanence supprimée avec succès" });
+        Ok(res, { msg: 'Permanence supprimée avec succès' });
         return;
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la suppression de la permanence" });
+        Error(res, { msg: 'Erreur lors de la suppression de la permanence' });
     }
 };
 
 // ➡️ Ouvrir une permanence
-export const openPermanence = async (req: Request, res: Response) => {
+export const openPermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId } = req.body;
 
     if (!permId) {
@@ -114,14 +110,15 @@ export const openPermanence = async (req: Request, res: Response) => {
     }
 
     try {
-        const permanence = await permanence_service.getPermanenceById(permId);
+        const permIdNumber = Number(permId);
+        const permanence = await permanence_service.getPermanenceById(permIdNumber);
         if (permanence.is_open === true) {
-            Error(res, { msg: "La permanence est déjà ouverte" });
+            Error(res, { msg: 'La permanence est déjà ouverte' });
             return;
         }
 
-        await permanence_service.openPermanence(Number(permId));
-        Ok(res, { msg: "Permanence ouverte avec succès" });
+        await permanence_service.openPermanence(permIdNumber);
+        Ok(res, { msg: 'Permanence ouverte avec succès' });
     } catch (err) {
         console.error(err);
         Error(res, { msg: "Erreur lors de l'ouverture de la permanence" });
@@ -129,7 +126,7 @@ export const openPermanence = async (req: Request, res: Response) => {
 };
 
 // ➡️ Fermer une permanence
-export const closePermanence = async (req: Request, res: Response) => {
+export const closePermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId } = req.body;
 
     if (!permId) {
@@ -138,42 +135,43 @@ export const closePermanence = async (req: Request, res: Response) => {
     }
 
     try {
-        const permanence = await permanence_service.getPermanenceById(permId);
+        const permIdNumber = Number(permId);
+        const permanence = await permanence_service.getPermanenceById(permIdNumber);
         if (permanence.is_open === false) {
-            Error(res, { msg: "La permanence est déjà fermée" });
+            Error(res, { msg: 'La permanence est déjà fermée' });
             return;
         }
 
-        await permanence_service.closePermanence(Number(permId));
-        Ok(res, { msg: "Permanence fermée avec succès" });
+        await permanence_service.closePermanence(permIdNumber);
+        Ok(res, { msg: 'Permanence fermée avec succès' });
         return;
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la fermeture de la permanence" });
+        Error(res, { msg: 'Erreur lors de la fermeture de la permanence' });
         return;
     }
 };
 
 // ➕ S'inscrire à une permanence
-export const applyToPermanence = async (req: Request, res: Response) => {
+export const applyToPermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId } = req.body;
     const userId = req.user?.userId;
 
-
     if (!userId || !permId) {
-        Error(res, { msg: "Requête invalide, permId ou userId manquant" });
+        Error(res, { msg: 'Requête invalide, permId ou userId manquant' });
         return;
     }
 
     try {
-        const permanence = await permanence_service.getPermanenceById(permId);
+        const permIdNumber = Number(permId);
+        const permanence = await permanence_service.getPermanenceById(permIdNumber);
         if (permanence.is_open === false) {
-            Error(res, { msg: "La permanence est fermée, vous ne pouvez pas vous y inscrire" });
+            Error(res, { msg: 'La permanence est fermée, vous ne pouvez pas vous y inscrire' });
             return;
         }
 
-        await permanence_service.registerUserToPermanence(Number(userId), Number(permId));
-        Ok(res, { msg: "Inscription réussie" });
+        await permanence_service.registerUserToPermanence(Number(userId), permIdNumber);
+        Ok(res, { msg: 'Inscription réussie' });
         return;
     } catch (err) {
         console.error(err);
@@ -183,32 +181,32 @@ export const applyToPermanence = async (req: Request, res: Response) => {
 };
 
 // ❌ Se désinscrire d'une permanence
-export const leavePermanence = async (req: Request, res: Response) => {
+export const leavePermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId } = req.body;
     const userId = req.user?.userId;
 
     if (!userId || !permId) {
-        Error(res, { msg: "Requête invalide, permId ou userId manquant" });
+        Error(res, { msg: 'Requête invalide, permId ou userId manquant' });
         return;
     }
 
     try {
-        await permanence_service.unregisterUserFromPermanence(Number(userId), Number(permId),);
-        Ok(res, { msg: "Désinscription réussie" });
+        await permanence_service.unregisterUserFromPermanence(Number(userId), Number(permId));
+        Ok(res, { msg: 'Désinscription réussie' });
         return;
     } catch (err) {
         console.error(err);
-        Error(res, { msg: err.message || "Erreur pendant la désinscription" });
+        Error(res, { msg: err.message || 'Erreur pendant la désinscription' });
         return;
     }
 };
 
 // 👤 Voir ses permanences
-export const getMyPermanences = async (req: Request, res: Response) => {
+export const getMyPermanences: AppRequestHandler = async (req, res) => {
     const userId = req.user?.userId;
 
     if (!userId) {
-        Error(res, { msg: "Utilisateur non identifié" });
+        Error(res, { msg: 'Utilisateur non identifié' });
         return;
     }
 
@@ -218,62 +216,61 @@ export const getMyPermanences = async (req: Request, res: Response) => {
         return;
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur pendant la récupération des permanences" });
+        Error(res, { msg: 'Erreur pendant la récupération des permanences' });
         return;
     }
 };
 
 // ✅ Récupérer toutes les permanences
-export const getAllPermanences = async (req: Request, res: Response) => {
+export const getAllPermanences: AppRequestHandler = async (_req, res) => {
     try {
         const permanences = await permanence_service.getAllPermanences();
         Ok(res, { data: permanences });
         return;
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la récupération des permanences" });
+        Error(res, { msg: 'Erreur lors de la récupération des permanences' });
         return;
     }
 };
 
 // ✅ Récupérer les permanences ouvertes
-export const getOpenPermanences = async (req: Request, res: Response) => {
+export const getOpenPermanences: AppRequestHandler = async (_req, res) => {
     try {
         const perms = await permanence_service.listOpenPermanences();
         Ok(res, { data: perms });
         return;
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la récupération des permanences ouvertes" });
+        Error(res, { msg: 'Erreur lors de la récupération des permanences ouvertes' });
         return;
     }
 };
 
-export const getUsersInPermanence = async (req: Request, res: Response) => {
+export const getUsersInPermanence: AppRequestHandler<unknown, PermQuery> = async (req, res) => {
     try {
-        const { permId } = req.query
-        const users = await permanence_service.getUsersInPermanence(Number(permId))
+        const { permId } = req.query;
+        const users = await permanence_service.getUsersInPermanence(Number(permId));
         Ok(res, { data: users });
         return;
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la récupération des utilisateurs par permanences" });
+        Error(res, { msg: 'Erreur lors de la récupération des utilisateurs par permanences' });
         return;
     }
 };
 
-export const addUserToPermanence = async (req: Request, res: Response) => {
-
+export const addUserToPermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId, userId } = req.body;
 
     if (!userId || !permId) {
-        Error(res, { msg: "Requête invalide, permId ou userId manquant" });
+        Error(res, { msg: 'Requête invalide, permId ou userId manquant' });
         return;
     }
 
     try {
         await permanence_service.addUserToPermanence(Number(userId), Number(permId));
-        Ok(res, { msg: "Inscription réussite" });
+        Ok(res, { msg: 'Inscription réussite' });
         return;
     } catch (err) {
         console.error(err);
@@ -282,65 +279,62 @@ export const addUserToPermanence = async (req: Request, res: Response) => {
     }
 };
 
-export const removeUserToPermanence = async (req: Request, res: Response) => {
-
+export const removeUserToPermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId, userId } = req.body;
 
     if (!userId || !permId) {
-        Error(res, { msg: "Requête invalide, permId ou userId manquant" });
+        Error(res, { msg: 'Requête invalide, permId ou userId manquant' });
         return;
     }
 
     try {
         await permanence_service.removeUserToPermanence(Number(userId), Number(permId));
-        Ok(res, { msg: "Désinscription réussite" });
+        Ok(res, { msg: 'Désinscription réussite' });
         return;
     } catch (err) {
         console.error(err);
-        Error(res, { msg: err.message || "Erreur pendant la désinscription" });
+        Error(res, { msg: err.message || 'Erreur pendant la désinscription' });
         return;
     }
 };
 
-export const uploadPermanencesCSV = async (req: MulterRequest, res: Response) => {
+export const uploadPermanencesCSV: AppRequestHandler = async (req, res) => {
     try {
         const file = req.file;
         if (!file) {
-            Error(res, { msg: "Fichier CSV manquant." });
+            Error(res, { msg: 'Fichier CSV manquant.' });
         }
 
         await permanence_service.importPermanencesFromCSV(file.path);
-        Ok(res, { msg: "Importation réalisée avec succès." });
+        Ok(res, { msg: 'Importation réalisée avec succès.' });
     } catch (error) {
-        console.error("Erreur import CSV :", error);
+        console.error('Erreur import CSV :', error);
         Error(res, { msg: "Échec de l'importation." });
     }
 };
 
-export const isUserRespo = async (req: Request, res: Response) => {
+export const isUserRespo: AppRequestHandler<unknown, PermQuery> = async (req, res) => {
     const { userId } = req.query;
 
     if (!userId) {
-        Error(res, { msg: "userId est requis" });
+        Error(res, { msg: 'userId est requis' });
         return;
     }
 
     try {
-        const isRespo = await permanence_service.isUserRespoOfPermanence(
-            Number(userId)
-        );
+        const isRespo = await permanence_service.isUserRespoOfPermanence(Number(userId));
         Ok(res, { data: isRespo });
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la vérification du responsable" });
+        Error(res, { msg: 'Erreur lors de la vérification du responsable' });
     }
 };
 
-export const getRespoPermanencesWithMembers = async (req: Request, res: Response) => {
+export const getRespoPermanencesWithMembers: AppRequestHandler = async (req, res) => {
     const respoId = req.user?.userId;
 
     if (!respoId) {
-        Error(res, { msg: "respoId est requis" });
+        Error(res, { msg: 'respoId est requis' });
         return;
     }
 
@@ -349,15 +343,15 @@ export const getRespoPermanencesWithMembers = async (req: Request, res: Response
         Ok(res, { data });
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la récupération des permanences du responsable" });
+        Error(res, { msg: 'Erreur lors de la récupération des permanences du responsable' });
     }
 };
 
-export const claimMember = async (req: Request, res: Response) => {
+export const claimMember: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { userId, permId, claimed } = req.body;
 
     if (userId === undefined || permId === undefined || claimed === undefined) {
-        Error(res, { msg: "userId, permId et claimed sont requis" });
+        Error(res, { msg: 'userId, permId et claimed sont requis' });
         return;
     }
 
@@ -368,6 +362,32 @@ export const claimMember = async (req: Request, res: Response) => {
         });
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la mise à jour du statut du membre" });
+        Error(res, { msg: 'Erreur lors de la mise à jour du statut du membre' });
     }
+};
+
+export const sendHourlyNotificationToUsers: AppRequestHandler = async (_req, res) => {
+    const notifications = await permanence_service.getHourlyNotifications();
+
+    if (notifications.length === 0) {
+        Ok(res, { msg: 'Aucune notification horaire à envoyer.' });
+        return;
+    }
+
+    permanence_service.sendNotifications(notifications);
+
+    Ok(res, { msg: 'Notifications horaires envoyées avec succès' });
+};
+
+export const sendDailyNotificationToUsers: AppRequestHandler = async (_req, res) => {
+    const notifications = await permanence_service.getDailyNotifications();
+
+    if (notifications.length === 0) {
+        Ok(res, { msg: 'Aucune notification quotidienne à envoyer.' });
+        return;
+    }
+
+    permanence_service.sendNotifications(notifications);
+
+    Ok(res, { msg: 'Notifications quotidiennes envoyées avec succès' });
 };

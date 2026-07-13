@@ -54,49 +54,61 @@ jobs:
 
   build-api:
     runs-on: self-hosted
-    if : github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request'
     needs:
       - lint-api
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '24'
+          node-version: '23'
+          cache: 'pnpm'
+          cache-dependency-path: ./backend/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: ./backend
-        run: |
-          npm ci
+        run: pnpm install --frozen-lockfile
 
-      - name: Build 
+      - name: Build
         working-directory: ./backend
-        run: npm run build-test
+        run: pnpm run build-test
 
   build-front:
     runs-on: self-hosted
-    if : github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request'
     needs:
       - lint-front
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '24'
+          node-version: '23'
+          cache: 'pnpm'
+          cache-dependency-path: ./frontend/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: ./frontend
-        run: |
-          npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         working-directory: ./frontend
-        run: npm run build
+        run: pnpm run build
 
   deploy-api:
     runs-on: self-hosted
@@ -158,5 +170,20 @@ jobs:
             VITE_ROADBOOK_URL_FRENCH=${{ vars.ROADBOOK_URL_FRENCH }}
             VITE_ROADBOOK_URL_ENGLISH=${{ vars.ROADBOOK_URL_ENGLISH }}
             VITE_CAS_LOGIN_URL=${{ vars.CAS_LOGIN_URL }}
+            VITE_ASSOCIATION_ADDRESS=${{ vars.ASSOCIATION_ADDRESS }}
+            VITE_ASSOCIATION_EMAIL=${{ vars.ASSOCIATION_EMAIL }}
+            VITE_ASSOCIATION_NAME=${{ vars.ASSOCIATION_NAME }}
+            VITE_ASSOCIATION_PHONE=${{ vars.ASSOCIATION_PHONE }}
+            VITE_ASSOCIATION_RNA=${{ vars.ASSOCIATION_RNA }}
+            VITE_ASSOCIATION_RCS=${{ vars.ASSOCIATION_RCS }}
+            VITE_BDE_ADDRESS=${{ vars.BDE_ADDRESS }}
+            VITE_BDE_EMAIL=${{ vars.BDE_EMAIL }}
+            VITE_BDE_NAME=${{ vars.BDE_NAME }}
+            VITE_BDE_PHONE=${{ vars.BDE_PHONE }}
+            VITE_BDE_RNA=${{ vars.BDE_RNA }}
+            VITE_BDE_SIRET=${{ vars.BDE_SIRET }}
+            VITE_BDE_SIREN=${{ vars.BDE_SIREN }}
+            VITE_DPO_EMAIL=${{ vars.DPO_EMAIL }}
+            VITE_DPO_NAME=${{ vars.DPO_NAME }}
           tags: |
             ${{ secrets.REGISTRY_URL }}/integration/front:${{ github.ref == 'refs/heads/prod' && 'prod' || 'dev' }}

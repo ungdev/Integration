@@ -3,11 +3,11 @@ import { useMemo, useState } from "react";
 import Select from "react-select";
 import Swal from "sweetalert2";
 
-import { type ValidatedChallenge } from "../../../interfaces/challenge.interface";
-import { unvalidateChallenge } from "../../../services/requests/challenge.service";
-import { Button } from "../../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import { Input } from "../../ui/input";
+import { type ValidatedChallenge } from '../../../interfaces/challenge.interface';
+import { unvalidateChallenge } from '../../../services/requests/challenge.service';
+import { Button } from '../../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
+import { Input } from '../../ui/input';
 
 
 
@@ -31,14 +31,14 @@ export const AdminValidatedChallengesList = ({
                 c.challenge_name,
                 c.challenge_categorie,
                 c.challenge_description,
-                c.target_user_firstname ?? "",
-                c.target_user_lastname ?? "",
-                c.target_team_name ?? "",
-                c.target_faction_name ?? "",
+                c.target_user_firstname ?? '',
+                c.target_user_lastname ?? '',
+                c.target_team_name ?? '',
+                c.target_faction_name ?? '',
             ]
-                .join(" ")
+                .join(' ')
                 .toLowerCase()
-                .includes(q)
+                .includes(q),
         );
     }, [validatedChallenges, search]);
 
@@ -213,7 +213,6 @@ export const AdminValidatedChallengesList = ({
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-
                     {/* Recherche */}
                     <div className="flex items-center gap-2 border rounded-lg p-2 shadow-sm bg-gray-50">
                         <Search className="w-5 h-5 text-gray-400" />

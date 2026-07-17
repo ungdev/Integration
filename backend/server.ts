@@ -3,7 +3,7 @@ import cors from 'cors';
 import express from 'express';
 
 import dotenv from 'dotenv';
-import path from "path";
+import path from 'path';
 
 import { initChallenge } from './src/database/initdb/initChallenge';
 import { initUser } from './src/database/initdb/initUser';
@@ -28,6 +28,7 @@ import teamRoutes from './src/routes/team.routes';
 import tentRoutes from './src/routes/tent.routes';
 import userRoutes from './src/routes/user.routes';
 import { server_port } from './src/utils/secret';
+import { initQcmvss } from './src/database/initdb/initQcmvss';
 
 dotenv.config();
 
@@ -35,7 +36,7 @@ async function startServer() {
     const app = express();
 
     // Configuration des middlewares
-    app.use(cors({ origin: "*" }));
+    app.use(cors({ origin: '*' }));
     app.use(bodyParser.json());
     app.use(express.urlencoded({ extended: true }));
 
@@ -45,10 +46,11 @@ async function startServer() {
         await initRoles();
         await initEvent();
         await initChallenge();
+        await initQcmvss();
         console.log('Base de données initialisée avec succès.');
 
         // Utilisation des routes d'authentification
-        app.use('/api', defaultRoute)
+        app.use('/api', defaultRoute);
         app.use('/api/auth', authRoutes);
         app.use('/api/automation', authenticateAutomation, automationRoutes);
         app.use('/api/authadmin', authenticateUser, authRoutes);
@@ -57,7 +59,7 @@ async function startServer() {
         app.use('/api/team', authenticateUser, teamRoutes);
         app.use('/api/event', authenticateUser, eventRoutes);
         app.use('/api/faction', authenticateUser, factionRoutes);
-        app.use('/api/imexport', authenticateUser, imexportRouter)
+        app.use('/api/imexport', authenticateUser, imexportRouter);
         app.use('/api/permanence', authenticateUser, permanenceRoutes);
         app.use('/api/challenge', authenticateUser, challengeRoutes);
         app.use('/api/email', authenticateUser, emailRoutes);
@@ -65,19 +67,19 @@ async function startServer() {
         app.use('/api/discord', authenticateUser, discordRoutes);
         app.use('/api/tent', authenticateUser, tentRoutes);
         app.use('/api/bus', authenticateUser, busRoutes);
-        app.use("/api/uploads/news", express.static(path.join(__dirname, "/uploads/news")));
-        app.use("/api/uploads/notebooks", express.static(path.join(__dirname, "/uploads/notebooks")));
-        app.use("/api/uploads/foodmenu", express.static(path.join(__dirname, "/uploads/foodmenu")));
-        app.use("/api/uploads/plannings", express.static(path.join(__dirname, "/uploads/plannings")));
-        app.use("/api/exports/bus", express.static(path.join(__dirname, "/exports/bus")));
+        app.use('/api/uploads/news', express.static(path.join(__dirname, '/uploads/news')));
+        app.use('/api/uploads/notebooks', express.static(path.join(__dirname, '/uploads/notebooks')));
+        app.use('/api/uploads/foodmenu', express.static(path.join(__dirname, '/uploads/foodmenu')));
+        app.use('/api/uploads/plannings', express.static(path.join(__dirname, '/uploads/plannings')));
+        app.use('/api/exports/bus', express.static(path.join(__dirname, '/exports/bus')));
 
         // Démarrage du serveur
         app.listen(server_port, () => {
             console.log(`Server running on port ${server_port}`);
         });
     } catch (err) {
-        console.error('Erreur lors de l\'initialisation de la base de données :', err);
-        process.exit(1);  // Arrêter le serveur si l'initialisation échoue
+        console.error("Erreur lors de l'initialisation de la base de données :", err);
+        process.exit(1); // Arrêter le serveur si l'initialisation échoue
     }
 }
 

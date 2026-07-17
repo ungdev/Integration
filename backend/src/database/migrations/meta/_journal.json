@@ -176,6 +176,13 @@
       "when": 1784272112439,
       "tag": "0024_natural_human_cannonball",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1784283040878,
+      "tag": "0025_friendly_meltdown",
+      "breakpoints": true
     }
   ]
 }

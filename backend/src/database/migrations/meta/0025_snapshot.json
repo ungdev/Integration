@@ -1,5 +1,5 @@
 {
-  "id": "4f5bad5b-1906-43f1-bcbc-6f5123811ee0",
+  "id": "c76925a0-a42e-42c9-8f72-0d914fe74da9",
   "prevId": "f2813605-996e-4461-8e87-8b135d3eefd3",
   "version": "7",
   "dialect": "postgresql",
@@ -1420,6 +1420,14 @@
         "pending",
         "validated",
         "rejected"
+      ]
+    },
+    "public.question_type": {
+      "name": "question_type",
+      "schema": "public",
+      "values": [
+        "single_choice",
+        "multiple_choice"
       ]
     }
   },

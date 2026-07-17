@@ -196,6 +196,7 @@ export const initQcmvss = async () => {
             .values({
                 question: seedQuestion.question,
                 points: seedQuestion.points,
+                type: seedQuestion.type,
             })
             .returning({ id: vssqcmquestionSchema.id });
 

@@ -169,6 +169,13 @@
       "when": 1783854058299,
       "tag": "0023_even_morg",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1784272112439,
+      "tag": "0024_natural_human_cannonball",
+      "breakpoints": true
     }
   ]
 }

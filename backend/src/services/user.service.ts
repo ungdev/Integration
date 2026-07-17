@@ -145,7 +145,6 @@ export const getUserContactInformation = async (userId: number) => {
                 userId: userInformationSchema.user_id,
                 urgency_contact_name: userInformationSchema.urgency_contact_name,
                 urgency_contact_phone: userInformationSchema.urgency_contact_phone,
-                contact_CE: userInformationSchema.contact_CE,
             })
             .from(userInformationSchema)
             .where(eq(userInformationSchema.user_id, userId));
@@ -162,7 +161,6 @@ export const createUserContactInformation = async (userId: number, contact: User
             user_id: userId,
             urgency_contact_name: contact.urgency_contact_name,
             urgency_contact_phone: contact.urgency_contact_phone,
-            contact_CE: contact.contact_CE,
         };
 
         const result = await db.insert(userInformationSchema).values(newContactInfo).returning();

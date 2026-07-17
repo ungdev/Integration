@@ -1,5 +1,5 @@
 {
-  "id": "222234ea-1f97-4c76-bf24-29c5da01972e",
+  "id": "4f5bad5b-1906-43f1-bcbc-6f5123811ee0",
   "prevId": "f2813605-996e-4461-8e87-8b135d3eefd3",
   "version": "7",
   "dialect": "postgresql",
@@ -1412,7 +1412,17 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.vss_form": {
+      "name": "vss_form",
+      "schema": "public",
+      "values": [
+        "pending",
+        "validated",
+        "rejected"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

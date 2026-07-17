@@ -1,3 +1,4 @@
+CREATE TYPE "public"."vss_form" AS ENUM('pending', 'validated', 'rejected');--> statement-breakpoint
 CREATE TABLE "vssqcmquestion" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"question" text NOT NULL,

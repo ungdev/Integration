@@ -1,6 +1,6 @@
 import { boolean, pgEnum, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 
-export const vssFormEnum = pgEnum('vss_form', ['pending', 'validated', 'rejected']);
+export const vssFormEnum = pgEnum('vss_form', ['pending', 'toretry', 'validated', 'rejected']);
 
 export const userSchema = pgTable('users', {
     id: serial('id').primaryKey(),

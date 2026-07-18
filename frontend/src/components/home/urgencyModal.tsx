@@ -1,40 +1,142 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { createUserContactInformation } from '../../services/requests/user.service';
+import { createUserContactInformation, getCurrentUserOnboardingStatus } from '../../services/requests/user.service';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import Modal from '../ui/modal';
+import VssModal from './vssModal';
+
+type FlowStep = 'idle' | 'loading' | 'urgency' | 'vss';
 
 function UrgencyModal() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [form, setForm] = useState({ urgency_contact_name: '', urgency_contact_phone: '' });
+    const [flowStep, setFlowStep] = useState<FlowStep>('idle');
+    const [error, setError] = useState<string | null>(null);
 
     const isLogin = searchParams.get('login') === 'true';
 
+    useEffect(() => {
+        if (!isLogin) {
+            setFlowStep('idle');
+            setForm({ urgency_contact_name: '', urgency_contact_phone: '' });
+            setError(null);
+            return;
+        }
+
+        let cancelled = false;
+
+        const loadOnboardingStatus = async () => {
+            setFlowStep('loading');
+            setError(null);
+
+            try {
+                const status = await getCurrentUserOnboardingStatus();
+
+                if (cancelled) {
+                    return;
+                }
+
+                if (!status.hasUrgencyContactInformation) {
+                    setFlowStep('urgency');
+                    return;
+                }
+
+                if (status.needsVssForm) {
+                    setFlowStep('vss');
+                    return;
+                }
+
+                setFlowStep('idle');
+                setSearchParams({});
+            } catch {
+                if (!cancelled) {
+                    setFlowStep('urgency');
+                    setError('Impossible de récupérer le statut du formulaire.');
+                }
+            }
+        };
+
+        loadOnboardingStatus();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [isLogin, setSearchParams]);
+
+    const closeFlow = () => {
+        setSearchParams({});
+        setFlowStep('idle');
+        setForm({ urgency_contact_name: '', urgency_contact_phone: '' });
+        setError(null);
+    };
+
+    const handleContactSubmit = async () => {
+        setError(null);
+
+        try {
+            await createUserContactInformation(form);
+            window.dispatchEvent(new Event('user-onboarding-updated'));
+            setFlowStep('vss');
+        } catch {
+            setError("Impossible d'enregistrer les informations d'urgence.");
+        }
+    };
+
     return (
-        <Modal title="Formulaire VSS et Urgence" visible={isLogin} onCancel={() => setSearchParams({})} buttons={null}>
-            <div className="flex flex-col gap-4">
-                <p>Bienvenu sur le site de l'intégration, blablabla faut que tu completes le formulaire.</p>
-                <Input
-                    placeholder="Nom du contact d'urgence"
-                    value={form.urgency_contact_name}
-                    onChange={(e) => setForm({ ...form, urgency_contact_name: e.target.value })}
-                />
-                <Input
-                    placeholder="Téléphone du contact d'urgence"
-                    value={form.urgency_contact_phone}
-                    onChange={(e) => setForm({ ...form, urgency_contact_phone: e.target.value })}
-                />
-                <Button
-                    onClick={() => {
-                        createUserContactInformation(form);
-                        setSearchParams({});
-                    }}>
-                    Soumettre
-                </Button>
-            </div>
-        </Modal>
+        <>
+            <Modal
+                title="Formulaire VSS et Urgence"
+                visible={isLogin && flowStep === 'loading'}
+                onCancel={closeFlow}
+                buttons={null}>
+                <div className="flex flex-col gap-4">
+                    <p>Chargement du statut du formulaire...</p>
+                </div>
+            </Modal>
+
+            <Modal
+                title="Formulaire VSS et Urgence"
+                visible={isLogin && flowStep === 'urgency'}
+                onCancel={closeFlow}
+                buttons={null}>
+                <div className="flex flex-col gap-4">
+                    <p>Bienvenu sur le site de l'intégration, blablabla faut que tu completes le formulaire.</p>
+
+                    {error && (
+                        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950/30 dark:text-red-100">
+                            {error}
+                        </p>
+                    )}
+
+                    <Input
+                        placeholder="Nom du contact d'urgence"
+                        value={form.urgency_contact_name}
+                        onChange={(e) => setForm({ ...form, urgency_contact_name: e.target.value })}
+                    />
+                    <Input
+                        placeholder="Téléphone du contact d'urgence"
+                        value={form.urgency_contact_phone}
+                        onChange={(e) => setForm({ ...form, urgency_contact_phone: e.target.value })}
+                    />
+                    <div className="flex flex-wrap items-center justify-end gap-3">
+                        <Button variant="secondary" onClick={closeFlow}>
+                            Annuler
+                        </Button>
+                        <Button onClick={handleContactSubmit}>Soumettre</Button>
+                    </div>
+                </div>
+            </Modal>
+
+            <VssModal
+                visible={isLogin && flowStep === 'vss'}
+                onCancel={closeFlow}
+                onSubmitted={() => {
+                    window.dispatchEvent(new Event('user-onboarding-updated'));
+                }}
+            />
+        </>
     );
 }
 

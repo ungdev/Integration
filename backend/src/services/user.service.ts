@@ -2,12 +2,36 @@ import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { db } from '../database/db'; // Import de la connexion PostgreSQL
 import { type User, userSchema } from '../schemas/Basic/user.schema';
+import { vssqcmquestionSchema } from '../schemas/Basic/vssqcmquestion.schema';
+import { vssqcmanswerSchema } from '../schemas/Relational/vssqcmanswer.schema';
 import { registrationSchema } from '../schemas/Relational/registration.schema';
 import { getFaction } from './faction.service';
 import { getUserRoles } from './role.service';
 import { getTeam, getTeamFaction, getUserTeam } from './team.service';
 import { userInformationSchema } from '../schemas/Relational/userinformation.schema';
 import { type UserContactInformation } from '../../types/user';
+
+export type VssQuestionnaireAnswer = {
+    id: number;
+    answer: string;
+};
+
+export type VssQuestionnaireQuestion = {
+    id: number;
+    question: string;
+    points: number;
+    type: 'single_choice' | 'multiple_choice';
+    answers: VssQuestionnaireAnswer[];
+};
+
+export type VssSubmissionAnswer = {
+    questionId: number;
+    answerIds: number[];
+};
+
+export type VssSubmissionPayload = {
+    answers: VssSubmissionAnswer[];
+};
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
@@ -33,6 +57,7 @@ export const getUserById = async (userId: number) => {
                 contact: userSchema.contact,
                 permission: userSchema.permission,
                 discord_id: userSchema.discord_id,
+                vss_form: userSchema.vss_form,
             })
             .from(userSchema)
             .where(eq(userSchema.id, userId));
@@ -163,10 +188,154 @@ export const createUserContactInformation = async (userId: number, contact: User
             urgency_contact_phone: contact.urgency_contact_phone,
         };
 
-        const result = await db.insert(userInformationSchema).values(newContactInfo).returning();
+        const result = await db
+            .insert(userInformationSchema)
+            .values(newContactInfo)
+            .onConflictDoUpdate({
+                target: userInformationSchema.user_id,
+                set: {
+                    urgency_contact_name: contact.urgency_contact_name,
+                    urgency_contact_phone: contact.urgency_contact_phone,
+                },
+            })
+            .returning();
         return result[0];
     } catch (err) {
         console.error("Erreur lors de la création des informations de contact de l'utilisateur:", err);
+        throw new Error('Erreur de base de données');
+    }
+};
+
+export const getCurrentUserOnboardingStatus = async (userId: number) => {
+    try {
+        const [contactInformation] = await db
+            .select({
+                userId: userInformationSchema.user_id,
+            })
+            .from(userInformationSchema)
+            .where(eq(userInformationSchema.user_id, userId));
+
+        const [user] = await db
+            .select({
+                vss_form: userSchema.vss_form,
+            })
+            .from(userSchema)
+            .where(eq(userSchema.id, userId));
+
+        const vssForm = user?.vss_form ?? 'pending';
+
+        return {
+            hasUrgencyContactInformation: Boolean(contactInformation),
+            vss_form: vssForm,
+            needsVssForm: vssForm === 'pending' || vssForm === 'toretry',
+        };
+    } catch (err) {
+        console.error("Erreur lors de la récupération du statut d'onboarding:", err);
+        throw new Error('Erreur de base de données');
+    }
+};
+
+export const getVssQuestionnaire = async () => {
+    try {
+        const questions = await db.select().from(vssqcmquestionSchema);
+        const answers = await db.select().from(vssqcmanswerSchema);
+
+        return questions.map((question) => ({
+            id: question.id,
+            question: question.question,
+            points: question.points,
+            type: question.type,
+            answers: answers
+                .filter((answer) => answer.questionid === question.id)
+                .map((answer) => ({
+                    id: answer.id,
+                    answer: answer.answer,
+                })),
+        }));
+    } catch (err) {
+        console.error('Erreur lors de la récupération du questionnaire VSS:', err);
+        throw new Error('Erreur de base de données');
+    }
+};
+
+export const submitVssQuestionnaire = async (userId: number, payload: VssSubmissionPayload) => {
+    try {
+        const [user] = await db
+            .select({
+                vss_form: userSchema.vss_form,
+            })
+            .from(userSchema)
+            .where(eq(userSchema.id, userId));
+
+        if (!user) {
+            throw new Error('Utilisateur introuvable');
+        }
+
+        if (user.vss_form === 'validated' || user.vss_form === 'rejected') {
+            return {
+                score: 0,
+                maxScore: 0,
+                status: user.vss_form,
+            };
+        }
+
+        const questions = await db.select().from(vssqcmquestionSchema);
+        const answers = await db.select().from(vssqcmanswerSchema);
+
+        const answersByQuestion = new Map<number, typeof answers>();
+        for (const answer of answers) {
+            const currentAnswers = answersByQuestion.get(answer.questionid) ?? [];
+            currentAnswers.push(answer);
+            answersByQuestion.set(answer.questionid, currentAnswers);
+        }
+
+        const responsesByQuestion = new Map<number, Set<number>>();
+        for (const response of payload.answers ?? []) {
+            responsesByQuestion.set(response.questionId, new Set(response.answerIds));
+        }
+
+        for (const question of questions) {
+            const response = responsesByQuestion.get(question.id);
+            if (!response || response.size === 0) {
+                throw new Error('Toutes les questions doivent recevoir une réponse.');
+            }
+        }
+
+        let score = 0;
+        const maxScore = questions.reduce((total, question) => total + question.points, 0);
+
+        for (const question of questions) {
+            const questionAnswers = answersByQuestion.get(question.id) ?? [];
+            const correctAnswerIds = questionAnswers.filter((answer) => answer.is_correct).map((answer) => answer.id);
+            const selectedAnswerIds = Array.from(responsesByQuestion.get(question.id) ?? []);
+
+            const isCorrect =
+                selectedAnswerIds.length === correctAnswerIds.length &&
+                selectedAnswerIds.every((answerId) => correctAnswerIds.includes(answerId));
+
+            if (isCorrect) {
+                score += question.points;
+            }
+        }
+
+        let status: 'pending' | 'toretry' | 'validated' | 'rejected' = 'validated';
+        if (score < Math.ceil(maxScore / 2)) {
+            status = user.vss_form === 'toretry' ? 'rejected' : 'toretry';
+        }
+
+        const [updatedUser] = await db
+            .update(userSchema)
+            .set({ vss_form: status })
+            .where(eq(userSchema.id, userId))
+            .returning({ vss_form: userSchema.vss_form });
+
+        return {
+            score,
+            maxScore,
+            status: updatedUser?.vss_form ?? status,
+        };
+    } catch (err) {
+        console.error('Erreur lors de la soumission du questionnaire VSS:', err);
         throw new Error('Erreur de base de données');
     }
 };

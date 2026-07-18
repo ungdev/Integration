@@ -2,6 +2,10 @@ import {
     type CreateUserContactInformationRequest,
     type User,
     type UserContactInformation,
+    type UserOnboardingStatus,
+    type VssQuestionnaireQuestion,
+    type VssSubmissionRequest,
+    type VssSubmissionResponse,
 } from '../../interfaces/user.interface';
 import api from '../api';
 
@@ -56,15 +60,27 @@ export const createUserContactInformation = async (data: CreateUserContactInform
     return response.data;
 };
 
+export const getCurrentUserOnboardingStatus = async () => {
+    const response = await api.get('/user/onboarding-status');
+    const status: UserOnboardingStatus = response.data.data;
+    return status;
+};
+
+export const getVssQuestionnaire = async () => {
+    const response = await api.get('/user/vss/questionnaire');
+    const questionnaire: VssQuestionnaireQuestion[] = response.data.data;
+    return questionnaire;
+};
+
+export const submitVssQuestionnaire = async (data: VssSubmissionRequest) => {
+    const response = await api.post('/user/vss/questionnaire', data);
+    const result: VssSubmissionResponse = response.data.data;
+    return result;
+};
+
 export const getCurrentUser = async () => {
     const res = await api.get('/user/user/me');
     return res.data.data;
-};
-
-export const getCurrentUserContactInformation = async () => {
-    const response = await api.get(`/user/user/getusercontactinformation`);
-    const users: UserContactInformation = response.data.data;
-    return users;
 };
 
 export const updateCurrentUser = async (data: Partial<User>) => {

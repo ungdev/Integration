@@ -46,13 +46,22 @@ export const getUsersByPermission = async (req: Request, res: Response) => {
     }
 };
 
-export const syncNewstudent = async (req: Request, res: Response) => {
+export const syncNewstudent = async (req: Request<Record<string, never>, unknown, { date: string }>, res: Response) => {
     const { date } = req.body;
+
+    type SiepStudent = {
+        email: string;
+        prenom: string;
+        nom: string;
+        Majeur: boolean;
+        diplome: string;
+        specialite: string;
+    };
 
     try {
         const token = await SIEP_Utils.getTokenUTTAPI();
-        const newStudents = await SIEP_Utils.getNewStudentsFromUTTAPI_NOPAGE(token, date);
-        const newStudentfiltered = newStudents.filter((student: any) => !noSyncEmails.includes(student.email)); //Nouveau à ne pas sync (Démissionnaires, etc)
+        const newStudents: SiepStudent[] = await SIEP_Utils.getNewStudentsFromUTTAPI_NOPAGE(token, date);
+        const newStudentfiltered = newStudents.filter((student: SiepStudent) => !noSyncEmails.includes(student.email)); //Nouveau à ne pas sync (Démissionnaires, etc)
 
         for (const element of newStudentfiltered) {
             const userInDb = await user_service.getUserByEmail(element.email.toLowerCase());
@@ -72,7 +81,7 @@ export const syncNewstudent = async (req: Request, res: Response) => {
             }
         }
         Ok(res, { msg: 'All NewStudent created and synced' });
-    } catch (error) {
+    } catch (error: unknown) {
         Error(res, { error });
     }
 };
@@ -99,17 +108,6 @@ export const getUserContactInformation = async (req: Request, res: Response) => 
     }
 };
 
-export const getCurrentUserContactInformation = async (req: Request, res: Response) => {
-    const userId = req.user?.userId;
-
-    try {
-        const userContactInfo = await user_service.getUserContactInformation(parseInt(userId));
-        Ok(res, { data: userContactInfo });
-    } catch {
-        Error(res, { msg: "Erreur lors de la récupération des informations de contact de l'utilisateur." });
-    }
-};
-
 export const createUserContactInformation = async (req: Request, res: Response) => {
     const userId = req.user?.userId;
     const contact: UserContactInformation = req.body;
@@ -119,6 +117,38 @@ export const createUserContactInformation = async (req: Request, res: Response) 
         Ok(res, { msg: 'Informations de contact créées', data: result });
     } catch {
         Error(res, { msg: 'Erreur lors de la création des informations de contact.' });
+    }
+};
+
+export const getCurrentUserOnboardingStatus = async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
+
+    try {
+        const status = await user_service.getCurrentUserOnboardingStatus(parseInt(userId));
+        Ok(res, { data: status });
+    } catch {
+        Error(res, { msg: "Erreur lors de la récupération du statut d'onboarding." });
+    }
+};
+
+export const getVssQuestionnaire = async (_req: Request, res: Response) => {
+    try {
+        const questionnaire = await user_service.getVssQuestionnaire();
+        Ok(res, { data: questionnaire });
+    } catch {
+        Error(res, { msg: 'Erreur lors de la récupération du questionnaire VSS.' });
+    }
+};
+
+export const submitVssQuestionnaire = async (req: Request, res: Response) => {
+    const userId = req.user?.userId;
+    const payload = req.body;
+
+    try {
+        const result = await user_service.submitVssQuestionnaire(parseInt(userId), payload);
+        Ok(res, { data: result });
+    } catch {
+        Error(res, { msg: 'Erreur lors de la soumission du questionnaire VSS.' });
     }
 };
 

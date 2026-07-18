@@ -5,7 +5,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { NavLink, useLocation, useSearchParams } from 'react-router-dom';
 
 import { decodeToken, getToken } from '../services/requests/auth.service';
-import { getCurrentUserContactInformation } from '../services/requests/user.service';
+import { getCurrentUserOnboardingStatus } from '../services/requests/user.service';
 import { Button } from './ui/button';
 
 interface NavItem {
@@ -30,6 +30,7 @@ export const Navbar = () => {
         : { userPermission: undefined, userRoles: [] };
     const roles = [userPermission, ...userRoles.map((r) => r.roleName)].filter(Boolean) as string[];
     const [hasContactInformation, setHasContactInformation] = useState(false);
+    const [needsVssForm, setNeedsVssForm] = useState(false);
     const [, setSearchParams] = useSearchParams();
 
     const handleLogout = () => {
@@ -39,20 +40,33 @@ export const Navbar = () => {
 
     useEffect(() => {
         setMenuOpen(false);
-        const fetchContactInformation = async () => {
+
+        const fetchOnboardingStatus = async () => {
             try {
-                const contactInfo = await getCurrentUserContactInformation();
-                setHasContactInformation(contactInfo.urgency_contact_phone !== null);
-                console.log('Contact Information:', contactInfo);
+                const onboardingStatus = await getCurrentUserOnboardingStatus();
+                setHasContactInformation(onboardingStatus.hasUrgencyContactInformation);
+                setNeedsVssForm(onboardingStatus.needsVssForm);
             } catch (error) {
-                console.error('Erreur lors de la récupération des informations de contact :', error);
+                console.error("Erreur lors de la récupération du statut d'onboarding :", error);
             }
         };
 
         if (isAuthenticated) {
-            fetchContactInformation();
+            fetchOnboardingStatus();
         }
-    }, [pathname]);
+
+        const handleOnboardingUpdate = () => {
+            if (isAuthenticated) {
+                fetchOnboardingStatus();
+            }
+        };
+
+        window.addEventListener('user-onboarding-updated', handleOnboardingUpdate);
+
+        return () => {
+            window.removeEventListener('user-onboarding-updated', handleOnboardingUpdate);
+        };
+    }, [isAuthenticated, pathname]);
 
     const navItems: NavItem[] = [
         { label: 'Home', to: '/home', icon: HomeIcon },
@@ -205,21 +219,20 @@ export const Navbar = () => {
                 </AnimatePresence>
             </nav>
 
-            {
-                /* Contact Information Warning */ hasContactInformation === false && isAuthenticated && (
-                    <div className="bg-red-800 text-white shadow-lg flex items-center justify-center gap-2 p-3">
-                        <p className="text-center">
-                            ATTENTION : Tu n'as pas complété le formulaire VSS ainsi que tes informations d'urgence.
-                            Merci de le faire au plus vite !
-                        </p>
-                        <Button
-                            onClick={() => setSearchParams({ login: 'true' })}
-                            className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded whitespace-nowrap">
-                            Compléter le formulaire
-                        </Button>
-                    </div>
-                )
-            }
+            {isAuthenticated && (hasContactInformation === false || needsVssForm) && (
+                <div className="bg-red-800 text-white shadow-lg flex items-center justify-center gap-2 p-3">
+                    <p className="text-center">
+                        {hasContactInformation === false
+                            ? "ATTENTION : Tu n'as pas complété le formulaire VSS ainsi que tes informations d'urgence. Merci de le faire au plus vite !"
+                            : "ATTENTION : Tu n'as pas encore complété le questionnaire VSS. Merci de le faire au plus vite !"}
+                    </p>
+                    <Button
+                        onClick={() => setSearchParams({ login: 'true' })}
+                        className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded whitespace-nowrap">
+                        Compléter le formulaire
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };

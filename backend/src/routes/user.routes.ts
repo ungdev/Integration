@@ -21,6 +21,8 @@ userRouter.patch('/user/me', userController.updateProfile);
 userRouter.get('/user/me', userController.getCurrentUser);
 userRouter.get('/user/getusers', userController.getUsers);
 userRouter.post('/user/usercontactinformation', userController.createUserContactInformation);
-userRouter.get('/user/getusercontactinformation', userController.getCurrentUserContactInformation);
+userRouter.get('/onboarding-status', userController.getCurrentUserOnboardingStatus);
+userRouter.get('/vss/questionnaire', userController.getVssQuestionnaire);
+userRouter.post('/vss/questionnaire', userController.submitVssQuestionnaire);
 
 export default userRouter;

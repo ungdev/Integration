@@ -1,26 +1,42 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { checkSDIStatus } from "../../services/requests/event.service";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { checkSDIStatus } from '../../services/requests/event.service';
+import { getCurrentUserOnboardingStatus } from '../../services/requests/user.service';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const SdiSection = () => {
     const [isSDIOpen, setIsSDIOpen] = useState(false);
+    const [hasContactInformation, setHasContactInformation] = useState(false);
+    const [hasVssForm, setHasVssForm] = useState(false);
+    const [needVssForm, setNeedsVssForm] = useState(false);
 
     useEffect(() => {
-        const script = document.createElement("script");
-        script.src = "https://www.billetweb.fr/js/export.js";
+        const script = document.createElement('script');
+        script.src = 'https://www.billetweb.fr/js/export.js';
         script.async = true;
         document.body.appendChild(script);
 
         fetchStatus();
+        fetchOnboardingStatus();
     }, []);
+
+    const fetchOnboardingStatus = async () => {
+        try {
+            const onboardingStatus = await getCurrentUserOnboardingStatus();
+            setHasContactInformation(onboardingStatus.hasUrgencyContactInformation);
+            setHasVssForm(onboardingStatus.vss_form == 'validated');
+            setNeedsVssForm(onboardingStatus.needsVssForm);
+        } catch (error) {
+            console.error("Erreur lors de la récupération du statut d'onboarding :", error);
+        }
+    };
 
     const fetchStatus = async () => {
         try {
             const status = await checkSDIStatus();
             setIsSDIOpen(status);
         } catch {
-            alert("Erreur lors de la récupération du statut de SDI.");
+            alert('Erreur lors de la récupération du statut de SDI.');
         }
     };
 
@@ -31,7 +47,8 @@ export const SdiSection = () => {
                     🎉 Participe à la Soirée d'Intégration (SDI) !
                 </CardTitle>
                 <p className="text-lg md:text-xl text-gray-700 text-center">
-                    Un événement incroyable t'attend… Inscris-toi dès maintenant pour ne rien rater de cette Soirée d'Intégration !
+                    Un événement incroyable t'attend… Inscris-toi dès maintenant pour ne rien rater de cette Soirée
+                    d'Intégration !
                 </p>
             </CardHeader>
             <CardContent className="space-y-10">
@@ -40,8 +57,32 @@ export const SdiSection = () => {
                         <p className="text-xl text-red-600 font-semibold">
                             🚫 La billetterie de la Soirée d'intégration (SDI) n'est pas encore disponible.
                         </p>
+                        <p className="text-gray-600 mt-2">Reste connecté, elle ouvrira bientôt !</p>
+                    </div>
+                ) : !hasContactInformation ? (
+                    <div className="surface-card p-6 text-center">
+                        <p className="text-xl text-red-600 font-semibold">
+                            🚫 Tu n'as pas rempli le questionnaire avec tes contacts d'urgence. Tant que ce n'est pas
+                            fait, tu ne peux pas accéder à la billetterie de la Soirée d'intégration (SDI).
+                        </p>
+                        <p className="text-gray-600 mt-2">Va vite le compléter !</p>
+                    </div>
+                ) : needVssForm ? (
+                    <div className="surface-card p-6 text-center">
+                        <p className="text-xl text-red-600 font-semibold">
+                            🚫 Tu n'as pas rempli le questionnaire de sensibilisation aux VSS. Tant que ce n'est pas
+                            fait, tu ne peux pas accéder à la billetterie de la Soirée d'intégration (SDI).
+                        </p>
+                        <p className="text-gray-600 mt-2">Va vite le compléter !</p>
+                    </div>
+                ) : !hasVssForm ? (
+                    <div className="surface-card p-6 text-center">
+                        <p className="text-xl text-red-600 font-semibold">
+                            🚫 Tu as fait trop d'erreur sur le questionnaire de sensibilisation aux VSS. Tu ne peux par
+                            conséquent pas accéder à la billeterie de la Soirée d'intégration (SDI).
+                        </p>
                         <p className="text-gray-600 mt-2">
-                            Reste connecté, elle ouvrira bientôt !
+                            Si tu penses qu'il s'agit d'une erreur, tu peux te rapprocher de la team prévention.
                         </p>
                     </div>
                 ) : (
@@ -54,6 +95,6 @@ export const SdiSection = () => {
                     </div>
                 )}
             </CardContent>
-        </Card >
+        </Card>
     );
 };

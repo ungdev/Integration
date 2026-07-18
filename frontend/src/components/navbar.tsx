@@ -219,7 +219,7 @@ export const Navbar = () => {
                 </AnimatePresence>
             </nav>
 
-            {isAuthenticated && (hasContactInformation === false || needsVssForm) && (
+            {isAuthenticated && (hasContactInformation === false || needsVssForm) && roles.includes('Student') && (
                 <div className="bg-red-800 text-white shadow-lg flex items-center justify-center gap-2 p-3">
                     <p className="text-center">
                         {hasContactInformation === false

@@ -45,15 +45,6 @@ export const getUsersByPermission: AppRequestHandler<unknown, unknown, Permissio
 export const syncNewstudent: AppRequestHandler<SyncBody> = async (req, res) => {
     const { date } = req.body;
 
-    type SiepStudent = {
-        email: string;
-        prenom: string;
-        nom: string;
-        Majeur: boolean;
-        diplome: string;
-        specialite: string;
-    };
-
     try {
         await user_service.syncNewStudents(date);
 
@@ -132,7 +123,6 @@ export const submitVssQuestionnaire = async (req: Request, res: Response) => {
 };
 
 export const updateProfile: AppRequestHandler<ProfileBody> = async (req, res) => {
-
     const userId = req.user?.userId;
     const { branch, contact } = req.body;
 

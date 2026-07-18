@@ -17,6 +17,8 @@ import { getTeam, getTeamFaction, getUserTeam } from './team.service';
 import { userInformationSchema } from '../schemas/Relational/userinformation.schema';
 import { type UserContactInformation } from '../../types/user';
 import { addUserToRespondentStudentsList } from '../utils/billetweb';
+import { generateEmailHtml, sendEmail } from './email.service';
+import { email_from } from '../utils/secret';
 
 export type VssQuestionnaireAnswer = {
     id: number;
@@ -39,8 +41,6 @@ export type VssSubmissionAnswer = {
 export type VssSubmissionPayload = {
     answers: VssSubmissionAnswer[];
 };
-import { generateEmailHtml, sendEmail } from './email.service';
-import { email_from } from '../utils/secret';
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {

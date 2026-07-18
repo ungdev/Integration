@@ -10,6 +10,7 @@ import { getUserRoles } from './role.service';
 import { getTeam, getTeamFaction, getUserTeam } from './team.service';
 import { userInformationSchema } from '../schemas/Relational/userinformation.schema';
 import { type UserContactInformation } from '../../types/user';
+import { addUserToRespondentStudentsList } from '../utils/billetweb';
 
 export type VssQuestionnaireAnswer = {
     id: number;
@@ -327,8 +328,18 @@ export const submitVssQuestionnaire = async (userId: number, payload: VssSubmiss
             .update(userSchema)
             .set({ vss_form: status })
             .where(eq(userSchema.id, userId))
-            .returning({ vss_form: userSchema.vss_form });
+            .returning({
+                vss_form: userSchema.vss_form,
+                email: userSchema.email,
+                firstName: userSchema.first_name,
+                lastName: userSchema.last_name,
+            });
 
+        if (status == 'validated') {
+            addUserToRespondentStudentsList({
+                ...updatedUser,
+            });
+        }
         return {
             score,
             maxScore,

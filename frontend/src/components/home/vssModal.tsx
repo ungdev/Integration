@@ -68,7 +68,6 @@ const VssQuestionBlock = ({
 function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
     const [questions, setQuestions] = useState<VssQuestionnaireQuestion[]>([]);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number[]>>({});
-    const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [result, setResult] = useState<VssSubmissionResponse | null>(null);
@@ -79,7 +78,6 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
             setSelectedAnswers({});
             setError(null);
             setResult(null);
-            setLoading(false);
             setSubmitting(false);
             return;
         }
@@ -87,7 +85,6 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
         let cancelled = false;
 
         const loadQuestionnaire = async () => {
-            setLoading(true);
             setError(null);
             setResult(null);
 
@@ -103,10 +100,6 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
             } catch {
                 if (!cancelled) {
                     setError('Impossible de charger le questionnaire VSS.');
-                }
-            } finally {
-                if (!cancelled) {
-                    setLoading(false);
                 }
             }
         };
@@ -190,10 +183,23 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
             buttons={null}
             containerClassName="max-w-4xl">
             <div className="flex flex-col gap-5">
-                <p className="text-sm text-muted-foreground">
-                    {loading
-                        ? 'Chargement du questionnaire...'
-                        : 'Réponds au questionnaire VSS avant de fermer cette fenêtre.'}
+                <p>
+                    Dans ce questionnaire, tu devras répondre aux questions ci-dessous à propos des Violences Sexistes
+                    et Sexuelles (VSS).
+                </p>
+                <p>
+                    La note est sur 14 et tu disposes de deux essais pour obtenir au moins 7 points. Cette
+                    sensibilisation est très importante pour nous afin de nous assurer que l'intégration se déroule dans
+                    les meilleures conditions pour tout le monde.
+                </p>
+                <p>
+                    Si tu n'arrives pas à obtenir la moyenne après deux tentatives, nous serons malheureusement
+                    contraints de te refuser l'accès à la Soirée et au Week-end d'intégration, car ce sont les moments
+                    où la majorité des situations de VSS se produisent.
+                </p>
+                <p className="text-xs">
+                    Tu peux quitter ce questionnaire à tout moment et le compléter plus tard. Cependant, il est
+                    obligatoire pour participer à certaines activités.
                 </p>
 
                 {error && (
@@ -220,7 +226,7 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
                     </div>
                 )}
 
-                {!loading && questions.length > 0 && (
+                {questions.length > 0 && (
                     <div className="space-y-4 max-h-[65vh] overflow-y-auto pr-1">
                         <div className="flex items-center justify-between text-sm text-muted-foreground">
                             <span>
@@ -242,7 +248,7 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
                     </div>
                 )}
 
-                {!loading && questions.length === 0 && !error && (
+                {questions.length === 0 && !error && (
                     <div className="rounded-xl border border-dashed border-border/60 bg-slate-50 px-4 py-8 text-center text-sm text-muted-foreground dark:border-white/10 dark:bg-neutral-900/60">
                         Aucun questionnaire disponible pour le moment.
                     </div>
@@ -256,7 +262,7 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
                             <Button variant="secondary" onClick={onCancel}>
                                 Annuler
                             </Button>
-                            <Button onClick={handleSubmit} disabled={loading || submitting || questions.length === 0}>
+                            <Button onClick={handleSubmit} disabled={submitting || questions.length === 0}>
                                 {submitting ? 'Envoi...' : 'Soumettre le questionnaire'}
                             </Button>
                         </>

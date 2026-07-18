@@ -102,14 +102,26 @@ function UrgencyModal() {
                 onCancel={closeFlow}
                 buttons={null}>
                 <div className="flex flex-col gap-4">
-                    <p>Bienvenu sur le site de l'intégration, blablabla faut que tu completes le formulaire.</p>
-
+                    <p>Bienvenue sur le site de l'intégration !</p>
+                    <p>Nous sommes ravis de t'accueillir parmi nous à l'UTT. </p>
+                    <p>
+                        Durant ta première semaine à l'UTT, tu pourras participer aux activités d'intégration. Afin que
+                        celle-ci se déroule dans les meilleures conditions, nous avons besoin que tu répondes à deux
+                        formulaires.
+                    </p>
+                    <p>
+                        Dans ce premier formulaire, nous te demandons simplement de renseigner un contact d'urgence, au
+                        cas où le moindre problème surviendrait durant cette semaine.
+                    </p>
+                    <p className="text-xs">
+                        Tu peux quitter ce formulaire à tout moment et le compléter plus tard. Cependant, il est
+                        obligatoire pour participer à certaines activités.
+                    </p>
                     {error && (
                         <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950/30 dark:text-red-100">
                             {error}
                         </p>
                     )}
-
                     <Input
                         placeholder="Nom du contact d'urgence"
                         value={form.urgency_contact_name}

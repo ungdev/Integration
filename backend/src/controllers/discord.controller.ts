@@ -1,8 +1,9 @@
-import { type Request, type Response } from 'express';
 import * as discord_service from '../services/discord.service';
 import { Error, Ok } from '../utils/responses';
+import type { AppRequestHandler } from '../types/http';
+import type { DiscordBody } from '../dto/discord.dto';
 
-export const createChallenge = async (req: Request, res: Response) => {
+export const createChallenge: AppRequestHandler<DiscordBody> = async (req, res) => {
     const { code } = req.body;
     const userId = req.user?.userId;
 

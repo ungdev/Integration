@@ -1,4 +1,3 @@
-import { type Request, type Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 import * as email_service from '../services/email.service';
@@ -7,6 +6,8 @@ import * as news_service from '../services/news.service';
 import * as user_service from '../services/user.service';
 import { Error, Ok } from '../utils/responses';
 import { email_from } from '../utils/secret';
+import type { AppRequestHandler } from '../types/http';
+import type { NewsBody, NewsQuery } from '../dto/news.dto';
 
 const toStoredUploadPath = (imageUrl: string) => {
     if (!imageUrl) {
@@ -58,7 +59,7 @@ const deleteImageIfExists = (imageUrl: string) => {
     }
 };
 
-export const createNews = async (req: Request, res: Response) => {
+export const createNews: AppRequestHandler<NewsBody> = async (req, res) => {
     const { title, description, type, published, target, image_url } = req.body;
     const file = req.file;
 
@@ -80,7 +81,7 @@ export const createNews = async (req: Request, res: Response) => {
     }
 };
 
-export const listAllNews = async (_req: Request, res: Response) => {
+export const listAllNews: AppRequestHandler = async (_req, res) => {
     try {
         const news = await news_service.getAllNews();
         Ok(res, { data: news });
@@ -90,7 +91,7 @@ export const listAllNews = async (_req: Request, res: Response) => {
     }
 };
 
-export const listPublishedNews = async (_req: Request, res: Response) => {
+export const listPublishedNews: AppRequestHandler = async (_req, res) => {
     try {
         const news = await news_service.getPublishedNews();
         Ok(res, { data: news });
@@ -100,7 +101,7 @@ export const listPublishedNews = async (_req: Request, res: Response) => {
     }
 };
 
-export const listPublishedNewsByType = async (req: Request, res: Response) => {
+export const listPublishedNewsByType: AppRequestHandler<unknown, NewsQuery> = async (req, res) => {
     const { type } = req.query;
 
     try {
@@ -112,11 +113,11 @@ export const listPublishedNewsByType = async (req: Request, res: Response) => {
     }
 };
 
-export const publishNews = async (req: Request, res: Response) => {
+export const publishNews: AppRequestHandler<NewsBody> = async (req, res) => {
     const { id, sendEmail } = req.body;
 
     try {
-        await news_service.publishNews(id);
+        await news_service.publishNews(Number(id));
 
         const news = await news_service.getNewsById(Number(id));
         if (sendEmail) {
@@ -155,7 +156,7 @@ export const publishNews = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteNews = async (req: Request, res: Response) => {
+export const deleteNews: AppRequestHandler<unknown, NewsQuery> = async (req, res) => {
     const { newsId } = req.query;
 
     try {
@@ -172,7 +173,7 @@ export const deleteNews = async (req: Request, res: Response) => {
     }
 };
 
-export const updateNews = async (req: Request, res: Response) => {
+export const updateNews: AppRequestHandler<NewsBody> = async (req, res) => {
     const { id, title, description, type, target, image_url } = req.body;
     const file = req.file;
     const hasImageUrlField = Object.prototype.hasOwnProperty.call(req.body, 'image_url');

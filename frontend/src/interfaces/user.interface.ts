@@ -55,3 +55,12 @@ export interface VssSubmissionResponse {
     maxScore: number;
     status: 'pending' | 'toretry' | 'validated' | 'rejected';
 }
+
+export interface NewUser {
+    firstName: string;
+    lastName: string;
+    email: string;
+    major: boolean;
+    branch: string;
+    withNotification: boolean;
+}

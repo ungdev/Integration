@@ -27,6 +27,7 @@ import roleRoutes from './src/routes/role.routes';
 import teamRoutes from './src/routes/team.routes';
 import tentRoutes from './src/routes/tent.routes';
 import userRoutes from './src/routes/user.routes';
+import bannedRoutes from './src/routes/banned.routes';
 import { server_port } from './src/utils/secret';
 import { initQcmvss } from './src/database/initdb/initQcmvss';
 
@@ -54,6 +55,7 @@ async function startServer() {
         app.use('/api/auth', authRoutes);
         app.use('/api/automation', authenticateAutomation, automationRoutes);
         app.use('/api/authadmin', authenticateUser, authRoutes);
+        app.use('/api/banned', authenticateUser, bannedRoutes);
         app.use('/api/role', authenticateUser, roleRoutes);
         app.use('/api/user', authenticateUser, userRoutes);
         app.use('/api/team', authenticateUser, teamRoutes);

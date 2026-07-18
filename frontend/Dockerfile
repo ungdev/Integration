@@ -45,20 +45,25 @@ ENV VITE_BDE_SIREN=${VITE_BDE_SIREN}
 ENV VITE_DPO_EMAIL=${VITE_DPO_EMAIL}
 ENV VITE_DPO_NAME=${VITE_DPO_NAME}
 
-COPY package.json package-lock.json ./
-RUN npm install -g npm@latest
-RUN npm install
+# COPY package.json package-lock.json ./
+# RUN npm install -g npm@latest
+# RUN npm install
+
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+RUN pnpm install --frozen-lockfile
 
 COPY . .
+
 RUN npm run build
 
-FROM node:23-slim AS runner
-WORKDIR /app
+FROM nginx:alpine AS runner
 
-RUN npm install -g serve
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=builder /app/dist ./dist
+EXPOSE 80
 
-EXPOSE 4000
-
-CMD ["serve", "-s", "dist", "-l", "4000"]
+CMD ["nginx", "-g", "daemon off;"]

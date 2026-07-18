@@ -1,10 +1,16 @@
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
+import * as randomstring from 'randomstring';
 import { db } from '../database/db'; // Import de la connexion PostgreSQL
+import type { AdminCreateUserDto } from '../dto/user.dto';
 import { type User, userSchema } from '../schemas/Basic/user.schema';
 import { vssqcmquestionSchema } from '../schemas/Basic/vssqcmquestion.schema';
 import { vssqcmanswerSchema } from '../schemas/Relational/vssqcmanswer.schema';
 import { registrationSchema } from '../schemas/Relational/registration.schema';
+import * as auth_service from '../services/auth.service';
+import * as SIEP_Utils from '../utils/siep';
+import * as Banned_Service from './banned.service';
+import { createRegistrationToken } from './auth.service';
 import { getFaction } from './faction.service';
 import { getUserRoles } from './role.service';
 import { getTeam, getTeamFaction, getUserTeam } from './team.service';
@@ -33,6 +39,8 @@ export type VssSubmissionAnswer = {
 export type VssSubmissionPayload = {
     answers: VssSubmissionAnswer[];
 };
+import { generateEmailHtml, sendEmail } from './email.service';
+import { email_from } from '../utils/secret';
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
@@ -67,6 +75,40 @@ export const getUserById = async (userId: number) => {
         console.error("Erreur lors de la récupération de l'utilisateur par email:", err);
         throw new Error('Erreur de base de données');
     }
+};
+
+export const syncNewStudents = async (data: string) => {
+    const token = await SIEP_Utils.getTokenUTTAPI();
+
+    const newStudents = await SIEP_Utils.getNewStudentsFromUTTAPI_NOPAGE(token, data);
+
+    const noSyncEmails = await Banned_Service.getAllBanned().then((bannedList) =>
+        bannedList.map((banned) => banned.email),
+    );
+
+    const filteredStudents = newStudents.filter((student: any) => !noSyncEmails.includes(student.email));
+
+    for (const student of filteredStudents) {
+        const userInDb = await getUserByEmail(student.email.toLowerCase());
+
+        if (!userInDb) {
+            const tmpPassword = randomstring.generate(48);
+
+            const newUser = await createUser(
+                student.prenom,
+                student.nom,
+                student.email.toLowerCase(),
+                student.Majeur,
+                'Nouveau',
+                student.diplome === 'MA' ? 'Master' : student.specialite,
+                tmpPassword,
+            );
+
+            await auth_service.createRegistrationToken(newUser.id);
+        }
+    }
+
+    return filteredStudents.length;
 };
 
 // Fonction pour enregistrer un nouvel utilisateur
@@ -122,6 +164,56 @@ export const updateUserStudent = async (firstName: string, lastName: string, ema
         console.error("Erreur lors de la récupération et de l'update de l'utilisateur par email:", err);
         throw new Error('Erreur de base de données');
     }
+};
+
+export const adminCreateUser = async (data: AdminCreateUserDto) => {
+    const email = data.email.toLowerCase();
+
+    const userInDb = await getUserByEmail(email);
+
+    if (userInDb) {
+        throw new Error('Utilisateur déjà existant');
+    }
+
+    const isBanned = await Banned_Service.getBannedByEmail(email);
+
+    if (isBanned) {
+        throw new Error('Adresse email bannie. Rendez vous dans la page Admin/Bannis.');
+    }
+
+    const tmpPassword = randomstring.generate(48);
+
+    const newUser = await createUser(
+        data.firstName,
+        data.lastName,
+        email,
+        data.major,
+        'Nouveau',
+        data.branch === 'MA' ? 'Master' : data.branch,
+        tmpPassword,
+    );
+
+    const registrationToken = await createRegistrationToken(newUser.id);
+
+    if (data.withNotification) {
+        const htmlEmail = generateEmailHtml('templateWelcome', {
+            token: registrationToken,
+        });
+
+        const emailOptions = {
+            from: email_from,
+            to: [email],
+            cc: [],
+            bcc: [],
+            subject: `[EN BELOW] Bienvenue à l'UTT !`,
+            text: ``,
+            html: htmlEmail || '',
+        };
+
+        await sendEmail(emailOptions);
+    }
+
+    return newUser;
 };
 
 export const getUsersAdmin = async () => {

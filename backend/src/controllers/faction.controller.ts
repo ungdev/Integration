@@ -1,8 +1,9 @@
-import { type Request, type Response } from 'express';
 import * as faction_service from '../services/faction.service';
 import { Error, Ok } from '../utils/responses';
+import type { AppRequestHandler } from '../types/http';
+import type { FactionQuery, FactionBody } from '../dto/faction.dto';
 
-export const getFactions = async (req: Request, res: Response) => {
+export const getFactions: AppRequestHandler = async (_req, res) => {
     try {
         const factions = await faction_service.getFactions();
         Ok(res, { data: factions });
@@ -12,7 +13,7 @@ export const getFactions = async (req: Request, res: Response) => {
     }
 };
 
-export const getFaction = async (req: Request, res: Response) => {
+export const getFaction: AppRequestHandler<unknown, FactionQuery> = async (req, res) => {
     const { factionId } = req.query;
 
     try {
@@ -24,7 +25,7 @@ export const getFaction = async (req: Request, res: Response) => {
     }
 };
 
-export const createFaction = async (req: Request, res: Response) => {
+export const createFaction: AppRequestHandler<FactionBody> = async (req, res) => {
     const { factionName } = req.body;
 
     try {
@@ -36,7 +37,7 @@ export const createFaction = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteFaction = async (req: Request, res: Response) => {
+export const deleteFaction: AppRequestHandler<unknown, FactionQuery> = async (req, res) => {
     const { factionId } = req.query;
 
     try {

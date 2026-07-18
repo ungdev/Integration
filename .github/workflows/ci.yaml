@@ -54,49 +54,61 @@ jobs:
 
   build-api:
     runs-on: self-hosted
-    if : github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request'
     needs:
       - lint-api
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '24'
+          node-version: '23'
+          cache: 'pnpm'
+          cache-dependency-path: ./backend/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: ./backend
-        run: |
-          npm ci
+        run: pnpm install --frozen-lockfile
 
-      - name: Build 
+      - name: Build
         working-directory: ./backend
-        run: npm run build-test
+        run: pnpm run build-test
 
   build-front:
     runs-on: self-hosted
-    if : github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request'
     needs:
       - lint-front
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '24'
+          node-version: '23'
+          cache: 'pnpm'
+          cache-dependency-path: ./frontend/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: ./frontend
-        run: |
-          npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         working-directory: ./frontend
-        run: npm run build
+        run: pnpm run build
 
   deploy-api:
     runs-on: self-hosted

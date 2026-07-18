@@ -1,14 +1,10 @@
-import { type Request, type Response } from 'express';
 import * as bus_service from '../services/bus.service';
 import { generateEmailHtml, sendEmail } from '../services/email.service';
 import { Error, Ok } from '../utils/responses';
 import { email_from } from '../utils/secret';
+import type { AppRequestHandler } from '../types/http';
 
-interface MulterRequest extends Request {
-    file?: Express.Multer.File;
-}
-
-export const sendBusAttributionEmails = async (req: Request, res: Response) => {
+export const sendBusAttributionEmails: AppRequestHandler = async (_req, res) => {
     try {
         const attributions = await bus_service.getAllBusAttributions();
 
@@ -43,7 +39,7 @@ export const sendBusAttributionEmails = async (req: Request, res: Response) => {
     }
 };
 
-export const uploadbusCSV = async (req: MulterRequest, res: Response) => {
+export const uploadbusCSV: AppRequestHandler = async (req, res) => {
     try {
         const file = req.file;
         if (!file) {

@@ -1,10 +1,7 @@
-import { type Request, type Response } from 'express';
 import * as permanence_service from '../services/permanence.service';
 import { Error, Ok } from '../utils/responses';
-
-interface MulterRequest extends Request {
-    file?: Express.Multer.File;
-}
+import type { AppRequestHandler } from '../types/http';
+import type { PermanenceBody, PermQuery } from '../dto/permanence.dto';
 
 // Validation des données de permanence
 const validatePermanenceData = (start_at: string, end_at: string) => {
@@ -23,7 +20,7 @@ const validatePermanenceData = (start_at: string, end_at: string) => {
 };
 
 // ➕ Créer une permanence
-export const createPermanence = async (req: Request, res: Response) => {
+export const createPermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { name, description, location, start_at, end_at, capacity, difficulty, respoId } = req.body;
 
     if (!name || !location || !start_at || !end_at || !capacity || !difficulty) {
@@ -56,7 +53,7 @@ export const createPermanence = async (req: Request, res: Response) => {
     }
 };
 
-export const updatePermanence = async (req: Request, res: Response) => {
+export const updatePermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId, name, description, location, start_at, end_at, capacity, difficulty, respoId } = req.body;
 
     const validation = validatePermanenceData(start_at, end_at);
@@ -66,10 +63,12 @@ export const updatePermanence = async (req: Request, res: Response) => {
     }
 
     try {
-        const perm = await permanence_service.getPermanenceById(permId);
+        const permIdNumber = Number(permId);
+        const respoIdNumber = Number(respoId);
+        const perm = await permanence_service.getPermanenceById(permIdNumber);
 
         await permanence_service.updatePermanence(
-            permId ?? perm.id,
+            permIdNumber || perm.id,
             name ?? perm.name,
             description ?? perm.description,
             location ?? perm.location,
@@ -77,7 +76,7 @@ export const updatePermanence = async (req: Request, res: Response) => {
             end_at ? new Date(end_at) : perm.end_at,
             capacity !== undefined ? Number(capacity) : perm.capacity,
             difficulty !== undefined ? Number(difficulty) : perm.difficulty,
-            Number(respoId),
+            respoIdNumber,
         );
 
         Ok(res, { msg: 'Permanence mise à jour avec succès' });
@@ -88,7 +87,7 @@ export const updatePermanence = async (req: Request, res: Response) => {
 };
 
 // ➕ Créer une permanence
-export const deletePermanence = async (req: Request, res: Response) => {
+export const deletePermanence: AppRequestHandler<unknown, PermQuery> = async (req, res) => {
     const { permId } = req.query;
 
     try {
@@ -102,7 +101,7 @@ export const deletePermanence = async (req: Request, res: Response) => {
 };
 
 // ➡️ Ouvrir une permanence
-export const openPermanence = async (req: Request, res: Response) => {
+export const openPermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId } = req.body;
 
     if (!permId) {
@@ -111,13 +110,14 @@ export const openPermanence = async (req: Request, res: Response) => {
     }
 
     try {
-        const permanence = await permanence_service.getPermanenceById(permId);
+        const permIdNumber = Number(permId);
+        const permanence = await permanence_service.getPermanenceById(permIdNumber);
         if (permanence.is_open === true) {
             Error(res, { msg: 'La permanence est déjà ouverte' });
             return;
         }
 
-        await permanence_service.openPermanence(Number(permId));
+        await permanence_service.openPermanence(permIdNumber);
         Ok(res, { msg: 'Permanence ouverte avec succès' });
     } catch (err) {
         console.error(err);
@@ -126,7 +126,7 @@ export const openPermanence = async (req: Request, res: Response) => {
 };
 
 // ➡️ Fermer une permanence
-export const closePermanence = async (req: Request, res: Response) => {
+export const closePermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId } = req.body;
 
     if (!permId) {
@@ -135,13 +135,14 @@ export const closePermanence = async (req: Request, res: Response) => {
     }
 
     try {
-        const permanence = await permanence_service.getPermanenceById(permId);
+        const permIdNumber = Number(permId);
+        const permanence = await permanence_service.getPermanenceById(permIdNumber);
         if (permanence.is_open === false) {
             Error(res, { msg: 'La permanence est déjà fermée' });
             return;
         }
 
-        await permanence_service.closePermanence(Number(permId));
+        await permanence_service.closePermanence(permIdNumber);
         Ok(res, { msg: 'Permanence fermée avec succès' });
         return;
     } catch (err) {
@@ -152,7 +153,7 @@ export const closePermanence = async (req: Request, res: Response) => {
 };
 
 // ➕ S'inscrire à une permanence
-export const applyToPermanence = async (req: Request, res: Response) => {
+export const applyToPermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId } = req.body;
     const userId = req.user?.userId;
 
@@ -162,13 +163,14 @@ export const applyToPermanence = async (req: Request, res: Response) => {
     }
 
     try {
-        const permanence = await permanence_service.getPermanenceById(permId);
+        const permIdNumber = Number(permId);
+        const permanence = await permanence_service.getPermanenceById(permIdNumber);
         if (permanence.is_open === false) {
             Error(res, { msg: 'La permanence est fermée, vous ne pouvez pas vous y inscrire' });
             return;
         }
 
-        await permanence_service.registerUserToPermanence(Number(userId), Number(permId));
+        await permanence_service.registerUserToPermanence(Number(userId), permIdNumber);
         Ok(res, { msg: 'Inscription réussie' });
         return;
     } catch (err) {
@@ -179,7 +181,7 @@ export const applyToPermanence = async (req: Request, res: Response) => {
 };
 
 // ❌ Se désinscrire d'une permanence
-export const leavePermanence = async (req: Request, res: Response) => {
+export const leavePermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId } = req.body;
     const userId = req.user?.userId;
 
@@ -200,7 +202,7 @@ export const leavePermanence = async (req: Request, res: Response) => {
 };
 
 // 👤 Voir ses permanences
-export const getMyPermanences = async (req: Request, res: Response) => {
+export const getMyPermanences: AppRequestHandler = async (req, res) => {
     const userId = req.user?.userId;
 
     if (!userId) {
@@ -220,7 +222,7 @@ export const getMyPermanences = async (req: Request, res: Response) => {
 };
 
 // ✅ Récupérer toutes les permanences
-export const getAllPermanences = async (req: Request, res: Response) => {
+export const getAllPermanences: AppRequestHandler = async (_req, res) => {
     try {
         const permanences = await permanence_service.getAllPermanences();
         Ok(res, { data: permanences });
@@ -233,7 +235,7 @@ export const getAllPermanences = async (req: Request, res: Response) => {
 };
 
 // ✅ Récupérer les permanences ouvertes
-export const getOpenPermanences = async (req: Request, res: Response) => {
+export const getOpenPermanences: AppRequestHandler = async (_req, res) => {
     try {
         const perms = await permanence_service.listOpenPermanences();
         Ok(res, { data: perms });
@@ -245,7 +247,7 @@ export const getOpenPermanences = async (req: Request, res: Response) => {
     }
 };
 
-export const getUsersInPermanence = async (req: Request, res: Response) => {
+export const getUsersInPermanence: AppRequestHandler<unknown, PermQuery> = async (req, res) => {
     try {
         const { permId } = req.query;
         const users = await permanence_service.getUsersInPermanence(Number(permId));
@@ -258,7 +260,7 @@ export const getUsersInPermanence = async (req: Request, res: Response) => {
     }
 };
 
-export const addUserToPermanence = async (req: Request, res: Response) => {
+export const addUserToPermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId, userId } = req.body;
 
     if (!userId || !permId) {
@@ -277,7 +279,7 @@ export const addUserToPermanence = async (req: Request, res: Response) => {
     }
 };
 
-export const removeUserToPermanence = async (req: Request, res: Response) => {
+export const removeUserToPermanence: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { permId, userId } = req.body;
 
     if (!userId || !permId) {
@@ -296,7 +298,7 @@ export const removeUserToPermanence = async (req: Request, res: Response) => {
     }
 };
 
-export const uploadPermanencesCSV = async (req: MulterRequest, res: Response) => {
+export const uploadPermanencesCSV: AppRequestHandler = async (req, res) => {
     try {
         const file = req.file;
         if (!file) {
@@ -311,7 +313,7 @@ export const uploadPermanencesCSV = async (req: MulterRequest, res: Response) =>
     }
 };
 
-export const isUserRespo = async (req: Request, res: Response) => {
+export const isUserRespo: AppRequestHandler<unknown, PermQuery> = async (req, res) => {
     const { userId } = req.query;
 
     if (!userId) {
@@ -328,7 +330,7 @@ export const isUserRespo = async (req: Request, res: Response) => {
     }
 };
 
-export const getRespoPermanencesWithMembers = async (req: Request, res: Response) => {
+export const getRespoPermanencesWithMembers: AppRequestHandler = async (req, res) => {
     const respoId = req.user?.userId;
 
     if (!respoId) {
@@ -345,7 +347,7 @@ export const getRespoPermanencesWithMembers = async (req: Request, res: Response
     }
 };
 
-export const claimMember = async (req: Request, res: Response) => {
+export const claimMember: AppRequestHandler<PermanenceBody> = async (req, res) => {
     const { userId, permId, claimed } = req.body;
 
     if (userId === undefined || permId === undefined || claimed === undefined) {
@@ -364,7 +366,7 @@ export const claimMember = async (req: Request, res: Response) => {
     }
 };
 
-export const sendHourlyNotificationToUsers = async (req: Request, res: Response) => {
+export const sendHourlyNotificationToUsers: AppRequestHandler = async (_req, res) => {
     const notifications = await permanence_service.getHourlyNotifications();
 
     if (notifications.length === 0) {
@@ -377,7 +379,7 @@ export const sendHourlyNotificationToUsers = async (req: Request, res: Response)
     Ok(res, { msg: 'Notifications horaires envoyées avec succès' });
 };
 
-export const sendDailyNotificationToUsers = async (req: Request, res: Response) => {
+export const sendDailyNotificationToUsers: AppRequestHandler = async (_req, res) => {
     const notifications = await permanence_service.getDailyNotifications();
 
     if (notifications.length === 0) {

@@ -1,16 +1,16 @@
-import { CheckCircle2, Edit, Search, Trash2 } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import Select, { type SingleValue } from 'react-select';
-import Swal from 'sweetalert2';
+import { CheckCircle2, Edit, Search, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import Select from "react-select";
+import Swal from "sweetalert2";
 
-import { type Challenge } from '../../../interfaces/challenge.interface';
-import { type Faction } from '../../../interfaces/faction.interface';
-import { type Team } from '../../../interfaces/team.interface';
-import { type User } from '../../../interfaces/user.interface';
-import { deleteChallenge, validateChallenge } from '../../../services/requests/challenge.service';
-import { Button } from '../../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
-import { Input } from '../../ui/input';
+import { type Challenge } from "../../../interfaces/challenge.interface";
+import { type Faction } from "../../../interfaces/faction.interface";
+import { type Team } from "../../../interfaces/team.interface";
+import { type User } from "../../../interfaces/user.interface";
+import { deleteChallenge, validateChallenge } from "../../../services/requests/challenge.service";
+import { Button } from "../../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
+import { Input } from "../../ui/input";
 
 interface Props {
     challenges: Challenge[];
@@ -26,8 +26,9 @@ type ValidationTarget = 'user' | 'team' | 'faction';
 const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, factions, users }: Props) => {
     const [showValidationFormForId, setShowValidationFormForId] = useState<number | null>(null);
     const [validationType, setValidationType] = useState<ValidationTarget | null>(null);
-    const [selectedTargetId, setSelectedTargetId] = useState<number | null>(null);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedTargetIds, setSelectedTargetIds] = useState<number[]>([]);
+    const [searchTerm, setSearchTerm] = useState("");
+
 
     const filteredChallenges = useMemo(() => {
         return challenges.filter(
@@ -61,14 +62,20 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
         }
     };
 
-    const handleValidate = async () => {
-        if (!showValidationFormForId || !validationType || !selectedTargetId) return;
+    const handleValidationCLick = async (c: Challenge) => {
+        setShowValidationFormForId(c.id);
+        setValidationType(c.category.toLowerCase() as ValidationTarget);
+    }
 
+    const handleValidate = async () => {
+        if (!showValidationFormForId || !validationType || selectedTargetIds.length === 0) return;
+        
+        for (const targetId of selectedTargetIds) {
         try {
             const res = await validateChallenge({
                 challengeId: showValidationFormForId,
                 type: validationType,
-                targetId: selectedTargetId,
+                targetId: targetId, 
             });
 
             Swal.fire({
@@ -81,16 +88,17 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
 
             setShowValidationFormForId(null);
             setValidationType(null);
-            setSelectedTargetId(null);
+            setSelectedTargetIds([]);
             refreshChallenges();
         } catch (err) {
             console.error('Erreur lors de la validation du challenge', err);
             Swal.fire({
-                icon: 'error',
-                title: 'Erreur ❌',
-                text: 'Impossible de valider ce challenge. Réessaie plus tard.',
+                icon: "error",
+                title: "Erreur ❌",
+                text: err as string,
             });
         }
+    }
     };
 
     return (
@@ -136,8 +144,9 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                                             <Trash2 className="w-4 h-4" /> Supprimer
                                         </Button>
                                         <Button
-                                            onClick={() => setShowValidationFormForId(c.id)}
-                                            className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
+                                            onClick={() => {handleValidationCLick(c)}}
+                                            className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+                                        >
                                             <CheckCircle2 className="w-4 h-4" /> Valider
                                         </Button>
                                     </div>
@@ -147,30 +156,12 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                                             <CardContent className="p-4 space-y-4">
                                                 <h4 className="font-bold text-lg">✅ Valider le challenge</h4>
 
-                                                <Select
-                                                    placeholder="Choisir le type de cible"
-                                                    onChange={(
-                                                        option: SingleValue<{
-                                                            value: ValidationTarget;
-                                                            label: string;
-                                                        }>,
-                                                    ) => {
-                                                        setValidationType(option?.value ?? null);
-                                                        setSelectedTargetId(null);
-                                                    }}
-                                                    options={[
-                                                        { value: 'user', label: 'Utilisateur' },
-                                                        { value: 'team', label: 'Équipe' },
-                                                        { value: 'faction', label: 'Faction' },
-                                                    ]}
-                                                />
 
                                                 {validationType === 'user' && (
                                                     <Select
+                                                        isMulti
                                                         placeholder="Sélectionner un utilisateur"
-                                                        onChange={(option) =>
-                                                            setSelectedTargetId(Number(option?.value))
-                                                        }
+                                                        onChange={(options) => setSelectedTargetIds(options.map((o) => Number(o.value)))}
                                                         options={users.map((u: User) => ({
                                                             value: u.userId,
                                                             label: `${u.firstName} ${u.lastName}`,
@@ -180,10 +171,9 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
 
                                                 {validationType === 'team' && (
                                                     <Select
+                                                        isMulti
                                                         placeholder="Sélectionner une équipe"
-                                                        onChange={(option) =>
-                                                            setSelectedTargetId(Number(option?.value))
-                                                        }
+                                                        onChange={(options) => setSelectedTargetIds(options.map((o) => Number(o.value)))}
                                                         options={teams.map((t: Team) => ({
                                                             value: t.teamId,
                                                             label: t.name,
@@ -193,10 +183,9 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
 
                                                 {validationType === 'faction' && (
                                                     <Select
+                                                        isMulti
                                                         placeholder="Sélectionner une faction"
-                                                        onChange={(option) =>
-                                                            setSelectedTargetId(Number(option?.value))
-                                                        }
+                                                        onChange={(options) => setSelectedTargetIds(options.map((o) => Number(o.value)))}
                                                         options={factions.map((f: Faction) => ({
                                                             value: f.factionId,
                                                             label: f.name,
@@ -214,7 +203,7 @@ const AdminChallengeList = ({ challenges, refreshChallenges, onEdit, teams, fact
                                                         onClick={() => {
                                                             setShowValidationFormForId(null);
                                                             setValidationType(null);
-                                                            setSelectedTargetId(null);
+                                                            setSelectedTargetIds([]);
                                                         }}
                                                         className="bg-gray-400 hover:bg-gray-500 text-white">
                                                         ❌ Annuler

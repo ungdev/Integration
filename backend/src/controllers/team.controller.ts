@@ -1,12 +1,22 @@
-import { type Request, type Response } from 'express';
 import { type Event } from '../schemas/Basic/event.schema';
 import * as event_service from '../services/event.service';
 import * as faction_service from '../services/faction.service';
 import * as team_service from '../services/team.service';
 import * as user_service from '../services/user.service';
 import { Error, Ok } from '../utils/responses';
+import type { AppRequestHandler } from '../types/http';
+import type {
+    CreateTeamBody,
+    CreateTeamLightBody,
+    ModifyTeamBody,
+    StudentRow,
+    TeamMemberRow,
+    TeamQuery,
+    TeamRow,
+    TeamSizeRow,
+} from '../dto/team.dto';
 
-export const createNewTeam = async (req: Request, res: Response) => {
+export const createNewTeam: AppRequestHandler<CreateTeamBody> = async (req, res) => {
     const { teamName, members } = req.body;
 
     try {
@@ -46,7 +56,7 @@ export const createNewTeam = async (req: Request, res: Response) => {
     }
 };
 
-export const createNewTeamLight = async (req: Request, res: Response) => {
+export const createNewTeamLight: AppRequestHandler<CreateTeamLightBody> = async (req, res) => {
     const { teamName, factionId } = req.body;
 
     try {
@@ -57,7 +67,7 @@ export const createNewTeamLight = async (req: Request, res: Response) => {
     }
 };
 
-export const getTeams = async (req: Request, res: Response) => {
+export const getTeams: AppRequestHandler = async (_req, res) => {
     try {
         const teams = await team_service.getTeams();
         Ok(res, { data: teams });
@@ -67,7 +77,7 @@ export const getTeams = async (req: Request, res: Response) => {
     }
 };
 
-export const getTeamsWithfactions = async (req: Request, res: Response) => {
+export const getTeamsWithfactions: AppRequestHandler = async (_req, res) => {
     try {
         const teams = await team_service.getTeamsAll();
         Ok(res, { data: teams });
@@ -77,7 +87,7 @@ export const getTeamsWithfactions = async (req: Request, res: Response) => {
     }
 };
 
-export const modifyTeam = async (req: Request, res: Response) => {
+export const modifyTeam: AppRequestHandler<ModifyTeamBody> = async (req, res) => {
     try {
         const { teamID, teamName, teamMembers, factionID, type } = req.body;
 
@@ -93,7 +103,7 @@ export const modifyTeam = async (req: Request, res: Response) => {
     }
 };
 
-export const getTeamUsers = async (req: Request, res: Response) => {
+export const getTeamUsers: AppRequestHandler<unknown, TeamQuery> = async (req, res) => {
     const { teamId } = req.query;
 
     try {
@@ -107,7 +117,7 @@ export const getTeamUsers = async (req: Request, res: Response) => {
     }
 };
 
-export const getAllTeamsWithUsers = async (req: Request, res: Response) => {
+export const getAllTeamsWithUsers: AppRequestHandler = async (_req, res) => {
     try {
         const teamUsers = await team_service.getAllTeamsWithUsers();
         Ok(res, { data: teamUsers });
@@ -119,7 +129,7 @@ export const getAllTeamsWithUsers = async (req: Request, res: Response) => {
     }
 };
 
-export const getTeamFaction = async (req: Request, res: Response) => {
+export const getTeamFaction: AppRequestHandler<unknown, TeamQuery> = async (req, res) => {
     const { teamId } = req.query;
 
     try {
@@ -134,7 +144,7 @@ export const getTeamFaction = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteTeam = async (req: Request, res: Response) => {
+export const deleteTeam: AppRequestHandler<unknown, TeamQuery> = async (req, res) => {
     try {
         const { teamID } = req.query; // Assumes the teamID is passed as a parameter
 
@@ -150,38 +160,40 @@ export const deleteTeam = async (req: Request, res: Response) => {
     }
 };
 
-export const teamDistribution = async (req: Request, res: Response) => {
+export const teamDistribution: AppRequestHandler = async (_req, res) => {
     try {
-        const newStudents = await user_service.getUsersbyPermission('Nouveau');
-        const userswithteams = (await team_service.getUsersWithTeam()).map((entry: any) => entry.userId);
-        const teams = await team_service.getTeams();
+        const newStudents = (await user_service.getUsersbyPermission('Nouveau')) as StudentRow[];
+        const userswithteams = ((await team_service.getUsersWithTeam()) as TeamMemberRow[]).map(
+            (entry) => entry.userId,
+        );
+        const teams = (await team_service.getTeams()) as TeamRow[];
 
         // Filtrer les étudiants qui ne sont pas déjà assignés à une équipe
         const filteredStudents = newStudents
-            // .filter((student: any) => student.branch !== "RI") // A decommenter pour ignorer les RI dans la répartition automatique
-            .filter((student: any) => !userswithteams.includes(student.userId));
+            // .filter((student: StudentRow) => student.branch !== "RI") // A decommenter pour ignorer les RI dans la répartition automatique
+            .filter((student) => !userswithteams.includes(student.userId));
 
         // Filtrer les utilisateurs en fonction de la spécialité
         const tcStudents = filteredStudents
-            .filter((student: any) => student.branch === 'TC')
-            .map((student: any) => ({
+            .filter((student) => student.branch === 'TC')
+            .map((student) => ({
                 id: student.userId,
                 email: student.email,
                 branch: student.branch,
             }));
 
         const otherStudents = filteredStudents
-            // .filter((student: any) => student.branch !== "TC" && student.branch !== "RI" && student.branch !== "MM") A decommenter pour ignorer les RI dans la répartition automatique
-            .filter((student: any) => student.branch !== 'TC' && student.branch !== 'MM')
-            .map((student: any) => ({
+            // .filter((student: StudentRow) => student.branch !== "TC" && student.branch !== "RI" && student.branch !== "MM") A decommenter pour ignorer les RI dans la répartition automatique
+            .filter((student) => student.branch !== 'TC' && student.branch !== 'MM')
+            .map((student) => ({
                 id: student.userId,
                 email: student.email,
                 branch: student.branch,
             }));
 
         const PMOMStudents = filteredStudents
-            .filter((student: any) => student.branch == 'MM')
-            .map((student: any) => ({
+            .filter((student) => student.branch == 'MM')
+            .map((student) => ({
                 id: student.userId,
                 email: student.email,
                 branch: student.branch,
@@ -194,20 +206,20 @@ export const teamDistribution = async (req: Request, res: Response) => {
         const otherTeams = teams.filter((team) => team.type !== 'TC' && team.type !== 'MM');
 
         // Fonction pour assigner les utilisateurs à des équipes équilibrées
-        async function assignUsersToTeams(users: any, teams: any) {
+        async function assignUsersToTeams(users: Array<{ id: number }>, teams: TeamRow[]) {
             // Calculer la taille actuelle des équipes
             const teamSizes = await Promise.all(
-                teams.map(async (team: any) => {
+                teams.map(async (team) => {
                     const members = await team_service.getTeamUsers(team.teamId);
                     return {
                         teamId: team.teamId,
                         size: members.length,
-                    };
+                    } satisfies TeamSizeRow;
                 }),
             );
 
             // Trier les équipes par taille (ascendant)
-            teamSizes.sort((a: any, b: any) => a.size - b.size);
+            teamSizes.sort((a, b) => a.size - b.size);
 
             for (const user of users) {
                 // Assigner l'utilisateur à l'équipe avec le moins de membres
@@ -218,7 +230,7 @@ export const teamDistribution = async (req: Request, res: Response) => {
                 smallestTeam.size += 1;
 
                 // Réordonner les équipes pour garder la plus petite en premier
-                teamSizes.sort((a: any, b: any) => a.size - b.size);
+                teamSizes.sort((a, b) => a.size - b.size);
             }
         }
 

@@ -8,8 +8,12 @@ backend/uploads/
 backend/exports/
 backend/dist
 
+# Autres dossiers à ignorer
+.vscode/
+
 # Autres fichiers à ignorer
 .DS_Store
 *.log
 *.env
+*.pem
 google_credentials.json

@@ -1,5 +1,6 @@
 import {
     type CreateUserContactInformationRequest,
+    type NewUser,
     type User,
     type UserContactInformation,
     type UserOnboardingStatus,
@@ -7,6 +8,7 @@ import {
     type VssSubmissionRequest,
     type VssSubmissionResponse,
 } from '../../interfaces/user.interface';
+
 import api from '../api';
 
 export const getPermission = (): string | null => {
@@ -90,6 +92,11 @@ export const updateCurrentUser = async (data: Partial<User>) => {
 
 export const updateUserByAdmin = async (id: number, data: Partial<User>) => {
     const response = await api.patch(`/user/admin/user/${id}`, data);
+    return response.data;
+};
+
+export const createUserByAdmin = async (data: NewUser) => {
+    const response = await api.post(`/user/admin/user`, data);
     return response.data;
 };
 

@@ -100,6 +100,7 @@ export const Navbar = () => {
             to: '#',
             icon: CogIcon,
             children: [
+                { label: 'Bannis', to: '/admin/banned', rolesAllowed: ['Admin'] },
                 { label: 'Bus', to: '/admin/bus', rolesAllowed: ['Admin'] },
                 { label: 'Challenge', to: '/admin/challenge', rolesAllowed: ['Admin', 'Arbitre'] },
                 { label: 'Email', to: '/admin/email', rolesAllowed: ['Admin'] },
@@ -165,27 +166,53 @@ export const Navbar = () => {
                         UTT Integration
                     </NavLink>
 
-                    {/* Hamburger mobile */}
-                    <button
-                        onClick={() => setMenuOpen(!menuOpen)}
-                        className="lg:hidden p-2 focus:outline-none"
-                        aria-label="Toggle menu">
-                        {menuOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars4Icon className="w-6 h-6" />}
-                    </button>
+                {/* Hamburger mobile */}
+                <button
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    className="lg:hidden p-2 focus:outline-none"
+                    aria-label="Toggle menu">
+                    {menuOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars4Icon className="w-6 h-6" />}
+                </button>
 
-                    {/* Menu desktop */}
-                    <ul className="hidden lg:flex items-center space-x-6">
+                {/* Menu desktop */}
+                <ul className="hidden lg:flex items-center space-x-6">
+                    {navItems.map((item) =>
+                        canShowItem(item) ? (
+                            <li key={item.label} className="relative group">
+                                {item.children ? (
+                                    <Dropdown item={item} canShowItem={canShowItem} />
+                                ) : item.kind === 'action' ? (
+                                    <NavActionItem item={item} />
+                                ) : (
+                                    <MenuItem item={item} active={pathname === item.to} />
+                                )}
+                            </li>
+                        ) : null,
+                    )}
+                </ul>
+            </div>
+
+            {/* Menu mobile */}
+            <AnimatePresence>
+                {menuOpen && (
+                    <motion.ul
+                        initial={{ height: 0 }}
+                        animate={{ height: 'auto' }}
+                        exit={{ height: 0 }}
+                        className="lg:hidden bg-blue-700 overflow-hidden">
                         {navItems.map((item) =>
                             canShowItem(item) ? (
-                                <li key={item.label} className="relative group">
-                                    {item.children ? (
-                                        <Dropdown item={item} canShowItem={canShowItem} />
-                                    ) : item.kind === 'action' ? (
-                                        <NavActionItem item={item} />
+                                <Fragment key={item.label}>
+                                    {!item.children ? (
+                                        item.kind === 'action' ? (
+                                            <NavActionItem item={item} mobile />
+                                        ) : (
+                                            <MenuItem item={item} mobile />
+                                        )
                                     ) : (
                                         <MenuItem item={item} active={pathname === item.to} />
                                     )}
-                                </li>
+                                </Fragment>
                             ) : null,
                         )}
                     </ul>

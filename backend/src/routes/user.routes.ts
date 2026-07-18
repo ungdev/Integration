@@ -13,6 +13,7 @@ userRouter.get(
     checkRole('Admin', []),
     userController.getUserContactInformation,
 );
+userRouter.post('/admin/user', checkRole('Admin', []), userController.adminCreateUser);
 userRouter.get('/admin/getusers', checkRole('Admin', ['Respo CE']), userController.getUsersAdmin);
 userRouter.post('/admin/syncnewstudent', checkRole('Admin', []), userController.syncNewstudent);
 

@@ -1,9 +1,17 @@
-import { type Request, type Response } from 'express';
 import * as role_service from '../services/role.service';
 import { Error, Ok } from '../utils/responses';
+import type { AppRequestHandler } from '../types/http';
+import type {
+    PermissionBody,
+    AddRoleBody,
+    DeleteRoleBody,
+    PointsBody,
+    RoleParams,
+    UserRoleQuery,
+} from '../dto/role.dto';
 
 // 🎯 Préférences utilisateur
-export const updateUserPreferences = async (req: Request, res: Response) => {
+export const updateUserPreferences: AppRequestHandler<PermissionBody> = async (req, res) => {
     try {
         const userId = req.user?.userId;
         const { roleIds } = req.body;
@@ -20,7 +28,7 @@ export const updateUserPreferences = async (req: Request, res: Response) => {
     }
 };
 
-export const getUserPreferences = async (req: Request, res: Response) => {
+export const getUserPreferences: AppRequestHandler = async (req, res) => {
     try {
         const userId = req.user?.userId;
 
@@ -36,7 +44,7 @@ export const getUserPreferences = async (req: Request, res: Response) => {
 };
 
 // 👥 Utilisateurs par rôle
-export const getUsersByRoleHandler = async (req: Request, res: Response) => {
+export const getUsersByRoleHandler: AppRequestHandler<unknown, unknown, RoleParams> = async (req, res) => {
     try {
         const { roleName } = req.params;
         if (!roleName) Error(res, { msg: 'Nom du rôle requis' });
@@ -50,7 +58,7 @@ export const getUsersByRoleHandler = async (req: Request, res: Response) => {
 };
 
 // ➕ Ajouter rôle à utilisateur
-export const addRoleToUser = async (req: Request, res: Response) => {
+export const addRoleToUser: AppRequestHandler<AddRoleBody> = async (req, res) => {
     try {
         const { userId, roleIds } = req.body;
 
@@ -73,7 +81,7 @@ export const addRoleToUser = async (req: Request, res: Response) => {
 };
 
 // ❌ Supprimer rôle d'un utilisateur
-export const deleteRoleToUser = async (req: Request, res: Response) => {
+export const deleteRoleToUser: AppRequestHandler<DeleteRoleBody> = async (req, res) => {
     try {
         const { userId, roleId } = req.body;
 
@@ -90,7 +98,7 @@ export const deleteRoleToUser = async (req: Request, res: Response) => {
 };
 
 // 📋 Utilisateurs avec leurs rôles
-export const getUsersWithRoles = async (req: Request, res: Response) => {
+export const getUsersWithRoles: AppRequestHandler = async (_req, res) => {
     try {
         const users = await role_service.getUsersWithRoles();
         Ok(res, { data: users });
@@ -101,7 +109,7 @@ export const getUsersWithRoles = async (req: Request, res: Response) => {
 };
 
 // 📦 Tous les rôles
-export const getRoles = async (req: Request, res: Response) => {
+export const getRoles: AppRequestHandler = async (_req, res) => {
     try {
         const roles = await role_service.getRoles();
         Ok(res, { data: roles });
@@ -112,7 +120,7 @@ export const getRoles = async (req: Request, res: Response) => {
 };
 
 // 🔍 Rôles d'un utilisateur
-export const getUserRoles = async (req: Request, res: Response) => {
+export const getUserRoles: AppRequestHandler<unknown, UserRoleQuery> = async (req, res) => {
     try {
         const { userId } = req.query;
         if (!userId) Error(res, { msg: 'userId requis' });
@@ -130,7 +138,7 @@ export const getUserRoles = async (req: Request, res: Response) => {
 //
 
 // ➕ Ajouter des points
-export const addPointsToRole = async (req: Request, res: Response) => {
+export const addPointsToRole: AppRequestHandler<PointsBody> = async (req, res) => {
     try {
         const { roleId, points } = req.body;
 
@@ -147,7 +155,7 @@ export const addPointsToRole = async (req: Request, res: Response) => {
 };
 
 // ➖ Retirer des points
-export const removePointsFromRole = async (req: Request, res: Response) => {
+export const removePointsFromRole: AppRequestHandler<PointsBody> = async (req, res) => {
     try {
         const { roleId, points } = req.body;
 
@@ -164,7 +172,7 @@ export const removePointsFromRole = async (req: Request, res: Response) => {
 };
 
 // 📊 Points de tous les rôles
-export const getAllRolePoints = async (_req: Request, res: Response) => {
+export const getAllRolePoints: AppRequestHandler = async (_req, res) => {
     try {
         const roles = await role_service.getAllRolePoints();
         Ok(res, { data: roles });
@@ -175,7 +183,7 @@ export const getAllRolePoints = async (_req: Request, res: Response) => {
 };
 
 // 🔍 Points d'un rôle spécifique
-export const getRolePoints = async (req: Request, res: Response) => {
+export const getRolePoints: AppRequestHandler<unknown, unknown, { roleId: string }> = async (req, res) => {
     try {
         const { roleId } = req.params;
         if (!roleId) Error(res, { msg: 'roleId requis' });

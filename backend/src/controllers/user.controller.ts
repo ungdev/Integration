@@ -67,7 +67,7 @@ export const getCurrentUser: AppRequestHandler = async (req, res) => {
     }
 };
 
-export const getUserContactInformation = async (req: Request, res: Response) => {
+export const getUserContactInformation: AppRequestHandler = async (req, res) => {
     const { userId } = req.params;
 
     try {
@@ -78,30 +78,30 @@ export const getUserContactInformation = async (req: Request, res: Response) => 
     }
 };
 
-export const createUserContactInformation = async (req: Request, res: Response) => {
+export const createUserContactInformation: AppRequestHandler<UserContactInformation> = async (req, res) => {
     const userId = req.user?.userId;
-    const contact: UserContactInformation = req.body;
+    const contact = req.body;
 
     try {
-        const result = await user_service.createUserContactInformation(parseInt(userId), contact);
+        const result = await user_service.createUserContactInformation(userId, contact);
         Ok(res, { msg: 'Informations de contact créées', data: result });
     } catch {
         Error(res, { msg: 'Erreur lors de la création des informations de contact.' });
     }
 };
 
-export const getCurrentUserOnboardingStatus = async (req: Request, res: Response) => {
+export const getCurrentUserOnboardingStatus: AppRequestHandler = async (req, res) => {
     const userId = req.user?.userId;
 
     try {
-        const status = await user_service.getCurrentUserOnboardingStatus(parseInt(userId));
+        const status = await user_service.getCurrentUserOnboardingStatus(userId);
         Ok(res, { data: status });
     } catch {
         Error(res, { msg: "Erreur lors de la récupération du statut d'onboarding." });
     }
 };
 
-export const getVssQuestionnaire = async (_req: Request, res: Response) => {
+export const getVssQuestionnaire: AppRequestHandler = async (req, res) => {
     try {
         const questionnaire = await user_service.getVssQuestionnaire();
         Ok(res, { data: questionnaire });
@@ -110,12 +110,12 @@ export const getVssQuestionnaire = async (_req: Request, res: Response) => {
     }
 };
 
-export const submitVssQuestionnaire = async (req: Request, res: Response) => {
+export const submitVssQuestionnaire: AppRequestHandler<user_service.VssSubmissionPayload> = async (req, res) => {
     const userId = req.user?.userId;
     const payload = req.body;
 
     try {
-        const result = await user_service.submitVssQuestionnaire(parseInt(userId), payload);
+        const result = await user_service.submitVssQuestionnaire(userId, payload);
         Ok(res, { data: result });
     } catch {
         Error(res, { msg: 'Erreur lors de la soumission du questionnaire VSS.' });

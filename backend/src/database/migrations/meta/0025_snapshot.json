@@ -1,6 +1,6 @@
 {
-  "id": "c76925a0-a42e-42c9-8f72-0d914fe74da9",
-  "prevId": "f2813605-996e-4461-8e87-8b135d3eefd3",
+  "id": "f2813605-996e-4461-8e87-8b135d3eefd3",
+  "prevId": "77c4b2f6-c24d-4eb9-80a9-42fb8b9ef380",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -453,14 +453,6 @@
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
-        },
-        "vss_form": {
-          "name": "vss_form",
-          "type": "vss_form",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'pending'"
         }
       },
       "indexes": {},
@@ -475,44 +467,6 @@
           ]
         }
       },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.vssqcmquestion": {
-      "name": "vssqcmquestion",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "question": {
-          "name": "question",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "points": {
-          "name": "points",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "type": {
-          "name": "type",
-          "type": "question_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -1359,78 +1313,9 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
-    },
-    "public.vssqcmanswer": {
-      "name": "vssqcmanswer",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "questionid": {
-          "name": "questionid",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "answer": {
-          "name": "answer",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "is_correct": {
-          "name": "is_correct",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "vssqcmanswer_questionid_vssqcmquestion_id_fk": {
-          "name": "vssqcmanswer_questionid_vssqcmquestion_id_fk",
-          "tableFrom": "vssqcmanswer",
-          "tableTo": "vssqcmquestion",
-          "columnsFrom": [
-            "questionid"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
     }
   },
-  "enums": {
-    "public.vss_form": {
-      "name": "vss_form",
-      "schema": "public",
-      "values": [
-        "pending",
-        "validated",
-        "rejected"
-      ]
-    },
-    "public.question_type": {
-      "name": "question_type",
-      "schema": "public",
-      "values": [
-        "single_choice",
-        "multiple_choice"
-      ]
-    }
-  },
+  "enums": {},
   "schemas": {},
   "sequences": {},
   "roles": {},

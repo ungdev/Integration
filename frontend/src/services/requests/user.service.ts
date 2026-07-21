@@ -1,4 +1,13 @@
-import {
+import type {
+    CreateUserContactInformationRequest,
+    NewUser,
+    User,
+    UserContactInformation,
+    UserOnboardingStatus,
+    VssQuestionnaireQuestion,
+    VssSubmissionRequest,
+    VssSubmissionResponse,
+} from '../../interfaces/user.interface';
     type CreateUserContactInformationRequest,
     type NewUser,
     type User,

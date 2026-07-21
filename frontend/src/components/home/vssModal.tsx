@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { type VssQuestionnaireQuestion, type VssSubmissionResponse } from '../../interfaces/user.interface';
+import type { VssQuestionnaireQuestion, VssSubmissionResponse } from '../../interfaces/user.interface';
 import { getVssQuestionnaire, submitVssQuestionnaire } from '../../services/requests/user.service';
 import { Button } from '../ui/button';
 import Modal from '../ui/modal';

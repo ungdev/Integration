@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { type SingleValue } from 'react-select';
 import Swal from 'sweetalert2';
 
-import { type User,type UserContactInformation } from '../../interfaces/user.interface';
+import type { User, UserContactInformation } from '../../interfaces/user.interface';
 import { renewTokenUser, requestPasswordUser } from '../../services/requests/auth.service';
 import {
     createUserByAdmin,

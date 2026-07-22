@@ -89,8 +89,10 @@ export const toggleTentConfirmation: AppRequestHandler<ToggleTentBody> = async (
         const emailOptions = {
             from: email_from,
             to: [user1.email, user2.email],
-            subject: confirmed ? '🎉 Votre tente a été validée !' : '⛺ Votre tente a été dévalidée',
-            text: '', // optionnel
+            subject: confirmed
+                ? "🎉 Votre tente a été validée !"
+                : "⛺ Votre tente a été invalidée",
+            text: "", // optionnel
             html: htmlEmail,
         };
 
@@ -98,7 +100,9 @@ export const toggleTentConfirmation: AppRequestHandler<ToggleTentBody> = async (
         await sendEmail(emailOptions);
 
         Ok(res, {
-            msg: confirmed ? 'Tente validée et email envoyé.' : 'Tente dévalidée et email envoyé.',
+            msg: confirmed
+                ? "Tente validée et email envoyé."
+                : "Tente invalidée et email envoyé.",
         });
     } catch (err: any) {
         console.error(err);

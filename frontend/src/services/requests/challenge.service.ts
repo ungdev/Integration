@@ -1,4 +1,26 @@
+import { type AxiosError } from "axios";
+
 import api from "../api";
+
+interface ApiErrorResponse {
+    message?: string;
+    error?: string;
+}
+
+type ApiErrorWithStatus = Error & { status?: number };
+
+const buildApiError = (error: unknown): ApiErrorWithStatus => {
+    const axiosError = error as AxiosError<ApiErrorResponse>;
+    const message =
+        axiosError.response?.data?.message ||
+        axiosError.response?.data?.error ||
+        axiosError.message ||
+        "Une erreur est survenue lors de la requête.";
+
+    const apiError = new Error(message) as ApiErrorWithStatus;
+    apiError.status = axiosError.response?.status;
+    return apiError;
+};
 
 // Récupérer tous les challenges (utilisateur ou admin, en fonction du token)
 export const getAllChallenges = async () => {
@@ -44,12 +66,16 @@ export const validateChallenge = async ({
     type: "user" | "team" | "faction";
     targetId: number;
 }) => {
-    const response = await api.post("challenge/admin/validate", {
-        challengeId,
-        type,
-        targetId,
-    });
-    return response.data;
+    try {
+        const response = await api.post("challenge/admin/validate", {
+            challengeId,
+            type,
+            targetId,
+        });
+        return response.data;
+    } catch (error) {
+        throw buildApiError(error);
+    }
 };
 
 export const unvalidateChallenge = async ({
@@ -63,13 +89,17 @@ export const unvalidateChallenge = async ({
     teamId: number;
     userId: number;
 }) => {
-    const response = await api.post("challenge/admin/unvalidate", {
-        challengeId,
-        factionId,
-        teamId,
-        userId
-    });
-    return response.data;
+    try {
+        const response = await api.post("challenge/admin/unvalidate", {
+            challengeId,
+            factionId,
+            teamId,
+            userId
+        });
+        return response.data;
+    } catch (error) {
+        throw buildApiError(error);
+    }
 };
 
 // Supprimer un challenge (ADMIN uniquement)

@@ -131,5 +131,5 @@ export const toggleTentConfirmation = async (
             )
         );
 
-    return { success: true, message: confirmed ? "Tente validée." : "Tente dévalidée." };
+    return { success: true, message: confirmed ? "Tente validée." : "Tente invalidée." };
 };

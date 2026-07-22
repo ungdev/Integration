@@ -31,6 +31,7 @@ export const AdminTeamManagement = () => {
     const [editName, setEditName] = useState<string>('');
     const [editType, setEditType] = useState<string>('');
     const [editFactionId, setEditFactionId] = useState<number | null>(null);
+    const [editSocialLink, setEditSocialLink] = useState<string>('');
     const [editLeaders, setEditLeaders] = useState<number[]>([]);
     const [editNewMembers, setEditNewMembers] = useState<number[]>([]);
 
@@ -72,6 +73,7 @@ export const AdminTeamManagement = () => {
                 setEditName(team.name);
                 setEditType(team.type);
                 setEditFactionId(faction || null);
+                setEditSocialLink(team.socialLink || '');
                 setEditLeaders(members.filter((m) => m.permission !== 'Nouveau').map((m) => m.userId));
                 setEditNewMembers(members.filter((m) => m.permission === 'Nouveau').map((m) => m.userId));
             }
@@ -101,6 +103,7 @@ export const AdminTeamManagement = () => {
                 teamID: selectedTeamId,
                 teamName: editName,
                 factionID: editFactionId,
+                socialLink: editSocialLink,
                 teamMembers: [...editLeaders, ...editNewMembers],
                 type: editType,
             });
@@ -251,6 +254,12 @@ export const AdminTeamManagement = () => {
                             options={factions.map((f) => ({ value: f.factionId, label: f.name }))}
                             className="w-full md:w-96 mx-auto"
                             placeholder="Sélectionner une faction"
+                        />
+                        <Input
+                            value={editSocialLink}
+                            onChange={(e) => setEditSocialLink(e.target.value)}
+                            className="w-full md:w-96 mx-auto"
+                            placeholder="Lien groupe de discussion (https://...)"
                         />
 
                         <div className="w-full md:w-96 mx-auto">

@@ -24,3 +24,10 @@ export interface PermanenceEmailData extends TemplateData {
     permLocation: string;
     permDescription: string;
 }
+
+export interface TeamAssignmentEmailData extends TemplateData {
+    teamName: string;
+    factionName: string;
+}
+
+export type TemplatesRecordByNumber = Record<number, string>;

@@ -30,6 +30,7 @@ export type StudentRow = {
     userId: number;
     email: string;
     branch: string;
+    male?: boolean;
 };
 
 export type TeamAssignmentNotification = {
@@ -43,6 +44,12 @@ export type TeamRow = {
     description: string;
     type: string;
     socialLink: string;
+    riCompatible: boolean;
+};
+
+export type TeamDistributionState = TeamRow & {
+    size: number;
+    girlsCount: number;
 };
 
 export type TeamSizeRow = {

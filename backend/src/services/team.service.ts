@@ -1,4 +1,4 @@
-import { eq, inArray } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { db } from '../database/db';
 import { factionSchema } from '../schemas/Basic/faction.schema';
 import { teamSchema } from '../schemas/Basic/team.schema';
@@ -7,13 +7,10 @@ import { teamFactionSchema } from '../schemas/Relational/teamfaction.schema';
 import { teamShotgunSchema } from '../schemas/Relational/teamshotgun.schema';
 import { userTeamsSchema } from '../schemas/Relational/userteams.schema';
 import { getFaction } from './faction.service';
-import { generateEmailHtml, sendEmail } from './email.service';
-import * as team_service from '../services/team.service';
 import * as user_service from '../services/user.service';
-import type { StudentRow, TeamMemberRow, TeamRow, TeamSizeRow, TeamAssignmentNotification } from '../dto/team.dto';
-import { email_from, email_concurrency } from '../utils/secret';
-import type { TeamAssignmentEmailData } from '../../types/email';
-import getPLimit from '../utils/pLimit';
+import type { StudentRow, TeamMemberRow, TeamRow, TeamAssignmentNotification } from '../dto/team.dto';
+import sendEmailToNewAssignedStudents from './team/email.team';
+import assignUsersToTeams from './team/assignation.team';
 
 export const createTeam = async (teamName: string, members: number[]) => {
     const newTeam = await db.insert(teamSchema).values({ name: teamName }).returning();
@@ -69,6 +66,7 @@ export const getTeams = async () => {
             description: teamSchema.description,
             type: teamSchema.type,
             socialLink: teamSchema.social_link,
+            riCompatible: teamSchema.ri_compatible,
         })
         .from(teamSchema);
 
@@ -257,12 +255,6 @@ export const deleteTeam = async (teamID: number) => {
     return deletedTeam[0]; // Retourne les informations de l'équipe supprimée
 };
 
-export const addTeamMember = async (teamId: number, userId: number) => {
-    const newTeamMember = await db.insert(userTeamsSchema).values({ user_id: userId, team_id: teamId });
-
-    return newTeamMember;
-};
-
 export const getUsersWithTeam = async () => {
     try {
         const userswithteam = await db
@@ -299,12 +291,10 @@ export const getTeam = async (teamId: any) => {
 export const teamDistribution = async () => {
     const newStudents = (await user_service.getUsersbyPermission('Nouveau')) as StudentRow[];
     const userswithteams = ((await getUsersWithTeam()) as TeamMemberRow[]).map((entry) => entry.userId);
-    const teams = (await team_service.getTeams()) as TeamRow[];
+    const teams = (await getTeams()) as TeamRow[];
 
     // Filtrer les étudiants qui ne sont pas déjà assignés à une équipe
-    const filteredStudents = newStudents
-        // .filter((student: StudentRow) => student.branch !== "RI") // A decommenter pour ignorer les RI dans la répartition automatique
-        .filter((student) => !userswithteams.includes(student.userId));
+    const filteredStudents = newStudents.filter((student) => !userswithteams.includes(student.userId));
 
     // Filtrer les utilisateurs en fonction de la spécialité
     const tcStudents: StudentRow[] = filteredStudents
@@ -313,11 +303,11 @@ export const teamDistribution = async () => {
             userId: student.userId,
             email: student.email,
             branch: student.branch,
+            male: student.male,
         }));
 
-    const otherStudents: StudentRow[] = filteredStudents
-        // .filter((student: StudentRow) => student.branch !== "TC" && student.branch !== "RI" && student.branch !== "MM") A decommenter pour ignorer les RI dans la répartition automatique
-        .filter((student) => student.branch !== 'TC' && student.branch !== 'MM')
+    const RIStudents: StudentRow[] = filteredStudents
+        .filter((student) => student.branch === 'RI')
         .map((student) => ({
             userId: student.userId,
             email: student.email,
@@ -330,137 +320,48 @@ export const teamDistribution = async () => {
             userId: student.userId,
             email: student.email,
             branch: student.branch,
+            male: student.male,
+        }));
+
+    const otherStudents: StudentRow[] = filteredStudents
+        .filter((student) => student.branch !== 'TC' && student.branch !== 'RI' && student.branch !== 'MM')
+        .map((student) => ({
+            userId: student.userId,
+            email: student.email,
+            branch: student.branch,
+            male: student.male,
         }));
 
     // Filtrer les équipes en fonction de leur type
     const tcTeams = teams.filter((team) => team.type === 'TC');
     const PMOMTeams = teams.filter((team) => team.type === 'MM');
-    // const otherTeams = teams.filter(team => team.type !== "TC" && team.type !== "RI" && team.type !== "MM"); A decommenter pour ignorer les RI dans la répartition automatique
     const otherTeams = teams.filter((team) => team.type !== 'TC' && team.type !== 'MM');
+    const RICompatibleTeams = teams.filter((team) => team.riCompatible === true);
 
     const notificationsToSend: TeamAssignmentNotification[] = [];
-
-    // Fonction pour assigner les utilisateurs à des équipes équilibrées
-    async function assignUsersToTeams(users: StudentRow[], teams: TeamRow[]) {
-        if (teams.length === 0) return;
-
-        // Calculer la taille actuelle des équipes
-        const teamSizes = await Promise.all(
-            teams.map(async (team) => {
-                const members = await getTeamUsers(team.teamId);
-                return {
-                    teamId: team.teamId,
-                    size: members.length,
-                    teamName: team.name,
-                } satisfies TeamSizeRow;
-            }),
-        );
-
-        // Trier les équipes par taille (ascendant)
-        teamSizes.sort((a, b) => a.size - b.size);
-
-        for (const user of users) {
-            // Assigner l'utilisateur à l'équipe avec le moins de membres
-            const smallestTeam = teamSizes[0];
-            await addTeamMember(smallestTeam.teamId, user.userId);
-
-            notificationsToSend.push({
-                email: user.email,
-                teamId: smallestTeam.teamId,
-            });
-
-            // Mettre à jour la taille de l'équipe après l'ajout
-            smallestTeam.size += 1;
-
-            // Réordonner les équipes pour garder la plus petite en premier
-            teamSizes.sort((a, b) => a.size - b.size);
-        }
-    }
+    const addNotification = async (notification: TeamAssignmentNotification) => {
+        notificationsToSend.push(notification);
+    };
 
     // Assigner les utilisateurs TC aux équipes TC
     if (tcStudents && tcTeams) {
-        await assignUsersToTeams(tcStudents, tcTeams);
+        await assignUsersToTeams(tcStudents, tcTeams, addNotification);
     }
 
     // Assigner les autres utilisateurs aux équipes non-TC
     if (otherStudents && otherTeams) {
-        await assignUsersToTeams(otherStudents, otherTeams);
+        await assignUsersToTeams(otherStudents, otherTeams, addNotification);
+    }
+
+    // Assigner les utilisateurs RI aux équipes compatibles RI
+    if (RIStudents && RICompatibleTeams) {
+        await assignUsersToTeams(RIStudents, RICompatibleTeams, addNotification);
     }
 
     //Assigner les utilisateurs MM aux équipes MM
     if (PMOMStudents && PMOMTeams) {
-        await assignUsersToTeams(PMOMStudents, PMOMTeams);
+        await assignUsersToTeams(PMOMStudents, PMOMTeams, addNotification);
     }
 
     sendEmailToNewAssignedStudents(notificationsToSend);
-};
-
-const sendEmailToNewAssignedStudents = async (notifications: TeamAssignmentNotification[]) => {
-    if (notifications.length === 0) {
-        return;
-    }
-
-    // Récupération des équipes uniques
-    const uniqueTeamIds = [...new Set(notifications.map((n) => n.teamId))];
-
-    // Récupération de toutes les équipes en DB
-    const teams = await db
-        .select({
-            teamId: teamSchema.id,
-            teamName: teamSchema.name,
-            factionName: factionSchema.name,
-        })
-        .from(teamSchema)
-        .innerJoin(teamFactionSchema, eq(teamFactionSchema.team_id, teamSchema.id))
-        .innerJoin(factionSchema, eq(factionSchema.id, teamFactionSchema.faction_id))
-        .where(inArray(teamSchema.id, uniqueTeamIds));
-
-    // Cache de données pour éviter les executions multiples de fonctions
-    const teamCache = new Map<number, TeamAssignmentEmailData>();
-    const htmlCache = new Map<number, string>();
-
-    // Génération des datas et du template mail pour chaque équipe concernée
-    for (const team of teams) {
-        const data = {
-            teamName: team.teamName,
-            factionName: team.factionName,
-        };
-
-        teamCache.set(team.teamId, data);
-
-        htmlCache.set(team.teamId, generateEmailHtml('templateNotifyTeamAssignment', data));
-    }
-
-    const pLimit = await getPLimit();
-    const limit = pLimit(Number(email_concurrency));
-
-    const results = await Promise.allSettled(
-        notifications.map((notification) =>
-            limit(async () => {
-                const html = htmlCache.get(notification.teamId);
-
-                if (!html) {
-                    throw new Error(`No email template found for team ${notification.teamId}`);
-                }
-
-                await sendEmail({
-                    from: email_from,
-                    to: [notification.email],
-                    subject: '[EN BELOW] Tu as été affecté à une équipe !',
-                    text: '',
-                    html,
-                });
-            }),
-        ),
-    );
-
-    // Log des erreurs
-    const failures = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
-
-    if (failures.length > 0) {
-        console.error(
-            `${failures.length} email(s) failed to send.`,
-            failures.map((f) => f.reason),
-        );
-    }
 };

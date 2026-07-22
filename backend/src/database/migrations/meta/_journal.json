@@ -176,6 +176,13 @@
       "when": 1783776285772,
       "tag": "0024_optimal_garia",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1784742510283,
+      "tag": "0025_perfect_ulik",
+      "breakpoints": true
     }
   ]
 }

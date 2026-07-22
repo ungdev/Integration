@@ -46,6 +46,7 @@ const sendEmailToNewAssignedStudents = async (notifications: TeamAssignmentNotif
         .select({
             teamId: teamSchema.id,
             teamName: teamSchema.name,
+            socialLink: teamSchema.social_link,
             factionName: factionSchema.name,
         })
         .from(teamSchema)
@@ -62,6 +63,7 @@ const sendEmailToNewAssignedStudents = async (notifications: TeamAssignmentNotif
         const data = {
             teamName: team.teamName,
             factionName: team.factionName,
+            teamSocialLink: team.socialLink,
         };
 
         teamCache.set(team.teamId, data);

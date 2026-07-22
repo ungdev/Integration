@@ -27,6 +27,7 @@ export interface PermanenceEmailData extends TemplateData {
 
 export interface TeamAssignmentEmailData extends TemplateData {
     teamName: string;
+    teamSocialLink: string;
     factionName: string;
 }
 

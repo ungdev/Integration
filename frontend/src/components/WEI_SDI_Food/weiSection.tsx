@@ -23,7 +23,7 @@ export const WeiSection = () => {
     const fetchOnboardingStatus = async () => {
         try {
             const onboardingStatus = await getCurrentUserOnboardingStatus();
-            setHasContactInformation(onboardingStatus.hasUrgencyContactInformation);
+            setHasContactInformation(onboardingStatus.hasemergencyContactInformation);
             setHasVssForm(onboardingStatus.vss_form == 'validated');
             setNeedsVssForm(onboardingStatus.needsVssForm);
         } catch (error) {

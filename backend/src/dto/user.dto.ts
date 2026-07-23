@@ -1,3 +1,5 @@
+import { type VssSubmissionAnswer } from '../services/user.service';
+
 export interface AdminCreateUserDto {
     firstName: string;
     lastName: string;
@@ -22,4 +24,13 @@ export type SyncBody = {
 export type ProfileBody = {
     branch: string;
     contact: string;
+};
+
+export type CreateUserContactInformationDto = {
+    emergency_contact_name: string;
+    emergency_contact_phone: string;
+};
+
+export type VssSubmissionPayload = {
+    answers: VssSubmissionAnswer[];
 };

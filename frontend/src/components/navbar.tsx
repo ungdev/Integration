@@ -44,7 +44,7 @@ export const Navbar = () => {
         const fetchOnboardingStatus = async () => {
             try {
                 const onboardingStatus = await getCurrentUserOnboardingStatus();
-                setHasContactInformation(onboardingStatus.hasUrgencyContactInformation);
+                setHasContactInformation(onboardingStatus.hasemergencyContactInformation);
                 setNeedsVssForm(onboardingStatus.needsVssForm);
             } catch (error) {
                 console.error("Erreur lors de la récupération du statut d'onboarding :", error);

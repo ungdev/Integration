@@ -8,15 +8,6 @@ import type {
     VssSubmissionRequest,
     VssSubmissionResponse,
 } from '../../interfaces/user.interface';
-    type CreateUserContactInformationRequest,
-    type NewUser,
-    type User,
-    type UserContactInformation,
-    type UserOnboardingStatus,
-    type VssQuestionnaireQuestion,
-    type VssSubmissionRequest,
-    type VssSubmissionResponse,
-} from '../../interfaces/user.interface';
 import api from '../api';
 
 export const getPermission = (): string | null => {

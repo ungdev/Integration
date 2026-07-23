@@ -7,11 +7,11 @@ import { Input } from '../ui/input';
 import Modal from '../ui/modal';
 import VssModal from './vssModal';
 
-type FlowStep = 'idle' | 'loading' | 'urgency' | 'vss';
+type FlowStep = 'idle' | 'loading' | 'emergency' | 'vss';
 
-function UrgencyModal() {
+function EmergencyModal() {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [form, setForm] = useState({ urgency_contact_name: '', urgency_contact_phone: '' });
+    const [form, setForm] = useState({ emergency_contact_name: '', emergency_contact_phone: '' });
     const [flowStep, setFlowStep] = useState<FlowStep>('idle');
     const [error, setError] = useState<string | null>(null);
 
@@ -20,7 +20,7 @@ function UrgencyModal() {
     useEffect(() => {
         if (!isLogin) {
             setFlowStep('idle');
-            setForm({ urgency_contact_name: '', urgency_contact_phone: '' });
+            setForm({ emergency_contact_name: '', emergency_contact_phone: '' });
             setError(null);
             return;
         }
@@ -38,8 +38,8 @@ function UrgencyModal() {
                     return;
                 }
 
-                if (!status.hasUrgencyContactInformation) {
-                    setFlowStep('urgency');
+                if (!status.hasemergencyContactInformation) {
+                    setFlowStep('emergency');
                     return;
                 }
 
@@ -52,7 +52,7 @@ function UrgencyModal() {
                 setSearchParams({});
             } catch {
                 if (!cancelled) {
-                    setFlowStep('urgency');
+                    setFlowStep('emergency');
                     setError('Impossible de récupérer le statut du formulaire.');
                 }
             }
@@ -68,7 +68,7 @@ function UrgencyModal() {
     const closeFlow = () => {
         setSearchParams({});
         setFlowStep('idle');
-        setForm({ urgency_contact_name: '', urgency_contact_phone: '' });
+        setForm({ emergency_contact_name: '', emergency_contact_phone: '' });
         setError(null);
     };
 
@@ -98,7 +98,7 @@ function UrgencyModal() {
 
             <Modal
                 title="Formulaire VSS et Urgence"
-                visible={isLogin && flowStep === 'urgency'}
+                visible={isLogin && flowStep === 'emergency'}
                 onCancel={closeFlow}
                 buttons={null}>
                 <div className="flex flex-col gap-4">
@@ -124,13 +124,13 @@ function UrgencyModal() {
                     )}
                     <Input
                         placeholder="Nom du contact d'urgence"
-                        value={form.urgency_contact_name}
-                        onChange={(e) => setForm({ ...form, urgency_contact_name: e.target.value })}
+                        value={form.emergency_contact_name}
+                        onChange={(e) => setForm({ ...form, emergency_contact_name: e.target.value })}
                     />
                     <Input
                         placeholder="Téléphone du contact d'urgence"
-                        value={form.urgency_contact_phone}
-                        onChange={(e) => setForm({ ...form, urgency_contact_phone: e.target.value })}
+                        value={form.emergency_contact_phone}
+                        onChange={(e) => setForm({ ...form, emergency_contact_phone: e.target.value })}
                     />
                     <div className="flex flex-wrap items-center justify-end gap-3">
                         <Button variant="secondary" onClick={closeFlow}>
@@ -152,4 +152,4 @@ function UrgencyModal() {
     );
 }
 
-export default UrgencyModal;
+export default EmergencyModal;

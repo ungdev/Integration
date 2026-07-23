@@ -13,17 +13,17 @@ export interface User {
 
 export interface UserContactInformation {
     userId: number;
-    urgency_contact_name: string;
-    urgency_contact_phone: string;
+    emergency_contact_name: string;
+    emergency_contact_phone: string;
 }
 
 export interface CreateUserContactInformationRequest {
-    urgency_contact_name: string;
-    urgency_contact_phone: string;
+    emergency_contact_name: string;
+    emergency_contact_phone: string;
 }
 
 export interface UserOnboardingStatus {
-    hasUrgencyContactInformation: boolean;
+    hasemergencyContactInformation: boolean;
     vss_form: 'pending' | 'toretry' | 'validated' | 'rejected';
     needsVssForm: boolean;
 }

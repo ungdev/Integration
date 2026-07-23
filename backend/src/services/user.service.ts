@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import * as randomstring from 'randomstring';
 import { db } from '../database/db'; // Import de la connexion PostgreSQL
-import type { AdminCreateUserDto } from '../dto/user.dto';
+import type { AdminCreateUserDto, CreateUserContactInformationDto, VssSubmissionPayload } from '../dto/user.dto';
 import { type User, userSchema } from '../schemas/Basic/user.schema';
 import { vssqcmquestionSchema } from '../schemas/Basic/vssqcmquestion.schema';
 import { vssqcmanswerSchema } from '../schemas/Relational/vssqcmanswer.schema';
@@ -15,7 +15,6 @@ import { getFaction } from './faction.service';
 import { getUserRoles } from './role.service';
 import { getTeam, getTeamFaction, getUserTeam } from './team.service';
 import { userInformationSchema } from '../schemas/Relational/userinformation.schema';
-import { type UserContactInformation } from '../../types/user';
 import { addUserToRespondentStudentsList } from '../utils/billetweb';
 import { generateEmailHtml, sendEmail } from './email.service';
 import { email_from } from '../utils/secret';
@@ -36,10 +35,6 @@ export type VssQuestionnaireQuestion = {
 export type VssSubmissionAnswer = {
     questionId: number;
     answerIds: number[];
-};
-
-export type VssSubmissionPayload = {
-    answers: VssSubmissionAnswer[];
 };
 
 // Fonction pour récupérer un utilisateur par email
@@ -261,8 +256,8 @@ export const getUserContactInformation = async (userId: number) => {
         const user = await db
             .select({
                 userId: userInformationSchema.user_id,
-                urgency_contact_name: userInformationSchema.urgency_contact_name,
-                urgency_contact_phone: userInformationSchema.urgency_contact_phone,
+                emergency_contact_name: userInformationSchema.emergency_contact_name,
+                emergency_contact_phone: userInformationSchema.emergency_contact_phone,
             })
             .from(userInformationSchema)
             .where(eq(userInformationSchema.user_id, userId));
@@ -273,12 +268,12 @@ export const getUserContactInformation = async (userId: number) => {
     }
 };
 
-export const createUserContactInformation = async (userId: number, contact: UserContactInformation) => {
+export const createUserContactInformation = async (userId: number, contact: CreateUserContactInformationDto) => {
     try {
         const newContactInfo = {
             user_id: userId,
-            urgency_contact_name: contact.urgency_contact_name,
-            urgency_contact_phone: contact.urgency_contact_phone,
+            emergency_contact_name: contact.emergency_contact_name,
+            emergency_contact_phone: contact.emergency_contact_phone,
         };
 
         const result = await db
@@ -287,8 +282,8 @@ export const createUserContactInformation = async (userId: number, contact: User
             .onConflictDoUpdate({
                 target: userInformationSchema.user_id,
                 set: {
-                    urgency_contact_name: contact.urgency_contact_name,
-                    urgency_contact_phone: contact.urgency_contact_phone,
+                    emergency_contact_name: contact.emergency_contact_name,
+                    emergency_contact_phone: contact.emergency_contact_phone,
                 },
             })
             .returning();
@@ -318,7 +313,7 @@ export const getCurrentUserOnboardingStatus = async (userId: number) => {
         const vssForm = user?.vss_form ?? 'pending';
 
         return {
-            hasUrgencyContactInformation: Boolean(contactInformation),
+            hasemergencyContactInformation: Boolean(contactInformation),
             vss_form: vssForm,
             needsVssForm: vssForm === 'pending' || vssForm === 'toretry',
         };

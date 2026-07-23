@@ -282,20 +282,19 @@ export const AdminUser = () => {
                         </CardTitle>
 
                         <div className="space-y-3 mt-4">
-                            <Input 
-                                name="Urgency Contact Name" 
-                                value={contactInformation.urgency_contact_name || ''} 
-                                disabled 
-                                placeholder="Nom du contact d'urgence" 
+                            <Input
+                                name="emergency Contact Name"
+                                value={contactInformation.emergency_contact_name || ''}
+                                disabled
+                                placeholder="Nom du contact d'urgence"
                             />
-                            <Input 
-                                name="Urgency Contact Phone" 
-                                value={contactInformation.urgency_contact_phone || ''} 
-                                disabled 
-                                placeholder="Téléphone du contact d'urgence" 
+                            <Input
+                                name="emergency Contact Phone"
+                                value={contactInformation.emergency_contact_phone || ''}
+                                disabled
+                                placeholder="Téléphone du contact d'urgence"
                             />
                         </div>
-                        
                     </CardHeader>
                 </Card>
             )}

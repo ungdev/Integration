@@ -1,7 +1,14 @@
-import type { AdminCreateUserDto, PermissionParams, ProfileBody, SyncBody, UserIdParams } from '../dto/user.dto';
+import type {
+    AdminCreateUserDto,
+    CreateUserContactInformationDto,
+    PermissionParams,
+    ProfileBody,
+    SyncBody,
+    UserIdParams,
+    VssSubmissionPayload,
+} from '../dto/user.dto';
 import * as user_service from '../services/user.service';
 import { Error, Ok } from '../utils/responses';
-import { type UserContactInformation } from '../../types/user';
 import type { AppRequestHandler } from '../types/http';
 
 export const getUsersAdmin: AppRequestHandler = async (_req, res) => {
@@ -78,7 +85,7 @@ export const getUserContactInformation: AppRequestHandler = async (req, res) => 
     }
 };
 
-export const createUserContactInformation: AppRequestHandler<UserContactInformation> = async (req, res) => {
+export const createUserContactInformation: AppRequestHandler<CreateUserContactInformationDto> = async (req, res) => {
     const userId = req.user?.userId;
     const contact = req.body;
 
@@ -110,7 +117,7 @@ export const getVssQuestionnaire: AppRequestHandler = async (req, res) => {
     }
 };
 
-export const submitVssQuestionnaire: AppRequestHandler<user_service.VssSubmissionPayload> = async (req, res) => {
+export const submitVssQuestionnaire: AppRequestHandler<VssSubmissionPayload> = async (req, res) => {
     const userId = req.user?.userId;
     const payload = req.body;
 

@@ -1,11 +1,13 @@
 import * as discord_service from '../services/discord.service';
-import { Error, Ok } from '../utils/responses';
+import { Error, Ok, ServiceUnavailable } from '../utils/responses';
 import type { AppRequestHandler } from '../types/http';
 import type { DiscordBody } from '../dto/discord.dto';
 
 export const createChallenge: AppRequestHandler<DiscordBody> = async (req, res) => {
     const { code } = req.body;
     const userId = req.user?.userId;
+
+    return ServiceUnavailable(res, { msg: 'Synchronisation Discord désactivée.' });
 
     if (!code) {
         Error(res, { msg: "Code manquant dans l'URL" });
@@ -19,6 +21,6 @@ export const createChallenge: AppRequestHandler<DiscordBody> = async (req, res) 
         });
     } catch (err) {
         console.error('Erreur dans handleDiscordCallback:', err);
-        Error(res, { msg: 'Erreur pendant la liaison avec Discord' });
+        Error(res, { msg: 'Erreur pendant la liaison avec Discord.' });
     }
 };

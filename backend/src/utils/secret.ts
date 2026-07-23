@@ -30,6 +30,7 @@ export const email_host = process.env.EMAIL_HOST || 'default';
 export const email_user = process.env.EMAIL_USER || 'default';
 export const email_password = process.env.EMAIL_PASSWORD || 'default';
 export const email_from = process.env.EMAIL_FROM || 'default';
+export const email_concurrency = process.env.EMAIL_CONCURRENCY || 20;
 export const discord_client_id = process.env.DISCORD_CLIENT_ID || 'default';
 export const discord_client_secret = process.env.DISCORD_CLIENT_SECRET || 'default';
 export const discord_redirect_uri = process.env.DISCORD_REDIRECT_URI || 'default';

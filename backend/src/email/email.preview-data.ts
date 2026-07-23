@@ -32,4 +32,9 @@ export const defaultPreviewData: Record<string, TemplateData> = {
         permanence: {},
     },
     templateMentorReminder: {},
+    templateNotifyTeamAssignment: {
+        teamName: 'Bisounours',
+        teamSocialLink: 'https://example.com',
+        factionName: 'Dessin Animé',
+    },
 };

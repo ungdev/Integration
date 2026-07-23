@@ -1,0 +1,2 @@
+pnpm -C frontend lint
+pnpm -C backend lint

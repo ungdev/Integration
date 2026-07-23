@@ -2,19 +2,9 @@ import { type Event } from '../schemas/Basic/event.schema';
 import * as event_service from '../services/event.service';
 import * as faction_service from '../services/faction.service';
 import * as team_service from '../services/team.service';
-import * as user_service from '../services/user.service';
 import { Error, Ok } from '../utils/responses';
 import type { AppRequestHandler } from '../types/http';
-import type {
-    CreateTeamBody,
-    CreateTeamLightBody,
-    ModifyTeamBody,
-    StudentRow,
-    TeamMemberRow,
-    TeamQuery,
-    TeamRow,
-    TeamSizeRow,
-} from '../dto/team.dto';
+import type { CreateTeamBody, CreateTeamLightBody, ModifyTeamBody, TeamQuery } from '../dto/team.dto';
 
 export const createNewTeam: AppRequestHandler<CreateTeamBody> = async (req, res) => {
     const { teamName, members } = req.body;
@@ -70,10 +60,20 @@ export const createNewTeamLight: AppRequestHandler<CreateTeamLightBody> = async 
 export const getTeams: AppRequestHandler = async (_req, res) => {
     try {
         const teams = await team_service.getTeams();
-        Ok(res, { data: teams });
+        Ok(res, { data: teams ?? {} });
         return;
     } catch {
         Error(res, { msg: 'Erreur lors de la récupération des équipes.' });
+    }
+};
+
+export const getUserTeam: AppRequestHandler = async (req, res) => {
+    try {
+        const team = await team_service.getUserTeamDisplayInfos(req.user?.userId);
+        Ok(res, { data: team });
+        return;
+    } catch {
+        Error(res, { msg: "Erreur lors de la récupération de l'équipe." });
     }
 };
 
@@ -89,13 +89,13 @@ export const getTeamsWithfactions: AppRequestHandler = async (_req, res) => {
 
 export const modifyTeam: AppRequestHandler<ModifyTeamBody> = async (req, res) => {
     try {
-        const { teamID, teamName, teamMembers, factionID, type } = req.body;
+        const { teamID, teamName, teamMembers, factionID, socialLink, type } = req.body;
 
         if (!teamID) {
             Error(res, { msg: 'teamID est requis pour la mise à jour.' });
         }
 
-        const updatedTeam = await team_service.modifyTeam(teamID, teamMembers, factionID, teamName, type);
+        const updatedTeam = await team_service.modifyTeam(teamID, teamMembers, factionID, socialLink, teamName, type);
         Ok(res, { data: updatedTeam });
     } catch (error) {
         console.error(error);
@@ -162,93 +162,7 @@ export const deleteTeam: AppRequestHandler<unknown, TeamQuery> = async (req, res
 
 export const teamDistribution: AppRequestHandler = async (_req, res) => {
     try {
-        const newStudents = (await user_service.getUsersbyPermission('Nouveau')) as StudentRow[];
-        const userswithteams = ((await team_service.getUsersWithTeam()) as TeamMemberRow[]).map(
-            (entry) => entry.userId,
-        );
-        const teams = (await team_service.getTeams()) as TeamRow[];
-
-        // Filtrer les étudiants qui ne sont pas déjà assignés à une équipe
-        const filteredStudents = newStudents
-            // .filter((student: StudentRow) => student.branch !== "RI") // A decommenter pour ignorer les RI dans la répartition automatique
-            .filter((student) => !userswithteams.includes(student.userId));
-
-        // Filtrer les utilisateurs en fonction de la spécialité
-        const tcStudents = filteredStudents
-            .filter((student) => student.branch === 'TC')
-            .map((student) => ({
-                id: student.userId,
-                email: student.email,
-                branch: student.branch,
-            }));
-
-        const otherStudents = filteredStudents
-            // .filter((student: StudentRow) => student.branch !== "TC" && student.branch !== "RI" && student.branch !== "MM") A decommenter pour ignorer les RI dans la répartition automatique
-            .filter((student) => student.branch !== 'TC' && student.branch !== 'MM')
-            .map((student) => ({
-                id: student.userId,
-                email: student.email,
-                branch: student.branch,
-            }));
-
-        const PMOMStudents = filteredStudents
-            .filter((student) => student.branch == 'MM')
-            .map((student) => ({
-                id: student.userId,
-                email: student.email,
-                branch: student.branch,
-            }));
-
-        // Filtrer les équipes en fonction de leur type
-        const tcTeams = teams.filter((team) => team.type === 'TC');
-        const PMOMTeams = teams.filter((team) => team.type === 'MM');
-        // const otherTeams = teams.filter(team => team.type !== "TC" && team.type !== "RI" && team.type !== "MM"); A decommenter pour ignorer les RI dans la répartition automatique
-        const otherTeams = teams.filter((team) => team.type !== 'TC' && team.type !== 'MM');
-
-        // Fonction pour assigner les utilisateurs à des équipes équilibrées
-        async function assignUsersToTeams(users: Array<{ id: number }>, teams: TeamRow[]) {
-            // Calculer la taille actuelle des équipes
-            const teamSizes = await Promise.all(
-                teams.map(async (team) => {
-                    const members = await team_service.getTeamUsers(team.teamId);
-                    return {
-                        teamId: team.teamId,
-                        size: members.length,
-                    } satisfies TeamSizeRow;
-                }),
-            );
-
-            // Trier les équipes par taille (ascendant)
-            teamSizes.sort((a, b) => a.size - b.size);
-
-            for (const user of users) {
-                // Assigner l'utilisateur à l'équipe avec le moins de membres
-                const smallestTeam = teamSizes[0];
-                await team_service.addTeamMember(smallestTeam.teamId, user.id);
-
-                // Mettre à jour la taille de l'équipe après l'ajout
-                smallestTeam.size += 1;
-
-                // Réordonner les équipes pour garder la plus petite en premier
-                teamSizes.sort((a, b) => a.size - b.size);
-            }
-        }
-
-        // Assigner les utilisateurs TC aux équipes TC
-        if (tcStudents && tcTeams) {
-            await assignUsersToTeams(tcStudents, tcTeams);
-        }
-
-        // Assigner les autres utilisateurs aux équipes non-TC
-        if (otherStudents && otherTeams) {
-            await assignUsersToTeams(otherStudents, otherTeams);
-        }
-
-        //Assigner les utilisateurs MM aux équipes MM
-        if (PMOMStudents && PMOMTeams) {
-            await assignUsersToTeams(PMOMStudents, PMOMTeams);
-        }
-
+        team_service.teamDistribution();
         Ok(res, { msg: 'NewStudents distributed!' });
     } catch (error) {
         Error(res, { error });

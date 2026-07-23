@@ -1,1 +1,0 @@
-ALTER TYPE "public"."vss_form" ADD VALUE 'toretry' BEFORE 'validated';

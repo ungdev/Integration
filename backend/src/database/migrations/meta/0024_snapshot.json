@@ -1,9 +1,40 @@
 {
-    "id": "77c4b2f6-c24d-4eb9-80a9-42fb8b9ef380",
+    "id": "f9312a1e-e654-452c-a1cb-d841f1ecefdc",
     "prevId": "128e2d49-22e7-477d-a202-ae518c2e21ed",
     "version": "7",
     "dialect": "postgresql",
     "tables": {
+        "public.banned_addresses": {
+            "name": "banned_addresses",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "serial",
+                    "primaryKey": true,
+                    "notNull": true
+                },
+                "email": {
+                    "name": "email",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {
+                "banned_addresses_email_unique": {
+                    "name": "banned_addresses_email_unique",
+                    "nullsNotDistinct": false,
+                    "columns": ["email"]
+                }
+            },
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
         "public.challenges": {
             "name": "challenges",
             "schema": "",
@@ -353,6 +384,12 @@
                 },
                 "type": {
                     "name": "type",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "socialLink": {
+                    "name": "socialLink",
                     "type": "text",
                     "primaryKey": false,
                     "notNull": false
@@ -811,53 +848,6 @@
                     "columnsFrom": ["team_id"],
                     "columnsTo": ["id"],
                     "onDelete": "no action",
-                    "onUpdate": "no action"
-                }
-            },
-            "compositePrimaryKeys": {},
-            "uniqueConstraints": {},
-            "policies": {},
-            "checkConstraints": {},
-            "isRLSEnabled": false
-        },
-        "public.user_informations": {
-            "name": "user_informations",
-            "schema": "",
-            "columns": {
-                "user_id": {
-                    "name": "user_id",
-                    "type": "integer",
-                    "primaryKey": true,
-                    "notNull": true
-                },
-                "urgency_contact_name": {
-                    "name": "urgency_contact_name",
-                    "type": "text",
-                    "primaryKey": false,
-                    "notNull": false
-                },
-                "urgency_contact_phone": {
-                    "name": "urgency_contact_phone",
-                    "type": "text",
-                    "primaryKey": false,
-                    "notNull": false
-                },
-                "contact_CE": {
-                    "name": "contact_CE",
-                    "type": "text",
-                    "primaryKey": false,
-                    "notNull": false
-                }
-            },
-            "indexes": {},
-            "foreignKeys": {
-                "user_informations_user_id_users_id_fk": {
-                    "name": "user_informations_user_id_users_id_fk",
-                    "tableFrom": "user_informations",
-                    "tableTo": "users",
-                    "columnsFrom": ["user_id"],
-                    "columnsTo": ["id"],
-                    "onDelete": "cascade",
                     "onUpdate": "no action"
                 }
             },

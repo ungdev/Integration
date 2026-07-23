@@ -1,9 +1,42 @@
 {
-  "id": "c76925a0-a42e-42c9-8f72-0d914fe74da9",
-  "prevId": "f2813605-996e-4461-8e87-8b135d3eefd3",
+  "id": "af2f7f68-b5fb-4945-87a6-dcf6b539c002",
+  "prevId": "f8bcae73-ebc2-4afa-99c0-cf9aa304b17b",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.banned_addresses": {
+      "name": "banned_addresses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "banned_addresses_email_unique": {
+          "name": "banned_addresses_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.challenges": {
       "name": "challenges",
       "schema": "",
@@ -364,6 +397,19 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "socialLink": {
+          "name": "socialLink",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "riCompatible": {
+          "name": "riCompatible",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         }
       },
       "indexes": {},
@@ -412,6 +458,12 @@
         },
         "majeur": {
           "name": "majeur",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "male": {
+          "name": "male",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false
@@ -945,14 +997,14 @@
           "primaryKey": true,
           "notNull": true
         },
-        "urgency_contact_name": {
-          "name": "urgency_contact_name",
+        "emergency_contact_name": {
+          "name": "emergency_contact_name",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "urgency_contact_phone": {
-          "name": "urgency_contact_phone",
+        "emergency_contact_phone": {
+          "name": "emergency_contact_phone",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -1418,6 +1470,7 @@
       "schema": "public",
       "values": [
         "pending",
+        "toretry",
         "validated",
         "rejected"
       ]

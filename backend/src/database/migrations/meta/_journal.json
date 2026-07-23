@@ -173,36 +173,22 @@
     {
       "idx": 24,
       "version": "7",
-      "when": 1783854058299,
-      "tag": "0024_even_morg",
+      "when": 1783776285772,
+      "tag": "0024_optimal_garia",
       "breakpoints": true
     },
     {
       "idx": 25,
       "version": "7",
-      "when": 1784272112439,
-      "tag": "0025_natural_human_cannonball",
+      "when": 1784742510283,
+      "tag": "0025_perfect_ulik",
       "breakpoints": true
     },
     {
       "idx": 26,
       "version": "7",
-      "when": 1784298990793,
-      "tag": "0026_high_wind_dancer",
-      "breakpoints": true
-    },
-    {
-      "idx": 27,
-      "version": "7",
-      "when": 1784372155559,
-      "tag": "0027_good_unus",
-      "breakpoints": true
-    },
-    {
-      "idx": 28,
-      "version": "7",
-      "when": 1784823075781,
-      "tag": "0028_special_black_cat",
+      "when": 1784824629918,
+      "tag": "0026_swift_excalibur",
       "breakpoints": true
     }
   ]

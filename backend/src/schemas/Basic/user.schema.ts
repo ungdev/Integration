@@ -8,6 +8,7 @@ export const userSchema = pgTable('users', {
     last_name: text('last_name'),
     email: text('email').unique(),
     majeur: boolean('majeur'),
+    male: boolean('male'),
     branch: text('branch'),
     contact: text('contact'),
     password: text('password'),

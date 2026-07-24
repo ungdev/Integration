@@ -95,7 +95,7 @@ const Modal = ({
                 <div
                     role="dialog"
                     aria-modal="true"
-                    className={`relative z-10 w-full max-w-2xl overflow-hidden rounded-2xl border border-border/60 bg-white text-foreground shadow-2xl ring-1 ring-black/5 dark:border-white/10 dark:bg-neutral-900 dark:ring-white/10 ${containerClassName}`}>
+                    className={`relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-border/60 bg-white text-foreground shadow-2xl ring-1 ring-black/5 dark:border-white/10 dark:bg-neutral-900 dark:ring-white/10 ${containerClassName}`}>
                     <div className="flex items-start justify-between gap-4 border-b border-border/60 px-6 py-5 dark:border-white/10">
                         <div className="text-lg font-semibold leading-tight">{title}</div>
 
@@ -111,7 +111,7 @@ const Modal = ({
                         )}
                     </div>
 
-                    <div className="px-6 py-5">{children}</div>
+                    <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
 
                     {/* Render footer only if buttonsContent is not null */}
                     {buttonsContent && (

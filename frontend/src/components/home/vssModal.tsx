@@ -227,7 +227,7 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
                 )}
 
                 {questions.length > 0 && (
-                    <div className="space-y-4 max-h-[65vh] overflow-y-auto pr-1">
+                    <div className="space-y-4 pr-1">
                         <div className="flex items-center justify-between text-sm text-muted-foreground">
                             <span>
                                 {answeredCount}/{totalQuestions} questions répondues

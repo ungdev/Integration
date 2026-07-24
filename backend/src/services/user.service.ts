@@ -296,19 +296,28 @@ export const createUserContactInformation = async (userId: number, contact: Crea
 
 export const getCurrentUserOnboardingStatus = async (userId: number) => {
     try {
+        const [user] = await db
+            .select({
+                vss_form: userSchema.vss_form,
+                permission: userSchema.permission,
+            })
+            .from(userSchema)
+            .where(eq(userSchema.id, userId));
+
+        if (user.permission != 'Student') {
+            return {
+                hasemergencyContactInformation: true,
+                vss_form: 'validated',
+                needsVssForm: false,
+            };
+        }
+
         const [contactInformation] = await db
             .select({
                 userId: userInformationSchema.user_id,
             })
             .from(userInformationSchema)
             .where(eq(userInformationSchema.user_id, userId));
-
-        const [user] = await db
-            .select({
-                vss_form: userSchema.vss_form,
-            })
-            .from(userSchema)
-            .where(eq(userSchema.id, userId));
 
         const vssForm = user?.vss_form ?? 'pending';
 

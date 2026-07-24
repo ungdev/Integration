@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { decodeToken, getToken } from '../../services/requests/auth.service';
 import { createUserContactInformation, getCurrentUserOnboardingStatus } from '../../services/requests/user.service';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -14,8 +15,16 @@ function EmergencyModal() {
     const [form, setForm] = useState({ emergency_contact_name: '', emergency_contact_phone: '' });
     const [flowStep, setFlowStep] = useState<FlowStep>('idle');
     const [error, setError] = useState<string | null>(null);
+    const token = getToken();
+    const decodedToken = useMemo(() => (token ? decodeToken(token) : null), [token]);
+    const userPermission = decodedToken?.userPermission;
+    const roles = useMemo(() => {
+        const userRoles = decodedToken?.userRoles ?? [];
+        return [userPermission, ...userRoles.map((r) => r.roleName)].filter(Boolean) as string[];
+    }, [userPermission, decodedToken?.userRoles]);
 
     const isLogin = searchParams.get('login') === 'true';
+    const isStudent = roles.includes('Student');
 
     useEffect(() => {
         if (!isLogin) {
@@ -58,12 +67,14 @@ function EmergencyModal() {
             }
         };
 
-        loadOnboardingStatus();
+        if (isStudent) {
+            loadOnboardingStatus();
+        }
 
         return () => {
             cancelled = true;
         };
-    }, [isLogin, setSearchParams]);
+    }, [isLogin, isStudent, setSearchParams]);
 
     const closeFlow = () => {
         setSearchParams({});
@@ -86,16 +97,6 @@ function EmergencyModal() {
 
     return (
         <>
-            <Modal
-                title="Formulaire VSS et Urgence"
-                visible={isLogin && flowStep === 'loading'}
-                onCancel={closeFlow}
-                buttons={null}>
-                <div className="flex flex-col gap-4">
-                    <p>Chargement du statut du formulaire...</p>
-                </div>
-            </Modal>
-
             <Modal
                 title="Formulaire VSS et Urgence"
                 visible={isLogin && flowStep === 'emergency'}

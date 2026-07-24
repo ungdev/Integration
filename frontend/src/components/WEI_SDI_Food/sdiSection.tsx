@@ -7,8 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const SdiSection = () => {
     const [isSDIOpen, setIsSDIOpen] = useState(false);
-    const [hasContactInformation, setHasContactInformation] = useState(false);
-    const [hasVssForm, setHasVssForm] = useState(false);
+    const [hasContactInformation, setHasContactInformation] = useState(true);
+    const [hasVssForm, setHasVssForm] = useState(true);
     const [needVssForm, setNeedsVssForm] = useState(false);
     const token = getToken();
     const { userPermission, userRoles = [] } = token
@@ -23,8 +23,10 @@ export const SdiSection = () => {
         document.body.appendChild(script);
 
         fetchStatus();
-        fetchOnboardingStatus();
-    }, []);
+        if (roles.includes('Student')) {
+            fetchOnboardingStatus();
+        }
+    }, [roles]);
 
     const fetchOnboardingStatus = async () => {
         try {
@@ -65,7 +67,7 @@ export const SdiSection = () => {
                         </p>
                         <p className="text-gray-600 mt-2">Reste connecté, elle ouvrira bientôt !</p>
                     </div>
-                ) : !hasContactInformation && roles.includes('Student') ? (
+                ) : !hasContactInformation ? (
                     <div className="surface-card p-6 text-center">
                         <p className="text-xl text-red-600 font-semibold">
                             🚫 Tu n'as pas rempli le questionnaire avec tes contacts d'urgence. Tant que ce n'est pas
@@ -73,7 +75,7 @@ export const SdiSection = () => {
                         </p>
                         <p className="text-gray-600 mt-2">Va vite le compléter !</p>
                     </div>
-                ) : needVssForm && roles.includes('Student') ? (
+                ) : needVssForm ? (
                     <div className="surface-card p-6 text-center">
                         <p className="text-xl text-red-600 font-semibold">
                             🚫 Tu n'as pas rempli le questionnaire de sensibilisation aux VSS. Tant que ce n'est pas
@@ -81,7 +83,7 @@ export const SdiSection = () => {
                         </p>
                         <p className="text-gray-600 mt-2">Va vite le compléter !</p>
                     </div>
-                ) : !hasVssForm && roles.includes('Student') ? (
+                ) : !hasVssForm ? (
                     <div className="surface-card p-6 text-center">
                         <p className="text-xl text-red-600 font-semibold">
                             🚫 Tu as fait trop d'erreur sur le questionnaire de sensibilisation aux VSS. Tu ne peux par

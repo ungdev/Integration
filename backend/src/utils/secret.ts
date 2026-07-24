@@ -17,6 +17,10 @@ export const google_client_id = process.env.GOOGLE_CLIENT_ID || 'default';
 export const google_client_secret = process.env.GOOGLE_CLIENT_SECRET || 'default';
 export const google_client_uri = process.env.GOOGLE_REDIRECT_URI || 'default';
 export const spreadsheet_id = process.env.SPREADSHEET_ID || 'default';
+export const api_billetweb_url = process.env.API_BILLETWEB_URL || 'default';
+export const api_billetweb_token = process.env.API_BILLETWEB_TOKEN || 'default';
+export const api_billetweb_respondent_students_list_id =
+    process.env.API_BILLETWEB_RESPONDENT_STUDENTS_LIST_ID || 'default';
 export const api_utt_username = process.env.API_UTT_USERNAME || 'default';
 export const api_utt_password = process.env.API_UTT_PASSWORD || 'default';
 export const api_utt_auth_url = process.env.API_UTT_AUTH_URL || 'default';

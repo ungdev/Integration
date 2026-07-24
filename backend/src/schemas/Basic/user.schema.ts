@@ -1,4 +1,6 @@
-import { boolean, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+import { boolean, pgEnum, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+
+export const vssFormEnum = pgEnum('vss_form', ['pending', 'toretry', 'validated', 'rejected']);
 
 export const userSchema = pgTable('users', {
     id: serial('id').primaryKey(),
@@ -13,6 +15,7 @@ export const userSchema = pgTable('users', {
     permission: text('permission').default('Nouveau'), // Par défaut, le rôle sera "Nouveau"
     discord_id: text('discord_id'),
     created_at: timestamp('created_at').defaultNow(),
+    vss_form: vssFormEnum('vss_form').default('pending'),
 });
 
 export type User = typeof userSchema.$inferSelect;

@@ -2,9 +2,11 @@ import { Bars4Icon, CogIcon, HomeIcon, UsersIcon } from '@heroicons/react/24/out
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Fragment, useEffect, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useSearchParams } from 'react-router-dom';
 
 import { decodeToken, getToken } from '../services/requests/auth.service';
+import { getCurrentUserOnboardingStatus } from '../services/requests/user.service';
+import { Button } from './ui/button';
 
 interface NavItem {
     label: string;
@@ -27,6 +29,9 @@ export const Navbar = () => {
         ? decodeToken(token)
         : { userPermission: undefined, userRoles: [] };
     const roles = [userPermission, ...userRoles.map((r) => r.roleName)].filter(Boolean) as string[];
+    const [hasContactInformation, setHasContactInformation] = useState(false);
+    const [needsVssForm, setNeedsVssForm] = useState(false);
+    const [, setSearchParams] = useSearchParams();
 
     const handleLogout = () => {
         localStorage.removeItem('authToken');
@@ -35,7 +40,33 @@ export const Navbar = () => {
 
     useEffect(() => {
         setMenuOpen(false);
-    }, [pathname]);
+
+        const fetchOnboardingStatus = async () => {
+            try {
+                const onboardingStatus = await getCurrentUserOnboardingStatus();
+                setHasContactInformation(onboardingStatus.hasemergencyContactInformation);
+                setNeedsVssForm(onboardingStatus.needsVssForm);
+            } catch (error) {
+                console.error("Erreur lors de la récupération du statut d'onboarding :", error);
+            }
+        };
+
+        if (isAuthenticated) {
+            fetchOnboardingStatus();
+        }
+
+        const handleOnboardingUpdate = () => {
+            if (isAuthenticated) {
+                fetchOnboardingStatus();
+            }
+        };
+
+        window.addEventListener('user-onboarding-updated', handleOnboardingUpdate);
+
+        return () => {
+            window.removeEventListener('user-onboarding-updated', handleOnboardingUpdate);
+        };
+    }, [isAuthenticated, pathname]);
 
     const navItems: NavItem[] = [
         { label: 'Home', to: '/home', icon: HomeIcon },
@@ -127,66 +158,110 @@ export const Navbar = () => {
     };
 
     return (
-        <nav className="bg-blue-800 text-white shadow-lg">
-            <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-                {/* Logo */}
-                <NavLink to="/home" className="text-2xl font-bold">
-                    UTT Integration
-                </NavLink>
+        <div>
+            <nav className="bg-blue-800 text-white shadow-lg">
+                <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
+                    {/* Logo */}
+                    <NavLink to="/home" className="text-2xl font-bold">
+                        UTT Integration
+                    </NavLink>
 
-                {/* Hamburger mobile */}
-                <button
-                    onClick={() => setMenuOpen(!menuOpen)}
-                    className="lg:hidden p-2 focus:outline-none"
-                    aria-label="Toggle menu">
-                    {menuOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars4Icon className="w-6 h-6" />}
-                </button>
+                    {/* Hamburger mobile */}
+                    <button
+                        onClick={() => setMenuOpen(!menuOpen)}
+                        className="lg:hidden p-2 focus:outline-none"
+                        aria-label="Toggle menu">
+                        {menuOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars4Icon className="w-6 h-6" />}
+                    </button>
 
-                {/* Menu desktop */}
-                <ul className="hidden lg:flex items-center space-x-6">
-                    {navItems.map((item) =>
-                        canShowItem(item) ? (
-                            <li key={item.label} className="relative group">
-                                {item.children ? (
-                                    <Dropdown item={item} canShowItem={canShowItem} />
-                                ) : item.kind === 'action' ? (
-                                    <NavActionItem item={item} />
-                                ) : (
-                                    <MenuItem item={item} active={pathname === item.to} />
-                                )}
-                            </li>
-                        ) : null,
-                    )}
-                </ul>
-            </div>
-
-            {/* Menu mobile */}
-            <AnimatePresence>
-                {menuOpen && (
-                    <motion.ul
-                        initial={{ height: 0 }}
-                        animate={{ height: 'auto' }}
-                        exit={{ height: 0 }}
-                        className="lg:hidden bg-blue-700 overflow-hidden">
+                    {/* Menu desktop */}
+                    <ul className="hidden lg:flex items-center space-x-6">
                         {navItems.map((item) =>
                             canShowItem(item) ? (
-                                <Fragment key={item.label}>
-                                    {!item.children ? (
-                                        item.kind === 'action' ? (
-                                            <NavActionItem item={item} mobile />
-                                        ) : (
-                                            <MenuItem item={item} mobile />
-                                        )
+                                <li key={item.label} className="relative group">
+                                    {item.children ? (
+                                        <Dropdown item={item} canShowItem={canShowItem} />
+                                    ) : item.kind === 'action' ? (
+                                        <NavActionItem item={item} />
                                     ) : (
-                                        <Dropdown item={item} mobile canShowItem={canShowItem} />
+                                        <MenuItem item={item} active={pathname === item.to} />
                                     )}
-                                </Fragment>
+                                </li>
                             ) : null,
                         )}
-                    </motion.ul>
-                )}
-            </AnimatePresence>
-        </nav>
+                    </ul>
+                </div>
+
+                {/* Menu mobile */}
+                <AnimatePresence>
+                    {menuOpen && (
+                        <motion.ul
+                            initial={{ height: 0 }}
+                            animate={{ height: 'auto' }}
+                            exit={{ height: 0 }}
+                            className="lg:hidden bg-blue-700 overflow-hidden">
+                            {navItems.map((item) =>
+                                canShowItem(item) ? (
+                                    <Fragment key={item.label}>
+                                        {!item.children ? (
+                                            item.kind === 'action' ? (
+                                                <NavActionItem item={item} mobile />
+                                            ) : (
+                                                <MenuItem item={item} mobile />
+                                            )
+                                        ) : (
+                                            <MenuItem item={item} active={pathname === item.to} />
+                                        )}
+                                    </Fragment>
+                                ) : null,
+                            )}
+                        </motion.ul>
+                    )}
+                </AnimatePresence>
+
+                {/* Menu mobile */}
+                <AnimatePresence>
+                    {menuOpen && (
+                        <motion.ul
+                            initial={{ height: 0 }}
+                            animate={{ height: 'auto' }}
+                            exit={{ height: 0 }}
+                            className="lg:hidden bg-blue-700 overflow-hidden">
+                            {navItems.map((item) =>
+                                canShowItem(item) ? (
+                                    <Fragment key={item.label}>
+                                        {!item.children ? (
+                                            item.kind === 'action' ? (
+                                                <NavActionItem item={item} mobile />
+                                            ) : (
+                                                <MenuItem item={item} mobile />
+                                            )
+                                        ) : (
+                                            <Dropdown item={item} mobile canShowItem={canShowItem} />
+                                        )}
+                                    </Fragment>
+                                ) : null,
+                            )}
+                        </motion.ul>
+                    )}
+                </AnimatePresence>
+            </nav>
+
+            {isAuthenticated && (hasContactInformation === false || needsVssForm) && roles.includes('Nouveau') && (
+                <div className="bg-red-800 text-white shadow-lg flex items-center justify-center gap-2 p-3">
+                    <p className="text-center">
+                        {hasContactInformation === false
+                            ? "ATTENTION : Tu n'as pas complété le formulaire VSS ainsi que tes informations d'urgence. Merci de le faire au plus vite !"
+                            : "ATTENTION : Tu n'as pas encore complété le questionnaire VSS. Merci de le faire au plus vite !"}
+                    </p>
+                    <Button
+                        onClick={() => setSearchParams({ login: 'true' })}
+                        className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded whitespace-nowrap">
+                        Compléter le formulaire
+                    </Button>
+                </div>
+            )}
+        </div>
     );
 };
 

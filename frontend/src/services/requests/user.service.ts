@@ -1,4 +1,13 @@
-import type { NewUser, User } from '../../interfaces/user.interface';
+import type {
+    CreateUserContactInformationRequest,
+    NewUser,
+    User,
+    UserContactInformation,
+    UserOnboardingStatus,
+    VssQuestionnaireQuestion,
+    VssSubmissionRequest,
+    VssSubmissionResponse,
+} from '../../interfaces/user.interface';
 import api from '../api';
 
 export const getPermission = (): string | null => {
@@ -39,6 +48,35 @@ export const getUsersByPermission = async () => {
     const response = await api.get('/user/admin/getusersbypermission');
     const users = response.data.data;
     return users;
+};
+
+export const getUserContactInformation = async (userId: number) => {
+    const response = await api.get(`/user/admin/getusercontactinformation/${userId}`);
+    const users: UserContactInformation = response.data.data;
+    return users;
+};
+
+export const createUserContactInformation = async (data: CreateUserContactInformationRequest) => {
+    const response = await api.post(`/user/user/usercontactinformation`, data);
+    return response.data;
+};
+
+export const getCurrentUserOnboardingStatus = async () => {
+    const response = await api.get('/user/onboarding-status');
+    const status: UserOnboardingStatus = response.data.data;
+    return status;
+};
+
+export const getVssQuestionnaire = async () => {
+    const response = await api.get('/user/vss/questionnaire');
+    const questionnaire: VssQuestionnaireQuestion[] = response.data.data;
+    return questionnaire;
+};
+
+export const submitVssQuestionnaire = async (data: VssSubmissionRequest) => {
+    const response = await api.post('/user/vss/questionnaire', data);
+    const result: VssSubmissionResponse = response.data.data;
+    return result;
 };
 
 export const getCurrentUser = async () => {

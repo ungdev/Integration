@@ -183,6 +183,13 @@
       "when": 1784742510283,
       "tag": "0025_perfect_ulik",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1784824629918,
+      "tag": "0026_swift_excalibur",
+      "breakpoints": true
     }
   ]
 }

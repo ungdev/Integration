@@ -1,6 +1,6 @@
 {
-  "id": "f9312a1e-e654-452c-a1cb-d841f1ecefdc",
-  "prevId": "128e2d49-22e7-477d-a202-ae518c2e21ed",
+  "id": "af2f7f68-b5fb-4945-87a6-dcf6b539c002",
+  "prevId": "f8bcae73-ebc2-4afa-99c0-cf9aa304b17b",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -403,6 +403,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "riCompatible": {
+          "name": "riCompatible",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
         }
       },
       "indexes": {},
@@ -455,6 +462,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "male": {
+          "name": "male",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
         "branch": {
           "name": "branch",
           "type": "text",
@@ -492,6 +505,14 @@
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "vss_form": {
+          "name": "vss_form",
+          "type": "vss_form",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'pending'"
         }
       },
       "indexes": {},
@@ -506,6 +527,44 @@
           ]
         }
       },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.vssqcmquestion": {
+      "name": "vssqcmquestion",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "question": {
+          "name": "question",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "points": {
+          "name": "points",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "question_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -928,6 +987,51 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.user_informations": {
+      "name": "user_informations",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "emergency_contact_name": {
+          "name": "emergency_contact_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "emergency_contact_phone": {
+          "name": "emergency_contact_phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_informations_user_id_users_id_fk": {
+          "name": "user_informations_user_id_users_id_fk",
+          "tableFrom": "user_informations",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.respo_permanences": {
       "name": "respo_permanences",
       "schema": "",
@@ -1307,9 +1411,79 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
+    },
+    "public.vssqcmanswer": {
+      "name": "vssqcmanswer",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "questionid": {
+          "name": "questionid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "answer": {
+          "name": "answer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_correct": {
+          "name": "is_correct",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "vssqcmanswer_questionid_vssqcmquestion_id_fk": {
+          "name": "vssqcmanswer_questionid_vssqcmquestion_id_fk",
+          "tableFrom": "vssqcmanswer",
+          "tableTo": "vssqcmquestion",
+          "columnsFrom": [
+            "questionid"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.vss_form": {
+      "name": "vss_form",
+      "schema": "public",
+      "values": [
+        "pending",
+        "toretry",
+        "validated",
+        "rejected"
+      ]
+    },
+    "public.question_type": {
+      "name": "question_type",
+      "schema": "public",
+      "values": [
+        "single_choice",
+        "multiple_choice"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

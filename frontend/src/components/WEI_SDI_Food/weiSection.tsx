@@ -7,8 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const WeiSection = () => {
     const [isWEIOpen, setIsWEIOpen] = useState(false);
-    const [hasContactInformation, setHasContactInformation] = useState(false);
-    const [hasVssForm, setHasVssForm] = useState(false);
+    const [hasContactInformation, setHasContactInformation] = useState(true);
+    const [hasVssForm, setHasVssForm] = useState(true);
     const [needVssForm, setNeedsVssForm] = useState(false);
     const token = getToken();
     const { userPermission, userRoles = [] } = token

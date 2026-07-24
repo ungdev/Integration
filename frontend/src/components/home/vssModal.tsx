@@ -143,7 +143,7 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
             });
 
             if (unansweredQuestions.length > 0) {
-                setError('Réponds à toutes les questions avant d’envoyer le questionnaire.');
+                setError("Réponds à toutes les questions avant d'envoyer le questionnaire.");
                 return;
             }
 

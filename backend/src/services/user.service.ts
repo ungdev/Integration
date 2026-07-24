@@ -270,6 +270,14 @@ export const getUserContactInformation = async (userId: number) => {
 
 export const createUserContactInformation = async (userId: number, contact: CreateUserContactInformationDto) => {
     try {
+        if (!contact.emergency_contact_name || !contact.emergency_contact_phone) {
+            throw new Error("Le nom et le numéro de téléphone du contact d'urgence sont requis.");
+        }
+
+        if (!/^\+?\d{10,15}$/.test(contact.emergency_contact_phone)) {
+            throw new Error("Le numéro de téléphone du contact d'urgence n'est pas valide.");
+        }
+
         const newContactInfo = {
             user_id: userId,
             emergency_contact_name: contact.emergency_contact_name,

@@ -304,7 +304,7 @@ export const getCurrentUserOnboardingStatus = async (userId: number) => {
             .from(userSchema)
             .where(eq(userSchema.id, userId));
 
-        if (user.permission != 'Student') {
+        if (user.permission != 'Nouveau') {
             return {
                 hasemergencyContactInformation: true,
                 vss_form: 'validated',

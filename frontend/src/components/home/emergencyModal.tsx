@@ -24,7 +24,7 @@ function EmergencyModal() {
     }, [userPermission, decodedToken?.userRoles]);
 
     const isLogin = searchParams.get('login') === 'true';
-    const isStudent = roles.includes('Student');
+    const isNew = roles.includes('Nouveau');
 
     useEffect(() => {
         if (!isLogin) {
@@ -67,14 +67,14 @@ function EmergencyModal() {
             }
         };
 
-        if (isStudent) {
+        if (isNew) {
             loadOnboardingStatus();
         }
 
         return () => {
             cancelled = true;
         };
-    }, [isLogin, isStudent, setSearchParams]);
+    }, [isLogin, isNew, setSearchParams]);
 
     const closeFlow = () => {
         setSearchParams({});

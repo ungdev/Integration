@@ -23,7 +23,7 @@ export const SdiSection = () => {
         document.body.appendChild(script);
 
         fetchStatus();
-        if (roles.includes('Student')) {
+        if (roles.includes('Nouveau')) {
             fetchOnboardingStatus();
         }
     }, [roles]);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { decodeToken, getToken } from '../../services/requests/auth.service';
 import { checkWEIStatus } from '../../services/requests/event.service';
 import { getCurrentUserOnboardingStatus } from '../../services/requests/user.service';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
@@ -9,6 +10,11 @@ export const WeiSection = () => {
     const [hasContactInformation, setHasContactInformation] = useState(false);
     const [hasVssForm, setHasVssForm] = useState(false);
     const [needVssForm, setNeedsVssForm] = useState(false);
+    const token = getToken();
+    const { userPermission, userRoles = [] } = token
+        ? decodeToken(token)
+        : { userPermission: undefined, userRoles: [] };
+    const roles = [userPermission, ...userRoles.map((r) => r.roleName)].filter(Boolean) as string[];
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -17,8 +23,10 @@ export const WeiSection = () => {
         document.body.appendChild(script);
 
         fetchStatus();
-        fetchOnboardingStatus();
-    }, []);
+        if (roles.includes('Nouveau')) {
+            fetchOnboardingStatus();
+        }
+    }, [roles]);
 
     const fetchOnboardingStatus = async () => {
         try {

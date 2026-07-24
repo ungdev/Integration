@@ -108,7 +108,7 @@ const qcmQuestions: SeedQuestion[] = [
         points: 1,
         type: 'single_choice',
         answers: [
-            { answer: "75 000 € d'amende et 5 ans d'emprisonnemen", is_correct: true },
+            { answer: "75 000 € d'amende et 5 ans d'emprisonnement", is_correct: true },
             { answer: "10 000€ d'amende", is_correct: false },
             { answer: '15 ans de prison', is_correct: false },
         ],
@@ -139,7 +139,7 @@ const qcmQuestions: SeedQuestion[] = [
     },
     {
         question:
-            "A quelle sentence s'expose une personne commettant un viol ? \`n Article 222-23   Version en vigueur depuis le 23 avril 2021 \n Tout acte de pénétration sexuelle, de quelque nature qu'il soit, ou tout acte bucco-génital commis sur la personne d'autrui ou sur la personne de l'auteur par violence, contrainte, menace ou surprise est un viol. \n Le viol est puni de quinze ans de réclusion criminelle.",
+            "A quelle sentence s'expose une personne commettant un viol ? \n Article 222-23   Version en vigueur depuis le 23 avril 2021 \n Tout acte de pénétration sexuelle, de quelque nature qu'il soit, ou tout acte bucco-génital commis sur la personne d'autrui ou sur la personne de l'auteur par violence, contrainte, menace ou surprise est un viol. \n Le viol est puni de quinze ans de réclusion criminelle.",
         points: 1,
         type: 'multiple_choice',
         answers: [

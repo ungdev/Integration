@@ -7,13 +7,13 @@ Ce projet est une plateforme pour le site d'intégration de l'Université de Tec
 - **Frontend** :
   - Vite.js
   - React
-  - Serve (pour servir le build statique)
+  - Nginx (pour servir le build statique)
   - Docker
 
 - **Backend** :
   - Node.js
   - Express.js
-  - Drizzle ORM
+  - Prisma
   - PostgreSQL client
   - Docker
 
@@ -26,28 +26,127 @@ Ce projet est une plateforme pour le site d'intégration de l'Université de Tec
 
 ---
 
-## 🚀 Lancer le projet en local
+## Prérequis
 
-### 1. Prérequis
-
-Assurez-vous d'avoir installé :
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
-
-Vérifiez avec :
-```bash
-docker --version
-docker-compose --version
-```
-
-### 2. Cloner le projet
+### Cloner le projet
 
 ```bash
 git clone https://github.com/ungdev/Integration.git
 cd Integration
 ```
 
-### 3. Démarrer les conteneurs
+### Docker & Docker-Compose
+
+Assurez-vous d'avoir installé :
+
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+Vérifiez avec :
+
+```bash
+docker --version
+docker-compose --version
+```
+
+### ESLint & Prettier
+
+ESLint & Prettier sont utilisés pour maintenanir une cohérence et propreté de syntaxe dans le code de ce projet ainsi que la lisibilité.
+
+Il convient donc d'installation les deux extensions sur votre éditeur de code.
+
+Vérification de syntaxe via la commande
+
+```
+pnpm lint
+```
+
+La syntaxe doit être controllée avant chaque commit.
+
+### Variables d'environnement
+
+#### Frontend
+
+Dans [le dossier frontend](/frontend)
+
+```
+cp .env.example .env
+```
+
+Renseigner les différents champs utiles.
+
+#### API
+
+Dans [le dossier backend](/backend)
+
+```
+cp .env.example .env
+```
+
+Renseigner les différents champs utiles.
+
+## 🚀 Lancer le projet en local
+
+### Database
+
+#### Via Docker-Compose
+
+A la racine du projet
+
+```
+docker compose up db
+```
+
+#### Database externe
+
+Passage par exemple par `systemctl`
+
+```
+sudo systemctl start postgresql
+```
+
+### Frontend
+
+Dans [le dossier frontend](/frontend)
+
+Installation des dépendances
+
+```
+pnpm i
+```
+
+Pour lancer le serveur
+
+```
+pnpm run dev
+```
+
+### API
+
+Dans [le dossier backend](/backend/)
+
+Installation des dépendances & Migration DB
+
+```
+pnpm i
+pnpm migrate
+```
+
+Pour lancer le serveur
+
+```
+pnpm run dev
+```
+
+### Accéder aux services
+
+- Frontend : [http://localhost:4000](http://localhost:4000)
+- Backend : [http://localhost:4001](http://localhost:4001)
+- Base de données PostgreSQL : `localhost:5432` (user: `admin`, password: `password`)
+
+## Test de build
+
+### Via Docker
 
 Exécutez la commande suivante à la racine du projet :
 
@@ -56,27 +155,10 @@ docker-compose up --build
 ```
 
 Cette commande :
+
 - Lance PostgreSQL
-- Démarre le backend avec migration automatique via Drizzle ORM
+- Démarre le backend avec migration automatique via Prisma
 - Compile et sert le frontend
-
-### 4. Accéder aux services
-
-- Frontend : [http://localhost:4000](http://localhost:4000)
-- Backend : [http://localhost:4001](http://localhost:4001)
-- Base de données PostgreSQL : `localhost:5432` (user: `admin`, password: `password`)
-
----
-
-## 🧪 Gestion des migrations
-
-Le backend utilise **Drizzle ORM** pour la gestion des migrations.
-
-La commande suivante est exécutée automatiquement au démarrage :
-
-```bash
-npm run migrate
-```
 
 ---
 
@@ -97,8 +179,7 @@ npm run migrate
 
 ---
 
-
-# 🔧 Installation du site de l'Intégration en local
+# 🔧 Routage `/api` sur integration.utt.fr en local
 
 Ce guide permet de configurer le site `integration.utt.fr` en local avec Nginx, en HTTPS, pour simuler l'environnement de production.
 
@@ -138,6 +219,7 @@ mkcert integration.utt.fr
 ```
 
 Cela crée deux fichiers :
+
 - `integration.utt.fr.pem`
 - `integration.utt.fr-key.pem`
 
@@ -177,30 +259,13 @@ sudo systemctl reload nginx
 
 ### 4. Lancer les services
 
-Dans deux terminaux différents :
+[Lancer l'API](#api) puis [lancer le Frontend](#frontend)
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-```bash
-cd backend
-npm install
-npm run dev
-```
+Le projet de dev est maintenant accessible sur https://integration.utt.fr, en local.
 
 ---
 
-### ✅ Accès
-
-Ouvrir :  
-👉 https://integration.utt.fr
-
----
-
-## 🔚 Nettoyage quand le dev est terminé
+## Nettoyage
 
 ### 1. Supprimer l'entrée dans `/etc/hosts`
 
@@ -226,10 +291,8 @@ sudo systemctl reload nginx
 
 ---
 
-Tu peux maintenant accéder à la version en ligne de :  
-👉 https://integration.utt.fr
-
+La site de production est maintenant accessible sur https://integration.utt.fr, en ligne.
 
 ## 📜 Licence
 
-Projet destiné à des fins d'utilisation pour l'intégration des étudiants à l'UTT.
+Projet destiné à des fins d'utilisation pour l'intégration des nouveaux étudiants à l'Université de Technologie de Troyes.

@@ -1,68 +1,69 @@
-import { type Request, type Response } from "express";
-import { sendEmail } from "../services/email.service";
-import * as tent_service from "../services/tent.service";
-import { getUserById } from "../services/user.service";
-import { Error, Ok } from "../utils/responses";
-import { generateEmailHtml } from "./email.controller";
+import { generateEmailHtml, sendEmail } from '../services/email.service';
+import * as tent_service from '../services/tent.service';
+import { getUserById } from '../services/user.service';
+import { Error, Ok } from '../utils/responses';
+import { email_from } from '../utils/secret';
+import type { AppRequestHandler } from '../types/http';
+import type { CreateTentBody, ToggleTentBody } from '../dto/tent.dto';
 
-export const createTent = async (req: Request, res: Response) => {
+export const createTent: AppRequestHandler<CreateTentBody> = async (req, res) => {
     const { userId2 } = req.body;
     const userId1 = req.user?.userId; // Créateur = utilisateur connecté
 
     if (!userId1 || !userId2) {
-        Error(res, { msg: "Identifiants utilisateurs manquants." });
+        Error(res, { msg: 'Identifiants utilisateurs manquants.' });
     }
 
     try {
         await tent_service.createTent(userId1, userId2);
-        Ok(res, { msg: "Tente réservée avec succès." });
+        Ok(res, { msg: 'Tente réservée avec succès.' });
     } catch (err: any) {
-        Error(res, { msg: err.message || "Erreur lors de la création de la tente." });
+        Error(res, { msg: err.message || 'Erreur lors de la création de la tente.' });
     }
 };
 
-export const cancelTent = async (req: Request, res: Response) => {
+export const cancelTent: AppRequestHandler = async (req, res) => {
     const userId1 = req.user?.userId;
 
     if (!userId1) {
-        Error(res, { msg: "Identifiants utilisateurs manquants." });
+        Error(res, { msg: 'Identifiants utilisateurs manquants.' });
     }
 
     try {
         await tent_service.cancelTent(userId1);
-        Ok(res, { msg: "Tente annulée." });
+        Ok(res, { msg: 'Tente annulée.' });
     } catch {
         Error(res, { msg: "Erreur lors de l'annulation." });
     }
 };
 
-export const getUserTent = async (req: Request, res: Response) => {
+export const getUserTent: AppRequestHandler = async (req, res) => {
     const userId = req.user?.userId;
 
-    if (!userId) Error(res, { msg: "Utilisateur non authentifié." });
+    if (!userId) Error(res, { msg: 'Utilisateur non authentifié.' });
 
     try {
         const tent = await tent_service.getTentByUser(userId);
         Ok(res, { data: tent });
     } catch {
-        Error(res, { msg: "Erreur lors de la récupération." });
+        Error(res, { msg: 'Erreur lors de la récupération.' });
     }
 };
 
-export const getAllTentPairs = async (req: Request, res: Response) => {
+export const getAllTentPairs: AppRequestHandler = async (_req, res) => {
     try {
         const tents = await tent_service.getAllTents();
         Ok(res, { data: tents });
     } catch {
-        Error(res, { msg: "Erreur lors de la récupération des binômes." });
+        Error(res, { msg: 'Erreur lors de la récupération des binômes.' });
     }
 };
 
-export const toggleTentConfirmation = async (req: Request, res: Response) => {
+export const toggleTentConfirmation: AppRequestHandler<ToggleTentBody> = async (req, res) => {
     const { userId1, userId2, confirmed } = req.body;
 
-    if (!userId1 || !userId2 || typeof confirmed !== "boolean") {
-        Error(res, { msg: "Paramètres manquants ou invalides." });
+    if (!userId1 || !userId2 || typeof confirmed !== 'boolean') {
+        Error(res, { msg: 'Paramètres manquants ou invalides.' });
     }
 
     try {
@@ -74,11 +75,11 @@ export const toggleTentConfirmation = async (req: Request, res: Response) => {
         const user2 = await getUserById(userId2);
 
         if (!user1 || !user2) {
-            Error(res, { msg: "Impossible de récupérer les utilisateurs." });
+            Error(res, { msg: 'Impossible de récupérer les utilisateurs.' });
         }
 
         // Génération du contenu HTML
-        const htmlEmail = generateEmailHtml("templateNotifyTentConfirmation", {
+        const htmlEmail = generateEmailHtml('templateNotifyTentConfirmation', {
             user1: `${user1.firstName} ${user1.lastName}`,
             user2: `${user2.firstName} ${user2.lastName}`,
             confirmed,
@@ -86,11 +87,11 @@ export const toggleTentConfirmation = async (req: Request, res: Response) => {
 
         // Options d'email
         const emailOptions = {
-            from: "integration@utt.fr",
+            from: email_from,
             to: [user1.email, user2.email],
             subject: confirmed
                 ? "🎉 Votre tente a été validée !"
-                : "⛺ Votre tente a été dévalidée",
+                : "⛺ Votre tente a été invalidée",
             text: "", // optionnel
             html: htmlEmail,
         };
@@ -101,7 +102,7 @@ export const toggleTentConfirmation = async (req: Request, res: Response) => {
         Ok(res, {
             msg: confirmed
                 ? "Tente validée et email envoyé."
-                : "Tente dévalidée et email envoyé.",
+                : "Tente invalidée et email envoyé.",
         });
     } catch (err: any) {
         console.error(err);

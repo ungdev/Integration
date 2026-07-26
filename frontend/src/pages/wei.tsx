@@ -1,27 +1,29 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
-import { Footer } from "../components/footer";
-import { Navbar } from "../components/navbar";
-import { TentPublic } from "../components/tent/tentSection";
-import { WeiSection } from "../components/WEI_SDI_Food/weiSection";
-import { getPermission } from "../services/requests/user.service";
+import { Footer } from '../components/footer';
+import EmergencyModal from '../components/home/emergencyModal';
+import { Navbar } from '../components/navbar';
+import { TentPublic } from '../components/tent/tentSection';
+import { WeiSection } from '../components/WEI_SDI_Food/weiSection';
+import { getPermission } from '../services/requests/user.service';
 
 const WeiPage = () => {
     const navigate = useNavigate();
     const permission = getPermission();
 
     if (!permission) {
-        navigate("/");
+        navigate('/');
         return null;
     }
 
     return (
         <div>
             <Navbar />
+            <EmergencyModal />
             <div className="bg-gray-100 min-h-screen py-6 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto space-y-8">
                     <WeiSection />
-                    {(permission === "Nouveau" || permission === "Admin") && <TentPublic />}
+                    {(permission === 'Nouveau' || permission === 'Admin') && <TentPublic />}
                 </div>
             </div>
             <Footer />

@@ -1,10 +1,10 @@
-import { Check, Search, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
+import { Check, Search, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 
-import { getAllTentPairs, toggleTentConfirmation } from "../../services/requests/tent.service";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { getAllTentPairs, toggleTentConfirmation } from '../../services/requests/tent.service';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 interface TentPair {
     user1_id: number;
@@ -23,8 +23,8 @@ interface TentPair {
 export const TentAdmin = () => {
     const [pairs, setPairs] = useState<TentPair[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const [search, setSearch] = useState<string>("");
-    const [filter, setFilter] = useState<"all" | "confirmed" | "unconfirmed">("all");
+    const [search, setSearch] = useState<string>('');
+    const [filter, setFilter] = useState<'all' | 'confirmed' | 'unconfirmed'>('all');
 
     const fetchPairs = async () => {
         setLoading(true);
@@ -34,14 +34,14 @@ export const TentAdmin = () => {
                 setPairs(result.data);
             }
         } catch {
-            Swal.fire("Erreur", "Impossible de récupérer les binômes", "error");
+            Swal.fire('Erreur', 'Impossible de récupérer les binômes', 'error');
         } finally {
             setLoading(false);
         }
     };
 
     const handleToggle = async (pair: TentPair) => {
-        const action = pair.confirmed ? "dévalider" : "valider";
+        const action = pair.confirmed ? "invalider" : "valider";
 
         const confirm = await Swal.fire({
             title: '⚠️ Confirmation requise',
@@ -65,7 +65,6 @@ export const TentAdmin = () => {
             focusCancel: true,
         });
 
-
         if (!confirm.isConfirmed) return;
 
         try {
@@ -73,13 +72,13 @@ export const TentAdmin = () => {
 
             Swal.fire(
                 "Succès ✅",
-                `La tente a bien été ${pair.confirmed ? "dévalidée" : "validée"}.`,
+                `La tente a bien été ${pair.confirmed ? "invalidée" : "validée"}.`,
                 "success"
             );
 
             fetchPairs();
         } catch {
-            Swal.fire("Erreur", "Impossible de mettre à jour la confirmation", "error");
+            Swal.fire('Erreur', 'Impossible de mettre à jour la confirmation', 'error');
         }
     };
 
@@ -99,9 +98,9 @@ export const TentAdmin = () => {
             pair.user2_email.toLowerCase().includes(query);
 
         const matchesFilter =
-            filter === "all" ||
-            (filter === "confirmed" && pair.confirmed) ||
-            (filter === "unconfirmed" && !pair.confirmed);
+            filter === 'all' ||
+            (filter === 'confirmed' && pair.confirmed) ||
+            (filter === 'unconfirmed' && !pair.confirmed);
 
         return matchesSearch && matchesFilter;
     });
@@ -114,7 +113,6 @@ export const TentAdmin = () => {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
                     {/* 🔎 Barre de recherche */}
                     <div className="relative w-full md:w-1/3">
@@ -131,9 +129,8 @@ export const TentAdmin = () => {
                     {/* 🔽 Filtre état */}
                     <select
                         value={filter}
-                        onChange={(e) => setFilter(e.target.value as "all" | "confirmed" | "unconfirmed")}
-                        className="border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 transition"
-                    >
+                        onChange={(e) => setFilter(e.target.value as 'all' | 'confirmed' | 'unconfirmed')}
+                        className="border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 transition">
                         <option value="all">📋 Tous</option>
                         <option value="confirmed">✅ Validés</option>
                         <option value="unconfirmed">❌ Non validés</option>
@@ -142,9 +139,8 @@ export const TentAdmin = () => {
                     <Button
                         onClick={fetchPairs}
                         className="bg-blue-600 hover:bg-blue-700 text-white w-full md:w-auto"
-                        disabled={loading}
-                    >
-                        {loading ? "Chargement..." : "🔄 Rafraîchir"}
+                        disabled={loading}>
+                        {loading ? 'Chargement...' : '🔄 Rafraîchir'}
                     </Button>
                 </div>
 
@@ -168,12 +164,16 @@ export const TentAdmin = () => {
                             <tbody>
                                 {filteredPairs.map((pair, index) => (
                                     <tr key={index} className="border-t hover:bg-gray-50 transition">
-                                        <td className="p-3">{pair.user1_first_name} {pair.user1_last_name}</td>
+                                        <td className="p-3">
+                                            {pair.user1_first_name} {pair.user1_last_name}
+                                        </td>
                                         <td className="p-3">{pair.user1_email}</td>
-                                        <td className="p-3">{pair.user1_majeur ? "Oui" : "Non"}</td>
-                                        <td className="p-3">{pair.user2_first_name} {pair.user2_last_name}</td>
+                                        <td className="p-3">{pair.user1_majeur ? 'Oui' : 'Non'}</td>
+                                        <td className="p-3">
+                                            {pair.user2_first_name} {pair.user2_last_name}
+                                        </td>
                                         <td className="p-3">{pair.user2_email}</td>
-                                        <td className="p-3">{pair.user2_majeur ? "Oui" : "Non"}</td>
+                                        <td className="p-3">{pair.user2_majeur ? 'Oui' : 'Non'}</td>
                                         <td className="p-3 text-center">
                                             {pair.confirmed ? (
                                                 <span className="flex items-center justify-center text-green-600 font-semibold">
@@ -194,7 +194,7 @@ export const TentAdmin = () => {
                                                         : "bg-green-600 hover:bg-green-700 text-white"
                                                 }
                                             >
-                                                {pair.confirmed ? "❌ Dévalider" : "✅ Valider"}
+                                                {pair.confirmed ? "❌ Invalidée" : "✅ Validée"}
                                             </Button>
                                         </td>
                                     </tr>

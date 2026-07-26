@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Intégration UTT</title>
+    </head>
+    <body
+        style="
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            text-align: center;
+            color: #222;
+        ">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse">
+            <tr>
+                <td align="center" style="padding: 24px">
+                    <table
+                        width="600"
+                        cellpadding="0"
+                        cellspacing="0"
+                        border="0"
+                        style="
+                            max-width: 100%;
+                            margin: 0 auto;
+                            background-color: #f8f8f8;
+                            border-radius: 8px;
+                            overflow: hidden;
+                        ">
+                        <tr>
+                            <td align="center" style="padding: 10px">
+                                <img
+                                    src="https://integration.utt.fr/img/logo_original.png"
+                                    alt="Logo Intégration UTT"
+                                    style="width: 104px; height: auto" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td
+                                style="
+                                    font-size: 21px;
+                                    font-weight: bold;
+                                    line-height: 1.4;
+                                    padding: 10px 0;
+                                    text-align: center;
+                                ">
+                                INTEGRATION UTT
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="line-height: 1.6; padding: 0 12px 12px; text-align: justify">
+                                <h2 style="font-size: 24px; margin: 0 0 16px; text-align: center">
+                                    Rappel de permanence
+                                </h2>
+
+                                <h3 style="text-align: center">{{permName}}</h3>
+                                <p>
+                                    Entre le {{permBeginDate}} à <b>{{permBeginHour}}</b> et le {{permEndDate}} à
+                                    <b>{{permEndHour}}</b>
+                                </p>
+                                <p>Point de rendez-vous: <b>{{permLocation}}</b></p>
+                                <p>Description de la permanence: {{permDescription}}</p>
+                                <p>
+                                    Pour le bon déroulement des permanences, nous vous demandons de vous présenter
+                                    <b>15 minutes à l'avance</b> sur les lieux.
+                                </p>
+                                <p>
+                                    Le ou la reponsable de permanence effectuera l'appel. Seules les permanences
+                                    honorées seront comptabilisés pour le total de permanences des chefs et cheffes
+                                    d'équipe.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0 24px 24px">
+                                <h3 style="text-align: center">
+                                    Retrouve des informations utiles sur notre Instagram !
+                                </h3>
+                                <div style="margin: auto; width: fit-content">
+                                    <a href="https://www.instagram.com/bde.utt" target="_blank">
+                                        <img
+                                            src="https://cdn.tools.unlayer.com/social/icons/rounded/instagram.png"
+                                            alt="Instagram"
+                                            style="width: 30px; height: 30px; margin: 5px" />
+                                    </a>
+                                </div>
+                                <p>Cordialement,<br />L'équipe intégration UTT</p>
+                                <p style="font-size: 12px; color: #999999; margin: 0; text-align: center">
+                                    Si vous avez des questions, n'hésitez pas à
+                                    <a
+                                        href="mailto:integration+site-support@utt.fr"
+                                        style="color: #e74160; text-decoration: none"
+                                        >nous contacter</a
+                                    >.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border-top: 2px solid #ccc; padding: 20px 0"></td>
+                        </tr>
+                        <tr>
+                            <td style="line-height: 1.6; padding: 0 12px 12px; text-align: justify">
+                                <h2 style="font-size: 24px; margin: 0 0 16px; text-align: center">
+                                    Permanence reminder
+                                </h2>
+
+                                <h3 style="text-align: center">{{permName}}</h3>
+                                <p>
+                                    From the {{permBeginDate}} at <b>{{permBeginHour}}</b> to the {{permEndDate}} at
+                                    <b>{{permEndHour}}</b>
+                                </p>
+                                <p>Meeting point: <b>{{permLocation}}</b></p>
+                                <p>Description: {{permDescription}}</p>
+                                <p>
+                                    To ensure the smooth running of the permanence hours, we ask that you arrive
+                                    <b>15 minutes early</b> on the premises.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0 24px 24px">
+                                <h3 style="text-align: center">Stay updated by following us on Instagram!</h3>
+                                <div style="margin: auto; width: fit-content">
+                                    <a href="https://www.instagram.com/bde.utt" target="_blank">
+                                        <img
+                                            src="https://cdn.tools.unlayer.com/social/icons/rounded/instagram.png"
+                                            alt="Instagram"
+                                            style="width: 30px; height: 30px; margin: 5px" />
+                                    </a>
+                                </div>
+                                <p>Regards,<br />The UTT's Integration Team</p>
+                                <p style="font-size: 12px; color: #999999; margin: 0; text-align: center">
+                                    If you have any questions, feel free to
+                                    <a
+                                        href="mailto:integration+site-support@utt.fr"
+                                        style="color: #e74160; text-decoration: none"
+                                        >contact us</a
+                                    >.
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

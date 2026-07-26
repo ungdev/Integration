@@ -82,7 +82,29 @@ export const validateChallenge = async ({
             throw new Error("Type de challenge non valide");
     }
 
-    // 3. Créer l'objet de validation du challenge
+    // 3. Vérifier si ce challenge a déjà été validé pour cette cible
+    const targetColumn =
+        type === "user"
+            ? challengeValidationSchema.target_user_id
+            : type === "team"
+            ? challengeValidationSchema.target_team_id
+            : challengeValidationSchema.target_faction_id;
+
+    const existingValidation = await db
+        .select()
+        .from(challengeValidationSchema)
+        .where(
+            and(
+                eq(challengeValidationSchema.challenge_id, challengeId),
+                eq(targetColumn, targetId)
+            )
+        );
+
+    if (existingValidation.length > 0) {
+        throw new Error("Ce challenge a déjà été validé pour cette cible");
+    }
+
+    // 4. Créer l'objet de validation du challenge
     const newChallengeValidationPoints = {
         challenge_id: challengeId,
         validated_by_admin_id: validatedBy,
@@ -94,7 +116,7 @@ export const validateChallenge = async ({
         target_faction_id: target_faction_id,
     };
 
-    // 4. Insérer la validation du challenge dans la base de données
+    // 5. Insérer la validation du challenge dans la base de données
     const inserted = await db.insert(challengeValidationSchema).values(newChallengeValidationPoints).returning();
 
     return inserted[0];

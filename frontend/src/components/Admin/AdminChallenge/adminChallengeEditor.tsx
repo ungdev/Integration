@@ -1,13 +1,13 @@
-import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import Select from "react-select";
-import Swal from "sweetalert2";
+import { Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import Select from 'react-select';
+import Swal from 'sweetalert2';
 
-import { type Challenge } from "../../../interfaces/challenge.interface";
-import { createChallenge, updateChallenge } from "../../../services/requests/challenge.service";
-import { Button } from "../../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import { Input } from "../../ui/input";
+import { type Challenge } from '../../../interfaces/challenge.interface';
+import { createChallenge, updateChallenge } from '../../../services/requests/challenge.service';
+import { Button } from '../../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
+import { Input } from '../../ui/input';
 
 interface Props {
     editingChallenge: Challenge | null;
@@ -16,14 +16,14 @@ interface Props {
 }
 
 const categoryOptions = [
-    { value: "Team", label: "Team" },
-    { value: "Faction", label: "Faction" },
-    { value: "User", label: "User" },
-    { value: "Autre", label: "Autre" },
+    { value: 'Team', label: 'Team' },
+    { value: 'Faction', label: 'Faction' },
+    { value: 'User', label: 'User' },
+    { value: 'Autre', label: 'Autre' },
 ];
 
 const ChallengeEditor = ({ editingChallenge, setEditingChallenge, refreshChallenges }: Props) => {
-    const [form, setForm] = useState({ title: "", description: "", category: "", points: 0 });
+    const [form, setForm] = useState({ title: '', description: '', category: '', points: 0 });
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -38,34 +38,44 @@ const ChallengeEditor = ({ editingChallenge, setEditingChallenge, refreshChallen
     }, [editingChallenge]);
 
     const resetForm = () => {
-        setForm({ title: "", description: "", category: "", points: 0 });
+        setForm({ title: '', description: '', category: '', points: 0 });
         setEditingChallenge(null);
     };
+
+    const resetFormPostCreation = () => {
+        setForm({ title: "", description: "", category: form.category, points: 0 });
+        setEditingChallenge(null);
+    };
+
 
     const handleSubmit = async () => {
         setLoading(true);
         try {
+            if (!form.title || !form.description || !form.category) {
+                Swal.fire({ icon: "error", title: "Tous les champs doivent être remplis" });
+                return;
+            } 
             if (editingChallenge) {
                 await updateChallenge({ id: editingChallenge.id, ...form });
-                Swal.fire({ icon: "success", title: "Challenge mis à jour !" });
+                Swal.fire({ icon: 'success', title: 'Challenge mis à jour !' });
             } else {
                 await createChallenge(form);
-                Swal.fire({ icon: "success", title: "Challenge créé !" });
+                Swal.fire({ icon: 'success', title: 'Challenge créé !' });
             }
             refreshChallenges();
-            resetForm();
+            resetFormPostCreation();
         } catch {
-            Swal.fire({ icon: "error", title: "Erreur lors de l'enregistrement" });
+            Swal.fire({ icon: 'error', title: "Erreur lors de l'enregistrement" });
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <Card className="w-full max-w-3xl mx-auto">
+        <Card className="w-full max-w-7xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
-                    {editingChallenge ? "✏️ Modifier Challenge" : "🛠️ Créer Challenge"}
+                    {editingChallenge ? '✏️ Modifier Challenge' : '🛠️ Créer Challenge'}
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -83,7 +93,7 @@ const ChallengeEditor = ({ editingChallenge, setEditingChallenge, refreshChallen
                     placeholder="Catégorie"
                     options={categoryOptions}
                     value={categoryOptions.find((opt) => opt.value === form.category)}
-                    onChange={(opt) => setForm({ ...form, category: opt?.value || "" })}
+                    onChange={(opt) => setForm({ ...form, category: opt?.value || '' })}
                 />
                 <Input
                     placeholder="Points"
@@ -95,9 +105,8 @@ const ChallengeEditor = ({ editingChallenge, setEditingChallenge, refreshChallen
                     <Button
                         onClick={handleSubmit}
                         disabled={loading}
-                        className="bg-green-600 hover:bg-green-700 text-white"
-                    >
-                        {loading ? <Loader2 className="animate-spin w-4 h-4" /> : "Enregistrer"}
+                        className="bg-green-600 hover:bg-green-700 text-white">
+                        {loading ? <Loader2 className="animate-spin w-4 h-4" /> : 'Enregistrer'}
                     </Button>
                     {editingChallenge && (
                         <Button onClick={resetForm} className="bg-gray-400 hover:bg-gray-500 text-white">

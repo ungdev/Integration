@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import Select from "react-select";
+import { useEffect, useState } from 'react';
+import Select from 'react-select';
 
-import { type Role } from "../../interfaces/role.interface";
+import { type Role } from '../../interfaces/role.interface';
 import {
     addPointsToRole,
     fetchAvailableRoles,
     fetchRolePointsById,
     removePointsFromRole,
-} from "../../services/requests/role.service";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+} from '../../services/requests/role.service';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const AdminRolePointsManager = () => {
     const [roles, setRoles] = useState<Role[]>([]);
@@ -24,7 +24,7 @@ export const AdminRolePointsManager = () => {
                 const allRoles = await fetchAvailableRoles();
                 setRoles(allRoles);
             } catch (error) {
-                console.error("Erreur lors du chargement des rôles :", error);
+                console.error('Erreur lors du chargement des rôles :', error);
             }
         };
         loadRoles();
@@ -40,7 +40,7 @@ export const AdminRolePointsManager = () => {
                 const response = await fetchRolePointsById(selectedRoleId);
                 setCurrentPoints(response.points);
             } catch (error) {
-                console.error("Erreur lors de la récupération des points :", error);
+                console.error('Erreur lors de la récupération des points :', error);
             }
         };
         loadPoints();
@@ -50,7 +50,7 @@ export const AdminRolePointsManager = () => {
         if (!selectedRoleId || pointsToAdd <= 0) return;
         try {
             await addPointsToRole(selectedRoleId, pointsToAdd);
-            setMessage("Points ajoutés avec succès !");
+            setMessage('Points ajoutés avec succès !');
             setPointsToAdd(0);
             const response = await fetchRolePointsById(selectedRoleId);
             setCurrentPoints(response.updatedPoints);
@@ -63,12 +63,12 @@ export const AdminRolePointsManager = () => {
         if (!selectedRoleId || pointsToRemove <= 0) return;
         try {
             await removePointsFromRole(selectedRoleId, pointsToRemove);
-            setMessage("Points retirés avec succès !");
+            setMessage('Points retirés avec succès !');
             setPointsToRemove(0);
             const response = await fetchRolePointsById(selectedRoleId);
             setCurrentPoints(response.updatedPoints);
         } catch {
-            setMessage("Erreur lors du retrait des points.");
+            setMessage('Erreur lors du retrait des points.');
         }
     };
 
@@ -80,11 +80,7 @@ export const AdminRolePointsManager = () => {
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                {message && (
-                    <div className="mb-4 p-4 rounded bg-blue-100 text-center">
-                        {message}
-                    </div>
-                )}
+                {message && <div className="mb-4 p-4 rounded bg-blue-100 text-center">{message}</div>}
 
                 <div>
                     <label htmlFor="roleSelect" className="block text-sm font-medium mb-2">
@@ -92,16 +88,16 @@ export const AdminRolePointsManager = () => {
                     </label>
                     <Select
                         id="roleSelect"
-                        options={roles.map(role => ({
+                        options={roles.map((role) => ({
                             value: role.roleId,
                             label: role.name,
                         }))}
                         value={
                             selectedRoleId
                                 ? {
-                                    value: selectedRoleId,
-                                    label: roles.find(r => r.roleId === selectedRoleId)?.name,
-                                }
+                                      value: selectedRoleId,
+                                      label: roles.find((r) => r.roleId === selectedRoleId)?.name,
+                                  }
                                 : null
                         }
                         onChange={(option: any) => setSelectedRoleId(option?.value ?? null)}
@@ -114,10 +110,8 @@ export const AdminRolePointsManager = () => {
                     <>
                         <div>
                             <p className="text-md font-semibold">
-                                Points actuels :{" "}
-                                <span className="text-blue-600">
-                                    {currentPoints !== null ? currentPoints : 0}
-                                </span>
+                                Points actuels :{' '}
+                                <span className="text-blue-600">{currentPoints !== null ? currentPoints : 0}</span>
                             </p>
                         </div>
 
@@ -135,8 +129,7 @@ export const AdminRolePointsManager = () => {
                             />
                             <button
                                 onClick={handleAddPoints}
-                                className="mt-2 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
-                            >
+                                className="mt-2 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">
                                 Ajouter
                             </button>
                         </div>
@@ -155,8 +148,7 @@ export const AdminRolePointsManager = () => {
                             />
                             <button
                                 onClick={handleRemovePoints}
-                                className="mt-2 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
-                            >
+                                className="mt-2 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600">
                                 Retirer
                             </button>
                         </div>

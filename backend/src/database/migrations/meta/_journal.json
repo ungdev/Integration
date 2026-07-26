@@ -162,6 +162,34 @@
       "when": 1757002717384,
       "tag": "0022_light_omega_red",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1782943789540,
+      "tag": "0023_zippy_colonel_america",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1783776285772,
+      "tag": "0024_optimal_garia",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1784742510283,
+      "tag": "0025_perfect_ulik",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1784824629918,
+      "tag": "0026_swift_excalibur",
+      "breakpoints": true
     }
   ]
 }

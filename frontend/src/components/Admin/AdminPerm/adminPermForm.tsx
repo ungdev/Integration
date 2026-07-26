@@ -1,19 +1,16 @@
-import { useEffect, useState } from "react";
-import Select from "react-select";
-import Swal from "sweetalert2";
+import { useEffect, useState } from 'react';
+import Select from 'react-select';
+import Swal from 'sweetalert2';
 
-import { Button } from "../../../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
-import { Input } from "../../../components/ui/input";
-import { Textarea } from "../../../components/ui/textarea";
-import { type Permanence } from "../../../interfaces/permanence.interface";
-import { type User } from "../../../interfaces/user.interface";
-import {
-    createPermanence,
-    updatePermanence,
-} from "../../../services/requests/permanence.service";
-import { getUsers } from "../../../services/requests/user.service";
-import { formatDateForDB, formatDateForInput } from "../../utils/datetime_utils";
+import { Button } from '../../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Input } from '../../../components/ui/input';
+import { Textarea } from '../../../components/ui/textarea';
+import { type Permanence } from '../../../interfaces/permanence.interface';
+import { type User } from '../../../interfaces/user.interface';
+import { createPermanence, updatePermanence } from '../../../services/requests/permanence.service';
+import { getUsers } from '../../../services/requests/user.service';
+import { formatDateForDB, formatDateForInput } from '../../utils/datetime_utils';
 
 interface PermanenceFormProps {
     editMode: boolean;
@@ -22,15 +19,10 @@ interface PermanenceFormProps {
     onCancelEdit: () => void;
 }
 
-const PermanenceForm = ({
-    editMode,
-    editPermanence,
-    onRefresh,
-    onCancelEdit,
-}: PermanenceFormProps) => {
-    const [name, setName] = useState("");
-    const [desc, setDesc] = useState("");
-    const [location, setLocation] = useState("");
+const PermanenceForm = ({ editMode, editPermanence, onRefresh, onCancelEdit }: PermanenceFormProps) => {
+    const [name, setName] = useState('');
+    const [desc, setDesc] = useState('');
+    const [location, setLocation] = useState('');
     const [startAt, setStartAt] = useState(Date);
     const [endAt, setEndAt] = useState(Date);
     const [capacity, setCapacity] = useState(0);
@@ -44,7 +36,7 @@ const PermanenceForm = ({
                 const data = await getUsers();
                 setUsers(data);
             } catch {
-                Swal.fire("Erreur", "Impossible de charger les utilisateurs", "error");
+                Swal.fire('Erreur', 'Impossible de charger les utilisateurs', 'error');
             }
         };
 
@@ -69,19 +61,17 @@ const PermanenceForm = ({
     const handleSubmit = async () => {
         if (!editMode) {
             if (!name || !desc || !location || !startAt || !endAt) {
-                Swal.fire("Erreur", "Veuillez remplir tous les champs", "warning");
+                Swal.fire('Erreur', 'Veuillez remplir tous les champs', 'warning');
                 return;
             }
 
             if (capacity < 0 || difficulty < 0) {
-                Swal.fire("Erreur", "Capacité et difficulté doivent être positives", "warning");
+                Swal.fire('Erreur', 'Capacité et difficulté doivent être positives', 'warning');
                 return;
             }
         }
 
-
         const respoId = respo && !isNaN(Number(respo.userId)) ? Number(respo.userId) : null;
-
 
         try {
             const payload = {
@@ -89,7 +79,7 @@ const PermanenceForm = ({
                 description: desc,
                 location,
                 start_at: formatDateForDB(startAt), // ✅ en UTC
-                end_at: formatDateForDB(endAt),     // ✅ en UTC
+                end_at: formatDateForDB(endAt), // ✅ en UTC
                 capacity,
                 difficulty,
                 respoId,
@@ -97,26 +87,26 @@ const PermanenceForm = ({
 
             if (editMode && editPermanence) {
                 await updatePermanence(editPermanence.id, payload);
-                Swal.fire("Succès", "Permanence mise à jour", "success");
+                Swal.fire('Succès', 'Permanence mise à jour', 'success');
                 onCancelEdit();
             } else {
                 await createPermanence(payload);
-                Swal.fire("Succès", "Permanence créée", "success");
+                Swal.fire('Succès', 'Permanence créée', 'success');
             }
 
             resetForm();
             onRefresh();
         } catch (err: any) {
-            Swal.fire("Erreur", err.response.data.message, "error");
+            Swal.fire('Erreur', err.response.data.message, 'error');
         }
     };
 
     const resetForm = () => {
-        setName("");
-        setDesc("");
-        setLocation("");
-        setStartAt("");
-        setEndAt("");
+        setName('');
+        setDesc('');
+        setLocation('');
+        setStartAt('');
+        setEndAt('');
         setCapacity(0);
         setDifficulty(0);
         setRespo(null);
@@ -127,33 +117,19 @@ const PermanenceForm = ({
         label: `${user.firstName} ${user.lastName}`,
     }));
 
-    const selectedRespoOption = respo
-        ? { value: respo.userId, label: `${respo.firstName} ${respo.lastName}` }
-        : null;
+    const selectedRespoOption = respo ? { value: respo.userId, label: `${respo.firstName} ${respo.lastName}` } : null;
 
     return (
-        <Card className="w-full max-w-3xl mx-auto">
+        <Card className="w-full max-w-7xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-center">
-                    {editMode ? "✏️ Modifier une permanence" : "➕ Créer une permanence"}
+                    {editMode ? '✏️ Modifier une permanence' : '➕ Créer une permanence'}
                 </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
-                <Input
-                    placeholder="Nom"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <Textarea
-                    placeholder="Description"
-                    value={desc}
-                    onChange={(e) => setDesc(e.target.value)}
-                />
-                <Input
-                    placeholder="Lieu"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                />
+                <Input placeholder="Nom" value={name} onChange={(e) => setName(e.target.value)} />
+                <Textarea placeholder="Description" value={desc} onChange={(e) => setDesc(e.target.value)} />
+                <Input placeholder="Lieu" value={location} onChange={(e) => setLocation(e.target.value)} />
                 <div className="flex flex-col gap-1">
                     <label htmlFor="startAtInput">Début :</label>
                     <Input
@@ -196,9 +172,7 @@ const PermanenceForm = ({
                 <Select
                     value={selectedRespoOption}
                     onChange={(selectedOption) => {
-                        const selectedUser = users.find(
-                            (u) => u.userId === selectedOption?.value
-                        );
+                        const selectedUser = users.find((u) => u.userId === selectedOption?.value);
                         setRespo(selectedUser || null);
                     }}
                     options={respoOptions}
@@ -208,11 +182,8 @@ const PermanenceForm = ({
                 />
 
                 <div className="flex gap-2">
-                    <Button
-                        onClick={handleSubmit}
-                        className="bg-green-600 hover:bg-green-700 text-white"
-                    >
-                        {editMode ? "✅ Sauvegarder" : "Créer"}
+                    <Button onClick={handleSubmit} className="bg-green-600 hover:bg-green-700 text-white">
+                        {editMode ? '✅ Sauvegarder' : 'Créer'}
                     </Button>
                     {editMode && (
                         <Button
@@ -220,8 +191,7 @@ const PermanenceForm = ({
                             onClick={() => {
                                 resetForm();
                                 onCancelEdit();
-                            }}
-                        >
+                            }}>
                             Annuler
                         </Button>
                     )}

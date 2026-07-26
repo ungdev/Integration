@@ -1,8 +1,12 @@
-import { type JwtPayload } from "jsonwebtoken";
+import type { AuthTokenPayload } from '../src/types/auth';
 
-declare module "express-serve-static-core" {
-    interface Request {
-        user?: JwtPayload | string;
-        permission?: JwtPayload | string;
+declare global {
+    namespace Express {
+        interface Request {
+            user?: AuthTokenPayload;
+            permission?: string;
+        }
     }
 }
+
+export {};

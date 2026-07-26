@@ -52,7 +52,7 @@ const qcmQuestions: SeedQuestion[] = [
     },
     {
         question:
-            "B a embrassé A de force pendant le bang. B était complètement bourré. Il s'agit d'une agression sexuelle. La prise d'alcool est alors une condition :",
+            "B a embrassé A de force. B était complètement bourré. Il s'agit d'une agression sexuelle. La prise d'alcool est alors une condition :",
         points: 1,
         type: 'single_choice',
         answers: [
@@ -92,13 +92,12 @@ const qcmQuestions: SeedQuestion[] = [
         points: 1,
         type: 'multiple_choice',
         answers: [
-            { answer: 'Dans la Safe Zone', is_correct: true },
-            { answer: 'Aux personnes des confiance', is_correct: true },
+            { answer: 'Dans une zone dédiée lors des soirées, appelée la Safe Zone', is_correct: true },
             { answer: 'Au stand de prévention', is_correct: true },
             { answer: 'A la team prévention', is_correct: true },
-            { answer: 'Aux super orgas', is_correct: true },
+            { answer: "Aux organisateurs de l'intégration (en t-shirt touge)", is_correct: true },
             { answer: "A tes chefs d'équipe", is_correct: true },
-            { answer: 'A ta marraine / A ton parrain', is_correct: true },
+            { answer: 'A ta marraine UTTienne/ A ton parrain UTTien', is_correct: true },
             { answer: 'À un•e ami•e', is_correct: true },
         ],
     },

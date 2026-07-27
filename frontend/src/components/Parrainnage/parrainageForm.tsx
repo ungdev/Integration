@@ -24,6 +24,31 @@ export const ParrainageNewStudent = () => (
     </Card>
 );
 
+export const ParrainageNewStudentEnglish = () => (
+    <Card className="w-full max-w-3xl mx-auto">
+        <CardHeader>
+            <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+                You are joining the UTT ?
+            </CardTitle>
+            <p className="text-lg md:text-xl text-gray-700">
+                Would you like to be accompanied by a student to explore your new school? Fill out this form now!
+            </p>
+        </CardHeader>
+        <CardContent className="space-y-10">
+            <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
+                <iframe
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSegnFsXqPhBj98cENhu6WWbYuE2Js3M1uA90LmJTz2N1tBfnA/viewform?embedded=true"
+                    className="absolute inset-0 w-full h-full border-none"
+                    title="New Student Sponsorship Form"
+                    loading="lazy">
+                    Loading...
+                </iframe>
+            </div>
+            {/* <p className="text-red-500 font-medium text-center">🚫 This form is not yet available.</p> */}
+        </CardContent>
+    </Card>
+);
+
 export const ParrainageStudent = () => (
     <Card className="w-full max-w-3xl mx-auto">
         <CardHeader>

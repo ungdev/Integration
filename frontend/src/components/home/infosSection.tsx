@@ -144,11 +144,6 @@ export const Infos = () => (
                         { logo: 'DAMONTE.png', name: 'DAMONTE', link: 'https://www.yves-damonte.fr/' },
                         { logo: 'FONDATIONUTT.png', name: 'Fondation UTT', link: 'https://fondation.utt.fr/' },
                         { logo: 'POPEYE.png', name: 'POPEYE', link: 'https://popeye-troyes.fr/' },
-                        {
-                            logo: 'GRANDEST.png',
-                            name: 'GRANDEST',
-                            link: 'https://www.grandest.fr/vos-aides-regionales/jeunest-15-29-ans/',
-                        },
                         { logo: 'UTT.png', name: 'UTT', link: 'https://utt.fr/' },
                         { logo: 'SECUTT.png', name: 'SECUTT', link: 'https://ffssaube.fr/secutt/' },
                     ].map((partner, i) => (

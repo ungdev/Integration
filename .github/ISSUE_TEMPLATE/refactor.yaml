@@ -1,0 +1,23 @@
+name: ♻️ Refactor
+description: Améliorer ou restructurer du code
+title: "[Refactor] "
+labels:
+  - refactor
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Décris ce qui doit être refactoré.
+      placeholder: Qu'est-ce qui doit être modifié ?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: Pourquoi ?
+      description: Explique pourquoi ce refactor est nécessaire.
+      placeholder: Pourquoi faut-il effectuer ce changement ?
+    validations:
+      required: true

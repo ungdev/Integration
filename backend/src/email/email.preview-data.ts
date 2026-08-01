@@ -1,5 +1,5 @@
-import type { TemplateData } from '../../types/email';
-import { service_url } from '../utils/secret';
+import type { TemplateData } from '../types/email';
+import { service_url } from '../shared/secrets/secrets';
 
 export const defaultPreviewData: Record<string, TemplateData> = {
     custom: {

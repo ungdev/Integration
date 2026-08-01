@@ -1,9 +1,9 @@
 import nodemailer from 'nodemailer';
-import type { EmailOptions, TemplateData } from '../../types/email';
+import type { EmailOptions, TemplateData } from '../types/email';
 import { templateRenderers } from '../email/email.registry';
 import { compileTemplate } from '../email/email.renderer';
 import * as user_service from '../services/user.service';
-import { email_from, email_host, email_password, email_user } from '../utils/secret';
+import { email_from, email_host, email_password, email_user } from '../shared/secrets/secrets';
 
 export const getRecipients = async (
     recipientsGroups: string[] | undefined,

@@ -1,6 +1,6 @@
 import { type NextFunction, type Request, type Response } from 'express';
-import { Unauthorized } from '../utils/responses'; // Assurez-vous que cette fonction est bien définie
-import { automation_token } from '../utils/secret';
+import { Unauthorized } from '../shared/http/responses'; // Assurez-vous que cette fonction est bien définie
+import { automation_token } from '../shared/secrets/secrets';
 
 export const authenticateAutomation = (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -1,4 +1,4 @@
-import type { PermanenceEmailData, TemplateRenderer, TeamAssignmentEmailData } from '../../types/email';
+import type { PermanenceEmailData, TemplateRenderer, TeamAssignmentEmailData } from '../types/email';
 
 export const templateResetPassword = 'reset-password.html';
 const templateNotebook = 'notebook.html';

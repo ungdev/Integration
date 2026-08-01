@@ -2,7 +2,7 @@ import { type Event } from '../schemas/Basic/event.schema';
 import * as event_service from '../services/event.service';
 import * as faction_service from '../services/faction.service';
 import * as team_service from '../services/team.service';
-import { Error, Ok } from '../utils/responses';
+import { Error, Ok } from '../shared/http/responses';
 import type { AppRequestHandler } from '../types/http';
 import type { CreateTeamBody, CreateTeamLightBody, ModifyTeamBody, TeamQuery } from '../dto/team.dto';
 

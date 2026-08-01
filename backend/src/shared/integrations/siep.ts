@@ -1,22 +1,26 @@
 import axios from 'axios';
-import { api_utt_admis_url_ismajor, api_utt_auth_url, api_utt_password, api_utt_username } from "./secret";
+import { api_utt_admis_url_ismajor, api_utt_auth_url, api_utt_password, api_utt_username } from '../secrets/secrets';
 
 export const getTokenUTTAPI = async () => {
     try {
-        const response = await axios.post(api_utt_auth_url, {
-            login: api_utt_username,
-            password: api_utt_password,
-        }, {
-            headers: {
-                'accept': 'application/json',
-                'Content-Type': 'application/json',
-            }
-        });
+        const response = await axios.post(
+            api_utt_auth_url,
+            {
+                login: api_utt_username,
+                password: api_utt_password,
+            },
+            {
+                headers: {
+                    accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
         return response.data.token;
     } catch (error) {
         console.error('Error during POST request:', error);
     }
-}
+};
 
 export const getNewStudentsFromUTTAPI_PAGE = async (token: string, date: string) => {
     const allNewStudents: any[] = [];
@@ -25,7 +29,7 @@ export const getNewStudentsFromUTTAPI_PAGE = async (token: string, date: string)
 
     try {
         while (hasNextPage) {
-            const response = await axios.get(api_utt_admis_url_ismajor + date + "?page=" + currentPage, {
+            const response = await axios.get(api_utt_admis_url_ismajor + date + '?page=' + currentPage, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -55,7 +59,6 @@ export const getNewStudentsFromUTTAPI_NOPAGE = async (token: string, date: strin
     const allNewStudents: any[] = [];
 
     try {
-
         const response = await axios.get(api_utt_admis_url_ismajor + date, {
             headers: {
                 Authorization: `Bearer ${token}`,

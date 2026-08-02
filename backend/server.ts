@@ -28,7 +28,7 @@ import teamRoutes from './src/routes/team.routes';
 import tentRoutes from './src/routes/tent.routes';
 import userRoutes from './src/routes/user.routes';
 import bannedRoutes from './src/routes/banned.routes';
-import { server_port } from './src/utils/secret';
+import { server_port } from './src/shared/secrets/secrets';
 import { initQcmvss } from './src/database/initdb/initQcmvss';
 
 dotenv.config();

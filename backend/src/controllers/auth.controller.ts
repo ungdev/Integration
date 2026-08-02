@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import bigInt from 'big-integer';
 import { sign, verify } from 'jsonwebtoken';
-import type { EmailOptions } from '../../types/email';
+import type { EmailOptions } from '../types/email';
 import { templateResetPassword } from '../email/email.registry';
 import { compileTemplate } from '../email/email.renderer';
 import * as auth_service from '../services/auth.service';
@@ -10,9 +10,9 @@ import * as email_service from '../services/email.service';
 import * as registration_service from '../services/registration.service';
 import * as role_service from '../services/role.service';
 import * as user_service from '../services/user.service';
-import { Error, Ok, Unauthorized } from '../utils/responses';
-import { email_from, jwtSecret, service_url } from '../utils/secret';
-import { decodeToken } from '../utils/token';
+import { Error, Ok, Unauthorized } from '../shared/http/responses';
+import { email_from, jwtSecret, service_url } from '../shared/secrets/secrets';
+import { decodeToken } from '../shared/utils/token';
 import type { AppRequestHandler } from '../types/http';
 import type {
     LoginBody,

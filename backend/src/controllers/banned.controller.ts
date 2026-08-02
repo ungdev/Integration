@@ -1,5 +1,5 @@
 import * as banned_service from '../services/banned.service';
-import { Error, Ok } from '../utils/responses';
+import { Error, Ok } from '../shared/http/responses';
 import type { AppRequestHandler } from '../types/http';
 import type { BannedBody, BannedIdParams } from '../dto/banned.dto';
 

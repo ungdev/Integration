@@ -1,5 +1,5 @@
 import * as role_service from '../services/role.service';
-import { Error, Ok } from '../utils/responses';
+import { Error, Ok } from '../shared/http/responses';
 import type { AppRequestHandler } from '../types/http';
 import type {
     PermissionBody,

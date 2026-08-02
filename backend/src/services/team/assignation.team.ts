@@ -2,7 +2,7 @@ import { eq, inArray } from 'drizzle-orm';
 import { db } from '../../database/db';
 import { userSchema } from '../../schemas/Basic/user.schema';
 import { userTeamsSchema } from '../../schemas/Relational/userteams.schema';
-import type { StudentRow, TeamRow, TeamDistributionState, TeamAssignmentNotification } from '../../dto/team.dto';
+import type { StudentRow, TeamRow, TeamDistributionState, TeamAssignmentNotification } from '../../types/team';
 
 /**
  * Détermine si un(e) étudiant(e) est une fille.

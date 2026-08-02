@@ -1,8 +1,8 @@
 import { generateEmailHtml, sendEmail } from '../services/email.service';
 import * as tent_service from '../services/tent.service';
 import { getUserById } from '../services/user.service';
-import { Error, Ok } from '../utils/responses';
-import { email_from } from '../utils/secret';
+import { Error, Ok } from '../shared/http/responses';
+import { email_from } from '../shared/secrets/secrets';
 import type { AppRequestHandler } from '../types/http';
 import type { CreateTentBody, ToggleTentBody } from '../dto/tent.dto';
 
@@ -89,10 +89,8 @@ export const toggleTentConfirmation: AppRequestHandler<ToggleTentBody> = async (
         const emailOptions = {
             from: email_from,
             to: [user1.email, user2.email],
-            subject: confirmed
-                ? "🎉 Votre tente a été validée !"
-                : "⛺ Votre tente a été invalidée",
-            text: "", // optionnel
+            subject: confirmed ? '🎉 Votre tente a été validée !' : '⛺ Votre tente a été invalidée',
+            text: '', // optionnel
             html: htmlEmail,
         };
 
@@ -100,9 +98,7 @@ export const toggleTentConfirmation: AppRequestHandler<ToggleTentBody> = async (
         await sendEmail(emailOptions);
 
         Ok(res, {
-            msg: confirmed
-                ? "Tente validée et email envoyé."
-                : "Tente invalidée et email envoyé.",
+            msg: confirmed ? 'Tente validée et email envoyé.' : 'Tente invalidée et email envoyé.',
         });
     } catch (err: any) {
         console.error(err);

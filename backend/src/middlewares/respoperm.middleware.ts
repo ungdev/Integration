@@ -1,16 +1,12 @@
-import { type NextFunction, type Request, type Response } from "express";
-import { isUserRespoOfPermanence } from "../services/permanence.service";
-import { Error } from "../utils/responses";
+import { type NextFunction, type Request, type Response } from 'express';
+import { isUserRespoOfPermanence } from '../services/permanence.service';
+import { Error } from '../shared/http/responses';
 
-export const isRespoMiddleware = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+export const isRespoMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?.userId;
 
     if (!userId) {
-        Error(res, { msg: "Utilisateur ou permanence non spécifié" });
+        Error(res, { msg: 'Utilisateur ou permanence non spécifié' });
         return;
     }
 
@@ -23,6 +19,6 @@ export const isRespoMiddleware = async (
         next(); // ✅ L'utilisateur est bien respo, on continue
     } catch (err) {
         console.error(err);
-        Error(res, { msg: "Erreur lors de la vérification du responsable" });
+        Error(res, { msg: 'Erreur lors de la vérification du responsable' });
     }
 };

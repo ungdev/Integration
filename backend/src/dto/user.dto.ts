@@ -1,6 +1,6 @@
-import { type VssSubmissionAnswer } from '../services/user.service';
+import { type VssSubmissionAnswer } from '../types/user';
 
-export interface AdminCreateUserDto {
+export interface AdminCreateUserBody {
     firstName: string;
     lastName: string;
     email: string;
@@ -26,7 +26,7 @@ export type ProfileBody = {
     contact: string;
 };
 
-export type CreateUserContactInformationDto = {
+export type CreateUserContactInformationBody = {
     emergency_contact_name: string;
     emergency_contact_phone: string;
 };

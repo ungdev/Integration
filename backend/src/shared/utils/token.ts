@@ -1,6 +1,6 @@
 import { verify } from 'jsonwebtoken';
-import type { AuthTokenPayload } from '../types/auth';
-import { jwtSecret } from '../utils/secret';
+import type { AuthTokenPayload } from '../../types/auth';
+import { jwtSecret } from '../secrets/secrets';
 
 export const decodeToken = (token: string): AuthTokenPayload | null => {
     if (!token) {

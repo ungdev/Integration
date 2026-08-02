@@ -5,14 +5,14 @@ import * as export_service from '../services/im_export.service';
 import * as permanence_service from '../services/permanence.service';
 import * as team_service from '../services/team.service';
 import * as user_service from '../services/user.service';
-import { Error, Ok } from '../utils/responses';
-import { spreadsheet_id } from '../utils/secret';
+import { Error, Ok } from '../shared/http/responses';
+import { spreadsheet_id } from '../shared/secrets/secrets';
 import {
     getLatestUploadedDocument,
     isSafeUploadSegment,
     removeUploadedDocuments,
     toUploadedDocumentStatus,
-} from '../utils/uploadDocuments';
+} from '../shared/storage/uploadDocuments';
 import type { AppRequestHandler } from '../types/http';
 import type { UploadedDocumentParams } from '../dto/im_export.dto';
 

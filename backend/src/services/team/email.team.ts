@@ -4,10 +4,10 @@ import { factionSchema } from '../../schemas/Basic/faction.schema';
 import { teamSchema } from '../../schemas/Basic/team.schema';
 import { teamFactionSchema } from '../../schemas/Relational/teamfaction.schema';
 import { generateEmailHtml, sendEmail } from '../email.service';
-import type { TeamAssignmentNotification } from '../../dto/team.dto';
-import { email_from, email_concurrency } from '../../utils/secret';
-import type { TeamAssignmentEmailData } from '../../../types/email';
-import getPLimit from '../../utils/pLimit';
+import type { TeamAssignmentNotification } from '../../types/team';
+import { email_from, email_concurrency } from '../../shared/secrets/secrets';
+import type { TeamAssignmentEmailData } from '../../types/email';
+import getPLimit from '../../shared/utils/pLimit';
 
 /**
  * Envoie un email de notification à chaque étudiant venant d'être

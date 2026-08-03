@@ -1,7 +1,7 @@
 import * as bus_service from '../services/bus.service';
 import { generateEmailHtml, sendEmail } from '../services/email.service';
-import { Error, Ok } from '../utils/responses';
-import { email_from } from '../utils/secret';
+import { Error, Ok } from '../shared/http/responses';
+import { email_from } from '../shared/secrets/secrets';
 import type { AppRequestHandler } from '../types/http';
 
 export const sendBusAttributionEmails: AppRequestHandler = async (_req, res) => {

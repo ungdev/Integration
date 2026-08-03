@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { api_billetweb_token, api_billetweb_url, api_billetweb_respondent_students_list_id } from './secret';
+import { api_billetweb_token, api_billetweb_url, api_billetweb_respondent_students_list_id } from '../secrets/secrets';
 import type { BilletwebUser } from '../../types/billetweb';
 
 const headers = {

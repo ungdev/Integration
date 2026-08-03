@@ -1,5 +1,5 @@
 import * as challenge_service from '../services/challenge.service';
-import { Created, Error, Ok, Unauthorized } from '../utils/responses';
+import { Created, Error, Ok, Unauthorized } from '../shared/http/responses';
 import type { AppRequestHandler } from '../types/http';
 import type {
     CreateChallengeBody,

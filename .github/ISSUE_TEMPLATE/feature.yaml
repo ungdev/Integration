@@ -1,0 +1,23 @@
+name: ✨ Feature
+description: Proposer une nouvelle fonctionnalité
+title: "[Feature] "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Décris la fonctionnalité souhaitée.
+      placeholder: Que veux-tu ajouter ?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: Besoin
+      description: Explique pourquoi cette fonctionnalité est nécessaire.
+      placeholder: Pourquoi cette fonctionnalité est-elle utile ?
+    validations:
+      required: true

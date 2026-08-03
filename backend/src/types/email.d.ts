@@ -32,3 +32,14 @@ export interface TeamAssignmentEmailData extends TemplateData {
 }
 
 export type TemplatesRecordByNumber = Record<number, string>;
+
+export type EmailPayload = {
+    subject: string;
+    templateName: string;
+    recipientsGroups?: string[];
+    sendTo?: string[];
+    html?: string;
+    title?: string;
+    content?: string;
+    text?: string;
+};

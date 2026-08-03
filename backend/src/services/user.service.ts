@@ -2,40 +2,22 @@ import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import * as randomstring from 'randomstring';
 import { db } from '../database/db'; // Import de la connexion PostgreSQL
-import type { AdminCreateUserDto, CreateUserContactInformationDto, VssSubmissionPayload } from '../dto/user.dto';
+import type { AdminCreateUserBody, CreateUserContactInformationBody, VssSubmissionPayload } from '../dto/user.dto';
 import { type User, userSchema } from '../schemas/Basic/user.schema';
 import { vssqcmquestionSchema } from '../schemas/Basic/vssqcmquestion.schema';
 import { vssqcmanswerSchema } from '../schemas/Relational/vssqcmanswer.schema';
 import { registrationSchema } from '../schemas/Relational/registration.schema';
 import * as auth_service from '../services/auth.service';
-import * as SIEP_Utils from '../utils/siep';
+import * as SIEP_Utils from '../shared/integrations/siep';
 import * as Banned_Service from './banned.service';
 import { createRegistrationToken } from './auth.service';
 import { getFaction } from './faction.service';
 import { getUserRoles } from './role.service';
 import { getTeam, getTeamFaction, getUserTeam } from './team.service';
 import { userInformationSchema } from '../schemas/Relational/userinformation.schema';
-import { addUserToRespondentStudentsList } from '../utils/billetweb';
+import { addUserToRespondentStudentsList } from '../shared/integrations/billetweb';
 import { generateEmailHtml, sendEmail } from './email.service';
-import { email_from } from '../utils/secret';
-
-export type VssQuestionnaireAnswer = {
-    id: number;
-    answer: string;
-};
-
-export type VssQuestionnaireQuestion = {
-    id: number;
-    question: string;
-    points: number;
-    type: 'single_choice' | 'multiple_choice';
-    answers: VssQuestionnaireAnswer[];
-};
-
-export type VssSubmissionAnswer = {
-    questionId: number;
-    answerIds: number[];
-};
+import { email_from } from '../shared/secrets/secrets';
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
@@ -161,7 +143,7 @@ export const updateUserStudent = async (firstName: string, lastName: string, ema
     }
 };
 
-export const adminCreateUser = async (data: AdminCreateUserDto) => {
+export const adminCreateUser = async (data: AdminCreateUserBody) => {
     const email = data.email.toLowerCase();
 
     const userInDb = await getUserByEmail(email);
@@ -268,13 +250,13 @@ export const getUserContactInformation = async (userId: number) => {
     }
 };
 
-export const createUserContactInformation = async (userId: number, contact: CreateUserContactInformationDto) => {
+export const createUserContactInformation = async (userId: number, contact: CreateUserContactInformationBody) => {
     try {
         if (!contact.emergency_contact_name || !contact.emergency_contact_phone) {
             throw new Error("Le nom et le numéro de téléphone du contact d'urgence sont requis.");
         }
 
-        if (!/^\+?\d{10,15}$/.test(contact.emergency_contact_phone)) {
+        if (!/^\+?(\s?\d){9,15}$/.test(contact.emergency_contact_phone)) {
             throw new Error("Le numéro de téléphone du contact d'urgence n'est pas valide.");
         }
 
@@ -345,18 +327,25 @@ export const getVssQuestionnaire = async () => {
         const questions = await db.select().from(vssqcmquestionSchema);
         const answers = await db.select().from(vssqcmanswerSchema);
 
-        return questions.map((question) => ({
-            id: question.id,
-            question: question.question,
-            points: question.points,
-            type: question.type,
-            answers: answers
-                .filter((answer) => answer.questionid === question.id)
-                .map((answer) => ({
-                    id: answer.id,
-                    answer: answer.answer,
-                })),
-        }));
+        return questions
+            .slice()
+            .sort((firstQuestion, secondQuestion) => firstQuestion.id - secondQuestion.id)
+            .map((question) => ({
+                id: question.id,
+                question: question.question,
+                questionEn: question.question_en ?? undefined,
+                points: question.points,
+                type: question.type,
+                answers: answers
+                    .slice()
+                    .sort((firstAnswer, secondAnswer) => firstAnswer.id - secondAnswer.id)
+                    .filter((answer) => answer.questionid === question.id)
+                    .map((answer) => ({
+                        id: answer.id,
+                        answer: answer.answer,
+                        answerEn: answer.answer_en ?? undefined,
+                    })),
+            }));
     } catch (err) {
         console.error('Erreur lors de la récupération du questionnaire VSS:', err);
         throw new Error('Erreur de base de données');

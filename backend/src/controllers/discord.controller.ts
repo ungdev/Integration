@@ -1,5 +1,5 @@
 import * as discord_service from '../services/discord.service';
-import { Error, Ok, ServiceUnavailable } from '../utils/responses';
+import { Error, Ok, ServiceUnavailable } from '../shared/http/responses';
 import type { AppRequestHandler } from '../types/http';
 import type { DiscordBody } from '../dto/discord.dto';
 

@@ -256,7 +256,7 @@ export const createUserContactInformation = async (userId: number, contact: Crea
             throw new Error("Le nom et le numéro de téléphone du contact d'urgence sont requis.");
         }
 
-        if (!/^\+?\d{10,15}$/.test(contact.emergency_contact_phone)) {
+        if (!/^\+?(\s?\d){9,15}$/.test(contact.emergency_contact_phone)) {
             throw new Error("Le numéro de téléphone du contact d'urgence n'est pas valide.");
         }
 

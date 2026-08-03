@@ -31,11 +31,13 @@ export interface UserOnboardingStatus {
 export interface VssQuestionnaireAnswer {
     id: number;
     answer: string;
+    answerEn?: string;
 }
 
 export interface VssQuestionnaireQuestion {
     id: number;
     question: string;
+    questionEn?: string;
     points: number;
     type: 'single_choice' | 'multiple_choice';
     answers: VssQuestionnaireAnswer[];

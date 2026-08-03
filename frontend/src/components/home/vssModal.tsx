@@ -5,9 +5,76 @@ import { getVssQuestionnaire, submitVssQuestionnaire } from '../../services/requ
 import { Button } from '../ui/button';
 import Modal from '../ui/modal';
 
+export type Language = 'fr' | 'en';
+
+const copy = {
+    fr: {
+        title: 'Questionnaire VSS',
+        toggleLanguage: 'Show in English',
+        intro: [
+            'Dans ce questionnaire, tu devras répondre aux questions ci-dessous à propos des Violences Sexistes et Sexuelles (VSS).',
+            "La note est sur 14 et tu disposes de deux essais pour obtenir au moins 7 points. Cette sensibilisation est très importante pour nous afin de nous assurer que l'intégration se déroule dans les meilleures conditions pour tout le monde.",
+            "Si tu n'arrives pas à obtenir la moyenne après deux tentatives, nous serons malheureusement contraints de te refuser l'accès à la Soirée et au Week-end d'intégration, car ce sont les moments où la majorité des situations de VSS se produisent.",
+            'Tu peux quitter ce questionnaire à tout moment et le compléter plus tard. Cependant, il est obligatoire pour participer à certaines activités.',
+        ],
+        answerGuidance: {
+            single: 'Choisis une seule réponse.',
+            multiple: 'Tu peux sélectionner plusieurs réponses.',
+        },
+        loadingError: 'Impossible de charger le questionnaire VSS.',
+        submitError: 'Impossible d’envoyer le questionnaire VSS.',
+        unansweredError: "Réponds à toutes les questions avant d'envoyer le questionnaire.",
+        emptyState: 'Aucun questionnaire disponible pour le moment.',
+        progress: (answered: number, total: number) => `${answered}/${total} questions répondues`,
+        points: (totalPoints: number) => `${totalPoints} points possibles`,
+        submit: 'Soumettre le questionnaire',
+        submitting: 'Envoi...',
+        cancel: 'Annuler',
+        close: 'Fermer',
+        status: {
+            validated: 'Questionnaire validé. Tu peux fermer cette fenêtre.',
+            toretry: 'Le résultat nécessite une seconde tentative. Tu pourras retenter plus tard.',
+            rejected: 'Le nombre de tentatives autorisées est atteint.',
+            pending: '',
+        },
+    },
+    en: {
+        title: 'VSS Questionnaire',
+        toggleLanguage: 'Voir en français',
+        intro: [
+            'In this questionnaire, you will need to answer the questions below about sexist and sexual violence (VSS).',
+            'The score is out of 14 and you have two tries to get at least 7 points. This awareness step is very important to us so that the integration runs in the best possible conditions for everyone.',
+            'If you do not reach the passing score after two attempts, we will unfortunately have to deny you access to the Party and the Integration Weekend, because these are the moments where most VSS situations happen.',
+            'You can leave this questionnaire at any time and complete it later. However, it is mandatory to participate in certain activities.',
+        ],
+        answerGuidance: {
+            single: 'Choose one answer only.',
+            multiple: 'You can select multiple answers.',
+        },
+        loadingError: 'Unable to load the VSS questionnaire.',
+        submitError: 'Unable to submit the VSS questionnaire.',
+        unansweredError: 'Answer all the questions before submitting the questionnaire.',
+        emptyState: 'No questionnaire is available right now.',
+        progress: (answered: number, total: number) => `${answered}/${total} questions answered`,
+        points: (totalPoints: number) => `${totalPoints} possible points`,
+        submit: 'Submit questionnaire',
+        submitting: 'Submitting...',
+        cancel: 'Cancel',
+        close: 'Close',
+        status: {
+            validated: 'Questionnaire validated. You can close this window.',
+            toretry: 'The result requires a second attempt. You will be able to try again later.',
+            rejected: 'The maximum number of attempts has been reached.',
+            pending: '',
+        },
+    },
+} as const;
+
 interface VssModalProps {
     visible: boolean;
     onCancel: () => void;
+    language: Language;
+    onToggleLanguage: () => void;
     onSubmitted?: (result: VssSubmissionResponse) => void;
 }
 
@@ -20,20 +87,24 @@ const getAnswerClassName = (selected: boolean) =>
 
 const VssQuestionBlock = ({
     question,
+    language,
     selectedAnswerIds,
     onSelect,
 }: {
     question: VssQuestionnaireQuestion;
+    language: Language;
     selectedAnswerIds: number[];
     onSelect: (questionId: number, answerId: number, type: VssQuestionnaireQuestion['type']) => void;
 }) => {
+    const localizedQuestion = language === 'en' && question.questionEn ? question.questionEn : question.question;
+
     return (
         <div className="rounded-2xl border border-border/60 bg-slate-50/80 p-4 shadow-sm dark:border-white/10 dark:bg-neutral-900/70">
             <div className="mb-3 flex items-start justify-between gap-3">
                 <div>
                     <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Question {question.id}</p>
                     <h3 className="text-base font-semibold leading-snug text-slate-900 dark:text-slate-50">
-                        {question.question}
+                        {localizedQuestion}
                     </h3>
                 </div>
                 <span className="shrink-0 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-900 dark:bg-blue-950/60 dark:text-blue-100">
@@ -44,6 +115,7 @@ const VssQuestionBlock = ({
             <div className="grid gap-2 sm:grid-cols-2">
                 {question.answers.map((answer) => {
                     const isSelected = selectedAnswerIds.includes(answer.id);
+                    const localizedAnswer = language === 'en' && answer.answerEn ? answer.answerEn : answer.answer;
 
                     return (
                         <button
@@ -51,26 +123,27 @@ const VssQuestionBlock = ({
                             type="button"
                             className={getAnswerClassName(isSelected)}
                             onClick={() => onSelect(question.id, answer.id, question.type)}>
-                            <span className="block text-sm font-medium">{answer.answer}</span>
+                            <span className="block text-sm font-medium">{localizedAnswer}</span>
                         </button>
                     );
                 })}
             </div>
             <p className="mt-3 text-xs text-muted-foreground">
                 {question.type === 'single_choice'
-                    ? 'Choisis une seule réponse.'
-                    : 'Tu peux sélectionner plusieurs réponses.'}
+                    ? copy[language].answerGuidance.single
+                    : copy[language].answerGuidance.multiple}
             </p>
         </div>
     );
 };
 
-function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
+function VssModal({ visible, onCancel, onSubmitted, language, onToggleLanguage }: VssModalProps) {
     const [questions, setQuestions] = useState<VssQuestionnaireQuestion[]>([]);
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number[]>>({});
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [result, setResult] = useState<VssSubmissionResponse | null>(null);
+    const localizedCopy = copy[language];
 
     useEffect(() => {
         if (!visible) {
@@ -99,7 +172,7 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
                 setSelectedAnswers({});
             } catch {
                 if (!cancelled) {
-                    setError('Impossible de charger le questionnaire VSS.');
+                    setError(localizedCopy.loadingError);
                 }
             }
         };
@@ -143,7 +216,7 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
             });
 
             if (unansweredQuestions.length > 0) {
-                setError("Réponds à toutes les questions avant d'envoyer le questionnaire.");
+                setError(localizedCopy.unansweredError);
                 return;
             }
 
@@ -157,7 +230,7 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
             setResult(result);
             onSubmitted?.(result);
         } catch {
-            setError('Impossible d’envoyer le questionnaire VSS.');
+            setError(localizedCopy.submitError);
         } finally {
             setSubmitting(false);
         }
@@ -166,41 +239,25 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
     const answeredCount = questions.filter((question) => (selectedAnswers[question.id] ?? []).length > 0).length;
     const totalQuestions = questions.length;
 
-    const statusMessage =
-        result?.status === 'validated'
-            ? 'Questionnaire validé. Tu peux fermer cette fenêtre.'
-            : result?.status === 'toretry'
-              ? 'Le résultat nécessite une seconde tentative. Tu pourras retenter plus tard.'
-              : result?.status === 'rejected'
-                ? 'Le nombre de tentatives autorisées est atteint.'
-                : null;
+    const statusMessage = result ? localizedCopy.status[result.status] : null;
 
     return (
         <Modal
-            title="Questionnaire VSS"
+            title={localizedCopy.title}
             visible={visible}
             onCancel={onCancel}
             buttons={null}
             containerClassName="max-w-4xl">
             <div className="flex flex-col gap-5">
-                <p>
-                    Dans ce questionnaire, tu devras répondre aux questions ci-dessous à propos des Violences Sexistes
-                    et Sexuelles (VSS).
-                </p>
-                <p>
-                    La note est sur 14 et tu disposes de deux essais pour obtenir au moins 7 points. Cette
-                    sensibilisation est très importante pour nous afin de nous assurer que l'intégration se déroule dans
-                    les meilleures conditions pour tout le monde.
-                </p>
-                <p>
-                    Si tu n'arrives pas à obtenir la moyenne après deux tentatives, nous serons malheureusement
-                    contraints de te refuser l'accès à la Soirée et au Week-end d'intégration, car ce sont les moments
-                    où la majorité des situations de VSS se produisent.
-                </p>
-                <p className="text-xs">
-                    Tu peux quitter ce questionnaire à tout moment et le compléter plus tard. Cependant, il est
-                    obligatoire pour participer à certaines activités.
-                </p>
+                <div className="flex justify-end">
+                    <Button variant="secondary" onClick={onToggleLanguage}>
+                        {localizedCopy.toggleLanguage}
+                    </Button>
+                </div>
+
+                {localizedCopy.intro.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                ))}
 
                 {error && (
                     <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-100">
@@ -229,11 +286,11 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
                 {questions.length > 0 && (
                     <div className="space-y-4 pr-1">
                         <div className="flex items-center justify-between text-sm text-muted-foreground">
+                            <span>{localizedCopy.progress(answeredCount, totalQuestions)}</span>
                             <span>
-                                {answeredCount}/{totalQuestions} questions répondues
-                            </span>
-                            <span>
-                                {questions.reduce((total, question) => total + question.points, 0)} points possibles
+                                {localizedCopy.points(
+                                    questions.reduce((total, question) => total + question.points, 0),
+                                )}
                             </span>
                         </div>
 
@@ -241,6 +298,7 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
                             <VssQuestionBlock
                                 key={question.id}
                                 question={question}
+                                language={language}
                                 selectedAnswerIds={selectedAnswers[question.id] ?? []}
                                 onSelect={handleSelectAnswer}
                             />
@@ -250,20 +308,20 @@ function VssModal({ visible, onCancel, onSubmitted }: VssModalProps) {
 
                 {questions.length === 0 && !error && (
                     <div className="rounded-xl border border-dashed border-border/60 bg-slate-50 px-4 py-8 text-center text-sm text-muted-foreground dark:border-white/10 dark:bg-neutral-900/60">
-                        Aucun questionnaire disponible pour le moment.
+                        {localizedCopy.emptyState}
                     </div>
                 )}
 
                 <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
                     {result ? (
-                        <Button onClick={onCancel}>Fermer</Button>
+                        <Button onClick={onCancel}>{localizedCopy.close}</Button>
                     ) : (
                         <>
                             <Button variant="secondary" onClick={onCancel}>
-                                Annuler
+                                {localizedCopy.cancel}
                             </Button>
                             <Button onClick={handleSubmit} disabled={submitting || questions.length === 0}>
-                                {submitting ? 'Envoi...' : 'Soumettre le questionnaire'}
+                                {submitting ? localizedCopy.submitting : localizedCopy.submit}
                             </Button>
                         </>
                     )}

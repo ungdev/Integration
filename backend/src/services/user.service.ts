@@ -327,18 +327,25 @@ export const getVssQuestionnaire = async () => {
         const questions = await db.select().from(vssqcmquestionSchema);
         const answers = await db.select().from(vssqcmanswerSchema);
 
-        return questions.map((question) => ({
-            id: question.id,
-            question: question.question,
-            points: question.points,
-            type: question.type,
-            answers: answers
-                .filter((answer) => answer.questionid === question.id)
-                .map((answer) => ({
-                    id: answer.id,
-                    answer: answer.answer,
-                })),
-        }));
+        return questions
+            .slice()
+            .sort((firstQuestion, secondQuestion) => firstQuestion.id - secondQuestion.id)
+            .map((question) => ({
+                id: question.id,
+                question: question.question,
+                questionEn: question.question_en ?? undefined,
+                points: question.points,
+                type: question.type,
+                answers: answers
+                    .slice()
+                    .sort((firstAnswer, secondAnswer) => firstAnswer.id - secondAnswer.id)
+                    .filter((answer) => answer.questionid === question.id)
+                    .map((answer) => ({
+                        id: answer.id,
+                        answer: answer.answer,
+                        answerEn: answer.answer_en ?? undefined,
+                    })),
+            }));
     } catch (err) {
         console.error('Erreur lors de la récupération du questionnaire VSS:', err);
         throw new Error('Erreur de base de données');

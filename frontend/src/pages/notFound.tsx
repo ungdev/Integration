@@ -17,7 +17,7 @@ const NotFoundPage = () => {
 
             <main
                 className="relative flex-1 flex items-center justify-center bg-no-repeat bg-cover bg-center px-4"
-                style={{ backgroundImage: "url('img/bg_25.jpg')" }}>
+                style={{ backgroundImage: "url('img/bg_26.png')" }}>
                 <div className="absolute inset-0 bg-black/55" aria-hidden="true"></div>
 
                 <Card className="relative z-10 w-full max-w-xl text-center shadow-lg">

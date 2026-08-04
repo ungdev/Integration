@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { useOnboarding } from '../../contexts/onboarding';
 import { decodeToken, getToken } from '../../services/requests/auth.service';
-import { createUserContactInformation, getCurrentUserOnboardingStatus } from '../../services/requests/user.service';
+import { createUserContactInformation } from '../../services/requests/user.service';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import Modal from '../ui/modal';
@@ -26,6 +27,8 @@ function EmergencyModal() {
     const isLogin = searchParams.get('login') === 'true';
     const isNew = roles.includes('Nouveau');
 
+    const { status: onboardingStatus, loading: onboardingLoading } = useOnboarding();
+
     useEffect(() => {
         if (!isLogin) {
             setFlowStep('idle');
@@ -34,47 +37,31 @@ function EmergencyModal() {
             return;
         }
 
-        let cancelled = false;
+        if (!isNew) return;
 
-        const loadOnboardingStatus = async () => {
+        if (onboardingLoading) {
             setFlowStep('loading');
-            setError(null);
-
-            try {
-                const status = await getCurrentUserOnboardingStatus();
-
-                if (cancelled) {
-                    return;
-                }
-
-                if (!status.hasemergencyContactInformation) {
-                    setFlowStep('emergency');
-                    return;
-                }
-
-                if (status.needsVssForm) {
-                    setFlowStep('vss');
-                    return;
-                }
-
-                setFlowStep('idle');
-                setSearchParams({});
-            } catch {
-                if (!cancelled) {
-                    setFlowStep('emergency');
-                    setError('Impossible de récupérer le statut du formulaire.');
-                }
-            }
-        };
-
-        if (isNew) {
-            loadOnboardingStatus();
+            return;
         }
 
-        return () => {
-            cancelled = true;
-        };
-    }, [isLogin, isNew, setSearchParams]);
+        if (!onboardingStatus) {
+            setFlowStep('emergency');
+            return;
+        }
+
+        if (!onboardingStatus.hasemergencyContactInformation) {
+            setFlowStep('emergency');
+            return;
+        }
+
+        if (onboardingStatus.needsVssForm) {
+            setFlowStep('vss');
+            return;
+        }
+
+        setFlowStep('idle');
+        setSearchParams({});
+    }, [isLogin, isNew, onboardingLoading, onboardingStatus, setSearchParams]);
 
     const closeFlow = () => {
         setSearchParams({});

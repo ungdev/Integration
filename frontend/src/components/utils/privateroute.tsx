@@ -10,11 +10,7 @@ interface PrivateRouteProps {
     children: React.ReactNode;
 }
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({
-    permissionRequired,
-    roleRequired,
-    children,
-}) => {
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ permissionRequired, roleRequired, children }) => {
     const token = getToken();
 
     if (!token) {
@@ -28,20 +24,20 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
         return <Navigate to="/" />;
     }
 
-    const isAdmin = decoded.userPermission === "Admin";
+    const isAdmin = decoded.userPermission === 'Admin';
 
-    const hasPermission =
-        !permissionRequired || decoded.userPermission === permissionRequired;
+    const hasPermission = !permissionRequired || decoded.userPermission === permissionRequired;
 
-    const hasRole =
-        !roleRequired ||
-        decoded.userRoles?.some((role) => role.roleName === roleRequired);
+    const hasRole = !roleRequired || decoded.userRoles?.some((role) => role.roleName === roleRequired);
 
     if (!isAdmin && !(hasPermission || hasRole)) {
         return <Navigate to="/" />;
     }
 
+    // PrivateRoute only handles authz checks; user data is provided by `UserProvider` at app root.
     return <>{children}</>;
 };
 
 export default PrivateRoute;
+
+// UserProvider and useUser moved to src/context/user.tsx

@@ -103,7 +103,7 @@ function EmergencyModal() {
         }
         setFlowStep('idle');
         setSearchParams({});
-    }, [isLogin, isNew, onboardingLoading, onboardingStatus, setSearchParams]);
+    }, [isLogin, isNew, onboardingLoading, onboardingStatus, language, setSearchParams]);
 
     const closeFlow = () => {
         setSearchParams({});

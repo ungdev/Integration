@@ -1,13 +1,4 @@
-type EmailPayload = {
-    subject: string;
-    templateName: string;
-    recipientsGroups?: string[];
-    sendTo?: string[];
-    html?: string;
-    title?: string;
-    content?: string;
-    text?: string;
-};
+import { type EmailPayload } from '../types/email';
 
 export type EmailRequestBody = {
     payload?: EmailPayload;

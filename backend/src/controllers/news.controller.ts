@@ -4,8 +4,8 @@ import * as email_service from '../services/email.service';
 import { generateEmailHtml } from '../services/email.service';
 import * as news_service from '../services/news.service';
 import * as user_service from '../services/user.service';
-import { Error, Ok } from '../utils/responses';
-import { email_from } from '../utils/secret';
+import { Error, Ok } from '../shared/http/responses';
+import { email_from } from '../shared/secrets/secrets';
 import type { AppRequestHandler } from '../types/http';
 import type { NewsBody, NewsQuery } from '../dto/news.dto';
 

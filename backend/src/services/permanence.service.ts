@@ -1,55 +1,56 @@
-import { and, eq, inArray, sql } from "drizzle-orm";
-import fs from "fs";
-import Papa from "papaparse";
-import type { PermanenceEmailData } from "../../types/email";
-import type { CsvPermanence, LightUser, Notification, Permanence } from "../../types/permanence";
-import { db } from "../database/db";
-import { AlreadyRegisteredError, PermanenceClosedError, PermanenceFullError, PermanenceNotFoundError, RegisterDeadlineError, UnauthorizedError, UnregisterDeadlineError } from "../errors/permanence.error";
-import { permanenceSchema } from "../schemas/Basic/permanence.schema";
-import { userSchema } from "../schemas/Basic/user.schema";
-import { respoPermanenceSchema, userPermanenceSchema } from "../schemas/Relational/userpermanences.schema";
-import { email_from } from "../utils/secret";
-import { generateEmailHtml, sendEmail } from "./email.service";
+import { and, eq, inArray, sql } from 'drizzle-orm';
+import fs from 'fs';
+import Papa from 'papaparse';
+import type { PermanenceEmailData } from '../types/email';
+import type { CsvPermanence, LightUser, Notification, Permanence } from '../types/permanence';
+import { db } from '../database/db';
+import {
+    AlreadyRegisteredError,
+    PermanenceClosedError,
+    PermanenceFullError,
+    PermanenceNotFoundError,
+    RegisterDeadlineError,
+    UnauthorizedError,
+    UnregisterDeadlineError,
+} from '../errors/permanence.error';
+import { permanenceSchema } from '../schemas/Basic/permanence.schema';
+import { userSchema } from '../schemas/Basic/user.schema';
+import { respoPermanenceSchema, userPermanenceSchema } from '../schemas/Relational/userpermanences.schema';
+import { email_from } from '../shared/secrets/secrets';
+import { generateEmailHtml, sendEmail } from './email.service';
 
 export const getPermanenceById = async (permId: number) => {
     const permanence = await db.query.permanenceSchema.findFirst({
         where: eq(permanenceSchema.id, permId),
     });
-    if (!permanence) throw new PermanenceNotFoundError("Permanence introuvable");
+    if (!permanence) throw new PermanenceNotFoundError('Permanence introuvable');
     return permanence;
 };
 
 // ➕ S'inscrire à une permanence
-export const registerUserToPermanence = async (
-    userId: number,
-    permId: number
-) => {
+export const registerUserToPermanence = async (userId: number, permId: number) => {
     try {
         // Vérifications légères (sans verrouillage)
         const user = await db.query.userSchema.findFirst({
             where: eq(userSchema.id, userId),
         });
-        if (
-            !user ||
-            (user.permission !== "Student" && user.permission !== "Admin")
-        ) {
-            throw new UnauthorizedError("Unauthorized");
+        if (!user || (user.permission !== 'Student' && user.permission !== 'Admin')) {
+            throw new UnauthorizedError('Unauthorized');
         }
 
         const permanence = await getPermanenceById(permId);
 
-        if (!permanence.is_open)
-            throw new PermanenceClosedError("Permanence not open");
+        if (!permanence.is_open) throw new PermanenceClosedError('Permanence not open');
 
-        const limitDate = new Date(String(permanence.start_at).replace(/Z$/, ""));
+        const limitDate = new Date(String(permanence.start_at).replace(/Z$/, ''));
         const now = new Date();
 
         if (now > limitDate) {
-            throw new RegisterDeadlineError("Too late to register");
+            throw new RegisterDeadlineError('Too late to register');
         }
 
         if (permanence.capacity == 0) {
-            throw new PermanenceFullError("Permanence full");
+            throw new PermanenceFullError('Permanence full');
         }
 
         // Transaction avec verrouillage de table complet
@@ -66,7 +67,7 @@ export const registerUserToPermanence = async (
 
             // 3. Si aucune ligne modifiée = pas de place disponible
             if (updateResult.length === 0) {
-                throw new PermanenceFullError("Permanence full");
+                throw new PermanenceFullError('Permanence full');
             }
 
             // 4. Insérer l'utilisateur (seulement si l'UPDATE a réussi)
@@ -78,13 +79,13 @@ export const registerUserToPermanence = async (
     } catch (error: any) {
         // Gestion des erreurs de contraintes de base de données
         if (
-            error.code === "23505" || // Contrainte unique PostgreSQL
-            error.code === "23000" || // Contrainte d'intégrité générale
-            error.message?.includes("UNIQUE constraint") ||
-            error.message?.includes("duplicate key") ||
-            error.message?.includes("PRIMARY KEY constraint")
+            error.code === '23505' || // Contrainte unique PostgreSQL
+            error.code === '23000' || // Contrainte d'intégrité générale
+            error.message?.includes('UNIQUE constraint') ||
+            error.message?.includes('duplicate key') ||
+            error.message?.includes('PRIMARY KEY constraint')
         ) {
-            throw new AlreadyRegisteredError("Already registered");
+            throw new AlreadyRegisteredError('Already registered');
         }
         // Re-lancer les autres erreurs
         throw error;
@@ -92,27 +93,18 @@ export const registerUserToPermanence = async (
 };
 
 // ❌ Se désinscrire d'une permanence
-export const unregisterUserFromPermanence = async (
-    userId: number,
-    permId: number
-) => {
+export const unregisterUserFromPermanence = async (userId: number, permId: number) => {
     const permanence = await getPermanenceById(permId);
     const now = new Date();
     const limitDate = new Date(permanence.start_at);
     limitDate.setDate(limitDate.getDate() - 1);
 
-    if (now > limitDate)
-        throw new UnregisterDeadlineError("Too late to unregister");
+    if (now > limitDate) throw new UnregisterDeadlineError('Too late to unregister');
 
     // Désinscrire l'utilisateur
     await db
         .delete(userPermanenceSchema)
-        .where(
-            and(
-                eq(userPermanenceSchema.user_id, userId),
-                eq(userPermanenceSchema.permanence_id, permId)
-            )
-        );
+        .where(and(eq(userPermanenceSchema.user_id, userId), eq(userPermanenceSchema.permanence_id, permId)));
 
     await modifyPermCap(permId, 1);
 };
@@ -134,7 +126,7 @@ export const createPermanence = async (
     end_at: Date,
     capacity: number,
     difficulty: number,
-    respoId: number
+    respoId: number,
 ) => {
     // Étape 1 : Création de la permanence
     const [newPermanence] = await db
@@ -162,19 +154,13 @@ export const createPermanence = async (
 
 export const deletePermanence = async (permId: number) => {
     // Étape 1 : Supprimer les inscriptions des utilisateurs
-    await db
-        .delete(userPermanenceSchema)
-        .where(eq(userPermanenceSchema.permanence_id, permId));
+    await db.delete(userPermanenceSchema).where(eq(userPermanenceSchema.permanence_id, permId));
 
     // Étape 2 : Supprimer les responsables associés
-    await db
-        .delete(respoPermanenceSchema)
-        .where(eq(respoPermanenceSchema.permanence_id, permId));
+    await db.delete(respoPermanenceSchema).where(eq(respoPermanenceSchema.permanence_id, permId));
 
     // Étape 3 : Supprimer la permanence
-    await db
-        .delete(permanenceSchema)
-        .where(eq(permanenceSchema.id, permId));
+    await db.delete(permanenceSchema).where(eq(permanenceSchema.id, permId));
 };
 
 export const updatePermanence = async (
@@ -186,7 +172,7 @@ export const updatePermanence = async (
     end_at: Date,
     capacity: number,
     difficulty: number,
-    respoId: number
+    respoId: number,
 ) => {
     // Étape 1 : Mise à jour de la permanence
     await db
@@ -204,9 +190,7 @@ export const updatePermanence = async (
         .where(eq(permanenceSchema.id, permId));
 
     // Étape 2 : Suppression des anciens responsables (si nécessaire)
-    await db
-        .delete(respoPermanenceSchema)
-        .where(eq(respoPermanenceSchema.permanence_id, permId));
+    await db.delete(respoPermanenceSchema).where(eq(respoPermanenceSchema.permanence_id, permId));
 
     // Étape 3 : Ajout du nouveau responsable
     if (respoId) {
@@ -219,18 +203,12 @@ export const updatePermanence = async (
 
 // Ouvrir une permanence (Admin action)
 export const openPermanence = async (permId: number) => {
-    await db
-        .update(permanenceSchema)
-        .set({ is_open: true })
-        .where(eq(permanenceSchema.id, permId));
+    await db.update(permanenceSchema).set({ is_open: true }).where(eq(permanenceSchema.id, permId));
 };
 
 // Fermer une permanence (Admin action)
 export const closePermanence = async (permId: number) => {
-    await db
-        .update(permanenceSchema)
-        .set({ is_open: false })
-        .where(eq(permanenceSchema.id, permId));
+    await db.update(permanenceSchema).set({ is_open: false }).where(eq(permanenceSchema.id, permId));
 };
 
 // Modifier la capacité de la permanence
@@ -238,12 +216,9 @@ export const modifyPermCap = async (permId: number, factor: number) => {
     const perm = await getPermanenceById(permId);
     const newPermCap = Number(perm.capacity) + factor;
 
-    if (newPermCap < 0) throw new Error("Invalid capacity");
+    if (newPermCap < 0) throw new Error('Invalid capacity');
 
-    await db
-        .update(permanenceSchema)
-        .set({ capacity: newPermCap })
-        .where(eq(permanenceSchema.id, permId));
+    await db.update(permanenceSchema).set({ capacity: newPermCap }).where(eq(permanenceSchema.id, permId));
 };
 
 // Voir ses permanences
@@ -257,10 +232,7 @@ export const getMyPermanences = async (userId: number) => {
             location: permanenceSchema.location,
         })
         .from(userPermanenceSchema)
-        .innerJoin(
-            permanenceSchema,
-            eq(permanenceSchema.id, userPermanenceSchema.permanence_id)
-        )
+        .innerJoin(permanenceSchema, eq(permanenceSchema.id, userPermanenceSchema.permanence_id))
         .where(eq(userPermanenceSchema.user_id, userId));
 
     // Ajout du responsables
@@ -281,9 +253,8 @@ export const getMyPermanences = async (userId: number) => {
                 ...perm,
                 respo: respo ?? null,
             };
-        })
+        }),
     );
-
 
     return results;
 };
@@ -308,9 +279,8 @@ export const getAllPermanences = async () => {
                 ...perm,
                 respo: respo ?? null,
             };
-        })
+        }),
     );
-
 
     return results;
 };
@@ -338,18 +308,10 @@ export const addUserToPermanence = async (userId: number, permId: number) => {
     await modifyPermCap(permId, -1);
 };
 
-export const removeUserToPermanence = async (
-    userId: number,
-    permId: number
-) => {
+export const removeUserToPermanence = async (userId: number, permId: number) => {
     await db
         .delete(userPermanenceSchema)
-        .where(
-            and(
-                eq(userPermanenceSchema.user_id, userId),
-                eq(userPermanenceSchema.permanence_id, permId)
-            )
-        );
+        .where(and(eq(userPermanenceSchema.user_id, userId), eq(userPermanenceSchema.permanence_id, permId)));
 
     await modifyPermCap(permId, 1);
 };
@@ -377,16 +339,14 @@ export const getAllPermanencesWithUsers = async () => {
                 ...permanence,
                 users: userRelations,
             };
-        })
+        }),
     );
 
     return results;
 };
 
-export const importPermanencesFromCSV = async (
-    filePath: string
-): Promise<void> => {
-    const fileContent = fs.readFileSync(filePath, "utf8");
+export const importPermanencesFromCSV = async (filePath: string): Promise<void> => {
+    const fileContent = fs.readFileSync(filePath, 'utf8');
 
     const { data, errors } = Papa.parse<CsvPermanence>(fileContent, {
         header: true,
@@ -394,8 +354,8 @@ export const importPermanencesFromCSV = async (
     });
 
     if (errors.length > 0) {
-        console.error("CSV parsing errors:", errors);
-        throw new Error("Erreur lors du parsing du CSV.");
+        console.error('CSV parsing errors:', errors);
+        throw new Error('Erreur lors du parsing du CSV.');
     }
 
     const parsedData = data.map((r) => ({
@@ -407,40 +367,26 @@ export const importPermanencesFromCSV = async (
         capacity: parseInt(r.capacity, 10),
         difficulty: parseInt(r.difficulty, 10),
         is_open: false,
-
     }));
 
     await db.insert(permanenceSchema).values(parsedData);
 };
 
-export const isUserRespoOfPermanence = async (
-    userId: number,
-): Promise<boolean> => {
-    const respo = await db
-        .select()
-        .from(respoPermanenceSchema)
-        .where(
-            eq(respoPermanenceSchema.user_id, userId)
-        );
+export const isUserRespoOfPermanence = async (userId: number): Promise<boolean> => {
+    const respo = await db.select().from(respoPermanenceSchema).where(eq(respoPermanenceSchema.user_id, userId));
 
     return respo.length > 0;
 };
 
 export const getPermanenceDetailsForRespo = async (respoId: number) => {
     // Étape 1 : Trouver les permanences dont il est respo
-    const respos = await db
-        .select()
-        .from(respoPermanenceSchema)
-        .where(eq(respoPermanenceSchema.user_id, respoId));
+    const respos = await db.select().from(respoPermanenceSchema).where(eq(respoPermanenceSchema.user_id, respoId));
 
     const permanenceIds = respos.map((r) => r.permanence_id);
-    if (permanenceIds.length === 0) throw new Error("Pas de permanences");;
+    if (permanenceIds.length === 0) throw new Error('Pas de permanences');
 
     // Étape 2 : Récupérer les permanences
-    const permanences = await db
-        .select()
-        .from(permanenceSchema)
-        .where(inArray(permanenceSchema.id, permanenceIds));
+    const permanences = await db.select().from(permanenceSchema).where(inArray(permanenceSchema.id, permanenceIds));
 
     // Étape 3 : Récupérer les membres avec infos utiles
     const results = await Promise.all(
@@ -461,7 +407,7 @@ export const getPermanenceDetailsForRespo = async (respoId: number) => {
                 permanence: perm,
                 members,
             };
-        })
+        }),
     );
 
     return results;
@@ -471,15 +417,10 @@ export const claimMember = async (userId: number, permId: number, claimed: boole
     await db
         .update(userPermanenceSchema)
         .set({ claimed })
-        .where(
-            and(
-                eq(userPermanenceSchema.user_id, userId),
-                eq(userPermanenceSchema.permanence_id, permId)
-            )
-        );
+        .where(and(eq(userPermanenceSchema.user_id, userId), eq(userPermanenceSchema.permanence_id, permId)));
 };
 
-export const getDailyNotifications = async (): Promise<Notification[]>  => {
+export const getDailyNotifications = async (): Promise<Notification[]> => {
     const permanences = await db.query.permanenceSchema.findMany({
         where: sql`
             ${permanenceSchema.start_at} >= CURRENT_DATE + INTERVAL '1 day'
@@ -489,7 +430,7 @@ export const getDailyNotifications = async (): Promise<Notification[]>  => {
     });
 
     return getMembersFromPermanences(permanences);
-}
+};
 
 export const getHourlyNotifications = async (): Promise<Notification[]> => {
     const permanences = await db.query.permanenceSchema.findMany({
@@ -504,10 +445,14 @@ export const getHourlyNotifications = async (): Promise<Notification[]> => {
 };
 
 // Cette fonction est vouée à disparaitre lors du passage à Prisma, avec un simple "with"
-export const getMembersFromPermanences = async (permanences: Permanence[]): Promise<{
-    permanence: Permanence,
-    members: LightUser[]
-}[]> => {
+export const getMembersFromPermanences = async (
+    permanences: Permanence[],
+): Promise<
+    {
+        permanence: Permanence;
+        members: LightUser[];
+    }[]
+> => {
     return await Promise.all(
         permanences.map(async (perm) => {
             const members = await db
@@ -523,57 +468,46 @@ export const getMembersFromPermanences = async (permanences: Permanence[]): Prom
 
             return {
                 permanence: perm,
-                members: members
+                members: members,
             };
-        })
+        }),
     );
-}
+};
 
-export const sendNotifications = async (
-    notifications: Notification[]
-) => {
+export const sendNotifications = async (notifications: Notification[]) => {
     for (const notification of notifications) {
-        
         const permanenceEmailData: PermanenceEmailData = {
             permName: notification.permanence.name,
-            permBeginDate:
-                new Intl.DateTimeFormat("fr-FR", {
-                    day: "2-digit",
-                    month: "long",
-                }).format(notification.permanence.start_at),
-            permBeginHour: 
-                new Intl.DateTimeFormat("fr-FR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                }).format(notification.permanence.start_at),
-            permEndDate: 
-                new Intl.DateTimeFormat("fr-FR", {
-                    day: "2-digit",
-                    month: "long",
-                }).format(notification.permanence.end_at),
-            permEndHour: 
-                new Intl.DateTimeFormat("fr-FR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                }).format(notification.permanence.end_at),
+            permBeginDate: new Intl.DateTimeFormat('fr-FR', {
+                day: '2-digit',
+                month: 'long',
+            }).format(notification.permanence.start_at),
+            permBeginHour: new Intl.DateTimeFormat('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit',
+            }).format(notification.permanence.start_at),
+            permEndDate: new Intl.DateTimeFormat('fr-FR', {
+                day: '2-digit',
+                month: 'long',
+            }).format(notification.permanence.end_at),
+            permEndHour: new Intl.DateTimeFormat('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit',
+            }).format(notification.permanence.end_at),
             permLocation: notification.permanence.location,
-            permDescription: notification.permanence.description
-        }
-        const subject = `[RAPPEL] Permanence - ${notification.permanence.name}`
+            permDescription: notification.permanence.description,
+        };
+        const subject = `[RAPPEL] Permanence - ${notification.permanence.name}`;
 
-        const htmlEmail = generateEmailHtml(
-            "templateNotifyPermanenceReminder",
-            permanenceEmailData
-        );
+        const htmlEmail = generateEmailHtml('templateNotifyPermanenceReminder', permanenceEmailData);
 
         for (const member of notification.members) {
             try {
-
                 const emailOptions = {
                     from: email_from,
                     to: [member.email],
                     subject: subject,
-                    text: "",
+                    text: '',
                     html: htmlEmail,
                 };
 

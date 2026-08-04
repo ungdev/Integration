@@ -1,5 +1,5 @@
 import * as permanence_service from '../services/permanence.service';
-import { Error, Ok } from '../utils/responses';
+import { Error, Ok } from '../shared/http/responses';
 import type { AppRequestHandler } from '../types/http';
 import type { PermanenceBody, PermQuery } from '../dto/permanence.dto';
 

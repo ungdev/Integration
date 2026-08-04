@@ -1,11 +1,11 @@
-import type { EmailOptions } from '../../types/email';
+import type { EmailOptions } from '../types/email';
 import { defaultPreviewData } from '../email/email.preview-data';
 import { generateEmailHtml, getRecipients, sendEmail } from '../services/email.service';
 import * as registration_service from '../services/registration.service';
 import * as user_service from '../services/user.service';
-import { Error, Ok } from '../utils/responses';
-import { email_from, service_url } from '../utils/secret';
-import { getLatestUploadedDocument } from '../utils/uploadDocuments';
+import { Error, Ok } from '../shared/http/responses';
+import { email_from, service_url } from '../shared/secrets/secrets';
+import { getLatestUploadedDocument } from '../shared/storage/uploadDocuments';
 import type { AppRequestHandler } from '../types/http';
 import type { EmailRequestBody } from '../dto/email.dto';
 

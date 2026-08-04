@@ -7,6 +7,7 @@ export const vssqcmanswerSchema = pgTable('vssqcmanswer', {
         .references(() => vssqcmquestionSchema.id, { onDelete: 'cascade' })
         .notNull(),
     answer: text('answer').notNull(),
+    answer_en: text('answer_en'),
     is_correct: boolean('is_correct').notNull(),
 });
 

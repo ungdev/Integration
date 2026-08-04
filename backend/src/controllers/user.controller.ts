@@ -1,14 +1,14 @@
 import type {
-    AdminCreateUserDto,
-    CreateUserContactInformationDto,
+    CreateUserContactInformationBody,
     PermissionParams,
     ProfileBody,
     SyncBody,
     UserIdParams,
     VssSubmissionPayload,
+    AdminCreateUserBody,
 } from '../dto/user.dto';
 import * as user_service from '../services/user.service';
-import { Error, Ok } from '../utils/responses';
+import { Error, Ok } from '../shared/http/responses';
 import type { AppRequestHandler } from '../types/http';
 
 export const getUsersAdmin: AppRequestHandler = async (_req, res) => {
@@ -85,7 +85,7 @@ export const getUserContactInformation: AppRequestHandler = async (req, res) => 
     }
 };
 
-export const createUserContactInformation: AppRequestHandler<CreateUserContactInformationDto> = async (req, res) => {
+export const createUserContactInformation: AppRequestHandler<CreateUserContactInformationBody> = async (req, res) => {
     const userId = req.user?.userId;
     const contact = req.body;
 
@@ -153,7 +153,7 @@ export const adminUpdateUser: AppRequestHandler<unknown, unknown, UserIdParams> 
     }
 };
 
-export const adminCreateUser: AppRequestHandler<AdminCreateUserDto> = async (req, res) => {
+export const adminCreateUser: AppRequestHandler<AdminCreateUserBody> = async (req, res) => {
     try {
         const user = await user_service.adminCreateUser(req.body);
 

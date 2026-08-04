@@ -8,7 +8,7 @@ import { teamShotgunSchema } from '../schemas/Relational/teamshotgun.schema';
 import { userTeamsSchema } from '../schemas/Relational/userteams.schema';
 import { getFaction } from './faction.service';
 import * as user_service from '../services/user.service';
-import type { StudentRow, TeamMemberRow, TeamRow, TeamAssignmentNotification } from '../dto/team.dto';
+import type { StudentRow, TeamMemberRow, TeamRow, TeamAssignmentNotification } from '../types/team';
 import sendEmailToNewAssignedStudents from './team/email.team';
 import assignUsersToTeams from './team/assignation.team';
 

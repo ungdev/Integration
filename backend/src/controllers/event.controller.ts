@@ -1,7 +1,7 @@
 import * as event_service from '../services/event.service';
 import * as team_service from '../services/team.service';
-import { Conflict, Error, Ok, Teapot, Unauthorized } from '../utils/responses';
-import { shotgun_password } from '../utils/secret';
+import { Conflict, Error, Ok, Teapot, Unauthorized } from '../shared/http/responses';
+import { shotgun_password } from '../shared/secrets/secrets';
 import type { AppRequestHandler } from '../types/http';
 import type { ShotgunBody, ToggleStatusBody } from '../dto/event.dto';
 

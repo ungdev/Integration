@@ -2,8 +2,8 @@ import { type NextFunction, type Request, type Response } from 'express';
 import fs from 'fs/promises';
 import multer from 'multer';
 import path from 'path';
-import { Error } from '../utils/responses';
-import { isSafeUploadSegment, removeUploadedDocuments } from '../utils/uploadDocuments';
+import { Error } from '../shared/http/responses';
+import { isSafeUploadSegment, removeUploadedDocuments } from '../shared/storage/uploadDocuments';
 
 export enum MIMEType {
     PDF = 'application/pdf',

@@ -4,8 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Fragment, useEffect, useState } from 'react';
 import { NavLink, useLocation, useSearchParams } from 'react-router-dom';
 
+import { useOnboarding } from '../contexts/onboarding';
 import { decodeToken, getToken } from '../services/requests/auth.service';
-import { getCurrentUserOnboardingStatus } from '../services/requests/user.service';
 import { Button } from './ui/button';
 
 interface NavItem {
@@ -31,6 +31,7 @@ export const Navbar = () => {
     const roles = [userPermission, ...userRoles.map((r) => r.roleName)].filter(Boolean) as string[];
     const [hasContactInformation, setHasContactInformation] = useState(false);
     const [needsVssForm, setNeedsVssForm] = useState(false);
+    const { status: onboardingStatus, loading: onboardingLoading } = useOnboarding();
     const [, setSearchParams] = useSearchParams();
 
     const handleLogout = () => {
@@ -41,31 +42,16 @@ export const Navbar = () => {
     useEffect(() => {
         setMenuOpen(false);
 
-        const fetchOnboardingStatus = async () => {
-            try {
-                const onboardingStatus = await getCurrentUserOnboardingStatus();
-                setHasContactInformation(onboardingStatus.hasemergencyContactInformation);
-                setNeedsVssForm(onboardingStatus.needsVssForm);
-            } catch (error) {
-                console.error("Erreur lors de la récupération du statut d'onboarding :", error);
-            }
-        };
+        if (!isAuthenticated) return;
 
-        if (isAuthenticated) {
-            fetchOnboardingStatus();
+        if (!onboardingLoading && onboardingStatus) {
+            setHasContactInformation(onboardingStatus.hasemergencyContactInformation);
+            setNeedsVssForm(onboardingStatus.needsVssForm);
         }
 
-        const handleOnboardingUpdate = () => {
-            if (isAuthenticated) {
-                fetchOnboardingStatus();
-            }
-        };
-
-        window.addEventListener('user-onboarding-updated', handleOnboardingUpdate);
-
-        return () => {
-            window.removeEventListener('user-onboarding-updated', handleOnboardingUpdate);
-        };
+        // OnboardingProvider refreshes on 'user-onboarding-updated' event globally.
+        // No local event listeners required here.
+        return undefined;
     }, [isAuthenticated, pathname]);
 
     const navItems: NavItem[] = [

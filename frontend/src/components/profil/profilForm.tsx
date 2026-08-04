@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 // import { FaDiscord } from 'react-icons/fa';
 import Select from 'react-select';
 
-import { type User } from '../../interfaces/user.interface';
-import { getCurrentUser, updateCurrentUser } from '../../services/requests/user.service';
+import { useUser } from '../../contexts/user';
+import { updateCurrentUser } from '../../services/requests/user.service';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
@@ -26,32 +26,31 @@ const branchOptions = [
 ];
 
 export const ProfilForm = () => {
-    const [user, setUser] = useState<User | null>(null);
+    const { user, loading: userLoading, refreshUser } = useUser();
     const [branch, setBranch] = useState('');
     const [contact, setContact] = useState('');
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const me = await getCurrentUser();
-                setUser(me);
-                setBranch(me.branch || '');
-                setContact(me.contact || '');
-            } catch (err) {
-                console.error("Erreur lors de la récupération de l'utilisateur", err);
-            }
-        };
-        fetchUser();
-    }, []);
+        if (user) {
+            setBranch(user.branch || '');
+            setContact(user.contact || '');
+        }
+    }, [user]);
 
     const handleSubmit = async () => {
         setLoading(true);
         const response = await updateCurrentUser({ branch: branch, contact: contact });
-        alert(response.message);
+        // refresh cached user data after update
+        try {
+            await refreshUser();
+        } catch {
+            alert(response.message);
+        }
         setLoading(false);
     };
 
+    if (userLoading || loading) return null;
     if (!user) return null;
 
     return (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { useUser } from '../../contexts/user';
 import { type TeamDisplayInfos } from '../../interfaces/team.interface';
 import { getUserTeam } from '../../services/requests/team.service';
 import { Button } from '../ui/button';
@@ -9,16 +10,38 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 export const Team = () => {
     const [teamInfos, setTeamInfos] = useState<TeamDisplayInfos | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const { user, loading: userLoading } = useUser();
 
     useEffect(() => {
-        fetchTeam();
-    }, []);
+        const fetchTeam = async () => {
+            const team = await getUserTeam();
+            setTeamInfos(team);
+            setLoading(false);
+        };
 
-    const fetchTeam = async () => {
-        const team = await getUserTeam();
-        setTeamInfos(team);
-        setLoading(false);
-    };
+        if (user?.permission === 'Nouveau') {
+            void fetchTeam();
+        } else {
+            // if not a new user, we don't need to load team
+            setLoading(false);
+        }
+    }, [user]);
+
+    if (userLoading) {
+        return (
+            <div className="py-12">
+                <Card className="bg-gradient-to-r from-gray-100 to-gray-200 w-full max-w-7xl mx-auto gap-3 shadow-lg">
+                    <CardContent className="text-center flex flex-col gap-2">
+                        <p>Chargement de ton équipe...</p>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
+    if (user?.permission !== 'Nouveau') {
+        return null;
+    }
 
     if (loading) {
         return (

@@ -10,9 +10,9 @@ export const ResetPasswordForm = () => {
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const tokenFromUrl = urlParams.get("token");
+        const tokenFromUrl = urlParams.get('token');
         if (!tokenFromUrl) {
-            alert("Token invalide ou manquant.");
+            alert('Token invalide ou manquant.');
         }
         setToken(tokenFromUrl);
     }, []);
@@ -20,17 +20,17 @@ export const ResetPasswordForm = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!token) {
-            alert("Lien invalide ou expiré.");
+            alert('Lien invalide ou expiré.');
             return;
         }
 
         if (password.length < 6) {
-            alert("Le mot de passe doit contenir au moins 6 caractères.");
+            alert('Le mot de passe doit contenir au moins 6 caractères.');
             return;
         }
 
         if (password !== confirmPassword) {
-            alert("Les mots de passe ne correspondent pas.");
+            alert('Les mots de passe ne correspondent pas.');
             return;
         }
 
@@ -38,11 +38,11 @@ export const ResetPasswordForm = () => {
         try {
             const response = await resetPasswordUser(token, password);
             if (response) {
-                alert("Mot de passe modifié avec succès.");
-                window.location.href = "/";
+                alert('Mot de passe modifié avec succès.');
+                window.location.href = '/';
             }
         } catch {
-            alert("Erreur de connexion au serveur.");
+            alert('Erreur de connexion au serveur.');
         } finally {
             setLoading(false);
         }
@@ -51,8 +51,7 @@ export const ResetPasswordForm = () => {
     return (
         <div
             className="relative min-h-screen flex items-center justify-center bg-no-repeat bg-cover bg-center"
-            style={{ backgroundImage: "url('img/bg_25.jpg')" }}
-        >
+            style={{ backgroundImage: "url('img/bg_26.png')" }}>
             <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md">
                 <h1 className="text-2xl font-bold text-center mb-6">Réinitialiser le mot de passe</h1>
 
@@ -87,9 +86,8 @@ export const ResetPasswordForm = () => {
                 <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full py-2 rounded-md text-white ${loading ? "bg-gray-500" : "bg-blue-600 hover:bg-blue-700"} transition`}
-                >
-                    {loading ? "Chargement..." : "Réinitialiser"}
+                    className={`w-full py-2 rounded-md text-white ${loading ? 'bg-gray-500' : 'bg-blue-600 hover:bg-blue-700'} transition`}>
+                    {loading ? 'Chargement...' : 'Réinitialiser'}
                 </button>
             </form>
         </div>

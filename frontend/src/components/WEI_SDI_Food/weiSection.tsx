@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
+import { useOnboarding } from '../../contexts/onboarding';
 import { decodeToken, getToken } from '../../services/requests/auth.service';
 import { checkWEIStatus } from '../../services/requests/event.service';
-import { getCurrentUserOnboardingStatus } from '../../services/requests/user.service';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const WeiSection = () => {
@@ -16,6 +16,8 @@ export const WeiSection = () => {
         : { userPermission: undefined, userRoles: [] };
     const roles = [userPermission, ...userRoles.map((r) => r.roleName)].filter(Boolean) as string[];
 
+    const { status: onboardingStatus, loading: onboardingLoading } = useOnboarding();
+
     useEffect(() => {
         const script = document.createElement('script');
         script.src = 'https://www.billetweb.fr/js/export.js';
@@ -23,21 +25,15 @@ export const WeiSection = () => {
         document.body.appendChild(script);
 
         fetchStatus();
-        if (roles.includes('Nouveau')) {
-            fetchOnboardingStatus();
-        }
     }, [roles]);
 
-    const fetchOnboardingStatus = async () => {
-        try {
-            const onboardingStatus = await getCurrentUserOnboardingStatus();
-            setHasContactInformation(onboardingStatus.hasemergencyContactInformation);
-            setHasVssForm(onboardingStatus.vss_form == 'validated');
-            setNeedsVssForm(onboardingStatus.needsVssForm);
-        } catch (error) {
-            console.error("Erreur lors de la récupération du statut d'onboarding :", error);
-        }
-    };
+    useEffect(() => {
+        if (!roles.includes('Nouveau')) return;
+        if (onboardingLoading) return;
+        setHasContactInformation(onboardingStatus?.hasemergencyContactInformation ?? true);
+        setHasVssForm(onboardingStatus ? onboardingStatus.vss_form == 'validated' : true);
+        setNeedsVssForm(onboardingStatus?.needsVssForm ?? false);
+    }, [roles, onboardingLoading, onboardingStatus]);
 
     const fetchStatus = async () => {
         try {

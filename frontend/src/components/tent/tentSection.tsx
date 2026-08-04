@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 
+import { useOnboarding } from '../../contexts/onboarding';
 import { type Tent } from '../../interfaces/tent.interface';
 import { type User } from '../../interfaces/user.interface';
 import { decodeToken, getToken } from '../../services/requests/auth.service';
 import { checkWEIStatus } from '../../services/requests/event.service';
 import { cancelTent, createTent, getUserTent } from '../../services/requests/tent.service';
-import { getCurrentUserOnboardingStatus, getUsers } from '../../services/requests/user.service';
+import { getUsers } from '../../services/requests/user.service';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
@@ -22,6 +23,8 @@ export const TentPublic = () => {
         ? decodeToken(token)
         : { userPermission: undefined, userRoles: [] };
     const roles = [userPermission, ...userRoles.map((r) => r.roleName)].filter(Boolean) as string[];
+
+    const { status: onboardingStatus, loading: onboardingLoading } = useOnboarding();
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -56,19 +59,13 @@ export const TentPublic = () => {
         fetchUsers();
         fetchTent();
         fetchWEIStatus();
-        if (roles.includes('Nouveau')) {
-            fetchOnboardingStatus();
-        }
     }, [roles]);
 
-    const fetchOnboardingStatus = async () => {
-        try {
-            const onboardingStatus = await getCurrentUserOnboardingStatus();
-            setCanBook(onboardingStatus.vss_form == 'validated');
-        } catch (error) {
-            console.error("Erreur lors de la récupération du statut d'onboarding :", error);
-        }
-    };
+    useEffect(() => {
+        if (!roles.includes('Nouveau')) return;
+        if (onboardingLoading) return;
+        setCanBook(onboardingStatus ? onboardingStatus.vss_form == 'validated' : false);
+    }, [roles, onboardingLoading, onboardingStatus]);
 
     if (!token) return null;
     const { userId } = decodeToken(token);

@@ -5,7 +5,7 @@ import EmergencyModal from '../components/home/emergencyModal';
 import { Navbar } from '../components/navbar';
 import { RoadBookCard } from '../components/roadbook/roadbookCard';
 
-const Roadbook: React.FC = () => (
+const RoadbookPage: React.FC = () => (
     <div>
         <Navbar />
         <EmergencyModal />
@@ -18,4 +18,4 @@ const Roadbook: React.FC = () => (
     </div>
 );
 
-export default Roadbook;
+export default RoadbookPage;

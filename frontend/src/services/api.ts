@@ -24,7 +24,12 @@ api.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
         if (error.response?.status === 401) {
-            console.warn('🔑 Token expiré ou invalide, redirection...');
+            console.warn('🔑 Token expiré ou invalide — suppression du token et redirection...');
+            try {
+                localStorage.removeItem('authToken');
+            } catch {
+                console.error('❌ Impossible de supprimer le token du localStorage.');
+            }
             window.location.replace('/');
         }
         return Promise.reject(error);

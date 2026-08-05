@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 type Planning = {
     name: string;
@@ -9,38 +9,40 @@ type Planning = {
 
 const plannings: Planning[] = [
     {
-        name: "Planning TC",
+        name: 'Planning TC',
         url: `${import.meta.env.VITE_API_URL}/uploads/plannings/tc.pdf`,
     },
     {
-        name: "Planning Bachelor IA",
+        name: 'Planning TCI',
+        url: `${import.meta.env.VITE_API_URL}/uploads/plannings/tci.pdf`,
+    },
+    {
+        name: 'Planning Bachelor IA',
         url: `${import.meta.env.VITE_API_URL}/uploads/plannings/bachelor_ia.pdf`,
     },
     {
-        name: "Planning Branche (non-alternant)",
+        name: 'Planning Branche (non-alternant)',
         url: `${import.meta.env.VITE_API_URL}/uploads/plannings/fise.pdf`,
     },
     {
-        name: "Planning Branche FISEA (alternants)",
+        name: 'Planning Branche FISEA (alternants)',
         url: `${import.meta.env.VITE_API_URL}/uploads/plannings/fisea.pdf`,
     },
     {
-        name: "Planning Master",
+        name: 'Planning Master',
         url: `${import.meta.env.VITE_API_URL}/uploads/plannings/master.pdf`,
     },
 ];
 
 export const PlanningSection = () => {
-    const [availablePlannings, setAvailablePlannings] = useState<
-        Record<string, boolean>
-    >({});
+    const [availablePlannings, setAvailablePlannings] = useState<Record<string, boolean>>({});
 
     useEffect(() => {
         const checkAvailability = async () => {
             const availability: Record<string, boolean> = {};
             for (const planning of plannings) {
                 try {
-                    const response = await fetch(planning.url, { method: "HEAD" });
+                    const response = await fetch(planning.url, { method: 'HEAD' });
                     availability[planning.name] = response.ok;
                 } catch {
                     availability[planning.name] = false;
@@ -59,17 +61,13 @@ export const PlanningSection = () => {
                     📅 Plannings de la semaine d'Intégration
                 </CardTitle>
                 <p className="text-lg md:text-xl text-gray-700">
-                    Retrouve ici tous les plannings (TC, Branche, FISEA, Master) et
-                    télécharge-les.
+                    Retrouve ici tous les plannings (TC, Branche, FISEA, Master) et télécharge-les.
                 </p>
             </CardHeader>
 
             <CardContent className="space-y-12">
                 {plannings.map((planning) => (
-                    <Card
-                        key={planning.name}
-                        className="w-full max-w-3xl mx-auto"
-                    >
+                    <Card key={planning.name} className="w-full max-w-3xl mx-auto">
                         {/* Titre planning centré */}
                         <CardHeader>
                             <CardTitle className="text-3xl font-bold text-gray-800 text-center">
@@ -94,8 +92,7 @@ export const PlanningSection = () => {
                                         <a
                                             href={planning.url}
                                             download
-                                            className="px-6 py-2 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition"
-                                        >
+                                            className="px-6 py-2 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition">
                                             Télécharger le planning
                                         </a>
                                     </div>

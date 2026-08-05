@@ -22,6 +22,7 @@ const acceptedMIMETypesByItem: Record<string, Record<string, MIMEType[]>> = {
     },
     plannings: {
         tc: [MIMEType.PDF],
+        tci: [MIMEType.PDF],
         bachelor_ia: [MIMEType.PDF],
         fise: [MIMEType.PDF],
         fisea: [MIMEType.PDF],

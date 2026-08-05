@@ -104,6 +104,7 @@ export const AdminImportPlannings = () => {
             </CardHeader>
             <CardContent className="space-y-4">
                 <AdminFileImport category="plannings" item="tc" title="Tronc Commun" />
+                <AdminFileImport category="plannings" item="tci" title="Tronc Commun International" />
                 <AdminFileImport category="plannings" item="bachelor_ia" title="Bachelor IA" />
                 <AdminFileImport category="plannings" item="fise" title="Branche FISE" />
                 <AdminFileImport category="plannings" item="fisea" title="Branche FISEA" />

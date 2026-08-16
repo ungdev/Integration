@@ -146,6 +146,7 @@ export const Infos = () => (
                         { logo: 'POPEYE.png', name: 'POPEYE', link: 'https://popeye-troyes.fr/' },
                         { logo: 'UTT.png', name: 'UTT', link: 'https://utt.fr/' },
                         { logo: 'SECUTT.png', name: 'SECUTT', link: 'https://ffssaube.fr/secutt/' },
+                        { logo: 'VLOCK.jpeg', name: 'VLOCK', link: 'https://www.v-lock.fr/' },
                     ].map((partner, i) => (
                         <SwiperSlide key={i} className="flex items-center justify-center">
                             <a

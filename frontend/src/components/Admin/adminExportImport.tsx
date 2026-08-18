@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { exportBus, exportDb } from '../../services/requests/im_export.service';
+import { exportBus, exportDb, exportTeamMembers } from '../../services/requests/im_export.service';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { AdminFileImport } from './adminFileImport';
@@ -77,6 +77,53 @@ export const AdminExportConnect = () => {
                     </Card>
                 )}
             </CardContent>
+        </Card>
+    );
+};
+
+export const AdminExportTeamMembers = () => {
+    const [showTeamMembersExport, setShowTeamMembersExport] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const teamMembersUrl = 'http://integration.utt.fr/api/exports/teammembers/teammembers.csv';
+
+    const handleExport = async () => {
+        try {
+            setLoading(true);
+            await exportTeamMembers();
+            setShowTeamMembersExport(true);
+        } catch (error) {
+            console.error('Erreur export Team Members :', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    return (
+        <Card className="w-full max-w-3xl mx-auto">
+            <CardHeader>
+                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+                    Exporter les membres des équipes
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <Button
+                    onClick={() => handleExport()}
+                    className="block mx-auto w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-6 rounded-xl shadow-md transition-all duration-200">
+                    {loading ? '⏳ Export en cours...' : 'Exporter le csv'}
+                </Button>
+            </CardContent>
+            {showTeamMembersExport && (
+                <Card className="animate-fade-in">
+                    <CardContent className="p-6 space-y-4 text-center">
+                        <a
+                            href={teamMembersUrl}
+                            download
+                            className="inline-block mt-4 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition">
+                            ⬇️ Télécharger le csv
+                        </a>
+                    </CardContent>
+                </Card>
+            )}
         </Card>
     );
 };

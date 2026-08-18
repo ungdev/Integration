@@ -1,4 +1,4 @@
-import api from "../api";
+import api from '../api';
 
 type ExistingDocumentStatus = {
     exists: boolean;
@@ -16,13 +16,18 @@ export const exportDb = async () => {
 // Fonction import
 export const importFile = async (formData: FormData, category: string, item: string) => {
     const response = await api.post(`/imexport/admin/import/${category}/${item}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
 };
 
 export const exportBus = async () => {
     const response = await api.get('/imexport/admin/exportbus');
+    return response.data;
+};
+
+export const exportTeamMembers = async () => {
+    const response = await api.get('/imexport/admin/exportteammembers');
     return response.data;
 };
 

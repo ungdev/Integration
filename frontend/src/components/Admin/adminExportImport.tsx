@@ -87,7 +87,7 @@ export const AdminImportFoodMenu = () => {
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">Importer le menu</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
                 <AdminFileImport category="foodmenu" item="menu" title="Menus des repas" />
                 <AdminFileImport category="foodmenu" item="allergens" title="Allergènes" />
             </CardContent>

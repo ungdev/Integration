@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { isTokenValid } from "../services/requests/auth.service";
+import { isTokenValid } from '../services/requests/auth.service';
 
 export const useAuth = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -22,4 +22,19 @@ export const useAuth = () => {
         verifyToken();
     }, []);
     return isAuthenticated;
+};
+
+export const checkUploadAvailability = async (url: string, callback?: () => void): Promise<boolean> => {
+    try {
+        const response = await fetch(url, { method: 'HEAD' });
+
+        if (response.ok) {
+            callback?.();
+            return true;
+        }
+
+        return false;
+    } catch {
+        return false;
+    }
 };

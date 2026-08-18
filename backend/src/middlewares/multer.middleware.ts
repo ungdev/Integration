@@ -14,6 +14,7 @@ export enum MIMEType {
 const acceptedMIMETypesByItem: Record<string, Record<string, MIMEType[]>> = {
     foodmenu: {
         menu: [MIMEType.PDF],
+        allergens: [MIMEType.PDF],
     },
     news: {},
     notebooks: {

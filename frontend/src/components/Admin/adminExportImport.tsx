@@ -108,6 +108,7 @@ export const AdminImportPlannings = () => {
                 <AdminFileImport category="plannings" item="bachelor_ia" title="Bachelor IA" />
                 <AdminFileImport category="plannings" item="fise" title="Branche FISE" />
                 <AdminFileImport category="plannings" item="fisea" title="Branche FISEA" />
+                <AdminFileImport category="plannings" item="ri" title="Relation Internationnales" />
                 <AdminFileImport category="plannings" item="master" title="Master" />
             </CardContent>
         </Card>

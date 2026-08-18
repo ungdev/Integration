@@ -14,7 +14,7 @@ export const AdminExportConnect = () => {
     const [message, setMessage] = useState<string>('');
     const [showBusExport, setShowBusExport] = useState(false);
 
-    const busUrl = 'https://integration.utt.fr/api/exports/bus/bus.csv';
+    const busUrl = `${import.meta.env.VITE_API_URL}/exports/bus/bus.csv`;
 
     const handleExport = async (type: 'db' | 'bus', exportFn: () => Promise<{ message: string }>) => {
         setLoading((prev) => ({ ...prev, [type]: true }));
@@ -85,7 +85,7 @@ export const AdminExportTeamMembers = () => {
     const [showTeamMembersExport, setShowTeamMembersExport] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const teamMembersUrl = 'http://integration.utt.fr/api/exports/teammembers/teammembers.csv';
+    const teamMembersUrl = `${import.meta.env.VITE_API_URL}/exports/teammembers/teammembers.csv`;
 
     const handleExport = async () => {
         try {

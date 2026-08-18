@@ -32,6 +32,10 @@ const plannings: Planning[] = [
         name: 'Planning Master',
         url: `${import.meta.env.VITE_API_URL}/uploads/plannings/master.pdf`,
     },
+    {
+        name: 'Etudiants Etranger / International Students',
+        url: `${import.meta.env.VITE_API_URL}/uploads/plannings/ri.pdf`,
+    },
 ];
 
 export const PlanningSection = () => {

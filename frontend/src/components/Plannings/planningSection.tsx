@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { checkUploadAvailability } from '../../utils/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 type Planning = {
@@ -32,6 +33,10 @@ const plannings: Planning[] = [
         name: 'Planning Master',
         url: `${import.meta.env.VITE_API_URL}/uploads/plannings/master.pdf`,
     },
+    {
+        name: 'Etudiants Etranger / International Students',
+        url: `${import.meta.env.VITE_API_URL}/uploads/plannings/ri.pdf`,
+    },
 ];
 
 export const PlanningSection = () => {
@@ -42,8 +47,7 @@ export const PlanningSection = () => {
             const availability: Record<string, boolean> = {};
             for (const planning of plannings) {
                 try {
-                    const response = await fetch(planning.url, { method: 'HEAD' });
-                    availability[planning.name] = response.ok;
+                    availability[planning.name] = await checkUploadAvailability(planning.url);
                 } catch {
                     availability[planning.name] = false;
                 }

@@ -74,6 +74,7 @@ async function startServer() {
         app.use('/api/uploads/foodmenu', express.static(path.join(__dirname, '/uploads/foodmenu')));
         app.use('/api/uploads/plannings', express.static(path.join(__dirname, '/uploads/plannings')));
         app.use('/api/exports/bus', express.static(path.join(__dirname, '/exports/bus')));
+        app.use('/api/exports/teammembers', express.static(path.join(__dirname, '/exports/teammembers')));
 
         // Démarrage du serveur
         app.listen(server_port, () => {

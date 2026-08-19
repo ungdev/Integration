@@ -172,6 +172,15 @@ export const exportUsersCSV: AppRequestHandler = async (_req, res) => {
     }
 };
 
+export const exportTeamMembersCSV: AppRequestHandler = async (_req, res) => {
+    try {
+        await export_service.exportTeamMembersToCSV();
+        Ok(res, { msg: "CSV des membres de l'équipe généré" });
+    } catch (error) {
+        console.error(error);
+        Error(res, { msg: "Erreur lors de l'export CSV" });
+    }
+};
 export const getUploadedDocumentStatus: AppRequestHandler<unknown, unknown, UploadedDocumentParams> = async (
     req,
     res,

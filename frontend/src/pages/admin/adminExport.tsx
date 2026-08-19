@@ -1,6 +1,5 @@
 import {
     AdminExportConnect,
-    AdminExportTeamMembers,
     AdminImportFoodMenu,
     AdminImportNotebooks,
     AdminImportPlannings,
@@ -16,18 +15,14 @@ const AdminPageExport: React.FC = () => (
             </RevealSection>
 
             <RevealSection delay={0.1}>
-                <AdminExportTeamMembers />
-            </RevealSection>
-
-            <RevealSection delay={0.2}>
                 <AdminImportFoodMenu />
             </RevealSection>
 
-            <RevealSection delay={0.3}>
+            <RevealSection delay={0.2}>
                 <AdminImportPlannings />
             </RevealSection>
 
-            <RevealSection delay={0.4}>
+            <RevealSection delay={0.3}>
                 <AdminImportNotebooks />
             </RevealSection>
         </div>

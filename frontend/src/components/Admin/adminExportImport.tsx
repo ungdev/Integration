@@ -6,17 +6,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { AdminFileImport } from './adminFileImport';
 
 export const AdminExportConnect = () => {
-    const [loading, setLoading] = useState<{ db: boolean; bus: boolean }>({
+    const [loading, setLoading] = useState<{ db: boolean; bus: boolean; teamMembers: boolean }>({
         db: false,
         bus: false,
+        teamMembers: false,
     });
     const [error, setError] = useState<string | null>(null);
     const [message, setMessage] = useState<string>('');
     const [showBusExport, setShowBusExport] = useState(false);
+    const [showTeamMembersExport, setShowTeamMembersExport] = useState(false);
 
     const busUrl = `${import.meta.env.VITE_API_URL}/exports/bus/bus.csv`;
 
-    const handleExport = async (type: 'db' | 'bus', exportFn: () => Promise<{ message: string }>) => {
+    const teamMembersUrl = `${import.meta.env.VITE_API_URL}/exports/teammembers/teammembers.csv`;
+
+    const handleExport = async (type: 'db' | 'bus' | 'teamMembers', exportFn: () => Promise<{ message: string }>) => {
         setLoading((prev) => ({ ...prev, [type]: true }));
         setError(null);
         setMessage('');
@@ -24,6 +28,7 @@ export const AdminExportConnect = () => {
             const response = await exportFn();
             setMessage(response.message);
             if (type === 'bus') setShowBusExport(true);
+            if (type === 'teamMembers') setShowTeamMembersExport(true);
         } catch (err) {
             console.error(`Erreur export ${type}`, err);
             setError(
@@ -56,6 +61,11 @@ export const AdminExportConnect = () => {
                         className="w-full sm:w-auto bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 px-6 rounded-xl shadow-md transition-all duration-200">
                         {loading.bus ? '⏳ Export en cours...' : 'Exporter les bus'}
                     </Button>
+                    <Button
+                        onClick={() => handleExport('teamMembers', exportTeamMembers)}
+                        className="w-full sm:w-auto bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 px-6 rounded-xl shadow-md transition-all duration-200">
+                        {loading.teamMembers ? '⏳ Export en cours...' : 'Exporter les équipes'}
+                    </Button>
                 </div>
 
                 {error && <p className="text-center text-sm text-red-500 font-medium animate-fade-in">{error}</p>}
@@ -76,54 +86,21 @@ export const AdminExportConnect = () => {
                         </CardContent>
                     </Card>
                 )}
+
+                {showTeamMembersExport && (
+                    <Card className="animate-fade-in">
+                        <CardContent className="p-6 space-y-4 text-center">
+                            <h3 className="text-xl font-semibold text-gray-800">📄 Télécharger le csv des équipes</h3>
+                            <a
+                                href={teamMembersUrl}
+                                download
+                                className="inline-block mt-4 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition">
+                                ⬇️ Télécharger le csv
+                            </a>
+                        </CardContent>
+                    </Card>
+                )}
             </CardContent>
-        </Card>
-    );
-};
-
-export const AdminExportTeamMembers = () => {
-    const [showTeamMembersExport, setShowTeamMembersExport] = useState(false);
-    const [loading, setLoading] = useState(false);
-
-    const teamMembersUrl = `${import.meta.env.VITE_API_URL}/exports/teammembers/teammembers.csv`;
-
-    const handleExport = async () => {
-        try {
-            setLoading(true);
-            await exportTeamMembers();
-            setShowTeamMembersExport(true);
-        } catch (error) {
-            console.error('Erreur export Team Members :', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-    return (
-        <Card className="w-full max-w-3xl mx-auto">
-            <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
-                    Exporter les membres des équipes
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <Button
-                    onClick={() => handleExport()}
-                    className="block mx-auto w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-2 px-6 rounded-xl shadow-md transition-all duration-200">
-                    {loading ? '⏳ Export en cours...' : 'Exporter le csv'}
-                </Button>
-            </CardContent>
-            {showTeamMembersExport && (
-                <Card className="animate-fade-in">
-                    <CardContent className="p-6 space-y-4 text-center">
-                        <a
-                            href={teamMembersUrl}
-                            download
-                            className="inline-block mt-4 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition">
-                            ⬇️ Télécharger le csv
-                        </a>
-                    </CardContent>
-                </Card>
-            )}
         </Card>
     );
 };

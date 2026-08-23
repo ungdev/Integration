@@ -71,7 +71,8 @@ export const WeiSection = () => {
                             <a
                                 className="underline text-blue-500"
                                 target="_blank"
-                                href={`${import.meta.env.VITE_API_URL}/uploads/other/parental_authorization.pdf`}>
+                                href={`${import.meta.env.VITE_API_URL}/uploads/other/parental_authorization.pdf`}
+                                rel="noreferrer">
                                 cliquant ici
                             </a>
                             , une fois complétée il faudra la renvoyer à{' '}

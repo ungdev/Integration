@@ -30,6 +30,9 @@ const acceptedMIMETypesByItem: Record<string, Record<string, MIMEType[]>> = {
         fisea: [MIMEType.PDF],
         master: [MIMEType.PDF],
     },
+    other: {
+        parental_authorization: [MIMEType.PDF],
+    },
 };
 
 export const createUploadMiddleware = () => {

@@ -68,7 +68,9 @@ export const WeiSection = () => {
                         </p>
                         <p>
                             Tu la trouvera en{' '}
-                            <a className="underline text-blue-500" href="google.com">
+                            <a
+                                className="underline text-blue-500"
+                                href={`${import.meta.env.VITE_API_URL}/uploads/other/parental_authorization.pdf`}>
                                 cliquant ici
                             </a>
                             , une fois complétée il faudra la renvoyer à{' '}

@@ -94,7 +94,7 @@ export const SdiSection = () => {
                     <div className="surface-card overflow-hidden">
                         <iframe
                             title="Billetterie SDI"
-                            src="https://www.billetweb.fr/billetterie-soiree-dintegration-utt-2025"
+                            src="https://www.billetweb.fr/soiree-dintegration-2026"
                             className="w-full h-[600px] border-none"
                         />
                     </div>

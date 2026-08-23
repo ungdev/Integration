@@ -76,7 +76,7 @@ export const WeiSection = () => {
                             </a>
                             , une fois complétée il faudra la renvoyer à{' '}
                             <a className="underline text-blue-500" href="mailto:lucie.fritig@utt.fr">
-                                lucie.fritig@utt.fr
+                                lucie.fritig+inte26-documents-wei@utt.fr
                             </a>
                         </p>
                     </div>

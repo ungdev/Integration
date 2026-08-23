@@ -67,7 +67,7 @@ export const WeiSection = () => {
                             parentale!
                         </p>
                         <p>
-                            Tu la trouvera en{' '}
+                            Tu la trouveras en{' '}
                             <a
                                 className="underline text-blue-500"
                                 href={`${import.meta.env.VITE_API_URL}/uploads/other/parental_authorization.pdf`}>

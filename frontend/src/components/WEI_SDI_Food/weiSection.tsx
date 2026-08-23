@@ -70,6 +70,7 @@ export const WeiSection = () => {
                             Tu la trouveras en{' '}
                             <a
                                 className="underline text-blue-500"
+                                target="_blank"
                                 href={`${import.meta.env.VITE_API_URL}/uploads/other/parental_authorization.pdf`}>
                                 cliquant ici
                             </a>

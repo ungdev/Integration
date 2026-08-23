@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { checkFoodStatus } from '../../services/requests/event.service';
-import { getPermission } from '../../services/requests/user.service';
+// import { getPermission } from '../../services/requests/user.service';
 import { checkUploadAvailability } from '../../utils/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
@@ -10,7 +10,7 @@ export const FoodSection = () => {
     const [isMenuAvailable, setIsMenuAvailable] = useState(false);
     const [isAllergensAvailable, setIsAllergensAvailable] = useState(false);
 
-    const permission = getPermission();
+    // const permission = getPermission();
     const menuUrl = `${import.meta.env.VITE_API_URL}/uploads/foodmenu/menu.pdf`;
     const allergensUrl = `${import.meta.env.VITE_API_URL}/uploads/foodmenu/allergens.pdf`;
 
@@ -103,11 +103,18 @@ export const FoodSection = () => {
                         <div className="surface-card overflow-hidden">
                             <iframe
                                 title="Billetterie Repas"
-                                src="https://www.billetweb.fr/billetterie-repas-semaine-inte-a25"
-                                className="w-full h-[600px] border-none"
+                                src="https://www.billetweb.fr/repas-nouveaux-newcomer-dinner"
+                                className="w-full h-[600px] border-none mb-4"
                             />
                         </div>
-                        {(permission === 'Student' || permission === 'Admin') && (
+                        <div className="surface-card overflow-hidden">
+                            <iframe
+                                title="Billetterie Repas"
+                                src="https://www.billetweb.fr/barbecue14"
+                                className="w-full h-[600px] border-none mb-4"
+                            />
+                        </div>
+                        {/* {(permission === 'Student' || permission === 'Admin') && (
                             <div className="surface-card overflow-hidden">
                                 <span className="items-center rounded-md bg-red-400/10 px-2 py-1 text-s font-medium text-red-400 inset-ring inset-ring-red-400/20 mx-auto mt-4 mb-4 block w-max">
                                     La billetterie du repas test est réservée aux Chefs d'Equipe et Organisateurs de
@@ -119,7 +126,7 @@ export const FoodSection = () => {
                                     className="w-full h-[600px] border-none"
                                 />
                             </div>
-                        )}
+                        )} */}
                     </>
                 )}
             </CardContent>

@@ -155,3 +155,16 @@ export const AdminImportNotebooks = () => {
         </Card>
     );
 };
+
+export const AdminImportOther = () => {
+    return (
+        <Card className="w-full max-w-3xl mx-auto">
+            <CardHeader>
+                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">Autres imports</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <AdminFileImport category="other" item="parental_authorization" title="Autorisation parentale" />
+            </CardContent>
+        </Card>
+    );
+};

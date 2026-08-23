@@ -2,6 +2,7 @@ import {
     AdminExportConnect,
     AdminImportFoodMenu,
     AdminImportNotebooks,
+    AdminImportOther,
     AdminImportPlannings,
 } from '../../components/Admin/adminExportImport';
 import { AdminLayout } from '../../components/Admin/adminLayout';
@@ -24,6 +25,10 @@ const AdminPageExport: React.FC = () => (
 
             <RevealSection delay={0.3}>
                 <AdminImportNotebooks />
+            </RevealSection>
+
+            <RevealSection delay={0.4}>
+                <AdminImportOther />
             </RevealSection>
         </div>
     </AdminLayout>

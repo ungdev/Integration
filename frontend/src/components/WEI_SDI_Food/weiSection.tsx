@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { useOnboarding } from '../../contexts/onboarding';
+import { useUser } from '../../contexts/user';
 import { decodeToken, getToken } from '../../services/requests/auth.service';
 import { checkWEIStatus } from '../../services/requests/event.service';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
@@ -18,6 +19,8 @@ export const WeiSection = () => {
 
     const { status: onboardingStatus, loading: onboardingLoading } = useOnboarding();
 
+    const { user, loading: userLoading } = useUser();
+
     useEffect(() => {
         const script = document.createElement('script');
         script.src = 'https://www.billetweb.fr/js/export.js';
@@ -30,10 +33,11 @@ export const WeiSection = () => {
     useEffect(() => {
         if (!roles.includes('Nouveau')) return;
         if (onboardingLoading) return;
+        if (userLoading) return;
         setHasContactInformation(onboardingStatus?.hasemergencyContactInformation ?? true);
         setHasVssForm(onboardingStatus ? onboardingStatus.vss_form == 'validated' : true);
         setNeedsVssForm(onboardingStatus?.needsVssForm ?? false);
-    }, [roles, onboardingLoading, onboardingStatus]);
+    }, [roles, onboardingLoading, onboardingStatus, userLoading]);
 
     const fetchStatus = async () => {
         try {
@@ -55,6 +59,30 @@ export const WeiSection = () => {
                     d'Intégration 2025 !
                 </p>
             </CardHeader>
+            {!user?.majeur && (
+                <CardContent className="space-y-10">
+                    <div className="surface-card p-6 text-center">
+                        <p className="text-xl text-amber-500 font-semibold">
+                            ⚠️ Attention, pour participer au WEI en étant mineur tu as besoin d'une autorisation
+                            parentale!
+                        </p>
+                        <p>
+                            Tu la trouveras en{' '}
+                            <a
+                                className="underline text-blue-500"
+                                target="_blank"
+                                href={`${import.meta.env.VITE_API_URL}/uploads/other/parental_authorization.pdf`}
+                                rel="noreferrer">
+                                cliquant ici
+                            </a>
+                            , une fois complétée il faudra la renvoyer à{' '}
+                            <a className="underline text-blue-500" href="mailto:lucie.fritig@utt.fr">
+                                lucie.fritig+inte26-documents-wei@utt.fr
+                            </a>
+                        </p>
+                    </div>
+                </CardContent>
+            )}
             <CardContent className="space-y-10">
                 {!isWEIOpen ? (
                     <div className="surface-card p-6 text-center">
@@ -93,7 +121,7 @@ export const WeiSection = () => {
                     <div className="surface-card overflow-hidden">
                         <iframe
                             title="Billetterie WEI"
-                            src="https://www.billetweb.fr/billetterie-week-end-dintegration-utt-2025"
+                            src="https://www.billetweb.fr/week-end-dintegration-2026"
                             className="w-full h-[600px] border-none"
                         />
                     </div>

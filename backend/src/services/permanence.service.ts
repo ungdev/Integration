@@ -450,6 +450,35 @@ export const getHourlyNotifications = async (): Promise<Notification[]> => {
     return getMembersFromPermanences(permanences);
 };
 
+const findConcurrentItems = <T>(
+    items: T[],
+    getStartAt: (item: T) => Date | null,
+    getEndAt: (item: T) => Date | null,
+): T[] => {
+    const concurrentItems = new Set<T>();
+
+    for (let firstIndex = 0; firstIndex < items.length; firstIndex += 1) {
+        const first = items[firstIndex];
+        const firstStartAt = getStartAt(first);
+        const firstEndAt = getEndAt(first);
+        if (!firstStartAt || !firstEndAt) continue;
+
+        for (let secondIndex = firstIndex + 1; secondIndex < items.length; secondIndex += 1) {
+            const second = items[secondIndex];
+            const secondStartAt = getStartAt(second);
+            const secondEndAt = getEndAt(second);
+            if (!secondStartAt || !secondEndAt) continue;
+
+            if (firstStartAt < secondEndAt && secondStartAt < firstEndAt) {
+                concurrentItems.add(first);
+                concurrentItems.add(second);
+            }
+        }
+    }
+
+    return items.filter((item) => concurrentItems.has(item));
+};
+
 export const getConcurrentPermanenceNotifications = async (): Promise<ConcurrentPermanenceNotification[]> => {
     const registrations = await db
         .select({
@@ -474,23 +503,11 @@ export const getConcurrentPermanenceNotifications = async (): Promise<Concurrent
 
     return [...registrationsByUser.entries()].flatMap(([userId, userRegistration]) => {
         const { email, permanences } = userRegistration;
-        const concurrentIds = new Set<number>();
-        for (let firstIndex = 0; firstIndex < permanences.length; firstIndex += 1) {
-            const first = permanences[firstIndex];
-            if (!first.start_at || !first.end_at) continue;
-
-            for (let secondIndex = firstIndex + 1; secondIndex < permanences.length; secondIndex += 1) {
-                const second = permanences[secondIndex];
-                if (!second.start_at || !second.end_at) continue;
-
-                if (first.start_at < second.end_at && second.start_at < first.end_at) {
-                    concurrentIds.add(first.id);
-                    concurrentIds.add(second.id);
-                }
-            }
-        }
-
-        const concurrentPermanences = permanences.filter((permanence) => concurrentIds.has(permanence.id));
+        const concurrentPermanences = findConcurrentItems(
+            permanences,
+            (permanence) => permanence.start_at,
+            (permanence) => permanence.end_at,
+        );
         return concurrentPermanences.length > 0 ? [{ userId, email, permanences: concurrentPermanences }] : [];
     });
 };
@@ -512,24 +529,11 @@ export const getConcurrentPermanencesStatus = async (userId: number) => {
         .innerJoin(permanenceSchema, eq(permanenceSchema.id, userPermanenceSchema.permanence_id))
         .where(eq(userPermanenceSchema.user_id, userId));
 
-    const concurrentIds = new Set<number>();
-    for (let firstIndex = 0; firstIndex < permanences.length; firstIndex += 1) {
-        const first = permanences[firstIndex];
-        if (!first.start_at || !first.end_at) continue;
-
-        for (let secondIndex = firstIndex + 1; secondIndex < permanences.length; secondIndex += 1) {
-            const second = permanences[secondIndex];
-            if (!second.start_at || !second.end_at) continue;
-
-            const overlaps = first.start_at < second.end_at && second.start_at < first.end_at;
-            if (overlaps) {
-                concurrentIds.add(first.id);
-                concurrentIds.add(second.id);
-            }
-        }
-    }
-
-    const concurrentPermanences = permanences.filter((permanence) => concurrentIds.has(permanence.id));
+    const concurrentPermanences = findConcurrentItems(
+        permanences,
+        (permanence) => permanence.start_at,
+        (permanence) => permanence.end_at,
+    );
 
     return {
         concurrentPermanences: concurrentPermanences.length > 0,
@@ -568,29 +572,18 @@ export const purgeConcurrentPermanences = async () => {
             let removedForUser = false;
 
             while (true) {
-                const conflictingRegistrations = new Set<(typeof userRegistrations)[number]>();
+                const conflictingRegistrations = findConcurrentItems(
+                    userRegistrations,
+                    (registration) => registration.startAt,
+                    (registration) => registration.endAt,
+                );
 
-                for (let firstIndex = 0; firstIndex < userRegistrations.length; firstIndex += 1) {
-                    const first = userRegistrations[firstIndex];
-                    if (!first.startAt || !first.endAt) continue;
-
-                    for (let secondIndex = firstIndex + 1; secondIndex < userRegistrations.length; secondIndex += 1) {
-                        const second = userRegistrations[secondIndex];
-                        if (!second.startAt || !second.endAt) continue;
-
-                        if (first.startAt < second.endAt && second.startAt < first.endAt) {
-                            conflictingRegistrations.add(first);
-                            conflictingRegistrations.add(second);
-                        }
-                    }
-                }
-
-                if (conflictingRegistrations.size === 0) break;
+                if (conflictingRegistrations.length === 0) break;
 
                 const lowestDifficulty = Math.min(
-                    ...[...conflictingRegistrations].map((registration) => registration.difficulty ?? 0),
+                    ...conflictingRegistrations.map((registration) => registration.difficulty ?? 0),
                 );
-                const lowestDifficultyRegistrations = [...conflictingRegistrations].filter(
+                const lowestDifficultyRegistrations = conflictingRegistrations.filter(
                     (registration) => (registration.difficulty ?? 0) === lowestDifficulty,
                 );
                 const permanenceToRemove =

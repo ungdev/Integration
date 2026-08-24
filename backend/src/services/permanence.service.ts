@@ -1,8 +1,14 @@
 import { and, eq, inArray, sql } from 'drizzle-orm';
 import fs from 'fs';
 import Papa from 'papaparse';
-import type { PermanenceEmailData } from '../types/email';
-import type { CsvPermanence, LightUser, Notification, Permanence } from '../types/permanence';
+import type { ConcurrentPermanencesEmailData, PermanenceEmailData } from '../types/email';
+import type {
+    ConcurrentPermanenceNotification,
+    CsvPermanence,
+    LightUser,
+    Notification,
+    Permanence,
+} from '../types/permanence';
 import { db } from '../database/db';
 import {
     AlreadyRegisteredError,
@@ -444,6 +450,171 @@ export const getHourlyNotifications = async (): Promise<Notification[]> => {
     return getMembersFromPermanences(permanences);
 };
 
+const findConcurrentItems = <T>(
+    items: T[],
+    getStartAt: (item: T) => Date | null,
+    getEndAt: (item: T) => Date | null,
+): T[] => {
+    const concurrentItems = new Set<T>();
+
+    for (let firstIndex = 0; firstIndex < items.length; firstIndex += 1) {
+        const first = items[firstIndex];
+        const firstStartAt = getStartAt(first);
+        const firstEndAt = getEndAt(first);
+        if (!firstStartAt || !firstEndAt) continue;
+
+        for (let secondIndex = firstIndex + 1; secondIndex < items.length; secondIndex += 1) {
+            const second = items[secondIndex];
+            const secondStartAt = getStartAt(second);
+            const secondEndAt = getEndAt(second);
+            if (!secondStartAt || !secondEndAt) continue;
+
+            if (firstStartAt < secondEndAt && secondStartAt < firstEndAt) {
+                concurrentItems.add(first);
+                concurrentItems.add(second);
+            }
+        }
+    }
+
+    return items.filter((item) => concurrentItems.has(item));
+};
+
+export const getConcurrentPermanenceNotifications = async (): Promise<ConcurrentPermanenceNotification[]> => {
+    const registrations = await db
+        .select({
+            userId: userSchema.id,
+            email: userSchema.email,
+            permanence: permanenceSchema,
+        })
+        .from(userPermanenceSchema)
+        .innerJoin(userSchema, eq(userSchema.id, userPermanenceSchema.user_id))
+        .innerJoin(permanenceSchema, eq(permanenceSchema.id, userPermanenceSchema.permanence_id));
+
+    const registrationsByUser = new Map<number, { email: string; permanences: Permanence[] }>();
+    for (const registration of registrations) {
+        if (!registration.email) continue;
+        const userRegistration = registrationsByUser.get(registration.userId) ?? {
+            email: registration.email,
+            permanences: [],
+        };
+        userRegistration.permanences.push(registration.permanence);
+        registrationsByUser.set(registration.userId, userRegistration);
+    }
+
+    return [...registrationsByUser.entries()].flatMap(([userId, userRegistration]) => {
+        const { email, permanences } = userRegistration;
+        const concurrentPermanences = findConcurrentItems(
+            permanences,
+            (permanence) => permanence.start_at,
+            (permanence) => permanence.end_at,
+        );
+        return concurrentPermanences.length > 0 ? [{ userId, email, permanences: concurrentPermanences }] : [];
+    });
+};
+
+export const getConcurrentPermanencesStatus = async (userId: number) => {
+    const permanences = await db
+        .select({
+            id: permanenceSchema.id,
+            name: permanenceSchema.name,
+            description: permanenceSchema.description,
+            location: permanenceSchema.location,
+            start_at: permanenceSchema.start_at,
+            end_at: permanenceSchema.end_at,
+            capacity: permanenceSchema.capacity,
+            is_open: permanenceSchema.is_open,
+            difficulty: permanenceSchema.difficulty,
+        })
+        .from(userPermanenceSchema)
+        .innerJoin(permanenceSchema, eq(permanenceSchema.id, userPermanenceSchema.permanence_id))
+        .where(eq(userPermanenceSchema.user_id, userId));
+
+    const concurrentPermanences = findConcurrentItems(
+        permanences,
+        (permanence) => permanence.start_at,
+        (permanence) => permanence.end_at,
+    );
+
+    return {
+        concurrentPermanences: concurrentPermanences.length > 0,
+        permanences: concurrentPermanences,
+    };
+};
+
+export const purgeConcurrentPermanences = async () => {
+    return db.transaction(async (tx) => {
+        await tx.execute(sql`LOCK TABLE user_permanences IN EXCLUSIVE MODE`);
+
+        const registrations = await tx
+            .select({
+                userId: userPermanenceSchema.user_id,
+                permanenceId: permanenceSchema.id,
+                startAt: permanenceSchema.start_at,
+                endAt: permanenceSchema.end_at,
+                difficulty: permanenceSchema.difficulty,
+            })
+            .from(userPermanenceSchema)
+            .innerJoin(permanenceSchema, eq(permanenceSchema.id, userPermanenceSchema.permanence_id));
+
+        const registrationsByUser = new Map<number, typeof registrations>();
+        for (const registration of registrations) {
+            if (registration.userId === null) continue;
+
+            const userRegistrations = registrationsByUser.get(registration.userId) ?? [];
+            userRegistrations.push(registration);
+            registrationsByUser.set(registration.userId, userRegistrations);
+        }
+
+        let removedRegistrations = 0;
+        let affectedUsers = 0;
+
+        for (const [userId, userRegistrations] of registrationsByUser) {
+            let removedForUser = false;
+
+            while (true) {
+                const conflictingRegistrations = findConcurrentItems(
+                    userRegistrations,
+                    (registration) => registration.startAt,
+                    (registration) => registration.endAt,
+                );
+
+                if (conflictingRegistrations.length === 0) break;
+
+                const lowestDifficulty = Math.min(
+                    ...conflictingRegistrations.map((registration) => registration.difficulty ?? 0),
+                );
+                const lowestDifficultyRegistrations = conflictingRegistrations.filter(
+                    (registration) => (registration.difficulty ?? 0) === lowestDifficulty,
+                );
+                const permanenceToRemove =
+                    lowestDifficultyRegistrations[Math.floor(Math.random() * lowestDifficultyRegistrations.length)];
+
+                await tx
+                    .delete(userPermanenceSchema)
+                    .where(
+                        and(
+                            eq(userPermanenceSchema.user_id, userId),
+                            eq(userPermanenceSchema.permanence_id, permanenceToRemove.permanenceId),
+                        ),
+                    );
+                await tx
+                    .update(permanenceSchema)
+                    .set({ capacity: sql`capacity + 1` })
+                    .where(eq(permanenceSchema.id, permanenceToRemove.permanenceId));
+
+                const registrationIndex = userRegistrations.indexOf(permanenceToRemove);
+                userRegistrations.splice(registrationIndex, 1);
+                removedRegistrations += 1;
+                removedForUser = true;
+            }
+
+            if (removedForUser) affectedUsers += 1;
+        }
+
+        return { removedRegistrations, affectedUsers };
+    });
+};
+
 // Cette fonction est vouée à disparaitre lors du passage à Prisma, avec un simple "with"
 export const getMembersFromPermanences = async (
     permanences: Permanence[],
@@ -515,6 +686,41 @@ export const sendNotifications = async (notifications: Notification[]) => {
             } catch (err) {
                 console.error(err);
             }
+        }
+    }
+};
+
+export const sendConcurrentPermanenceNotifications = async (notifications: ConcurrentPermanenceNotification[]) => {
+    for (const notification of notifications) {
+        try {
+            const permanenceEmailData: ConcurrentPermanencesEmailData = {
+                permanences: notification.permanences.map((permanence) => ({
+                    name: permanence.name,
+                    startAt: new Intl.DateTimeFormat('fr-FR', {
+                        day: '2-digit',
+                        month: 'long',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    }).format(permanence.start_at),
+                    endAt: new Intl.DateTimeFormat('fr-FR', {
+                        day: '2-digit',
+                        month: 'long',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    }).format(permanence.end_at),
+                    location: permanence.location,
+                })),
+            };
+
+            await sendEmail({
+                from: email_from,
+                to: [notification.email],
+                subject: '[ATTENTION] Permanences concurrentes',
+                text: 'Certaines de vos permanences se chevauchent.',
+                html: generateEmailHtml('templateNotifyConcurrentPermanences', permanenceEmailData),
+            });
+        } catch (error) {
+            console.error(`Erreur lors de l'envoi du conflit de permanences a ${notification.email}`, error);
         }
     }
 };

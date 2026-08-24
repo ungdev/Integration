@@ -1,14 +1,15 @@
-import api from "../api"; // ton instance axios ou une autre bibliothèque pour les requêtes HTTP
+import { type ConcurrentPermanences } from '../../interfaces/permanence.interface';
+import api from '../api'; // ton instance axios ou une autre bibliothèque pour les requêtes HTTP
 
 // Fonction pour récupérer toutes les permanences ouvertes
 export const getOpenPermanences = async () => {
-    const response = await api.get("/permanence/user/permanences");
+    const response = await api.get('/permanence/user/permanences');
     return response.data.data; // La réponse est de type PermanenceResponse
 };
 
 // Fonction pour récupérer toutes les permanences (admin)
 export const getAllPermanences = async () => {
-    const response = await api.get("/permanence/admin/permanences");
+    const response = await api.get('/permanence/admin/permanences');
     return response.data; // La réponse est de type PermanenceResponse
 };
 
@@ -29,7 +30,7 @@ export const createPermanence = async (permanenceData: {
     difficulty: number;
     respoId: number | null;
 }) => {
-    const response = await api.post("/permanence/admin/permanence", {
+    const response = await api.post('/permanence/admin/permanence', {
         name: permanenceData.name,
         description: permanenceData.description,
         location: permanenceData.location,
@@ -37,20 +38,18 @@ export const createPermanence = async (permanenceData: {
         end_at: permanenceData.end_at,
         capacity: permanenceData.capacity,
         difficulty: permanenceData.difficulty,
-        respoId: permanenceData.respoId
+        respoId: permanenceData.respoId,
     });
     return response.data; // La réponse est de type Permanent
-
 };
 
 // Fonction pour ouvrir une permanence (admin)
 export const openPermanence = async (permId: number) => {
-    const response = await api.post("/permanence/admin/open", {
+    const response = await api.post('/permanence/admin/open', {
         permId,
     });
     return response.data; // La réponse est de type Permanent
 };
-
 
 // Fonction pour fermer une permanence (admin)
 export const closePermanence = async (permId: number) => {
@@ -68,17 +67,20 @@ export const getMyPermanences = async () => {
     return response.data.data;
 };
 
-export const updatePermanence = async (permId: number, permanenceData: {
-    name: string;
-    description: string;
-    location: string;
-    start_at: string | null;
-    end_at: string | null;
-    capacity: number;
-    difficulty: number;
-    respoId: number | null;
-}) => {
-    const response = await api.post("/permanence/admin/updatepermanence", {
+export const updatePermanence = async (
+    permId: number,
+    permanenceData: {
+        name: string;
+        description: string;
+        location: string;
+        start_at: string | null;
+        end_at: string | null;
+        capacity: number;
+        difficulty: number;
+        respoId: number | null;
+    },
+) => {
+    const response = await api.post('/permanence/admin/updatepermanence', {
         permId,
         name: permanenceData.name,
         description: permanenceData.description,
@@ -87,10 +89,9 @@ export const updatePermanence = async (permId: number, permanenceData: {
         end_at: permanenceData.end_at,
         capacity: permanenceData.capacity,
         difficulty: permanenceData.difficulty,
-        respoId: permanenceData.respoId
+        respoId: permanenceData.respoId,
     });
     return response.data; // La réponse est de type Permanent
-
 };
 
 export const getUsersByPermanence = async (permId: number) => {
@@ -106,7 +107,7 @@ export const addUserToPermanence = async (permId: number, userId: number) => {
 export const removeUserFromPermanence = async (permId: number, userId: number) => {
     const response = await api.post(`/permanence/admin/remove`, { userId, permId });
     return response.data;
-}
+};
 
 export const deletePermanence = async (permId: number) => {
     const response = await api.delete(`/permanence/admin/permanence`, { params: { permId } });
@@ -116,27 +117,27 @@ export const deletePermanence = async (permId: number) => {
 export const importPermanenceCSV = async (formData: FormData) => {
     const response = await api.post(`/permanence/admin/importpermanences`, formData, {
         headers: {
-            "Content-Type": "multipart/form-data",
+            'Content-Type': 'multipart/form-data',
         },
     });
     return response.data;
-}
+};
 
 export const isUserRespo = async (userId: number) => {
     const response = await api.get(`/permanence/user/isrespo`, { params: { userId } });
     return response.data;
-}
+};
 
 export const respoDetails = async () => {
     const response = await api.get(`/permanence/respo/respodetails`);
     return response.data;
-}
+};
 
 export const claimedMember = async (userId: number, permId: number, claimed: boolean) => {
     const response = await api.post(`/permanence/respo/claimedmember`, {
         userId,
         permId,
-        claimed
+        claimed,
     });
     return response.data;
 };
@@ -145,7 +146,13 @@ export const claimedMemberAdmin = async (userId: number, permId: number, claimed
     const response = await api.post(`/permanence/admin/claimedmember`, {
         userId,
         permId,
-        claimed
+        claimed,
     });
     return response.data;
+};
+
+export const getConcurrentPermanencesStatus = async () => {
+    const response = await api.get('/permanence/user/concurrent/status');
+    const status: ConcurrentPermanences = response.data.data;
+    return status;
 };

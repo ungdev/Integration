@@ -54,7 +54,7 @@ export const Navbar = () => {
         // OnboardingProvider refreshes on 'user-onboarding-updated' event globally.
         // No local event listeners required here.
         return undefined;
-    }, [isAuthenticated, onboardingLoading, onboardingStatus, pathname]);
+    }, [isAuthenticated, pathname]);
 
     const navItems: NavItem[] = [
         { label: 'Home', to: '/home', icon: HomeIcon },

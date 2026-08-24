@@ -124,9 +124,7 @@ export const UserChallengeList = () => {
 
             <Card className="w-full max-w-3xl mx-auto">
                 <CardHeader>
-                    <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
-                        Valider un challenge
-                    </CardTitle>
+                    <CardTitle className="text-2xl font-semibold text-gray-800 text-center">Valider un Défi</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-10">
                     {!isChallOpen ? (
@@ -136,7 +134,7 @@ export const UserChallengeList = () => {
                     ) : (
                         <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
                             <iframe
-                                src="https://LELIENDUGFORM/viewform?embedded=true"
+                                src="https://docs.google.com/forms/d/e/1FAIpQLScZZRe1DSqqJOdgBK_5QBlOVMXmIPv9jDlqDD6FqRhmkb8rIw/viewform?embedded=true"
                                 className="absolute inset-0 w-full h-full border-none"
                                 title="Formulaire Challenge"
                                 loading="lazy">
@@ -151,7 +149,7 @@ export const UserChallengeList = () => {
             <Card className="w-full max-w-3xl mx-auto">
                 <CardHeader>
                     <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
-                        🏆 Challenges disponibles
+                        🏆 Défis disponibles
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-10">
@@ -162,7 +160,7 @@ export const UserChallengeList = () => {
                             🚫 Les challenges ne sont pas encore ouverts.
                         </p>
                     ) : availableChallenges.length === 0 ? (
-                        <p className="text-gray-500 text-center">Aucun challenge disponible pour le moment.</p>
+                        <p className="text-gray-500 text-center">Aucun défi disponible pour le moment.</p>
                     ) : (
                         <>
                             {/* Filtres */}

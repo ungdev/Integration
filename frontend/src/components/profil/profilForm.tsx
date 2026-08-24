@@ -20,6 +20,7 @@ const branchOptions = [
     { value: 'GM_APPR', label: 'Génie Mécanique en Apprentissage' },
     { value: 'SN_APPR', label: 'Systeme Numérique en Apprentissage' },
     { value: 'Branch', label: 'Branche' },
+    { value: 'IA_BACH', label: 'Intelligence Artificielle en bachelor' },
     { value: 'MM', label: 'Mécanique et Matériaux' },
     { value: 'Master', label: 'Master' },
     { value: 'RI', label: 'Ressources International' },

@@ -298,7 +298,7 @@ export const teamDistribution = async () => {
 
     // Filtrer les utilisateurs en fonction de la spécialité
     const tcStudents: StudentRow[] = filteredStudents
-        .filter((student) => student.branch === 'TC')
+        .filter((student) => student.branch === 'TC' || student.branch === 'IA_BACH')
         .map((student) => ({
             userId: student.userId,
             email: student.email,
@@ -324,7 +324,13 @@ export const teamDistribution = async () => {
         }));
 
     const otherStudents: StudentRow[] = filteredStudents
-        .filter((student) => student.branch !== 'TC' && student.branch !== 'RI' && student.branch !== 'MM')
+        .filter(
+            (student) =>
+                student.branch !== 'TC' &&
+                student.branch !== 'RI' &&
+                student.branch !== 'MM' &&
+                student.branch !== 'IA_BACH',
+        )
         .map((student) => ({
             userId: student.userId,
             email: student.email,

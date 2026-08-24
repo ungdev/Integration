@@ -1,29 +1,29 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import Swal from "sweetalert2";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import Swal from 'sweetalert2';
 
-import { type Challenge } from "../../interfaces/challenge.interface";
-import { type Faction } from "../../interfaces/faction.interface";
-import { getAllChallenges, getFactionsPoints } from "../../services/requests/challenge.service";
-import { checkChallengeStatus } from "../../services/requests/event.service";
-import { getAllFactionsUser } from "../../services/requests/faction.service";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { type Challenge } from '../../interfaces/challenge.interface';
+import { type Faction } from '../../interfaces/faction.interface';
+import { getAllChallenges, getFactionsPoints } from '../../services/requests/challenge.service';
+import { checkChallengeStatus } from '../../services/requests/event.service';
+import { getAllFactionsUser } from '../../services/requests/faction.service';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const UserChallengeList = () => {
     const [availableChallenges, setAvailableChallenges] = useState<Challenge[]>([]);
     const [factions, setFactions] = useState<Faction[]>([]);
     const [factionPoints, setFactionPoints] = useState<{ [key: number]: number }>({});
-    const [selectedCategory, setSelectedCategory] = useState<string>("Tous");
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [selectedCategory, setSelectedCategory] = useState<string>('Tous');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [isChallOpen, setIsChallOpen] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const fetchChallenges = useCallback(async () => {
         try {
             const challenges = await getAllChallenges();
-            const challengesFiltered = challenges.filter((c: Challenge) => c.category !== "Free");
+            const challengesFiltered = challenges.filter((c: Challenge) => c.category !== 'Free');
             setAvailableChallenges(challengesFiltered);
         } catch (err) {
-            console.error("Erreur lors du chargement des challenges", err);
+            console.error('Erreur lors du chargement des challenges', err);
         }
     }, []);
 
@@ -32,7 +32,7 @@ export const UserChallengeList = () => {
             const data = await getAllFactionsUser();
             setFactions(data);
         } catch (err) {
-            console.error("Erreur lors du chargement des factions", err);
+            console.error('Erreur lors du chargement des factions', err);
         }
     }, []);
 
@@ -44,11 +44,11 @@ export const UserChallengeList = () => {
                 fetchedFactions.map(async (faction: Faction) => {
                     const res = await getFactionsPoints(faction.factionId);
                     points[faction.factionId] = Number(res);
-                })
+                }),
             );
             setFactionPoints(points);
         } catch (err) {
-            console.error("Erreur lors du chargement des points des factions", err);
+            console.error('Erreur lors du chargement des points des factions', err);
         }
     }, []);
 
@@ -64,11 +64,11 @@ export const UserChallengeList = () => {
                 const status = await checkChallengeStatus();
                 setIsChallOpen(status);
             } catch (error) {
-                console.error("Erreur lors de la récupération des données :", error);
+                console.error('Erreur lors de la récupération des données :', error);
                 await Swal.fire({
-                    icon: "error",
-                    title: "Oups...",
-                    text: "Une erreur est survenue lors de la récupération des données.",
+                    icon: 'error',
+                    title: 'Oups...',
+                    text: 'Une erreur est survenue lors de la récupération des données.',
                 });
             } finally {
                 setLoading(false);
@@ -78,20 +78,18 @@ export const UserChallengeList = () => {
     }, [fetchInitialData]);
 
     const dynamicCategories = useMemo(() => {
-        const uniqueCategories = new Set(availableChallenges.map(c => c.category));
-        return ["Tous", ...Array.from(uniqueCategories)];
+        const uniqueCategories = new Set(availableChallenges.map((c) => c.category));
+        return ['Tous', ...Array.from(uniqueCategories)];
     }, [availableChallenges]);
 
     const filteredAndSortedChallenges = useMemo(() => {
         let challenges = [...availableChallenges];
 
-        if (selectedCategory !== "Tous") {
-            challenges = challenges.filter(c => c.category === selectedCategory);
+        if (selectedCategory !== 'Tous') {
+            challenges = challenges.filter((c) => c.category === selectedCategory);
         }
 
-        challenges.sort((a, b) =>
-            sortOrder === "asc" ? a.points - b.points : b.points - a.points
-        );
+        challenges.sort((a, b) => (sortOrder === 'asc' ? a.points - b.points : b.points - a.points));
 
         return challenges;
     }, [availableChallenges, selectedCategory, sortOrder]);
@@ -119,6 +117,33 @@ export const UserChallengeList = () => {
                             <p className="text-gray-500">Chargement des points...</p>
                         )}
                     </div>
+                </CardContent>
+            </Card>
+
+            {/* Formulaire de validation de challenge */}
+
+            <Card className="w-full max-w-3xl mx-auto">
+                <CardHeader>
+                    <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
+                        Valider un challenge
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-10">
+                    {!isChallOpen ? (
+                        <p className="text-red-500 font-medium text-center">
+                            🚫 Ce formulaire n'est pas encore disponible.
+                        </p>
+                    ) : (
+                        <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
+                            <iframe
+                                src="https://LELIENDUGFORM/viewform?embedded=true"
+                                className="absolute inset-0 w-full h-full border-none"
+                                title="Formulaire Challenge"
+                                loading="lazy">
+                                Chargement…
+                            </iframe>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 
@@ -150,10 +175,11 @@ export const UserChallengeList = () => {
                                         id="categorySelect"
                                         value={selectedCategory}
                                         onChange={(e) => setSelectedCategory(e.target.value)}
-                                        className="border border-gray-300 rounded px-3 py-1"
-                                    >
+                                        className="border border-gray-300 rounded px-3 py-1">
                                         {dynamicCategories.map((cat) => (
-                                            <option key={cat} value={cat}>{cat}</option>
+                                            <option key={cat} value={cat}>
+                                                {cat}
+                                            </option>
                                         ))}
                                     </select>
                                 </div>
@@ -165,9 +191,8 @@ export const UserChallengeList = () => {
                                     <select
                                         id="sortOrderSelect"
                                         value={sortOrder}
-                                        onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
-                                        className="border border-gray-300 rounded px-3 py-1"
-                                    >
+                                        onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+                                        className="border border-gray-300 rounded px-3 py-1">
                                         <option value="asc">Croissant</option>
                                         <option value="desc">Décroissant</option>
                                     </select>
@@ -179,13 +204,16 @@ export const UserChallengeList = () => {
                                 {filteredAndSortedChallenges.map((challenge) => (
                                     <li
                                         key={challenge.id}
-                                        className="bg-gray-100 py-4 px-6 rounded-xl border border-gray-300 shadow-sm hover:bg-gray-200 transition"
-                                    >
+                                        className="bg-gray-100 py-4 px-6 rounded-xl border border-gray-300 shadow-sm hover:bg-gray-200 transition">
                                         <h4 className="font-semibold text-lg">{challenge.title}</h4>
                                         <p className="text-gray-600 mt-2">{challenge.description}</p>
                                         <div className="mt-2 text-gray-500 text-sm">
-                                            <p><strong>Catégorie :</strong> {challenge.category}</p>
-                                            <p><strong>Points :</strong> {challenge.points}</p>
+                                            <p>
+                                                <strong>Catégorie :</strong> {challenge.category}
+                                            </p>
+                                            <p>
+                                                <strong>Points :</strong> {challenge.points}
+                                            </p>
                                         </div>
                                     </li>
                                 ))}

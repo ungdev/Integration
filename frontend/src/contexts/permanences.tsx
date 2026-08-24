@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import type { ConcurrentPermanences } from '../interfaces/permanence.interface';
-import { getToken } from '../services/requests/auth.service';
 import { getConcurrentPermanencesStatus } from '../services/requests/permanence.service';
+import { useUser } from './user';
 
 type PermanencesContextType = {
     concurrentPermanences: boolean;
@@ -22,13 +22,12 @@ export const usePermanences = (): PermanencesContextType => {
 };
 
 export const PermanencesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const tokenPresent = Boolean(getToken());
+    const { user, loading: userLoading } = useUser();
     const [permanences, setPermanences] = useState<ConcurrentPermanences | null>(cachedPermanences);
-    const [loading, setLoading] = useState<boolean>(() => cachedPermanences === null && tokenPresent);
+    const [loading, setLoading] = useState<boolean>(() => cachedPermanences === null && userLoading);
 
     const fetchStatus = async () => {
-        const token = getToken();
-        if (!token) {
+        if (!user || user.permission !== 'Student') {
             setPermanences(null);
             setLoading(false);
             return;
@@ -47,8 +46,15 @@ export const PermanencesProvider: React.FC<{ children: React.ReactNode }> = ({ c
     };
 
     useEffect(() => {
-        if (!tokenPresent && !cachedPermanences) {
-            // nothing to do when not authenticated
+        if (userLoading) {
+            setLoading(true);
+            return;
+        }
+
+        if (!user || user.permission !== 'Student') {
+            cachedPermanences = null;
+            setPermanences(null);
+            setLoading(false);
             return;
         }
 
@@ -60,9 +66,15 @@ export const PermanencesProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
         window.addEventListener('user-onboarding-updated', handler);
         return () => window.removeEventListener('user-onboarding-updated', handler);
-    }, []);
+    }, [user, userLoading]);
 
     const refreshPermanences = async () => {
+        if (!user || user.permission !== 'Student') {
+            cachedPermanences = null;
+            setPermanences(null);
+            return;
+        }
+
         cachedPermanences = null;
         await fetchStatus();
     };

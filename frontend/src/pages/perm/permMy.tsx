@@ -3,12 +3,15 @@ import Swal from 'sweetalert2';
 
 import EmergencyModal from '../../components/home/emergencyModal';
 import { Navbar } from '../../components/navbar';
+import { ConcurrentPermanencesCard } from '../../components/permanence/concurrentPerms';
 import { MyPermanencesList } from '../../components/permanence/permUser';
+import { usePermanences } from '../../contexts/permanences';
 import { type Permanence } from '../../interfaces/permanence.interface';
 import { cancelPermanence, getMyPermanences } from '../../services/requests/permanence.service';
 
 const PermanencesPageMy: React.FC = () => {
     const [myPermanences, setMyPermanences] = useState<Permanence[]>([]);
+    const { concurrentPermanences, concurrentPermanencesList, refreshPermanences } = usePermanences();
 
     useEffect(() => {
         fetchMyPermanences();
@@ -57,6 +60,7 @@ const PermanencesPageMy: React.FC = () => {
             const response = await cancelPermanence(permId);
             Swal.fire('Succès ✅', response.message, 'success');
             fetchMyPermanences();
+            await refreshPermanences();
         } catch (err) {
             console.error("Erreur lors de l'annulation", err);
             Swal.fire('Erreur', 'Impossible de vous désinscrire.', 'error');
@@ -69,6 +73,7 @@ const PermanencesPageMy: React.FC = () => {
             <EmergencyModal />
             <div className="min-h-screen flex justify-center bg-gray-50 py-10 px-4">
                 <div className="w-full max-w-6xl flex flex-col gap-12">
+                    {concurrentPermanences && <ConcurrentPermanencesCard permanences={concurrentPermanencesList} />}
                     <MyPermanencesList myPermanences={myPermanences} onCancel={handleCancelPermanence} />
                 </div>
             </div>

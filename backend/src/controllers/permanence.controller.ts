@@ -374,7 +374,7 @@ export const sendHourlyNotificationToUsers: AppRequestHandler = async (_req, res
         return;
     }
 
-    permanence_service.sendNotifications(notifications);
+    await permanence_service.sendNotifications(notifications);
 
     Ok(res, { msg: 'Notifications horaires envoyées avec succès' });
 };

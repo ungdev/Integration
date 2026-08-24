@@ -374,7 +374,7 @@ export const sendHourlyNotificationToUsers: AppRequestHandler = async (_req, res
         return;
     }
 
-    permanence_service.sendNotifications(notifications);
+    await permanence_service.sendNotifications(notifications);
 
     Ok(res, { msg: 'Notifications horaires envoyées avec succès' });
 };
@@ -390,4 +390,45 @@ export const sendDailyNotificationToUsers: AppRequestHandler = async (_req, res)
     permanence_service.sendNotifications(notifications);
 
     Ok(res, { msg: 'Notifications quotidiennes envoyées avec succès' });
+};
+
+export const sendConcurrentPermanenceNotifications: AppRequestHandler = async (_req, res) => {
+    try {
+        const notifications = await permanence_service.getConcurrentPermanenceNotifications();
+        await permanence_service.sendConcurrentPermanenceNotifications(notifications);
+        Ok(res, { msg: `${notifications.length} notification(s) de conflit envoyée(s).` });
+    } catch (err) {
+        console.error(err);
+        Error(res, { msg: 'Erreur lors de l’envoi des notifications de permanences concurrentes' });
+    }
+};
+
+export const purgeConcurrentPermanences: AppRequestHandler = async (_req, res) => {
+    try {
+        const result = await permanence_service.purgeConcurrentPermanences();
+        Ok(res, {
+            data: result,
+            msg: `${result.removedRegistrations} inscription(s) supprimée(s) pour ${result.affectedUsers} utilisateur(s).`,
+        });
+    } catch (err) {
+        console.error(err);
+        Error(res, { msg: 'Erreur lors de la purge des permanences concurrentes' });
+    }
+};
+
+export const getConcurrentPermanences: AppRequestHandler = async (req, res) => {
+    const userId = req.user?.userId;
+
+    if (!userId) {
+        Error(res, { msg: 'Utilisateur non identifié' });
+        return;
+    }
+
+    try {
+        const status = await permanence_service.getConcurrentPermanencesStatus(Number(userId));
+        Ok(res, { data: status });
+    } catch (err) {
+        console.error(err);
+        Error(res, { msg: 'Erreur lors de la vérification des permanences concurrentes' });
+    }
 };

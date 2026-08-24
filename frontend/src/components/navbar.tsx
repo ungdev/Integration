@@ -5,6 +5,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { NavLink, useLocation, useSearchParams } from 'react-router-dom';
 
 import { useOnboarding } from '../contexts/onboarding';
+import { usePermanences } from '../contexts/permanences';
 import { decodeToken, getToken } from '../services/requests/auth.service';
 import { Button } from './ui/button';
 
@@ -32,6 +33,7 @@ export const Navbar = () => {
     const [hasContactInformation, setHasContactInformation] = useState(false);
     const [needsVssForm, setNeedsVssForm] = useState(false);
     const { status: onboardingStatus, loading: onboardingLoading } = useOnboarding();
+    const { concurrentPermanences, loading: permanencesLoading } = usePermanences();
     const [, setSearchParams] = useSearchParams();
 
     const handleLogout = () => {
@@ -52,7 +54,7 @@ export const Navbar = () => {
         // OnboardingProvider refreshes on 'user-onboarding-updated' event globally.
         // No local event listeners required here.
         return undefined;
-    }, [isAuthenticated, pathname]);
+    }, [isAuthenticated, onboardingLoading, onboardingStatus, pathname]);
 
     const navItems: NavItem[] = [
         { label: 'Home', to: '/home', icon: HomeIcon },
@@ -245,6 +247,19 @@ export const Navbar = () => {
                         className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded whitespace-nowrap">
                         Compléter le formulaire
                     </Button>
+                </div>
+            )}
+
+            {isAuthenticated && !permanencesLoading && concurrentPermanences && (
+                <div className="bg-amber-500 text-gray-900 shadow-lg flex items-center justify-center gap-2 p-3">
+                    <p className="text-center font-semibold">
+                        ATTENTION : certaines de tes permanences se chevauchent.
+                    </p>
+                    <NavLink to="/mypermanences">
+                        <Button className="bg-white hover:bg-gray-100 text-gray-900 font-bold py-2 px-4 rounded whitespace-nowrap">
+                            Voir mes permanences
+                        </Button>
+                    </NavLink>
                 </div>
             )}
         </div>

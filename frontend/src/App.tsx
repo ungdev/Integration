@@ -5,6 +5,7 @@ import AdminRoute from './components/utils/adminroute';
 import PrivateRoute from './components/utils/privateroute';
 import ProtectedRoute from './components/utils/protectedroute';
 import { OnboardingProvider } from './contexts/onboarding';
+import { PermanencesProvider } from './contexts/permanences';
 import { UserProvider } from './contexts/user';
 
 const AdminPageBanned = lazy(() => import('./pages/admin/adminBanned'));
@@ -65,270 +66,272 @@ const App: React.FC = () => {
         <Router>
             <UserProvider>
                 <OnboardingProvider>
-                    <Routes>
-                        {/* Public */}
-                        <Route path="/" element={<LoginPage />} />
-                        <Route path="/register" element={<RegisterPage />} />
-                        <Route path="/resetpassword" element={<ResetPasswordPage />} />
-                        <Route path="/roadbook" element={<RoadbookPage />} />
-                        <Route path="/privacy" element={<PrivacyPage />} />
-                        <Route path="/legals" element={<LegalsPage />} />
+                    <PermanencesProvider>
+                        <Routes>
+                            {/* Public */}
+                            <Route path="/" element={<LoginPage />} />
+                            <Route path="/register" element={<RegisterPage />} />
+                            <Route path="/resetpassword" element={<ResetPasswordPage />} />
+                            <Route path="/roadbook" element={<RoadbookPage />} />
+                            <Route path="/privacy" element={<PrivacyPage />} />
+                            <Route path="/legals" element={<LegalsPage />} />
 
-                        {/* Utilisateurs connectés */}
+                            {/* Utilisateurs connectés */}
 
-                        <Route
-                            path="/home"
-                            element={
-                                <ProtectedRoute>
-                                    <HomePage />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/plannings"
-                            element={
-                                <ProtectedRoute>
-                                    <PlanningsPage />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/profil"
-                            element={
-                                <ProtectedRoute>
-                                    <ProfilPage />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/challenges"
-                            element={
-                                <ProtectedRoute>
-                                    <ChallPage />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/parrainage"
-                            element={
-                                <ProtectedRoute>
-                                    <ParrainagePage />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/sdi"
-                            element={
-                                <ProtectedRoute>
-                                    <SdiPage />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/wei"
-                            element={
-                                <ProtectedRoute>
-                                    <WeiPage />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/food"
-                            element={
-                                <ProtectedRoute>
-                                    <FoodPage />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/news"
-                            element={
-                                <ProtectedRoute>
-                                    <NewsPage />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/discord"
-                            element={
-                                <ProtectedRoute>
-                                    <DiscordPage />
-                                </ProtectedRoute>
-                            }
-                        />
+                            <Route
+                                path="/home"
+                                element={
+                                    <ProtectedRoute>
+                                        <HomePage />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/plannings"
+                                element={
+                                    <ProtectedRoute>
+                                        <PlanningsPage />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/profil"
+                                element={
+                                    <ProtectedRoute>
+                                        <ProfilPage />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/challenges"
+                                element={
+                                    <ProtectedRoute>
+                                        <ChallPage />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/parrainage"
+                                element={
+                                    <ProtectedRoute>
+                                        <ParrainagePage />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/sdi"
+                                element={
+                                    <ProtectedRoute>
+                                        <SdiPage />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/wei"
+                                element={
+                                    <ProtectedRoute>
+                                        <WeiPage />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/food"
+                                element={
+                                    <ProtectedRoute>
+                                        <FoodPage />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/news"
+                                element={
+                                    <ProtectedRoute>
+                                        <NewsPage />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/discord"
+                                element={
+                                    <ProtectedRoute>
+                                        <DiscordPage />
+                                    </ProtectedRoute>
+                                }
+                            />
 
-                        {/* Étudiant et Admin */}
-                        <Route
-                            path="/shotgun"
-                            element={
-                                <PrivateRoute permissionRequired="Student">
-                                    <ShotgunPage />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/permanenceslist"
-                            element={
-                                <PrivateRoute permissionRequired="Student">
-                                    <PermanencesPageAvailable />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/mypermanences"
-                            element={
-                                <PrivateRoute permissionRequired="Student">
-                                    <PermanencesPageMy />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/permanencesappeal"
-                            element={
-                                <PrivateRoute permissionRequired="Student">
-                                    <PermanencesPageRespoCall />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/games"
-                            element={
-                                <PrivateRoute permissionRequired="Student">
-                                    <GamesPage />
-                                </PrivateRoute>
-                            }
-                        />
+                            {/* Étudiant et Admin */}
+                            <Route
+                                path="/shotgun"
+                                element={
+                                    <PrivateRoute permissionRequired="Student">
+                                        <ShotgunPage />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/permanenceslist"
+                                element={
+                                    <PrivateRoute permissionRequired="Student">
+                                        <PermanencesPageAvailable />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/mypermanences"
+                                element={
+                                    <PrivateRoute permissionRequired="Student">
+                                        <PermanencesPageMy />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/permanencesappeal"
+                                element={
+                                    <PrivateRoute permissionRequired="Student">
+                                        <PermanencesPageRespoCall />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/games"
+                                element={
+                                    <PrivateRoute permissionRequired="Student">
+                                        <GamesPage />
+                                    </PrivateRoute>
+                                }
+                            />
 
-                        {/* ResposCE et Admin */}
-                        <Route
-                            path="/admin/teams"
-                            element={
-                                <PrivateRoute permissionRequired="Admin" roleRequired="Respo CE">
-                                    <AdminPageTeam />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/shotgun"
-                            element={
-                                <PrivateRoute permissionRequired="Admin" roleRequired="Respo CE">
-                                    <AdminPageShotgun />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/factions"
-                            element={
-                                <PrivateRoute permissionRequired="Admin" roleRequired="Respo CE">
-                                    <AdminPageFaction />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/permanences"
-                            element={
-                                <PrivateRoute permissionRequired="Admin" roleRequired="Respo CE">
-                                    <AdminPagePerm />
-                                </PrivateRoute>
-                            }
-                        />
+                            {/* ResposCE et Admin */}
+                            <Route
+                                path="/admin/teams"
+                                element={
+                                    <PrivateRoute permissionRequired="Admin" roleRequired="Respo CE">
+                                        <AdminPageTeam />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/shotgun"
+                                element={
+                                    <PrivateRoute permissionRequired="Admin" roleRequired="Respo CE">
+                                        <AdminPageShotgun />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/factions"
+                                element={
+                                    <PrivateRoute permissionRequired="Admin" roleRequired="Respo CE">
+                                        <AdminPageFaction />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/permanences"
+                                element={
+                                    <PrivateRoute permissionRequired="Admin" roleRequired="Respo CE">
+                                        <AdminPagePerm />
+                                    </PrivateRoute>
+                                }
+                            />
 
-                        {/* ResposCE et Admin */}
-                        <Route
-                            path="/admin/news"
-                            element={
-                                <PrivateRoute permissionRequired="Admin" roleRequired="Communication">
-                                    <AdminPageNews />
-                                </PrivateRoute>
-                            }
-                        />
+                            {/* ResposCE et Admin */}
+                            <Route
+                                path="/admin/news"
+                                element={
+                                    <PrivateRoute permissionRequired="Admin" roleRequired="Communication">
+                                        <AdminPageNews />
+                                    </PrivateRoute>
+                                }
+                            />
 
-                        {/* Arbitre et Admin*/}
-                        <Route
-                            path="/admin/challenge"
-                            element={
-                                <PrivateRoute permissionRequired="Admin" roleRequired="Arbitre">
-                                    <AdminPageChallenges />
-                                </PrivateRoute>
-                            }
-                        />
-                        {/* Admin uniquement */}
-                        <Route
-                            path="/admin/roles"
-                            element={
-                                <AdminRoute>
-                                    <AdminPageRole />
-                                </AdminRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/events"
-                            element={
-                                <AdminRoute>
-                                    <AdminPageEvents />
-                                </AdminRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/export-import"
-                            element={
-                                <AdminRoute>
-                                    <AdminPageExport />
-                                </AdminRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/email"
-                            element={
-                                <AdminRoute>
-                                    <AdminPageEmail />
-                                </AdminRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/users"
-                            element={
-                                <AdminRoute>
-                                    <AdminPageUser />
-                                </AdminRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/games"
-                            element={
-                                <AdminRoute>
-                                    <AdminPageGames />
-                                </AdminRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/tent"
-                            element={
-                                <AdminRoute>
-                                    <AdminPageTent />
-                                </AdminRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/bus"
-                            element={
-                                <AdminRoute>
-                                    <AdminPageBus />
-                                </AdminRoute>
-                            }
-                        />
-                        <Route
-                            path="/admin/banned"
-                            element={
-                                <AdminRoute>
-                                    <AdminPageBanned />
-                                </AdminRoute>
-                            }
-                        />
+                            {/* Arbitre et Admin*/}
+                            <Route
+                                path="/admin/challenge"
+                                element={
+                                    <PrivateRoute permissionRequired="Admin" roleRequired="Arbitre">
+                                        <AdminPageChallenges />
+                                    </PrivateRoute>
+                                }
+                            />
+                            {/* Admin uniquement */}
+                            <Route
+                                path="/admin/roles"
+                                element={
+                                    <AdminRoute>
+                                        <AdminPageRole />
+                                    </AdminRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/events"
+                                element={
+                                    <AdminRoute>
+                                        <AdminPageEvents />
+                                    </AdminRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/export-import"
+                                element={
+                                    <AdminRoute>
+                                        <AdminPageExport />
+                                    </AdminRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/email"
+                                element={
+                                    <AdminRoute>
+                                        <AdminPageEmail />
+                                    </AdminRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/users"
+                                element={
+                                    <AdminRoute>
+                                        <AdminPageUser />
+                                    </AdminRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/games"
+                                element={
+                                    <AdminRoute>
+                                        <AdminPageGames />
+                                    </AdminRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/tent"
+                                element={
+                                    <AdminRoute>
+                                        <AdminPageTent />
+                                    </AdminRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/bus"
+                                element={
+                                    <AdminRoute>
+                                        <AdminPageBus />
+                                    </AdminRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/banned"
+                                element={
+                                    <AdminRoute>
+                                        <AdminPageBanned />
+                                    </AdminRoute>
+                                }
+                            />
 
-                        {/* Fallback */}
-                        <Route path="*" element={<NotFoundPage />} />
-                    </Routes>
+                            {/* Fallback */}
+                            <Route path="*" element={<NotFoundPage />} />
+                        </Routes>
+                    </PermanencesProvider>
                 </OnboardingProvider>
             </UserProvider>
         </Router>

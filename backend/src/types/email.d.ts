@@ -25,6 +25,15 @@ export interface PermanenceEmailData extends TemplateData {
     permDescription: string;
 }
 
+export interface ConcurrentPermanencesEmailData extends TemplateData {
+    permanences: {
+        name: string;
+        startAt: string;
+        endAt: string;
+        location: string;
+    }[];
+}
+
 export interface TeamAssignmentEmailData extends TemplateData {
     teamName: string;
     teamSocialLink: string;

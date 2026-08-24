@@ -11,8 +11,14 @@ export type CsvPermanence = {
 
 export type Notification = {
     permanence: Permanence;
-    members: LightUser[]
-}
+    members: LightUser[];
+};
+
+export type ConcurrentPermanenceNotification = {
+    userId: number;
+    email: string;
+    permanences: Permanence[];
+};
 
 export type Permanence = {
     id: number;
@@ -24,11 +30,11 @@ export type Permanence = {
     capacity: number;
     is_open: boolean;
     difficulty: number;
-}
+};
 
 export type LightUser = {
     id: number;
     firstName: string;
     lastName: string;
     email: string;
-}
+};

@@ -1,4 +1,4 @@
-import { type User } from "./user.interface";
+import { type User } from './user.interface';
 
 export interface Permanence {
     id: number;
@@ -18,4 +18,9 @@ export interface Permanence {
 export interface PermanenceActionsProps {
     permanences: Permanence[];
     onRefresh: () => void;
-};
+}
+
+export interface ConcurrentPermanences {
+    concurrentPermanences: boolean;
+    permanences: Pick<Permanence, 'id' | 'name' | 'description' | 'location' | 'start_at' | 'end_at'>[];
+}

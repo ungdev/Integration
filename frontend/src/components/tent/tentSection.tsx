@@ -59,7 +59,7 @@ export const TentPublic = () => {
         fetchUsers();
         fetchTent();
         fetchWEIStatus();
-    }, [roles]);
+    }, []);
 
     useEffect(() => {
         if (!roles.includes('Nouveau')) return;

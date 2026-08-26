@@ -12,6 +12,7 @@ import * as role from '../schemas/Basic/role.schema';
 import * as team from '../schemas/Basic/team.schema';
 import * as user from '../schemas/Basic/user.schema';
 import * as busattribution from '../schemas/Relational/busattribution.schema';
+import * as MakerBattleAttribution from '../schemas/Relational/makerbattletribution.schema';
 import * as challengValidation from '../schemas/Relational/challengevalidation.schema';
 import * as registration from '../schemas/Relational/registration.schema';
 import * as rolepoints from '../schemas/Relational/rolepoints.schema';
@@ -38,6 +39,7 @@ const schema = {
     ...userRole,
     ...challengValidation,
     ...busattribution,
+    ...MakerBattleAttribution,
     ...registration,
     ...tent,
     ...rolepoints,

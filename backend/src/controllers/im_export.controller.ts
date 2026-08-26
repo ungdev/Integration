@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import * as event_service from '../services/event.service';
+import * as settings_service from '../services/settings.service';
 import * as export_service from '../services/im_export.service';
 import * as permanence_service from '../services/permanence.service';
 import * as team_service from '../services/team.service';
@@ -22,7 +22,7 @@ export const exportAllDataToSheets: AppRequestHandler = async (_req, res) => {
         const userList = await user_service.getUsersAll();
         const teamList = await team_service.getTeamsAll();
         const permanenceList = await permanence_service.getAllPermanencesWithUsers();
-        const shotgunList = await event_service.getAllTeamShotguns();
+        const shotgunList = await settings_service.getAllTeamShotguns();
 
         // 2. Mapping -> format pour Google Sheets (array de array)
         const usersValues = [

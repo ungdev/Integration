@@ -12,7 +12,7 @@ const AdminPageBanned = lazy(() => import('./pages/admin/adminBanned'));
 const AdminPageBus = lazy(() => import('./pages/admin/adminBus'));
 const AdminPageChallenges = lazy(() => import('./pages/admin/adminChallenges'));
 const AdminPageEmail = lazy(() => import('./pages/admin/adminEmail'));
-const AdminPageEvents = lazy(() => import('./pages/admin/adminEvents'));
+const AdminPageSettings = lazy(() => import('./pages/admin/adminSettings'));
 const AdminPageExport = lazy(() => import('./pages/admin/adminExport'));
 const AdminPageFaction = lazy(() => import('./pages/admin/adminFaction'));
 const AdminPageGames = lazy(() => import('./pages/admin/adminGames'));
@@ -264,10 +264,10 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/admin/events"
+                                path="/admin/settings"
                                 element={
                                     <AdminRoute>
-                                        <AdminPageEvents />
+                                        <AdminPageSettings />
                                     </AdminRoute>
                                 }
                             />

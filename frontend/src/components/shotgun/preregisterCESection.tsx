@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { checkPreRegisterStatus } from "../../services/requests/event.service";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { checkPreRegisterStatus } from '../../services/requests/settings.service';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const PreregisterCESection = () => {
     const [isPreRegistrationOpen, setIsPreRegistrationOpen] = useState(false);
@@ -12,7 +12,7 @@ export const PreregisterCESection = () => {
                 const status = await checkPreRegisterStatus();
                 setIsPreRegistrationOpen(status);
             } catch {
-                alert("Erreur lors de la récupération du statut de pré-inscription.");
+                alert('Erreur lors de la récupération du statut de pré-inscription.');
             }
         };
         fetchStatus();
@@ -35,8 +35,7 @@ export const PreregisterCESection = () => {
                             src="https://forms.gle/32yHKGSTzfFvp7NP9"
                             className="absolute inset-0 w-full h-full border-none"
                             title="Formulaire de pré-inscription CE"
-                            loading="lazy"
-                        >
+                            loading="lazy">
                             Chargement…
                         </iframe>
                     </div>

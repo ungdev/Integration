@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { type ShotgunAttemptRow } from '../../interfaces/event.interface';
-import { getShotgunAttemptsAdmin } from '../../services/requests/event.service';
+import { type ShotgunAttemptRow } from '../../interfaces/settings.interface';
+import { getShotgunAttemptsAdmin } from '../../services/requests/settings.service';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 

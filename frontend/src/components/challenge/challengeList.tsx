@@ -4,8 +4,8 @@ import Swal from 'sweetalert2';
 import { type Challenge } from '../../interfaces/challenge.interface';
 import { type Faction } from '../../interfaces/faction.interface';
 import { getAllChallenges, getFactionsPoints } from '../../services/requests/challenge.service';
-import { checkChallengeStatus } from '../../services/requests/event.service';
 import { getAllFactionsUser } from '../../services/requests/faction.service';
+import { checkChallengeStatus } from '../../services/requests/settings.service';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const UserChallengeList = () => {

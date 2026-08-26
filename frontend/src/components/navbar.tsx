@@ -91,6 +91,7 @@ export const Navbar = () => {
                 { label: 'Bannis', to: '/admin/banned', rolesAllowed: ['Admin'] },
                 { label: 'Bus', to: '/admin/bus', rolesAllowed: ['Admin'] },
                 { label: 'Challenge', to: '/admin/challenge', rolesAllowed: ['Admin', 'Arbitre'] },
+                { label: 'Défis TC', to: '/admin/maker-battle', rolesAllowed: ['Admin', 'Défis TC'] },
                 { label: 'Email', to: '/admin/email', rolesAllowed: ['Admin'] },
                 { label: 'Events', to: '/admin/events', rolesAllowed: ['Admin'] },
                 { label: 'Export / Import', to: '/admin/export-import', rolesAllowed: ['Admin'] },

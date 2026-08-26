@@ -7,6 +7,7 @@ import ProtectedRoute from './components/utils/protectedroute';
 import { OnboardingProvider } from './contexts/onboarding';
 import { PermanencesProvider } from './contexts/permanences';
 import { UserProvider } from './contexts/user';
+import AdminPageMakerBattle from './pages/admin/adminMakerBattle';
 
 const AdminPageBanned = lazy(() => import('./pages/admin/adminBanned'));
 const AdminPageBus = lazy(() => import('./pages/admin/adminBus'));
@@ -324,6 +325,14 @@ const App: React.FC = () => {
                                 element={
                                     <AdminRoute>
                                         <AdminPageBanned />
+                                    </AdminRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/maker-battle"
+                                element={
+                                    <AdminRoute>
+                                        <AdminPageMakerBattle />
                                     </AdminRoute>
                                 }
                             />

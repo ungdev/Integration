@@ -5,12 +5,14 @@ import Swal from 'sweetalert2';
 import {
     checkChallengeStatus,
     checkFoodStatus,
+    checkMakerBattleGroupStatus,
     checkPreRegisterStatus,
     checkSDIStatus,
     checkShotgunStatus,
     checkWEIStatus,
     toggleChallenge,
     toggleFood,
+    toggleMakerBattleGroupStatus,
     togglePreRegistration,
     toggleSDI,
     toggleShotgun,
@@ -30,19 +32,21 @@ export const AdminEvents = () => {
         wei: false,
         food: false,
         chall: false,
+        makerBattleGroup: false,
     });
 
     // Charger les statuts au montage
     useEffect(() => {
         const fetchStatuses = async () => {
             try {
-                const [preReg, shot, sdi, wei, food, chall] = await Promise.all([
+                const [preReg, shot, sdi, wei, food, chall, makerBattleGroup] = await Promise.all([
                     checkPreRegisterStatus(),
                     checkShotgunStatus(),
                     checkSDIStatus(),
                     checkWEIStatus(),
                     checkFoodStatus(),
                     checkChallengeStatus(),
+                    checkMakerBattleGroupStatus(),
                 ]);
 
                 setStatuses({
@@ -52,6 +56,7 @@ export const AdminEvents = () => {
                     wei,
                     food,
                     chall,
+                    makerBattleGroup,
                 });
             } catch {
                 Swal.fire({
@@ -125,6 +130,11 @@ export const AdminEvents = () => {
             key: 'chall' as const,
             label: 'Challenges (Affichage des challenges)',
             toggleFn: toggleChallenge,
+        },
+        {
+            key: 'makerBattleGroup' as const,
+            label: 'Groupe Défis TC/Branche',
+            toggleFn: toggleMakerBattleGroupStatus,
         },
     ];
 

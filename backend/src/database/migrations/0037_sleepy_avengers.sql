@@ -1,0 +1,1 @@
+ALTER TABLE "maker_battle_attribution" ALTER COLUMN "table" DROP NOT NULL;

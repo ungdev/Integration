@@ -7,7 +7,8 @@ export const MakerBattleAttributionSchema = pgTable('maker_battle_attribution', 
         .notNull()
         .references(() => userSchema.id),
     maker_team_id: integer('maker_team_id').notNull(),
-    table: text('table').notNull(),
+    faction_id: integer('faction_id').notNull(),
+    table: integer('table'),
     group: text('group').notNull(),
 });
 

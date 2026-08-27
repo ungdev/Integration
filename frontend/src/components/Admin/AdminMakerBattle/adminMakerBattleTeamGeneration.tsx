@@ -26,6 +26,12 @@ export const AdminMakerBattleTeamGeneration = ({ groupTypeOptions }: Props) => {
 
         try {
             await allocateGroups(selectedGroupTypes);
+            Swal.fire({
+                icon: 'success',
+                title: 'Répartition réussie',
+                text: 'Les nouveaux ont été répartis par table avec succès.',
+            });
+            setSelectedGroupTypes([]); // Réinitialiser la sélection après la répartition
         } catch (error) {
             console.error('Erreur lors de la répartition des groupes:', error);
             Swal.fire({

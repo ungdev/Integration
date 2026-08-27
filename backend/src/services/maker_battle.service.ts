@@ -18,6 +18,11 @@ export interface TeamsWithGroup {
     group: string;
 }
 
+export interface MakerBattleExport {
+    maker_team_id: number;
+    table: number;
+}
+
 const TEAM_SIZE = 6;
 const MAX_PLACEMENT_ATTEMPTS = 20;
 
@@ -115,7 +120,8 @@ export const distributeGroups = async (group: string): Promise<void> => {
             rows.push({
                 user_id: user.user_id,
                 maker_team_id: globalTeamId,
-                table: '',
+                table: null,
+                faction_id: user.faction_id,
                 group: user.group,
             });
         }
@@ -246,76 +252,101 @@ export const generateTeams = (users: UserWithTeamFaction[], numberOfTeams: numbe
 };
 
 export const placeTeamsOnTables = async (groups: string[]): Promise<void> => {
-    const [{ maxTable }] = await db
-        .select({
-            maxTable: sql<number>`coalesce(max(nullif(${MakerBattleAttributionSchema.table}, '')::int), 0)`,
+    await db
+        .update(MakerBattleAttributionSchema)
+        .set({ table: null })
+        .where(inArray(MakerBattleAttributionSchema.group, groups));
+
+    const teams = await db
+        .selectDistinct({
+            maker_team_id: MakerBattleAttributionSchema.maker_team_id,
+            group: MakerBattleAttributionSchema.group,
+            faction_id: MakerBattleAttributionSchema.faction_id,
         })
-        .from(MakerBattleAttributionSchema);
+        .from(MakerBattleAttributionSchema)
+        .where(inArray(MakerBattleAttributionSchema.group, groups));
+    if (teams.length === 0) return;
 
-    let lastTable = maxTable;
-    const assignments: { maker_team_id: number; table: string }[] = [];
+    const groupsMap = new Map();
+    for (const t of teams) {
+        if (!groupsMap.has(t.group)) groupsMap.set(t.group, []);
+        groupsMap.get(t.group).push(t);
+    }
 
-    for (const group of groups) {
-        const teams = await db
-            .selectDistinct({
-                maker_team_id: MakerBattleAttributionSchema.maker_team_id,
-                faction_id: teamFactionSchema.faction_id,
-            })
-            .from(MakerBattleAttributionSchema)
-            .innerJoin(userTeamsSchema, eq(MakerBattleAttributionSchema.user_id, userTeamsSchema.user_id))
-            .innerJoin(teamFactionSchema, eq(userTeamsSchema.team_id, teamFactionSchema.team_id))
-            .where(eq(MakerBattleAttributionSchema.group, group));
+    const groupOrder = ['ri', 'branch', 'tc'];
+    const sortedGroups = groups.sort((a, b) => {
+        return groupOrder.indexOf(a) - groupOrder.indexOf(b);
+    });
 
-        const teamsByFaction = new Map<number, number[]>();
-        for (const { maker_team_id, faction_id } of teams) {
-            if (!teamsByFaction.has(faction_id)) {
-                teamsByFaction.set(faction_id, []);
-            }
-            teamsByFaction.get(faction_id)!.push(maker_team_id);
+    const assignments = [];
+    let tableNum = 0;
+
+    for (const group of sortedGroups) {
+        const groupTeams = groupsMap.get(group) || [];
+        if (groupTeams.length === 0) continue;
+
+        const factions = new Map();
+        for (const t of groupTeams) {
+            if (!factions.has(t.faction_id)) factions.set(t.faction_id, []);
+            factions.get(t.faction_id).push(t);
         }
 
-        const factionGroups = [...teamsByFaction.values()];
-        const maxTeamsInAnyFaction = Math.max(0, ...factionGroups.map((group) => group.length));
+        const factionIds = Array.from(factions.keys());
+        const maxLen = Math.max(...Array.from(factions.values()).map((arr) => arr.length));
 
-        for (let i = 0; i < maxTeamsInAnyFaction; i++) {
-            for (const group of factionGroups) {
-                if (group[i] !== undefined) {
-                    lastTable++;
-                    assignments.push({ maker_team_id: group[i], table: String(lastTable) });
+        for (let i = 0; i < maxLen; i++) {
+            for (const fid of factionIds) {
+                const fTeams = factions.get(fid);
+                if (i < fTeams.length) {
+                    tableNum++;
+                    assignments.push({
+                        maker_team_id: fTeams[i].maker_team_id,
+                        group,
+                        table: tableNum,
+                    });
                 }
             }
         }
     }
 
-    if (assignments.length === 0) {
-        return;
+    for (const assignment of assignments) {
+        await db
+            .update(MakerBattleAttributionSchema)
+            .set({
+                table: assignment.table,
+            })
+            .where(
+                and(
+                    eq(MakerBattleAttributionSchema.maker_team_id, assignment.maker_team_id),
+                    eq(MakerBattleAttributionSchema.group, assignment.group),
+                ),
+            );
     }
-
-    const teamIdCases = sql.join(
-        assignments.map((a) => sql`WHEN ${a.maker_team_id} THEN ${a.table}`),
-        sql` `,
-    );
-
-    await db
-        .update(MakerBattleAttributionSchema)
-        .set({ table: sql`CASE ${MakerBattleAttributionSchema.maker_team_id} ${teamIdCases} END` })
-        .where(
-            inArray(
-                MakerBattleAttributionSchema.maker_team_id,
-                assignments.map((a) => a.maker_team_id),
-            ),
-        );
-
-    return;
 };
 
-export const getTableByUserId = async (userId: number): Promise<string | null> => {
+export const getUserTeam = async (userId: number): Promise<number | null> => {
     const result = await db
         .select({
+            team_id: MakerBattleAttributionSchema.maker_team_id,
             table: MakerBattleAttributionSchema.table,
         })
         .from(MakerBattleAttributionSchema)
         .where(eq(MakerBattleAttributionSchema.user_id, userId));
 
     return result.length > 0 ? result[0].table : null;
+};
+
+export const exportGroups = async (group: string): Promise<MakerBattleExport[]> => {
+    const teams = await db
+        .selectDistinct({
+            user_id: MakerBattleAttributionSchema.user_id,
+            group: MakerBattleAttributionSchema.group,
+            faction_id: MakerBattleAttributionSchema.faction_id,
+            maker_team_id: MakerBattleAttributionSchema.maker_team_id,
+            table: MakerBattleAttributionSchema.table,
+        })
+        .from(MakerBattleAttributionSchema)
+        .where(eq(MakerBattleAttributionSchema.group, group));
+
+    return teams;
 };

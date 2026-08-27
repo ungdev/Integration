@@ -1,3 +1,6 @@
-export interface MakerBattleDTO {
+export interface GroupsList {
     groups: string[];
+}
+export interface Group {
+    group: string;
 }

@@ -1,8 +1,4 @@
-import type {
-    MakerBattleGroupDownloadResponseData,
-    MakerBattleGroupResponseData,
-    MakerBattleGroupTypeOption,
-} from '../../interfaces/maker_battle.interface';
+import type { MakerBattleGroupTypeOption } from '../../interfaces/maker_battle.interface';
 import api from '../api';
 
 export const allocateGroups = async (groups: MakerBattleGroupTypeOption[]) => {
@@ -10,12 +6,12 @@ export const allocateGroups = async (groups: MakerBattleGroupTypeOption[]) => {
     return response.data;
 };
 
-export const exportGroups = async (group: MakerBattleGroupTypeOption) => {
+export const fetchExportData = async (group: MakerBattleGroupTypeOption) => {
     const response = await api.get(`/maker-battle/admin/export/${group.value}`);
-    return response.data as MakerBattleGroupDownloadResponseData;
+    return response.data;
 };
 
 export const getUserGroup = async () => {
     const response = await api.get(`/maker-battle/group/me`);
-    return response.data as MakerBattleGroupResponseData;
+    return response.data;
 };

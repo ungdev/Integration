@@ -1,9 +1,10 @@
+// src/components/Admin/MakerBattle/download/AdminMakerBattleTeamDownload.tsx
 import { useState } from 'react';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 
-import type { MakerBattleGroupTypeOption } from '../../../interfaces/maker_battle.interface';
-import { exportGroups } from '../../../services/requests/maker_battle.service';
+import { type MakerBattleGroupTypeOption } from '../../../interfaces/maker_battle.interface';
+import { fetchExportData } from '../../../services/requests/maker_battle.service';
 import { Button } from '../../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 
@@ -13,6 +14,7 @@ type Props = {
 
 export const AdminMakerBattleTeamDownload = ({ groupTypeOptions }: Props) => {
     const [selectedGroupType, setSelectedGroupType] = useState<MakerBattleGroupTypeOption | null>(null);
+    const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
     const handleDownloadGroup = async () => {
         if (!selectedGroupType) {
@@ -24,24 +26,28 @@ export const AdminMakerBattleTeamDownload = ({ groupTypeOptions }: Props) => {
             return;
         }
 
-        const newTab = window.open('', '_blank');
-
+        setIsDownloading(true);
         try {
-            const { filename } = await exportGroups(selectedGroupType);
-
-            const url = `${import.meta.env.VITE_API_URL}/exports/makerbattlegroups${filename}`;
-
-            if (newTab) {
-                newTab.location.href = url;
-            }
+            const exportData = await fetchExportData(selectedGroupType);
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const filename = `maker_battle_${selectedGroupType.value}_${Date.now()}.json`;
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
         } catch (error) {
-            newTab?.close();
             console.error('Erreur lors du téléchargement des groupes:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
                 text: 'Une erreur est survenue lors du téléchargement des groupes.',
             });
+        } finally {
+            setIsDownloading(false);
         }
     };
 
@@ -64,6 +70,7 @@ export const AdminMakerBattleTeamDownload = ({ groupTypeOptions }: Props) => {
                         onChange={setSelectedGroupType}
                         placeholder="Sélectionner un type"
                         isClearable
+                        isDisabled={isDownloading}
                     />
                 </div>
                 <div className="flex justify-end">
@@ -71,8 +78,8 @@ export const AdminMakerBattleTeamDownload = ({ groupTypeOptions }: Props) => {
                         type="button"
                         onClick={handleDownloadGroup}
                         className="bg-green-600 hover:bg-green-700 text-white"
-                        disabled={!selectedGroupType}>
-                        Télécharger
+                        disabled={!selectedGroupType || isDownloading}>
+                        {isDownloading ? 'Téléchargement...' : 'Télécharger'}
                     </Button>
                 </div>
             </CardContent>

@@ -23,6 +23,7 @@ const MAX_PLACEMENT_ATTEMPTS = 20;
 
 export const distributeGroups = async (group: string): Promise<void> => {
     let usersWithTeamsFactions = [];
+
     if (group === 'tc') {
         usersWithTeamsFactions = await db
             .select({
@@ -72,6 +73,12 @@ export const distributeGroups = async (group: string): Promise<void> => {
                 ),
             );
         usersWithTeamsFactions = usersWithTeamsFactions.map((user) => ({ ...user, group: 'branch' }));
+    } else {
+        throw new Error(`Unknown group: ${group}`);
+    }
+
+    if (usersWithTeamsFactions.length === 0) {
+        return;
     }
 
     const usersByFaction = new Map<number, UserWithTeamFaction[]>();
@@ -90,17 +97,13 @@ export const distributeGroups = async (group: string): Promise<void> => {
         }
     }
 
-    if (numberOfTeams === 0) return;
+    if (numberOfTeams === 0) {
+        return;
+    }
 
     const allTeams: UserWithTeamFaction[][] = [];
-
-    for (const [factionId, factionUsers] of usersByFaction) {
-        const teamsForFaction = generateTeamsWithRetry(
-            factionUsers,
-            numberOfTeams,
-            MAX_PLACEMENT_ATTEMPTS,
-            `faction ${factionId}`,
-        );
+    for (const [, factionUsers] of usersByFaction) {
+        const teamsForFaction = generateTeamsWithRetry(factionUsers, numberOfTeams, MAX_PLACEMENT_ATTEMPTS);
         allTeams.push(...teamsForFaction);
     }
 
@@ -139,27 +142,26 @@ const generateTeamsWithRetry = (
     users: UserWithTeamFaction[],
     numberOfTeams: number,
     maxAttempts = MAX_PLACEMENT_ATTEMPTS,
-    label = 'faction',
 ): UserWithTeamFaction[][] => {
     let lastError: unknown;
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
         try {
-            return generateTeams(users, numberOfTeams);
+            const result = generateTeams(users, numberOfTeams);
+            return result;
         } catch (err) {
             lastError = err;
         }
     }
 
     throw new Error(
-        `Impossible de générer les équipes pour ${label} après ${maxAttempts} tentatives. ` +
+        `Impossible de générer les équipes après ${maxAttempts} tentatives. ` +
             `Dernière erreur : ${lastError instanceof Error ? lastError.message : String(lastError)}`,
     );
 };
 
 export const generateTeams = (users: UserWithTeamFaction[], numberOfTeams: number): UserWithTeamFaction[][] => {
     const numberOfSixTeams = users.length - numberOfTeams * 5;
-
     const capacities = [...Array(numberOfSixTeams).fill(6), ...Array(numberOfTeams - numberOfSixTeams).fill(5)];
 
     const shuffle = <T>(array: T[]): T[] => {
@@ -179,20 +181,65 @@ export const generateTeams = (users: UserWithTeamFaction[], numberOfTeams: numbe
         usersByTeamId.get(user.team_id)!.push(user);
     }
 
-    const teams: UserWithTeamFaction[][] = Array.from({ length: numberOfTeams }, () => []);
+    for (const [teamId, members] of usersByTeamId) {
+        usersByTeamId.set(teamId, shuffle(members));
+    }
 
-    const teamGroups = shuffle([...usersByTeamId.entries()]).sort(([, a], [, b]) => b.length - a.length);
+    const teams: UserWithTeamFaction[][] = capacities.map(() => []);
 
-    for (const [teamId, teamUsers] of teamGroups) {
-        const availableTeams = teams
-            .map((team, index) => ({ index, team, remaining: capacities[index] - team.length }))
-            .filter(({ team, remaining }) => remaining > 0 && !team.some((user) => user.team_id === teamId));
+    let placedAllUsers = false;
+    let attemptCount = 0;
+    const maxAttempts = 100;
 
-        const selectedTeams = shuffle(availableTeams).slice(0, teamUsers.length);
+    while (!placedAllUsers && attemptCount < maxAttempts) {
+        attemptCount++;
 
-        for (let i = 0; i < teamUsers.length; i++) {
-            teams[selectedTeams[i].index].push(teamUsers[i]);
+        for (let i = 0; i < teams.length; i++) {
+            teams[i] = [];
         }
+
+        const allUsers = shuffle([...users]);
+
+        let allPlaced = true;
+        for (const user of allUsers) {
+            let placed = false;
+
+            const shuffledTeamIndices = shuffle([...Array(numberOfTeams).keys()]);
+
+            for (const teamIndex of shuffledTeamIndices) {
+                if (teams[teamIndex].length < capacities[teamIndex]) {
+                    const hasSameTeam = teams[teamIndex].some((u) => u.team_id === user.team_id);
+                    if (!hasSameTeam) {
+                        teams[teamIndex].push(user);
+                        placed = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!placed) {
+                for (const teamIndex of shuffledTeamIndices) {
+                    if (teams[teamIndex].length < capacities[teamIndex]) {
+                        teams[teamIndex].push(user);
+                        placed = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!placed) {
+                allPlaced = false;
+                break;
+            }
+        }
+
+        if (allPlaced) {
+            placedAllUsers = true;
+        }
+    }
+
+    if (!placedAllUsers) {
+        throw new Error(`Could not place all users after ${maxAttempts} attempts`);
     }
 
     return teams;
@@ -240,7 +287,9 @@ export const placeTeamsOnTables = async (groups: string[]): Promise<void> => {
         }
     }
 
-    if (assignments.length === 0) return;
+    if (assignments.length === 0) {
+        return;
+    }
 
     const teamIdCases = sql.join(
         assignments.map((a) => sql`WHEN ${a.maker_team_id} THEN ${a.table}`),
@@ -256,6 +305,8 @@ export const placeTeamsOnTables = async (groups: string[]): Promise<void> => {
                 assignments.map((a) => a.maker_team_id),
             ),
         );
+
+    return;
 };
 
 export const getTableByUserId = async (userId: number): Promise<string | null> => {

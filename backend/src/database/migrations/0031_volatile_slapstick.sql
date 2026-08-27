@@ -1,0 +1,1 @@
+DROP TABLE "maker_battle_attribution" CASCADE;

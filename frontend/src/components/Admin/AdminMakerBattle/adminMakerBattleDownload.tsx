@@ -29,15 +29,45 @@ export const AdminMakerBattleTeamDownload = ({ groupTypeOptions }: Props) => {
         setIsDownloading(true);
         try {
             const exportData = await fetchExportData(selectedGroupType);
-            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-            const filename = `maker_battle_${selectedGroupType.value}_${Date.now()}.json`;
+            const headers = Object.keys(exportData[0] || {});
+
+            const csvRows = [
+                headers.join(','),
+                ...exportData.map((row: { [x: string]: unknown }) =>
+                    headers
+                        .map((header) => {
+                            const value = row[header];
+                            if (value === null || value === undefined) return '';
+                            const stringValue = String(value);
+                            if (/[",\n\r]/.test(stringValue)) {
+                                return `"${stringValue.replace(/"/g, '""')}"`;
+                            }
+
+                            return stringValue;
+                        })
+                        .join(','),
+                ),
+            ];
+
+            const csv = csvRows.join('\n');
+
+            // Créer le fichier CSV
+            const blob = new Blob([csv], {
+                type: 'text/csv;charset=utf-8;',
+            });
+
+            // Créer un lien de téléchargement
             const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.download = `maker_battle_${selectedGroupType.value}_${Date.now()}.csv`;
+
+            document.body.appendChild(link);
+            link.click();
+
+            // Nettoyer
+            document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error('Erreur lors du téléchargement des groupes:', error);

@@ -37,3 +37,21 @@ export const exportGroups: AppRequestHandler<Group> = async (req, res) => {
         return Error(res, { msg: "Erreur lors de l'exportation des groupes : " + err });
     }
 };
+
+export const getCurrentUser: AppRequestHandler = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        if (!userId) {
+            return Error(res, { msg: 'User not authenticated' });
+        }
+
+        const userGroup = await maker_battle_service.getUserTeam(userId);
+        if (!userGroup) {
+            return Error(res, { msg: 'User does not belong to any group' });
+        }
+
+        return res.status(200).json({ group: userGroup });
+    } catch (err) {
+        return Error(res, { msg: "Erreur lors de la récupération du groupe de l'utilisateur : " + err });
+    }
+};

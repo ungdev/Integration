@@ -301,6 +301,7 @@ export const placeTeamsOnTables = async (groups: string[]): Promise<void> => {
                     tableNum++;
                     assignments.push({
                         maker_team_id: fTeams[i].maker_team_id,
+                        faction_id: fTeams[i].faction_id,
                         group,
                         table: tableNum,
                     });
@@ -324,7 +325,7 @@ export const placeTeamsOnTables = async (groups: string[]): Promise<void> => {
     }
 };
 
-export const getUserTeam = async (userId: number): Promise<number | null> => {
+export const getUserTeam = async (userId: number): Promise<{ team_id: number; table: number } | undefined> => {
     const result = await db
         .select({
             team_id: MakerBattleAttributionSchema.maker_team_id,
@@ -333,7 +334,7 @@ export const getUserTeam = async (userId: number): Promise<number | null> => {
         .from(MakerBattleAttributionSchema)
         .where(eq(MakerBattleAttributionSchema.user_id, userId));
 
-    return result.length > 0 ? result[0].table : null;
+    return result[0];
 };
 
 export const exportGroups = async (group: string): Promise<MakerBattleExport[]> => {

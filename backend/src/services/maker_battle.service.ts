@@ -137,6 +137,8 @@ export const distributeGroups = async (group: string): Promise<void> => {
                 set: {
                     maker_team_id: sql`excluded.maker_team_id`,
                     table: sql`excluded.table`,
+                    faction_id: sql`excluded.faction_id`,
+                    group: sql`excluded.group`,
                 },
             });
     }

@@ -18,6 +18,7 @@ import { userInformationSchema } from '../schemas/Relational/userinformation.sch
 import { addUserToRespondentStudentsList } from '../shared/integrations/billetweb';
 import { generateEmailHtml, sendEmail } from './email.service';
 import { email_from } from '../shared/secrets/secrets';
+import { MakerBattleAttributionSchema } from '../schemas/Relational/makerbattletribution.schema';
 
 // Fonction pour récupérer un utilisateur par email
 export const getUserByEmail = async (email: string) => {
@@ -206,8 +207,11 @@ export const getUsersAdmin = async () => {
                 contact: userSchema.contact,
                 permission: userSchema.permission,
                 discord_id: userSchema.discord_id,
+                maker_battle_table: MakerBattleAttributionSchema.table,
+                maker_battle_team: MakerBattleAttributionSchema.maker_team_id,
             })
-            .from(userSchema);
+            .from(userSchema)
+            .innerJoin(MakerBattleAttributionSchema, eq(userSchema.id, MakerBattleAttributionSchema.user_id));
         return users;
     } catch (err) {
         console.error('Erreur lors de la récupération des utilisateurs ', err);

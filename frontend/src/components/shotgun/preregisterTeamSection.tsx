@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
-import Select from "react-select";
+import { useEffect, useState } from 'react';
+import Select from 'react-select';
 
-import { checkPreRegisterStatus } from "../../services/requests/event.service";
-import { createTeam } from "../../services/requests/team.service";
-import { getUsers } from "../../services/requests/user.service";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Input } from "../ui/input";
+import { checkPreRegisterStatus } from '../../services/requests/settings.service';
+import { createTeam } from '../../services/requests/team.service';
+import { getUsers } from '../../services/requests/user.service';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Input } from '../ui/input';
 
 export const PreregisterTeamSection = () => {
-    const [teamName, setTeamName] = useState("");
+    const [teamName, setTeamName] = useState('');
     const [members, setMembers] = useState<string[]>([]);
     const [isPreRegistrationOpen, setIsPreRegistrationOpen] = useState(false);
     const [users, setUsers] = useState<{ userId: number; firstName: string; lastName: string }[]>([]);
@@ -20,7 +20,7 @@ export const PreregisterTeamSection = () => {
                 const status = await checkPreRegisterStatus();
                 setIsPreRegistrationOpen(status);
             } catch {
-                alert("Erreur lors de la récupération du statut de pré-inscription.");
+                alert('Erreur lors de la récupération du statut de pré-inscription.');
             }
         };
         fetchStatus();
@@ -32,7 +32,7 @@ export const PreregisterTeamSection = () => {
                 const userList = await getUsers();
                 setUsers(userList);
             } catch {
-                alert("Erreur lors de la récupération des utilisateurs.");
+                alert('Erreur lors de la récupération des utilisateurs.');
             }
         };
         fetchUsers();
@@ -72,20 +72,23 @@ export const PreregisterTeamSection = () => {
             <CardContent className="space-y-10">
                 {isPreRegistrationOpen ? (
                     <>
-                        <h3 className="text-xl sm:text-l md:text-xl font-bold mb-4 text-center text-blue-700">Etape 1: le GForm de motivation !</h3>
+                        <h3 className="text-xl sm:text-l md:text-xl font-bold mb-4 text-center text-blue-700">
+                            Etape 1: le GForm de motivation !
+                        </h3>
 
                         <div className="relative pb-[56.25%] surface-card overflow-hidden mb-4">
                             <iframe
                                 src="https://forms.gle/wUNQ1QyqevDBmK6i8"
                                 className="absolute inset-0 w-full h-full border-none"
                                 title="Formulaire de pré-inscription CE"
-                                loading="lazy"
-                            >
+                                loading="lazy">
                                 Chargement…
                             </iframe>
                         </div>
 
-                        <h3 className="text-xl sm:text-l md:text-xl font-bold mt-10 mb-4 text-center text-blue-700">Etape 2: Sélection des membres</h3>
+                        <h3 className="text-xl sm:text-l md:text-xl font-bold mt-10 mb-4 text-center text-blue-700">
+                            Etape 2: Sélection des membres
+                        </h3>
 
                         <Card className="bg-gradient-to-br from-blue-100 to-purple-200">
                             <CardContent className="space-y-10">
@@ -141,15 +144,15 @@ export const PreregisterTeamSection = () => {
                                     </div>
 
                                     <p className="text-center text-gray-600 mb-4">
-                                        Si tu ne trouves pas un coéquipier, c'est qu'il ne s'est jamais connecté sur ce site !
+                                        Si tu ne trouves pas un coéquipier, c'est qu'il ne s'est jamais connecté sur ce
+                                        site !
                                         <br />
                                         Il lui suffit de se connecter une fois pour apparaitre dans cette liste.
                                     </p>
 
                                     <Button
                                         type="submit"
-                                        className="w-full py-3 text-lg bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
-                                    >
+                                        className="w-full py-3 text-lg bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">
                                         Enregistrer l'équipe
                                     </Button>
                                 </form>
@@ -162,6 +165,6 @@ export const PreregisterTeamSection = () => {
                     </p>
                 )}
             </CardContent>
-        </Card >
+        </Card>
     );
 };

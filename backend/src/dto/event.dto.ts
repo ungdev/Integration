@@ -3,10 +3,5 @@ export type ShotgunBody = {
 };
 
 export type ToggleStatusBody = {
-    preRegistrationOpen?: boolean;
-    shotgunOpen?: boolean;
-    sdiOpen?: boolean;
-    weiOpen?: boolean;
-    foodOpen?: boolean;
-    challOpen?: boolean;
+    open?: boolean;
 };

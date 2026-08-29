@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { checkFoodStatus } from '../../services/requests/event.service';
+import { checkFoodStatus } from '../../services/requests/settings.service';
 // import { getPermission } from '../../services/requests/user.service';
 import { checkUploadAvailability } from '../../utils/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';

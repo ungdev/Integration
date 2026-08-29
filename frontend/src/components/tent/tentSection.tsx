@@ -6,7 +6,7 @@ import { useOnboarding } from '../../contexts/onboarding';
 import { type Tent } from '../../interfaces/tent.interface';
 import { type User } from '../../interfaces/user.interface';
 import { decodeToken, getToken } from '../../services/requests/auth.service';
-import { checkWEIStatus } from '../../services/requests/event.service';
+import { checkWEIStatus } from '../../services/requests/settings.service';
 import { cancelTent, createTent, getUserTent } from '../../services/requests/tent.service';
 import { getUsers } from '../../services/requests/user.service';
 import { Button } from '../ui/button';

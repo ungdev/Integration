@@ -201,78 +201,8 @@
     {
       "idx": 28,
       "version": "7",
-      "when": 1787772031530,
-      "tag": "0028_aberrant_mysterio",
-      "breakpoints": true
-    },
-    {
-      "idx": 29,
-      "version": "7",
-      "when": 1787775694616,
-      "tag": "0029_famous_thing",
-      "breakpoints": true
-    },
-    {
-      "idx": 30,
-      "version": "7",
-      "when": 1787783587154,
-      "tag": "0030_yielding_thunderbolts",
-      "breakpoints": true
-    },
-    {
-      "idx": 31,
-      "version": "7",
-      "when": 1787787747447,
-      "tag": "0031_volatile_slapstick",
-      "breakpoints": true
-    },
-    {
-      "idx": 32,
-      "version": "7",
-      "when": 1787787805288,
-      "tag": "0032_groovy_mother_askani",
-      "breakpoints": true
-    },
-    {
-      "idx": 33,
-      "version": "7",
-      "when": 1787790647191,
-      "tag": "0033_lazy_salo",
-      "breakpoints": true
-    },
-    {
-      "idx": 34,
-      "version": "7",
-      "when": 1787790664235,
-      "tag": "0034_fantastic_silver_centurion",
-      "breakpoints": true
-    },
-    {
-      "idx": 35,
-      "version": "7",
-      "when": 1787790669968,
-      "tag": "0035_true_ultragirl",
-      "breakpoints": true
-    },
-    {
-      "idx": 36,
-      "version": "7",
-      "when": 1787840601183,
-      "tag": "0036_tiresome_madame_hydra",
-      "breakpoints": true
-    },
-    {
-      "idx": 37,
-      "version": "7",
-      "when": 1787842074687,
-      "tag": "0037_sleepy_avengers",
-      "breakpoints": true
-    },
-    {
-      "idx": 38,
-      "version": "7",
-      "when": 1787843369629,
-      "tag": "0038_white_nightshade",
+      "when": 1788026112577,
+      "tag": "0028_tan_slapstick",
       "breakpoints": true
     }
   ]

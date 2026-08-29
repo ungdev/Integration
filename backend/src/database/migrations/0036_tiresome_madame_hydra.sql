@@ -1,1 +1,0 @@
-ALTER TABLE "maker_battle_attribution" ALTER COLUMN "table" SET DATA TYPE integer;

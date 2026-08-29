@@ -1,1 +1,0 @@
-ALTER TABLE "maker_battle_attribution" ADD COLUMN "faction_id" integer NOT NULL;

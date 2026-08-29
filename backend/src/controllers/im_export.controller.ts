@@ -162,23 +162,29 @@ export const updatePlannings: AppRequestHandler = async (_req, res) => {
     }
 };
 
-export const exportUsersCSV: AppRequestHandler = async (_req, res) => {
+export const exportBus: AppRequestHandler = async (_req, res) => {
     try {
-        await export_service.exportUsersToCSV();
-        Ok(res, { msg: 'CSV des bus généré' });
+        const exportData = await export_service.exportBus();
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', `attachment; filename="bus_${Date.now()}.json"`);
+
+        return res.status(200).json(exportData);
     } catch (error) {
         console.error(error);
-        Error(res, { msg: "Erreur lors de l'export CSV" });
+        return Error(res, { msg: "Erreur lors de l'exportation des memsbres des équipes : " + error });
     }
 };
 
-export const exportTeamMembersCSV: AppRequestHandler = async (_req, res) => {
+export const exportTeamMembers: AppRequestHandler = async (_req, res) => {
     try {
-        await export_service.exportTeamMembersToCSV();
-        Ok(res, { msg: "CSV des membres de l'équipe généré" });
+        const exportData = await export_service.exportTeamMembers();
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', `attachment; filename="team_members_${Date.now()}.json"`);
+
+        return res.status(200).json(exportData);
     } catch (error) {
         console.error(error);
-        Error(res, { msg: "Erreur lors de l'export CSV" });
+        return Error(res, { msg: "Erreur lors de l'exportation des memsbres des équipes : " + error });
     }
 };
 export const getUploadedDocumentStatus: AppRequestHandler<unknown, unknown, UploadedDocumentParams> = async (

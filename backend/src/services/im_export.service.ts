@@ -1,9 +1,28 @@
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { google } from 'googleapis';
-import { parse } from 'json2csv';
 import * as user_service from './user.service';
 
 import path from 'path';
+
+export interface teamMemberUser {
+    prenom: string;
+    nom: string;
+    ce: boolean;
+    equipe: string | null;
+}
+
+export interface busUser {
+    id: number;
+    prenom: string;
+    nom: string;
+    mail: string;
+    telephone: string;
+    nouveau: boolean;
+    ce: boolean;
+    num_equipe: number | null;
+    benevole: boolean;
+    orga: boolean;
+    majeur: boolean;
+}
 
 const keyFilePath = path.resolve(__dirname, '../utils/google_credentials.json');
 
@@ -36,7 +55,7 @@ export const writeToGoogleSheet = async (spreadsheetId: string, range: string, v
     }
 };
 
-export const exportUsersToCSV = async (): Promise<string> => {
+export const exportBus = async (): Promise<busUser[]> => {
     const users = await user_service.getUsersAll();
 
     const formattedUsers = users.map((u) => {
@@ -59,39 +78,13 @@ export const exportUsersToCSV = async (): Promise<string> => {
         };
     });
 
-    const csv = parse(formattedUsers, {
-        fields: [
-            'id',
-            'prenom',
-            'nom',
-            'mail',
-            'telephone',
-            'nouveau',
-            'ce',
-            'num_equipe',
-            'benevole',
-            'orga',
-            'majeur',
-            'bus_manual',
-        ],
-    });
-
-    const exportDir = path.join(__dirname, '../../exports/bus');
-    const filePath = path.join(exportDir, 'bus.csv');
-
-    if (!existsSync(exportDir)) {
-        mkdirSync(exportDir, { recursive: true });
-    }
-
-    writeFileSync(filePath, csv);
-
-    return filePath;
+    return formattedUsers;
 };
 
-export const exportTeamMembersToCSV = async (): Promise<string> => {
-    const users = await user_service.getUsersAll();
+export const exportTeamMembers = async (): Promise<teamMemberUser[]> => {
+    const usersInTeams = (await user_service.getUsersAll()).filter((u) => u.teamId !== null);
 
-    const formattedUsers = users.map((u) => {
+    const formattedUsers = usersInTeams.map((u) => {
         const isCE = u.permission === 'Student' && u.teamId !== null;
         return {
             prenom: u.first_name ?? '',
@@ -101,19 +94,5 @@ export const exportTeamMembersToCSV = async (): Promise<string> => {
         };
     });
 
-    const csv = parse(formattedUsers, {
-        fields: ['prenom', 'nom', 'ce', 'equipe'],
-    });
-
-    const exportDir = path.join(__dirname, '../../exports/teammembers');
-    const filePath = path.join(exportDir, 'teammembers.csv');
-    console.log('Exporting team members to:', filePath);
-
-    if (!existsSync(exportDir)) {
-        mkdirSync(exportDir, { recursive: true });
-    }
-
-    writeFileSync(filePath, csv);
-
-    return filePath;
+    return formattedUsers;
 };

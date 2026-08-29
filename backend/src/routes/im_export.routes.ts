@@ -15,8 +15,8 @@ imexportRouter.post(
 );
 
 imexportRouter.post('/admin/exportgsheet', checkRole('Admin', []), imexportController.exportAllDataToSheets);
-imexportRouter.get('/admin/exportbus', checkRole('Admin', []), imexportController.exportUsersCSV);
-imexportRouter.get('/admin/exportteammembers', checkRole('Admin', []), imexportController.exportTeamMembersCSV);
+imexportRouter.get('/admin/exportbus', checkRole('Admin', []), imexportController.exportBus);
+imexportRouter.get('/admin/exportteammembers', checkRole('Admin', []), imexportController.exportTeamMembers);
 imexportRouter.get(
     '/admin/document/:category/:item',
     checkRole('Admin', []),

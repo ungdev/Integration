@@ -331,9 +331,9 @@ const App: React.FC = () => {
                             <Route
                                 path="/admin/maker-battle"
                                 element={
-                                    <AdminRoute>
+                                    <PrivateRoute permissionRequired="Admin" roleRequired="Défis TC">
                                         <AdminPageMakerBattle />
-                                    </AdminRoute>
+                                    </PrivateRoute>
                                 }
                             />
 

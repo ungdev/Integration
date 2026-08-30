@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useOnboarding } from '../../contexts/onboarding';
 import { useUser } from '../../contexts/user';
 import { decodeToken, getToken } from '../../services/requests/auth.service';
-import { checkWEIStatus } from '../../services/requests/event.service';
+import { checkWEIStatus } from '../../services/requests/settings.service';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const WeiSection = () => {

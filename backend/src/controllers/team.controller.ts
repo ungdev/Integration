@@ -1,5 +1,5 @@
 import { type Event } from '../schemas/Basic/event.schema';
-import * as event_service from '../services/event.service';
+import * as settings_service from '../services/settings.service';
 import * as faction_service from '../services/faction.service';
 import * as team_service from '../services/team.service';
 import { Error, Ok } from '../shared/http/responses';
@@ -14,7 +14,7 @@ export const createNewTeam: AppRequestHandler<CreateTeamBody> = async (req, res)
             Error(res, { msg: "Il n'y a pas de nom d'équipe" });
             return;
         }
-        const status: Event = await event_service.getEventsStatus();
+        const status: Event = await settings_service.getSettingsStatus();
         if (!status?.pre_registration_open) {
             Error(res, { msg: "L'enregistrement d'équipe est fermé." });
             return;

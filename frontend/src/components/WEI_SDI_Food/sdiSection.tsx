@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { useOnboarding } from '../../contexts/onboarding';
 import { decodeToken, getToken } from '../../services/requests/auth.service';
-import { checkSDIStatus } from '../../services/requests/event.service';
+import { checkSDIStatus } from '../../services/requests/settings.service';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const SdiSection = () => {

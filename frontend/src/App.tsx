@@ -7,12 +7,13 @@ import ProtectedRoute from './components/utils/protectedroute';
 import { OnboardingProvider } from './contexts/onboarding';
 import { PermanencesProvider } from './contexts/permanences';
 import { UserProvider } from './contexts/user';
+import AdminPageMakerBattle from './pages/admin/adminMakerBattle';
 
 const AdminPageBanned = lazy(() => import('./pages/admin/adminBanned'));
 const AdminPageBus = lazy(() => import('./pages/admin/adminBus'));
 const AdminPageChallenges = lazy(() => import('./pages/admin/adminChallenges'));
 const AdminPageEmail = lazy(() => import('./pages/admin/adminEmail'));
-const AdminPageEvents = lazy(() => import('./pages/admin/adminEvents'));
+const AdminPageSettings = lazy(() => import('./pages/admin/adminSettings'));
 const AdminPageExport = lazy(() => import('./pages/admin/adminExport'));
 const AdminPageFaction = lazy(() => import('./pages/admin/adminFaction'));
 const AdminPageGames = lazy(() => import('./pages/admin/adminGames'));
@@ -264,10 +265,10 @@ const App: React.FC = () => {
                                 }
                             />
                             <Route
-                                path="/admin/events"
+                                path="/admin/settings"
                                 element={
                                     <AdminRoute>
-                                        <AdminPageEvents />
+                                        <AdminPageSettings />
                                     </AdminRoute>
                                 }
                             />
@@ -325,6 +326,14 @@ const App: React.FC = () => {
                                     <AdminRoute>
                                         <AdminPageBanned />
                                     </AdminRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/maker-battle"
+                                element={
+                                    <PrivateRoute permissionRequired="Admin" roleRequired="Défis TC">
+                                        <AdminPageMakerBattle />
+                                    </PrivateRoute>
                                 }
                             />
 

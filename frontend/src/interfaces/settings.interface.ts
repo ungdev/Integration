@@ -3,6 +3,12 @@ export interface ShotgunStatusData {
     password: string;
 }
 
+export interface Setting {
+    key: string;
+    label: string;
+    open: boolean;
+}
+
 export interface ShotgunAttemptPayload {
     password: string;
 }

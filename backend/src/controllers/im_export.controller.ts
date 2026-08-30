@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import * as event_service from '../services/event.service';
+import * as settings_service from '../services/settings.service';
 import * as export_service from '../services/im_export.service';
 import * as permanence_service from '../services/permanence.service';
 import * as team_service from '../services/team.service';
@@ -22,7 +22,7 @@ export const exportAllDataToSheets: AppRequestHandler = async (_req, res) => {
         const userList = await user_service.getUsersAll();
         const teamList = await team_service.getTeamsAll();
         const permanenceList = await permanence_service.getAllPermanencesWithUsers();
-        const shotgunList = await event_service.getAllTeamShotguns();
+        const shotgunList = await settings_service.getAllTeamShotguns();
 
         // 2. Mapping -> format pour Google Sheets (array de array)
         const usersValues = [
@@ -162,23 +162,29 @@ export const updatePlannings: AppRequestHandler = async (_req, res) => {
     }
 };
 
-export const exportUsersCSV: AppRequestHandler = async (_req, res) => {
+export const exportBus: AppRequestHandler = async (_req, res) => {
     try {
-        await export_service.exportUsersToCSV();
-        Ok(res, { msg: 'CSV des bus généré' });
+        const exportData = await export_service.exportBus();
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', `attachment; filename="bus_${Date.now()}.json"`);
+
+        return res.status(200).json(exportData);
     } catch (error) {
         console.error(error);
-        Error(res, { msg: "Erreur lors de l'export CSV" });
+        return Error(res, { msg: "Erreur lors de l'exportation des memsbres des équipes : " + error });
     }
 };
 
-export const exportTeamMembersCSV: AppRequestHandler = async (_req, res) => {
+export const exportTeamMembers: AppRequestHandler = async (_req, res) => {
     try {
-        await export_service.exportTeamMembersToCSV();
-        Ok(res, { msg: "CSV des membres de l'équipe généré" });
+        const exportData = await export_service.exportTeamMembers();
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', `attachment; filename="team_members_${Date.now()}.json"`);
+
+        return res.status(200).json(exportData);
     } catch (error) {
         console.error(error);
-        Error(res, { msg: "Erreur lors de l'export CSV" });
+        return Error(res, { msg: "Erreur lors de l'exportation des memsbres des équipes : " + error });
     }
 };
 export const getUploadedDocumentStatus: AppRequestHandler<unknown, unknown, UploadedDocumentParams> = async (

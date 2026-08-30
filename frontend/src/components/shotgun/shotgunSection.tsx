@@ -1,17 +1,17 @@
-import { type AxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { type AxiosError } from 'axios';
+import { useEffect, useState } from 'react';
 
-import { type ApiErrorResponse } from "../../interfaces/event.interface";
-import { attemptShotgun, checkShotgunStatus } from "../../services/requests/event.service";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Input } from "../ui/input";
+import { type ApiErrorResponse } from '../../interfaces/settings.interface';
+import { attemptShotgun, checkShotgunStatus } from '../../services/requests/settings.service';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Input } from '../ui/input';
 
 export const Shotgun = () => {
     const [status, setStatus] = useState(false);
-    const [message, setMessage] = useState("");
-    const [inputValue, setInputValue] = useState("");
-    const [shotgunPassword, setShotgunPassword] = useState("");
+    const [message, setMessage] = useState('');
+    const [inputValue, setInputValue] = useState('');
+    const [shotgunPassword, setShotgunPassword] = useState('');
 
     useEffect(() => {
         const fetchStatus = async () => {
@@ -26,12 +26,12 @@ export const Shotgun = () => {
         e.preventDefault();
 
         if (!shotgunPassword) {
-            setMessage("❌ Erreur : mot de passe shotgun indisponible.");
+            setMessage('❌ Erreur : mot de passe shotgun indisponible.');
             return;
         }
 
         if (inputValue !== shotgunPassword) {
-            setMessage("❌ Erreur : Mot de passe de Shotgun incorrect.");
+            setMessage('❌ Erreur : Mot de passe de Shotgun incorrect.');
             return;
         }
 
@@ -40,16 +40,14 @@ export const Shotgun = () => {
             setMessage(response.message);
         } catch (error) {
             const axiosError = error as AxiosError<ApiErrorResponse>;
-            setMessage(axiosError.response?.data?.message || "Une erreur est survenue.");
+            setMessage(axiosError.response?.data?.message || 'Une erreur est survenue.');
         }
     };
 
     return (
         <Card className="w-full max-w-3xl mx-auto bg-gradient-to-br from-yellow-100 to-orange-200">
             <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
-                    Shotgun 🎯
-                </CardTitle>
+                <CardTitle className="text-2xl font-semibold text-gray-800 text-center">Shotgun 🎯</CardTitle>
                 <p className="text-lg md:text-xl text-gray-700 text-center">
                     Tape exactement la bonne phrase pour valider ton shotgun (majuscules incluses).
                 </p>
@@ -57,9 +55,10 @@ export const Shotgun = () => {
             <CardContent className="space-y-10">
                 <div className="text-center mb-6">
                     <p className="text-lg sm:text-xl font-semibold text-purple-800">
-                        Mot à entrer :{" "}
-                        <span className={`font-bold ${status ? "text-purple-900" : "blur-sm text-purple-600 select-none"}`}>
-                            {shotgunPassword || "patience..."}
+                        Mot à entrer :{' '}
+                        <span
+                            className={`font-bold ${status ? 'text-purple-900' : 'blur-sm text-purple-600 select-none'}`}>
+                            {shotgunPassword || 'patience...'}
                         </span>
                     </p>
                     {!status && (
@@ -80,17 +79,18 @@ export const Shotgun = () => {
                         />
                         <Button
                             type="submit"
-                            className="w-full py-3 text-lg bg-purple-600 text-white rounded-xl shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300"
-                        >
+                            className="w-full py-3 text-lg bg-purple-600 text-white rounded-xl shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300">
                             Shotgun !
                         </Button>
                         {message && (
                             <p
-                                className={`text-center text-lg mt-4 ${message.includes("Erreur") || message.toLowerCase().includes("déjà") || message.toLowerCase().includes("incorrect")
-                                    ? "text-red-500"
-                                    : "text-green-600"
-                                    }`}
-                            >
+                                className={`text-center text-lg mt-4 ${
+                                    message.includes('Erreur') ||
+                                    message.toLowerCase().includes('déjà') ||
+                                    message.toLowerCase().includes('incorrect')
+                                        ? 'text-red-500'
+                                        : 'text-green-600'
+                                }`}>
                                 {message}
                             </p>
                         )}

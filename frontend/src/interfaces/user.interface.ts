@@ -11,6 +11,11 @@ export interface User {
     vss_form?: 'pending' | 'toretry' | 'validated' | 'rejected';
 }
 
+export interface UserWithMakerBattle extends User {
+    maker_battle_table: number | null;
+    maker_battle_team: number | null;
+}
+
 export interface UserContactInformation {
     userId: number;
     emergency_contact_name: string;

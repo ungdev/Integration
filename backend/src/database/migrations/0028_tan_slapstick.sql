@@ -1,7 +1,8 @@
 CREATE TABLE "maker_battle_attribution" (
 	"user_id" integer PRIMARY KEY NOT NULL,
 	"maker_team_id" integer NOT NULL,
-	"table" text NOT NULL,
+	"faction_id" integer NOT NULL,
+	"table" integer,
 	"group" text NOT NULL
 );
 --> statement-breakpoint

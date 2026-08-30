@@ -1,10 +1,10 @@
-// src/components/Admin/MakerBattle/download/AdminMakerBattleTeamDownload.tsx
 import { useState } from 'react';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 
 import { type MakerBattleGroupTypeOption } from '../../../interfaces/maker_battle.interface';
 import { fetchExportData } from '../../../services/requests/maker_battle.service';
+import { downloadJsonAsCsv } from '../../../utils/utils';
 import { Button } from '../../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 
@@ -14,6 +14,7 @@ type Props = {
 
 export const AdminMakerBattleTeamDownload = ({ groupTypeOptions }: Props) => {
     const [selectedGroupType, setSelectedGroupType] = useState<MakerBattleGroupTypeOption | null>(null);
+
     const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
     const handleDownloadGroup = async () => {
@@ -27,50 +28,14 @@ export const AdminMakerBattleTeamDownload = ({ groupTypeOptions }: Props) => {
         }
 
         setIsDownloading(true);
+
         try {
             const exportData = await fetchExportData(selectedGroupType);
-            const headers = Object.keys(exportData[0] || {});
 
-            const csvRows = [
-                headers.join(','),
-                ...exportData.map((row: { [x: string]: unknown }) =>
-                    headers
-                        .map((header) => {
-                            const value = row[header];
-                            if (value === null || value === undefined) return '';
-                            const stringValue = String(value);
-                            if (/[",\n\r]/.test(stringValue)) {
-                                return `"${stringValue.replace(/"/g, '""')}"`;
-                            }
-
-                            return stringValue;
-                        })
-                        .join(','),
-                ),
-            ];
-
-            const csv = csvRows.join('\n');
-
-            // Créer le fichier CSV
-            const blob = new Blob([csv], {
-                type: 'text/csv;charset=utf-8;',
-            });
-
-            // Créer un lien de téléchargement
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-
-            link.href = url;
-            link.download = `maker_battle_${selectedGroupType.value}_${Date.now()}.csv`;
-
-            document.body.appendChild(link);
-            link.click();
-
-            // Nettoyer
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
+            downloadJsonAsCsv(exportData, `maker_battle_${selectedGroupType.value}_${Date.now()}.csv`);
         } catch (error) {
             console.error('Erreur lors du téléchargement des groupes:', error);
+
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -103,6 +68,7 @@ export const AdminMakerBattleTeamDownload = ({ groupTypeOptions }: Props) => {
                         isDisabled={isDownloading}
                     />
                 </div>
+
                 <div className="flex justify-end">
                     <Button
                         type="button"

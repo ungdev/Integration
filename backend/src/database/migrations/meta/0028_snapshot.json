@@ -1,5 +1,5 @@
 {
-  "id": "5651e446-a477-449c-b53b-93f202470fb2",
+  "id": "affda32f-de8a-46ec-ab02-7425eb922c0b",
   "prevId": "6179fb88-23bd-4656-9980-faa52a9d9b24",
   "version": "7",
   "dialect": "postgresql",
@@ -767,8 +767,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.defi_tc_attribution": {
-      "name": "defi_tc_attribution",
+    "public.maker_battle_attribution": {
+      "name": "maker_battle_attribution",
       "schema": "",
       "columns": {
         "user_id": {
@@ -777,18 +777,36 @@
           "primaryKey": true,
           "notNull": true
         },
-        "team": {
-          "name": "team",
+        "maker_team_id": {
+          "name": "maker_team_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "faction_id": {
+          "name": "faction_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "table": {
+          "name": "table",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "group": {
+          "name": "group",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "defi_tc_attribution_user_id_users_id_fk": {
-          "name": "defi_tc_attribution_user_id_users_id_fk",
-          "tableFrom": "defi_tc_attribution",
+        "maker_battle_attribution_user_id_users_id_fk": {
+          "name": "maker_battle_attribution_user_id_users_id_fk",
+          "tableFrom": "maker_battle_attribution",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"

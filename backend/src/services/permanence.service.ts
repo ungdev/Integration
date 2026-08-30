@@ -25,6 +25,17 @@ import { respoPermanenceSchema, userPermanenceSchema } from '../schemas/Relation
 import { email_from } from '../shared/secrets/secrets';
 import { generateEmailHtml, sendEmail } from './email.service';
 
+const PARIS_TIMEZONE = 'Europe/Paris';
+
+const formatParisDate = (date: Date | null | undefined, options: Intl.DateTimeFormatOptions) => {
+    if (!date) return '';
+
+    return new Intl.DateTimeFormat('fr-FR', {
+        ...options,
+        timeZone: PARIS_TIMEZONE,
+    }).format(new Date(date));
+};
+
 export const getPermanenceById = async (permId: number) => {
     const permanence = await db.query.permanenceSchema.findFirst({
         where: eq(permanenceSchema.id, permId),
@@ -429,8 +440,8 @@ export const claimMember = async (userId: number, permId: number, claimed: boole
 export const getDailyNotifications = async (): Promise<Notification[]> => {
     const permanences = await db.query.permanenceSchema.findMany({
         where: sql`
-            ${permanenceSchema.start_at} >= CURRENT_DATE + INTERVAL '1 day'
-            AND ${permanenceSchema.start_at} < CURRENT_DATE + INTERVAL '2 day'
+            (${permanenceSchema.start_at} AT TIME ZONE 'Europe/Paris') >= (timezone('Europe/Paris', now()) + interval '1 day')
+            AND (${permanenceSchema.start_at} AT TIME ZONE 'Europe/Paris') < (timezone('Europe/Paris', now()) + interval '2 day')
         `,
         orderBy: permanenceSchema.start_at,
     });
@@ -441,8 +452,8 @@ export const getDailyNotifications = async (): Promise<Notification[]> => {
 export const getHourlyNotifications = async (): Promise<Notification[]> => {
     const permanences = await db.query.permanenceSchema.findMany({
         where: sql`
-            ${permanenceSchema.start_at} >= now() + interval '1 hour'
-            AND ${permanenceSchema.start_at} < now() + interval '1 hour 5 minutes'
+            (${permanenceSchema.start_at} AT TIME ZONE 'Europe/Paris') >= (timezone('Europe/Paris', now()) + interval '1 hour')
+            AND (${permanenceSchema.start_at} AT TIME ZONE 'Europe/Paris') < (timezone('Europe/Paris', now()) + interval '1 hour 5 minutes')
         `,
         orderBy: permanenceSchema.start_at,
     });
@@ -649,22 +660,22 @@ export const sendNotifications = async (notifications: Notification[]) => {
     for (const notification of notifications) {
         const permanenceEmailData: PermanenceEmailData = {
             permName: notification.permanence.name,
-            permBeginDate: new Intl.DateTimeFormat('fr-FR', {
+            permBeginDate: formatParisDate(notification.permanence.start_at, {
                 day: '2-digit',
                 month: 'long',
-            }).format(notification.permanence.start_at),
-            permBeginHour: new Intl.DateTimeFormat('fr-FR', {
+            }),
+            permBeginHour: formatParisDate(notification.permanence.start_at, {
                 hour: '2-digit',
                 minute: '2-digit',
-            }).format(notification.permanence.start_at),
-            permEndDate: new Intl.DateTimeFormat('fr-FR', {
+            }),
+            permEndDate: formatParisDate(notification.permanence.end_at, {
                 day: '2-digit',
                 month: 'long',
-            }).format(notification.permanence.end_at),
-            permEndHour: new Intl.DateTimeFormat('fr-FR', {
+            }),
+            permEndHour: formatParisDate(notification.permanence.end_at, {
                 hour: '2-digit',
                 minute: '2-digit',
-            }).format(notification.permanence.end_at),
+            }),
             permLocation: notification.permanence.location,
             permDescription: notification.permanence.description,
         };
@@ -696,18 +707,18 @@ export const sendConcurrentPermanenceNotifications = async (notifications: Concu
             const permanenceEmailData: ConcurrentPermanencesEmailData = {
                 permanences: notification.permanences.map((permanence) => ({
                     name: permanence.name,
-                    startAt: new Intl.DateTimeFormat('fr-FR', {
+                    startAt: formatParisDate(permanence.start_at, {
                         day: '2-digit',
                         month: 'long',
                         hour: '2-digit',
                         minute: '2-digit',
-                    }).format(permanence.start_at),
-                    endAt: new Intl.DateTimeFormat('fr-FR', {
+                    }),
+                    endAt: formatParisDate(permanence.end_at, {
                         day: '2-digit',
                         month: 'long',
                         hour: '2-digit',
                         minute: '2-digit',
-                    }).format(permanence.end_at),
+                    }),
                     location: permanence.location,
                 })),
             };

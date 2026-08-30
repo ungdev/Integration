@@ -74,7 +74,14 @@ export const distributeGroups = async (group: string): Promise<void> => {
             .where(
                 and(
                     eq(userSchema.permission, 'Nouveau'),
-                    not(or(eq(userSchema.branch, 'RI'), eq(userSchema.branch, 'TC'), eq(userSchema.branch, 'IA_BACH'))),
+                    not(
+                        or(
+                            eq(userSchema.branch, 'RI'),
+                            eq(userSchema.branch, 'TC'),
+                            eq(userSchema.branch, 'IA_BACH'),
+                            eq(userSchema.branch, 'MM'),
+                        ),
+                    ),
                 ),
             );
         usersWithTeamsFactions = usersWithTeamsFactions.map((user) => ({ ...user, group: 'branch' }));

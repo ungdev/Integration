@@ -18,7 +18,7 @@ import challengeRoutes from './src/routes/challenge.routes';
 import defaultRoute from './src/routes/default.routes';
 import discordRoutes from './src/routes/discord.routes';
 import emailRoutes from './src/routes/email.routes';
-import eventRoutes from './src/routes/event.routes';
+import settingsRoutes from './src/routes/settings.routes';
 import factionRoutes from './src/routes/faction.routes';
 import imexportRouter from './src/routes/im_export.routes';
 import newsRoutes from './src/routes/news.routes';
@@ -60,7 +60,7 @@ async function startServer() {
         app.use('/api/role', authenticateUser, roleRoutes);
         app.use('/api/user', authenticateUser, userRoutes);
         app.use('/api/team', authenticateUser, teamRoutes);
-        app.use('/api/event', authenticateUser, eventRoutes);
+        app.use('/api/settings', authenticateUser, settingsRoutes);
         app.use('/api/faction', authenticateUser, factionRoutes);
         app.use('/api/imexport', authenticateUser, imexportRouter);
         app.use('/api/permanence', authenticateUser, permanenceRoutes);

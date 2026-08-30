@@ -2,6 +2,7 @@ import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 
+<<<<<<< HEAD:frontend/src/components/Admin/adminEvent.tsx
 import {
     checkChallengeStatus,
     checkFoodStatus,
@@ -18,13 +19,18 @@ import {
     toggleShotgun,
     toggleWEI,
 } from '../../services/requests/event.service';
+=======
+import type { Setting } from '../../interfaces/settings.interface';
+import { getAdminSettings, updateSetting } from '../../services/requests/settings.service';
+>>>>>>> origin/dev:frontend/src/components/Admin/adminSettings.tsx
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
-export const AdminEvents = () => {
+export const AdminSettings = () => {
     const [loading, setLoading] = useState(false);
     const [loadingStatuses, setLoadingStatuses] = useState(true);
 
+<<<<<<< HEAD:frontend/src/components/Admin/adminEvent.tsx
     const [statuses, setStatuses] = useState({
         preRegistration: false,
         shotgun: false,
@@ -34,11 +40,15 @@ export const AdminEvents = () => {
         chall: false,
         makerBattleGroup: false,
     });
+=======
+    const [settings, setSettings] = useState<Setting[]>([]);
+>>>>>>> origin/dev:frontend/src/components/Admin/adminSettings.tsx
 
     // Charger les statuts au montage
     useEffect(() => {
         const fetchStatuses = async () => {
             try {
+<<<<<<< HEAD:frontend/src/components/Admin/adminEvent.tsx
                 const [preReg, shot, sdi, wei, food, chall, makerBattleGroup] = await Promise.all([
                     checkPreRegisterStatus(),
                     checkShotgunStatus(),
@@ -58,6 +68,9 @@ export const AdminEvents = () => {
                     chall,
                     makerBattleGroup,
                 });
+=======
+                setSettings(await getAdminSettings());
+>>>>>>> origin/dev:frontend/src/components/Admin/adminSettings.tsx
             } catch {
                 Swal.fire({
                     icon: 'error',
@@ -72,19 +85,18 @@ export const AdminEvents = () => {
     }, []);
 
     // Fonction générique pour toggle un événement
-    const handleToggle = async (
-        key: keyof typeof statuses,
-        toggleFn: (value: boolean) => Promise<any>,
-        successMsg: string,
-    ) => {
+    const handleToggle = async (setting: Setting) => {
         setLoading(true);
         try {
-            await toggleFn(!statuses[key]);
-            setStatuses((prev) => ({ ...prev, [key]: !prev[key] }));
+            const open = !setting.open;
+            await updateSetting(setting.key, open);
+            setSettings((previous) =>
+                previous.map((current) => (current.key === setting.key ? { ...current, open } : current)),
+            );
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
-                text: successMsg,
+                text: `${setting.label} mis à jour !`,
                 timer: 1500,
                 showConfirmButton: false,
             });
@@ -99,6 +111,7 @@ export const AdminEvents = () => {
         }
     };
 
+<<<<<<< HEAD:frontend/src/components/Admin/adminEvent.tsx
     // Configuration des événements
     const events = [
         {
@@ -138,6 +151,8 @@ export const AdminEvents = () => {
         },
     ];
 
+=======
+>>>>>>> origin/dev:frontend/src/components/Admin/adminSettings.tsx
     if (loadingStatuses) {
         return (
             <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -151,15 +166,15 @@ export const AdminEvents = () => {
         <Card className="w-full max-w-3xl mx-auto">
             <CardHeader>
                 <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
-                    ⚙️ Gestion des Événements
+                    ⚙️ Gestion des settings
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                {events.map(({ key, label, toggleFn }) => {
-                    const isActive = statuses[key];
+                {settings.map((setting) => {
+                    const isActive = setting.open;
                     return (
                         <div
-                            key={key}
+                            key={setting.key}
                             className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
                             <div className="flex items-center gap-2 text-gray-700">
                                 {isActive ? (
@@ -167,11 +182,11 @@ export const AdminEvents = () => {
                                 ) : (
                                     <XCircle className="text-red-600 w-5 h-5" />
                                 )}
-                                <span className="font-medium">{label}</span>
+                                <span className="font-medium">{setting.label}</span>
                             </div>
 
                             <Button
-                                onClick={() => handleToggle(key, toggleFn, `${label} mis à jour !`)}
+                                onClick={() => handleToggle(setting)}
                                 disabled={loading}
                                 className={`transition-colors duration-300 ${
                                     isActive

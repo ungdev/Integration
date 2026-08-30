@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useUser } from '../../contexts/user';
 import type { MakerBattleGroupResponseData } from '../../interfaces/maker_battle.interface';
 import { getUserGroup } from '../../services/requests/maker_battle.service';
+import { checkMakerBattleGroupStatus } from '../../services/requests/settings.service';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const MakerBattle = () => {
@@ -13,6 +14,13 @@ export const MakerBattle = () => {
 
     useEffect(() => {
         const fetchGroup = async () => {
+            const isEnabled = await checkMakerBattleGroupStatus();
+
+            if (!isEnabled) {
+                setLoading(false);
+                return;
+            }
+
             const { group } = await getUserGroup();
             setGroupInfos(group);
             setLoading(false);

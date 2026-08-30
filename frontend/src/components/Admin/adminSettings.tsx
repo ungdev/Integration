@@ -2,27 +2,8 @@ import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 
-<<<<<<< HEAD:frontend/src/components/Admin/adminEvent.tsx
-import {
-    checkChallengeStatus,
-    checkFoodStatus,
-    checkMakerBattleGroupStatus,
-    checkPreRegisterStatus,
-    checkSDIStatus,
-    checkShotgunStatus,
-    checkWEIStatus,
-    toggleChallenge,
-    toggleFood,
-    toggleMakerBattleGroupStatus,
-    togglePreRegistration,
-    toggleSDI,
-    toggleShotgun,
-    toggleWEI,
-} from '../../services/requests/event.service';
-=======
 import type { Setting } from '../../interfaces/settings.interface';
 import { getAdminSettings, updateSetting } from '../../services/requests/settings.service';
->>>>>>> origin/dev:frontend/src/components/Admin/adminSettings.tsx
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
@@ -30,47 +11,13 @@ export const AdminSettings = () => {
     const [loading, setLoading] = useState(false);
     const [loadingStatuses, setLoadingStatuses] = useState(true);
 
-<<<<<<< HEAD:frontend/src/components/Admin/adminEvent.tsx
-    const [statuses, setStatuses] = useState({
-        preRegistration: false,
-        shotgun: false,
-        sdi: false,
-        wei: false,
-        food: false,
-        chall: false,
-        makerBattleGroup: false,
-    });
-=======
     const [settings, setSettings] = useState<Setting[]>([]);
->>>>>>> origin/dev:frontend/src/components/Admin/adminSettings.tsx
 
     // Charger les statuts au montage
     useEffect(() => {
         const fetchStatuses = async () => {
             try {
-<<<<<<< HEAD:frontend/src/components/Admin/adminEvent.tsx
-                const [preReg, shot, sdi, wei, food, chall, makerBattleGroup] = await Promise.all([
-                    checkPreRegisterStatus(),
-                    checkShotgunStatus(),
-                    checkSDIStatus(),
-                    checkWEIStatus(),
-                    checkFoodStatus(),
-                    checkChallengeStatus(),
-                    checkMakerBattleGroupStatus(),
-                ]);
-
-                setStatuses({
-                    preRegistration: preReg,
-                    shotgun: shot.status,
-                    sdi,
-                    wei,
-                    food,
-                    chall,
-                    makerBattleGroup,
-                });
-=======
                 setSettings(await getAdminSettings());
->>>>>>> origin/dev:frontend/src/components/Admin/adminSettings.tsx
             } catch {
                 Swal.fire({
                     icon: 'error',
@@ -111,48 +58,6 @@ export const AdminSettings = () => {
         }
     };
 
-<<<<<<< HEAD:frontend/src/components/Admin/adminEvent.tsx
-    // Configuration des événements
-    const events = [
-        {
-            key: 'preRegistration' as const,
-            label: 'Pré-inscription',
-            toggleFn: togglePreRegistration,
-        },
-        {
-            key: 'shotgun' as const,
-            label: 'Shotgun',
-            toggleFn: toggleShotgun,
-        },
-        {
-            key: 'sdi' as const,
-            label: 'SDI (Billetterie)',
-            toggleFn: toggleSDI,
-        },
-        {
-            key: 'wei' as const,
-            label: 'WEI (Billetterie + Tentes)',
-            toggleFn: toggleWEI,
-        },
-        {
-            key: 'food' as const,
-            label: 'Nourriture (Billetterie)',
-            toggleFn: toggleFood,
-        },
-        {
-            key: 'chall' as const,
-            label: 'Challenges (Affichage des challenges)',
-            toggleFn: toggleChallenge,
-        },
-        {
-            key: 'makerBattleGroup' as const,
-            label: 'Groupe Défis TC/Branche',
-            toggleFn: toggleMakerBattleGroupStatus,
-        },
-    ];
-
-=======
->>>>>>> origin/dev:frontend/src/components/Admin/adminSettings.tsx
     if (loadingStatuses) {
         return (
             <div className="flex justify-center items-center min-h-screen bg-gray-100">

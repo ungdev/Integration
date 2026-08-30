@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { Button } from '../ui/button';
 import { RevealSection } from '../ui/revealSection';
+import { MakerBattle } from './makerBattleSection';
 import { Team } from './teamSection';
 
 export const Infos = () => (
@@ -48,6 +49,11 @@ export const Infos = () => (
                 </svg>
             </div>
         </div>
+
+        {/* Team */}
+        <RevealSection>
+            <MakerBattle></MakerBattle>
+        </RevealSection>
 
         {/* Team */}
         <RevealSection>

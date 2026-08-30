@@ -27,6 +27,7 @@ import roleRoutes from './src/routes/role.routes';
 import teamRoutes from './src/routes/team.routes';
 import tentRoutes from './src/routes/tent.routes';
 import userRoutes from './src/routes/user.routes';
+import makerBattleRoutes from './src/routes/maker_battle.routes';
 import bannedRoutes from './src/routes/banned.routes';
 import { server_port } from './src/shared/secrets/secrets';
 import { initQcmvss } from './src/database/initdb/initQcmvss';
@@ -69,6 +70,7 @@ async function startServer() {
         app.use('/api/discord', authenticateUser, discordRoutes);
         app.use('/api/tent', authenticateUser, tentRoutes);
         app.use('/api/bus', authenticateUser, busRoutes);
+        app.use('/api/maker-battle', authenticateUser, makerBattleRoutes);
         app.use('/api/uploads/news', express.static(path.join(__dirname, '/uploads/news')));
         app.use('/api/uploads/notebooks', express.static(path.join(__dirname, '/uploads/notebooks')));
         app.use('/api/uploads/foodmenu', express.static(path.join(__dirname, '/uploads/foodmenu')));

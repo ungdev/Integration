@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { type SingleValue } from 'react-select';
 import Swal from 'sweetalert2';
 
-import type { User, UserContactInformation } from '../../interfaces/user.interface';
+import type { User, UserContactInformation, UserWithMakerBattle } from '../../interfaces/user.interface';
 import { renewTokenUser, requestPasswordUser } from '../../services/requests/auth.service';
 import {
     createUserByAdmin,
@@ -53,7 +53,7 @@ type MajorOption = (typeof majeurOptions)[number];
 export const AdminUser = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
-    const [formData, setFormData] = useState<Partial<User>>({});
+    const [formData, setFormData] = useState<Partial<UserWithMakerBattle>>({});
     const [contactInformation, setContactInformation] = useState<Partial<UserContactInformation>>({});
 
     useEffect(() => {
@@ -242,6 +242,18 @@ export const AdminUser = () => {
                                 value={permissionOptions.find((opt) => opt.value === formData.permission) || null}
                                 onChange={handleSelectChange('permission')}
                                 isClearable
+                            />
+                            <Input
+                                name="table"
+                                value={'Table Défi TC: ' + formData.maker_battle_table || ''}
+                                disabled
+                                placeholder="n°X"
+                            />
+                            <Input
+                                name="team"
+                                value={'Équipe Défi TC: ' + formData.maker_battle_team || ''}
+                                disabled
+                                placeholder="n°X"
                             />
 
                             <div className="flex gap-4 mt-4">

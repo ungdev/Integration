@@ -27,16 +27,18 @@ export const Team = () => {
         }
     }, [user]);
 
+    const loadingDiv = (
+        <div className="py-12">
+            <Card className="bg-gradient-to-r from-gray-100 to-gray-200 w-full max-w-7xl mx-auto gap-3 shadow-lg">
+                <CardContent className="text-center flex flex-col gap-2">
+                    <p>Chargement de ton équipe...</p>
+                </CardContent>
+            </Card>
+        </div>
+    );
+
     if (userLoading) {
-        return (
-            <div className="py-12">
-                <Card className="bg-gradient-to-r from-gray-100 to-gray-200 w-full max-w-7xl mx-auto gap-3 shadow-lg">
-                    <CardContent className="text-center flex flex-col gap-2">
-                        <p>Chargement de ton équipe...</p>
-                    </CardContent>
-                </Card>
-            </div>
-        );
+        return loadingDiv;
     }
 
     if (user?.permission !== 'Nouveau') {
@@ -44,15 +46,7 @@ export const Team = () => {
     }
 
     if (loading) {
-        return (
-            <div className="py-12">
-                <Card className="bg-gradient-to-r from-gray-100 to-gray-200 w-full max-w-7xl mx-auto gap-3 shadow-lg">
-                    <CardContent className="text-center flex flex-col gap-2">
-                        <p>Chargement de ton équipe...</p>
-                    </CardContent>
-                </Card>
-            </div>
-        );
+        return loadingDiv;
     }
 
     if (!teamInfos) {

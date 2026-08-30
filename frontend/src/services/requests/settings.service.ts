@@ -44,6 +44,8 @@ export const checkFoodStatus = async () => (await getSetting('food')).open;
 
 export const checkChallengeStatus = async () => (await getSetting('challenge')).open;
 
+export const checkMakerBattleGroupStatus = async () => (await getSetting('makerBattleGroup')).open;
+
 export const attemptShotgun = async (payload: ShotgunAttemptPayload): Promise<ApiMessageResponse> => {
     const response = await api.post<ApiMessageResponse>('settings/user/shotgunattempt', payload);
     return response.data;

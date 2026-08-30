@@ -211,7 +211,7 @@ export const getUsersAdmin = async () => {
                 maker_battle_team: MakerBattleAttributionSchema.maker_team_id,
             })
             .from(userSchema)
-            .innerJoin(MakerBattleAttributionSchema, eq(userSchema.id, MakerBattleAttributionSchema.user_id));
+            .leftJoin(MakerBattleAttributionSchema, eq(userSchema.id, MakerBattleAttributionSchema.user_id));
         return users;
     } catch (err) {
         console.error('Erreur lors de la récupération des utilisateurs ', err);

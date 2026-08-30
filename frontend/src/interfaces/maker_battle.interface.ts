@@ -8,5 +8,6 @@ export interface MakerBattleGroupDownloadResponseData {
 }
 
 export interface MakerBattleGroupResponseData {
-    groupId: number;
+    table: number;
+    team_id: number;
 }

@@ -3,12 +3,13 @@ name: CI
 on:
   push:
     branches:
-      - prod
       - dev
+    tags:
+      - 'v*'
   pull_request:
     branches:
-      - prod
       - dev
+      - prod
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
@@ -68,7 +69,7 @@ jobs:
 
   build-api:
     runs-on: self-hosted
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
     needs:
       - lint-api
     steps:
@@ -97,7 +98,7 @@ jobs:
 
   build-front:
     runs-on: self-hosted
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
     needs:
       - lint-front
     steps:
@@ -126,10 +127,11 @@ jobs:
 
   deploy-api:
     runs-on: self-hosted
-    if : github.event_name == 'push'
-    environment: ${{ github.ref == 'refs/heads/dev' && 'development' || 'production' }}
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || startswith(github.ref, 'refs/tags/v'))
+    environment: ${{ startswith(github.ref, 'refs/tags/') && 'production' || 'development' }}
     needs:
       - lint-api
+      - build-api
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -150,14 +152,16 @@ jobs:
           context: ./backend
           push: true
           tags: |
-            ${{ secrets.REGISTRY_URL }}/integration/api:${{ github.ref == 'refs/heads/prod' && 'prod' || 'dev' }}
+            ${{ secrets.REGISTRY_URL }}/integration/api:${{ startswith(github.ref, 'refs/tags/') && github.ref_name || 'dev' }}
+            ${{ startswith(github.ref, 'refs/tags/') && format('{0}/integration/api:prod', secrets.REGISTRY_URL) || '' }}
 
   deploy-front:
     runs-on: self-hosted
-    if : github.event_name == 'push'
-    environment: ${{ github.ref == 'refs/heads/dev' && 'development' || 'production' }}
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || startswith(github.ref, 'refs/tags/v'))
+    environment: ${{ startswith(github.ref, 'refs/tags/') && 'production' || 'development' }}
     needs:
       - lint-front
+      - build-front
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -172,7 +176,7 @@ jobs:
       - name: Install docker
         uses: docker/setup-buildx-action@v3
 
-      - name: Front- Build and push
+      - name: Front - Build and push
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
@@ -199,5 +203,8 @@ jobs:
             VITE_BDE_SIREN=${{ vars.BDE_SIREN }}
             VITE_DPO_EMAIL=${{ vars.DPO_EMAIL }}
             VITE_DPO_NAME=${{ vars.DPO_NAME }}
+            VITE_APP_VERSION=${{ startswith(github.ref, 'refs/tags/') && github.ref_name || 'dev' }}
+            VITE_RELEASE_URL=${{ startswith(github.ref, 'refs/tags/') && format('https://github.com/{0}/releases/tag/{1}', github.repository, github.ref_name) || '' }}
           tags: |
-            ${{ secrets.REGISTRY_URL }}/integration/front:${{ github.ref == 'refs/heads/prod' && 'prod' || 'dev' }}
+            ${{ secrets.REGISTRY_URL }}/integration/front:${{ startswith(github.ref, 'refs/tags/') && github.ref_name || 'dev' }}
+            ${{ startswith(github.ref, 'refs/tags/') && format('{0}/integration/front:prod', secrets.REGISTRY_URL) || '' }}

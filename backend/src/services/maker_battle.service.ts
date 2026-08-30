@@ -349,6 +349,8 @@ export const getUserTeam = async (userId: number): Promise<{ team_id: number; ta
 export const exportGroups = async (group: string): Promise<MakerBattleExport[]> => {
     const teams = await db
         .selectDistinct({
+            first_name: userSchema.first_name,
+            last_name: userSchema.last_name,
             user_id: MakerBattleAttributionSchema.user_id,
             group: MakerBattleAttributionSchema.group,
             faction_id: MakerBattleAttributionSchema.faction_id,
@@ -356,6 +358,7 @@ export const exportGroups = async (group: string): Promise<MakerBattleExport[]> 
             table: MakerBattleAttributionSchema.table,
         })
         .from(MakerBattleAttributionSchema)
+        .innerJoin(userSchema, eq(MakerBattleAttributionSchema.user_id, userSchema.id))
         .where(eq(MakerBattleAttributionSchema.group, group));
 
     return teams;

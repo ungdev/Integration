@@ -441,8 +441,8 @@ export const getDailyNotifications = async (): Promise<Notification[]> => {
 export const getHourlyNotifications = async (): Promise<Notification[]> => {
     const permanences = await db.query.permanenceSchema.findMany({
         where: sql`
-            ${permanenceSchema.start_at} >= now() + interval '1 hour'
-            AND ${permanenceSchema.start_at} < now() + interval '1 hour 5 minutes'
+            ${permanenceSchema.start_at} >= now() + interval '3 hour'                                 -- 1 hour + 2 for timezone
+            AND ${permanenceSchema.start_at} < now() + interval '3 hour 5 minutes'                    -- 1 hour + 2 for timezone
         `,
         orderBy: permanenceSchema.start_at,
     });
@@ -652,19 +652,19 @@ export const sendNotifications = async (notifications: Notification[]) => {
             permBeginDate: new Intl.DateTimeFormat('fr-FR', {
                 day: '2-digit',
                 month: 'long',
-            }).format(notification.permanence.start_at),
+            }).format(new Date(notification.permanence.start_at.getTime() + 2 * 3600000)),
             permBeginHour: new Intl.DateTimeFormat('fr-FR', {
                 hour: '2-digit',
                 minute: '2-digit',
-            }).format(notification.permanence.start_at),
+            }).format(new Date(notification.permanence.start_at.getTime() + 2 * 3600000)),
             permEndDate: new Intl.DateTimeFormat('fr-FR', {
                 day: '2-digit',
                 month: 'long',
-            }).format(notification.permanence.end_at),
+            }).format(new Date(notification.permanence.end_at.getTime() + 2 * 3600000)),
             permEndHour: new Intl.DateTimeFormat('fr-FR', {
                 hour: '2-digit',
                 minute: '2-digit',
-            }).format(notification.permanence.end_at),
+            }).format(new Date(notification.permanence.end_at.getTime() + 2 * 3600000)),
             permLocation: notification.permanence.location,
             permDescription: notification.permanence.description,
         };
@@ -701,13 +701,13 @@ export const sendConcurrentPermanenceNotifications = async (notifications: Concu
                         month: 'long',
                         hour: '2-digit',
                         minute: '2-digit',
-                    }).format(permanence.start_at),
+                    }).format(new Date(permanence.start_at.getTime() + 2 * 3600000)),
                     endAt: new Intl.DateTimeFormat('fr-FR', {
                         day: '2-digit',
                         month: 'long',
                         hour: '2-digit',
                         minute: '2-digit',
-                    }).format(permanence.end_at),
+                    }).format(new Date(permanence.end_at.getTime() + 2 * 3600000)),
                     location: permanence.location,
                 })),
             };

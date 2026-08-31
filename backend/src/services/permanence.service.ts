@@ -441,8 +441,8 @@ export const getDailyNotifications = async (): Promise<Notification[]> => {
 export const getHourlyNotifications = async (): Promise<Notification[]> => {
     const permanences = await db.query.permanenceSchema.findMany({
         where: sql`
-            ${permanenceSchema.start_at} >= now() + interval '3 hour'                                 -- 1 hour + 2 for timezone
-            AND ${permanenceSchema.start_at} < now() + interval '3 hour 5 minutes'                    -- 1 hour + 2 for timezone
+            ${permanenceSchema.start_at} >= now() + interval '1 hour'
+            AND ${permanenceSchema.start_at} < now() + interval '1 hour 5 minutes'
         `,
         orderBy: permanenceSchema.start_at,
     });

@@ -1,6 +1,6 @@
 import { AdminLayout } from '../../components/Admin/adminLayout';
 import { AdminRoleManagement, AdminRolePreferences } from '../../components/Admin/adminRole';
-import { RevealSection } from '../../components/ui/revealSection';
+import RevealSection from '../../components/ui/revealSection';
 
 const AdminPageRole: React.FC = () => (
     <AdminLayout allowedRoles={['Admin']}>

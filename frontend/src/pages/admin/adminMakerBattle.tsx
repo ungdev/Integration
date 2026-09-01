@@ -1,7 +1,7 @@
 import { AdminLayout } from '../../components/Admin/adminLayout';
 import { AdminMakerBattleTeamDownload } from '../../components/Admin/AdminMakerBattle/adminMakerBattleDownload';
 import { AdminMakerBattleTeamGeneration } from '../../components/Admin/AdminMakerBattle/adminMakerBattleTeamGeneration';
-import { RevealSection } from '../../components/ui/revealSection';
+import RevealSection from '../../components/ui/revealSection';
 import type { MakerBattleGroupTypeOption } from '../../interfaces/maker_battle.interface';
 
 const groupTypeOptions: MakerBattleGroupTypeOption[] = [

@@ -250,7 +250,7 @@ export const renewToken: AppRequestHandler<RenewTokenBody> = async (req, res) =>
 
         Ok(res, {
             msg:
-                'Token renouvelé, vous pouvez renvoyer un email de bienvenu avec ce lien  : https://integration.utt.fr/Register?token=' +
+                "Vous pouvez transmettre à l'utilisateur ce lien  : https://integration.utt.fr/register?token=" +
                 newToken,
         });
     } catch (err) {

@@ -39,7 +39,7 @@ const PermanencesPageMy = lazy(() => import('./pages/perm/permMy'));
 const PermanencesPageRespoCall = lazy(() => import('./pages/perm/permRespoCall'));
 const PlanningsPage = lazy(() => import('./pages/plannings'));
 const PrivacyPage = lazy(() => import('./pages/privacy'));
-const ProfilPage = lazy(() => import('./pages/profil'));
+const ProfilePage = lazy(() => import('./pages/profile'));
 const RegisterPage = lazy(() => import('./pages/register'));
 const ResetPasswordPage = lazy(() => import('./pages/resetPassword'));
 const RoadbookPage = lazy(() => import('./pages/roadbook'));
@@ -99,7 +99,7 @@ const App: React.FC = () => {
                                 path="/profil"
                                 element={
                                     <ProtectedRoute>
-                                        <ProfilPage />
+                                        <ProfilePage />
                                     </ProtectedRoute>
                                 }
                             />

@@ -5,7 +5,7 @@ import { Autoplay, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { Button } from '../ui/button';
-import { RevealSection } from '../ui/revealSection';
+import RevealSection from '../ui/revealSection';
 import { MakerBattle } from './makerBattleSection';
 import { Team } from './teamSection';
 

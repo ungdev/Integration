@@ -6,7 +6,7 @@ import {
     AdminImportPlannings,
 } from '../../components/Admin/adminExportImport';
 import { AdminLayout } from '../../components/Admin/adminLayout';
-import { RevealSection } from '../../components/ui/revealSection';
+import RevealSection from '../../components/ui/revealSection';
 
 const AdminPageExport: React.FC = () => (
     <AdminLayout allowedRoles={['Admin']}>

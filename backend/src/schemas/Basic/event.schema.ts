@@ -8,7 +8,7 @@ export const eventSchema = pgTable('events', {
     wei_open: boolean('wei_open').default(false),
     food_open: boolean('food_open').default(false),
     chall_open: boolean('chall_open').default(false),
-    maker_battle_group_open: boolean('chall_open').default(false),
+    maker_battle_group_open: boolean('maker_battle_group_open').default(false),
 });
 
 export type Event = typeof eventSchema.$inferSelect;

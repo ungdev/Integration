@@ -100,13 +100,13 @@ export const FoodSection = () => {
                     </div>
                 ) : (
                     <>
-                        <div className="surface-card overflow-hidden">
+                        {/* <div className="surface-card overflow-hidden">
                             <iframe
                                 title="Billetterie Repas"
                                 src="https://www.billetweb.fr/repas-nouveaux-newcomer-dinner"
                                 className="w-full h-[600px] border-none mb-4"
                             />
-                        </div>
+                        </div> */}
                         <div className="surface-card overflow-hidden">
                             <iframe
                                 title="Billetterie Repas"

@@ -204,6 +204,13 @@
       "when": 1788026112577,
       "tag": "0028_tan_slapstick",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1788210846118,
+      "tag": "0029_right_callisto",
+      "breakpoints": true
     }
   ]
 }

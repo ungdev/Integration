@@ -1,0 +1,1 @@
+ALTER TABLE "events" ADD COLUMN "maker_battle_group_open" boolean DEFAULT false;

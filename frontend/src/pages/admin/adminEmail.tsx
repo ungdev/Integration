@@ -1,6 +1,6 @@
 import { AdminEmail } from '../../components/Admin/adminEmail';
 import { AdminLayout } from '../../components/Admin/adminLayout';
-import { RevealSection } from '../../components/ui/revealSection';
+import RevealSection from '../../components/ui/revealSection';
 
 const AdminPageEmail: React.FC = () => (
     <AdminLayout allowedRoles={['Admin']}>

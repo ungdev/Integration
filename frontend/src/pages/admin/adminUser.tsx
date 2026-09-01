@@ -1,20 +1,22 @@
 import { AdminLayout } from '../../components/Admin/adminLayout';
-import { AdminRegisterNewStudent, AdminSyncNewStudent, AdminUser } from '../../components/Admin/adminUser';
-import { RevealSection } from '../../components/ui/revealSection';
+import AdminUserImportFromSIEP from '../../components/Admin/AdminUser/adminUserImportFromSIEP';
+import AdminUserProfile from '../../components/Admin/AdminUser/adminUserProfile';
+import AdminUserRegisterNewStudent from '../../components/Admin/AdminUser/adminUserRegisterNewStudent';
+import RevealSection from '../../components/ui/revealSection';
 
 const AdminPageUser: React.FC = () => (
     <AdminLayout allowedRoles={['Admin']}>
         <div className="flex flex-col gap-6">
             <RevealSection>
-                <AdminUser />
+                <AdminUserProfile />
             </RevealSection>
 
             <RevealSection delay={0.1}>
-                <AdminSyncNewStudent />
+                <AdminUserImportFromSIEP />
             </RevealSection>
 
             <RevealSection delay={0.2}>
-                <AdminRegisterNewStudent />
+                <AdminUserRegisterNewStudent />
             </RevealSection>
         </div>
     </AdminLayout>

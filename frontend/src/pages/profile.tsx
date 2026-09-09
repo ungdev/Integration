@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Footer } from '../components/footer';
 import EmergencyModal from '../components/home/emergencyModal';
 import { Navbar } from '../components/navbar';
-import { ProfilForm } from '../components/profil/profilForm';
+import ProfileCard from '../components/profil/profileCard';
 import { UserPreferences } from '../components/profil/roleForm';
 import { getPermission } from '../services/requests/user.service';
 
-const ProfilPage = () => {
+const ProfilePage = () => {
     const navigate = useNavigate();
     const permission = getPermission();
 
@@ -22,7 +22,7 @@ const ProfilPage = () => {
             <EmergencyModal />
             <div className="bg-gray-100 min-h-screen py-6 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto space-y-8">
-                    <ProfilForm />
+                    <ProfileCard />
                     {(permission === 'Student' || permission === 'Admin') && <UserPreferences />}
                 </div>
             </div>
@@ -31,4 +31,4 @@ const ProfilPage = () => {
     );
 };
 
-export default ProfilPage;
+export default ProfilePage;

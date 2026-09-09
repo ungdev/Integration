@@ -1,6 +1,6 @@
 import { AdminLayout } from '../../components/Admin/adminLayout';
 import { TentAdmin } from '../../components/Admin/adminTent';
-import { RevealSection } from '../../components/ui/revealSection';
+import RevealSection from '../../components/ui/revealSection';
 
 const AdminPageTent: React.FC = () => (
     <AdminLayout allowedRoles={['Admin']}>

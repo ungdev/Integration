@@ -108,6 +108,18 @@ export const getCurrentUserOnboardingStatus: AppRequestHandler = async (req, res
     }
 };
 
+export const getAdminUserOnboardingStatus: AppRequestHandler<unknown, unknown, UserIdParams> = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const status = await user_service.getCurrentUserOnboardingStatus(parseInt(userId));
+        const hasRegToken = await user_service.hasRegistrationToken(parseInt(userId));
+        Ok(res, { data: { ...status, hasRegistrationToken: hasRegToken } });
+    } catch {
+        Error(res, { msg: "Erreur lors de la récupération du statut d'onboarding." });
+    }
+};
+
 export const getVssQuestionnaire: AppRequestHandler = async (req, res) => {
     try {
         const questionnaire = await user_service.getVssQuestionnaire();

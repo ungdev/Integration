@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Select from 'react-select';
 import Swal from 'sweetalert2';
 
@@ -17,6 +18,7 @@ type SelectOption = {
 };
 
 export const AdminEmail = () => {
+    const [searchParams] = useSearchParams();
     const [subject, setSubject] = useState('');
     const [templateName, setTemplateName] = useState('custom');
     const [format] = useState<'html' | 'txt'>('html');
@@ -43,7 +45,29 @@ export const AdminEmail = () => {
 
     useEffect(() => {
         fetchData();
-    }, []);
+
+        // Pré-remplir avec les paramètres d'URL si disponibles
+        const subjectParam = searchParams.get('subject');
+        const templateParam = searchParams.get('template');
+        const emailParam = searchParams.get('email');
+        const firstNameParam = searchParams.get('firstName');
+        const lastNameParam = searchParams.get('lastName');
+
+        if (subjectParam) {
+            setSubject(subjectParam);
+        }
+
+        if (templateParam) {
+            setTemplateName(templateParam);
+        }
+
+        if (emailParam) {
+            // Ajouter l'email à la liste des destinataires
+            const fullName = [firstNameParam, lastNameParam].filter(Boolean).join(' ') || emailParam;
+            setSendTo([{ value: emailParam, label: `${fullName} (${emailParam})` }]);
+            setRecipientsGroups([]); // Désactiver les groupes si un email individuel est fourni
+        }
+    }, [searchParams]);
 
     useEffect(() => {
         setPreview('');
@@ -199,6 +223,7 @@ export const AdminEmail = () => {
                                 value: u.email,
                                 label: `${u.firstName} ${u.lastName}`,
                             }))}
+                            value={sendTo}
                             onChange={(val) => setSendTo((val ?? []) as SelectOption[])}
                         />
                     </>

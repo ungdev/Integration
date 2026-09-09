@@ -7,6 +7,10 @@ import { type User, userSchema } from '../schemas/Basic/user.schema';
 import { vssqcmquestionSchema } from '../schemas/Basic/vssqcmquestion.schema';
 import { vssqcmanswerSchema } from '../schemas/Relational/vssqcmanswer.schema';
 import { registrationSchema } from '../schemas/Relational/registration.schema';
+import { userTeamsSchema } from '../schemas/Relational/userteams.schema';
+import { teamFactionSchema } from '../schemas/Relational/teamfaction.schema';
+import { teamSchema } from '../schemas/Basic/team.schema';
+import { factionSchema } from '../schemas/Basic/faction.schema';
 import * as auth_service from '../services/auth.service';
 import * as SIEP_Utils from '../shared/integrations/siep';
 import * as Banned_Service from './banned.service';
@@ -196,6 +200,7 @@ export const adminCreateUser = async (data: AdminCreateUserBody) => {
 
 export const getUsersAdmin = async () => {
     try {
+        // Récupère tous les users avec toutes les informations pertinentes
         const users = await db
             .select({
                 userId: userSchema.id,
@@ -207,12 +212,67 @@ export const getUsersAdmin = async () => {
                 contact: userSchema.contact,
                 permission: userSchema.permission,
                 discord_id: userSchema.discord_id,
+                male: userSchema.male,
+                vss_form: userSchema.vss_form,
                 maker_battle_table: MakerBattleAttributionSchema.table,
                 maker_battle_team: MakerBattleAttributionSchema.maker_team_id,
             })
             .from(userSchema)
             .leftJoin(MakerBattleAttributionSchema, eq(userSchema.id, MakerBattleAttributionSchema.user_id));
-        return users;
+
+        // Pour chaque utilisateur, ajouter les infos de team/faction si applicable
+        const usersWithTeamInfo = await Promise.all(
+            users.map(async (user) => {
+                let team = null;
+                let faction = null;
+
+                if (user.permission === 'Student' || user.permission === 'Nouveau') {
+                    // Récupérer la team de l'utilisateur
+                    const userTeam = await db
+                        .select({
+                            team_id: userTeamsSchema.team_id,
+                            team_name: teamSchema.name,
+                        })
+                        .from(userTeamsSchema)
+                        .leftJoin(teamSchema, eq(userTeamsSchema.team_id, teamSchema.id))
+                        .where(eq(userTeamsSchema.user_id, user.userId))
+                        .limit(1);
+
+                    if (userTeam.length > 0 && userTeam[0].team_id) {
+                        team = {
+                            id: userTeam[0].team_id,
+                            name: userTeam[0].team_name,
+                        };
+
+                        // Récupérer la faction de la team
+                        const teamFaction = await db
+                            .select({
+                                faction_id: teamFactionSchema.faction_id,
+                                faction_name: factionSchema.name,
+                            })
+                            .from(teamFactionSchema)
+                            .leftJoin(factionSchema, eq(teamFactionSchema.faction_id, factionSchema.id))
+                            .where(eq(teamFactionSchema.team_id, userTeam[0].team_id))
+                            .limit(1);
+
+                        if (teamFaction.length > 0 && teamFaction[0].faction_id) {
+                            faction = {
+                                id: teamFaction[0].faction_id,
+                                name: teamFaction[0].faction_name,
+                            };
+                        }
+                    }
+                }
+
+                return {
+                    ...user,
+                    team,
+                    faction,
+                };
+            }),
+        );
+
+        return usersWithTeamInfo;
     } catch (err) {
         console.error('Erreur lors de la récupération des utilisateurs ', err);
         throw new Error('Erreur de base de données');
@@ -571,6 +631,20 @@ export const deleteUserById = async (userId: number) => {
         return result;
     } catch (err) {
         console.error("Erreur lors de la suppression de l'utilisateur:", err);
+        throw new Error('Erreur de base de données');
+    }
+};
+
+export const hasRegistrationToken = async (userId: number) => {
+    try {
+        const token = await db
+            .select({ id: registrationSchema.id })
+            .from(registrationSchema)
+            .where(eq(registrationSchema.user_id, userId));
+
+        return token.length > 0;
+    } catch (err) {
+        console.error("Erreur lors de la vérification du token d'enregistrement:", err);
         throw new Error('Erreur de base de données');
     }
 };

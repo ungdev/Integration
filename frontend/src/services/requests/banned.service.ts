@@ -14,3 +14,8 @@ export const removeBanned = async (id: number) => {
     const res = await api.delete(`/banned/admin/${id}/`);
     return res.data;
 };
+
+export const checkBannedEmail = async (email: string) => {
+    const bannedList = await getAllBanned();
+    return bannedList.some((item: any) => item.email.toLowerCase() === email.toLowerCase());
+};

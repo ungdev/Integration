@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { AdminBannedAddEmail, AdminBannedList } from '../../components/Admin/adminBanned';
 import { AdminLayout } from '../../components/Admin/adminLayout';
-import { RevealSection } from '../../components/ui/revealSection';
+import RevealSection from '../../components/ui/revealSection';
 import { type Banned } from '../../interfaces/banned.interface';
 
 const AdminPageBanned: React.FC = () => {

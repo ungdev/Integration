@@ -1,6 +1,6 @@
 import { AdminBusTools } from '../../components/Admin/adminBus';
 import { AdminLayout } from '../../components/Admin/adminLayout';
-import { RevealSection } from '../../components/ui/revealSection';
+import RevealSection from '../../components/ui/revealSection';
 
 const AdminPageBus: React.FC = () => (
     <AdminLayout allowedRoles={['Admin']}>

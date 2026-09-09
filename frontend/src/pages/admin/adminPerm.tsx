@@ -5,7 +5,7 @@ import PermanenceActions from '../../components/Admin/AdminPerm/adminPermAction'
 import PermanenceForm from '../../components/Admin/AdminPerm/adminPermForm';
 import { ImportPermCSV } from '../../components/Admin/AdminPerm/adminPermImport';
 import PermanenceList from '../../components/Admin/AdminPerm/adminPermList';
-import { RevealSection } from '../../components/ui/revealSection';
+import RevealSection from '../../components/ui/revealSection';
 import { type Permanence } from '../../interfaces/permanence.interface';
 import { type User } from '../../interfaces/user.interface';
 import { getAllPermanences } from '../../services/requests/permanence.service';

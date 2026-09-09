@@ -5,7 +5,7 @@ import { AdminChallengeAddPointsForm } from '../../components/Admin/AdminChallen
 import ChallengeEditor from '../../components/Admin/AdminChallenge/adminChallengeEditor';
 import { AdminValidatedChallengesList } from '../../components/Admin/AdminChallenge/adminChallengeValidatedList';
 import { AdminLayout } from '../../components/Admin/adminLayout';
-import { RevealSection } from '../../components/ui/revealSection';
+import RevealSection from '../../components/ui/revealSection';
 import { type Challenge, type ValidatedChallenge } from '../../interfaces/challenge.interface';
 import { type Faction } from '../../interfaces/faction.interface';
 import { type Team } from '../../interfaces/team.interface';

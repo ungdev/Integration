@@ -113,3 +113,9 @@ export const syncDiscordUser = async (code: string) => {
     const response = await api.post(`/discord/user/callback/`, { code });
     return response.data;
 };
+
+export const getAdminUserOnboardingStatus = async (userId: number) => {
+    const response = await api.get(`/user/admin/onboarding-status/${userId}`);
+    const status: UserOnboardingStatus = response.data.data;
+    return status;
+};

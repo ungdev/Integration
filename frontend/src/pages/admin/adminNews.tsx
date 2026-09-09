@@ -1,6 +1,6 @@
 import { AdminLayout } from '../../components/Admin/adminLayout';
 import { AdminNews } from '../../components/Admin/adminNews';
-import { RevealSection } from '../../components/ui/revealSection';
+import RevealSection from '../../components/ui/revealSection';
 
 const AdminPageNews: React.FC = () => (
     <AdminLayout allowedRoles={['Admin', 'Communication']}>

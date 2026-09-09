@@ -103,20 +103,27 @@ export const UserChallengeList = () => {
                         🏅 Points des Factions
                     </CardTitle>
                 </CardHeader>
+
                 <CardContent className="space-y-10">
-                    <div className="text-center text-gray-700">
-                        {factions.length > 0 ? (
-                            <div className="space-y-3">
-                                {factions.map((faction) => (
-                                    <p key={faction.factionId} className="text-xl font-semibold">
-                                        {faction.name} : {factionPoints[faction.factionId] ?? 0} points
-                                    </p>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="text-gray-500">Chargement des points...</p>
-                        )}
-                    </div>
+                    {!isChallOpen ? (
+                        <p className="text-red-500 font-medium text-center">
+                            🚫 Les points des factions sont actuellement cachés.
+                        </p>
+                    ) : (
+                        <div className="text-center text-gray-700">
+                            {factions.length > 0 ? (
+                                <div className="space-y-3">
+                                    {factions.map((faction) => (
+                                        <p key={faction.factionId} className="text-xl font-semibold">
+                                            {faction.name} : {factionPoints[faction.factionId] ?? 0} points
+                                        </p>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-gray-500">Chargement des points...</p>
+                            )}
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 
@@ -129,7 +136,7 @@ export const UserChallengeList = () => {
                 <CardContent className="space-y-10">
                     {!isChallOpen ? (
                         <p className="text-red-500 font-medium text-center">
-                            🚫 Ce formulaire n'est pas encore disponible.
+                            🚫 Les défis sont actuellement fermés.
                         </p>
                     ) : (
                         <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
@@ -157,7 +164,7 @@ export const UserChallengeList = () => {
                         <p className="text-gray-500 text-center">Chargement en cours...</p>
                     ) : !isChallOpen ? (
                         <p className="text-red-500 font-medium text-center">
-                            🚫 Les challenges ne sont pas encore ouverts.
+                            🚫 Les défis sont actuellement fermés.
                         </p>
                     ) : availableChallenges.length === 0 ? (
                         <p className="text-gray-500 text-center">Aucun défi disponible pour le moment.</p>

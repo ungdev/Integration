@@ -1,210 +1,210 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - dev
-    tags:
-      - 'v*'
-  pull_request:
-    branches:
-      - dev
-      - prod
+    push:
+        branches:
+            - dev
+        tags:
+            - 'v*'
+    pull_request:
+        branches:
+            - dev
+            - prod
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
-  lint-api:
-    runs-on: self-hosted
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+    lint-api:
+        runs-on: self-hosted
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 11
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '23'
-          cache: 'pnpm'
-          cache-dependency-path: ./backend/pnpm-lock.yaml
+            - name: Set up Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: '23'
+                  cache: 'pnpm'
+                  cache-dependency-path: ./backend/pnpm-lock.yaml
 
-      - name: Install dependencies
-        working-directory: ./backend
-        run: pnpm install --frozen-lockfile
+            - name: Install dependencies
+              working-directory: ./backend
+              run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        working-directory: ./backend
-        run: pnpm run lint
+            - name: Lint
+              working-directory: ./backend
+              run: pnpm run lint
 
-  lint-front:
-    runs-on: self-hosted
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-      
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11
+    lint-front:
+        runs-on: self-hosted
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '23'
-          cache: 'pnpm'
-          cache-dependency-path: ./frontend/pnpm-lock.yaml
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 11
 
-      - name: Install dependencies
-        working-directory: ./frontend
-        run: pnpm install --frozen-lockfile
+            - name: Set up Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: '23'
+                  cache: 'pnpm'
+                  cache-dependency-path: ./frontend/pnpm-lock.yaml
 
-      - name: Lint
-        working-directory: ./frontend
-        run: pnpm run lint
+            - name: Install dependencies
+              working-directory: ./frontend
+              run: pnpm install --frozen-lockfile
 
-  build-api:
-    runs-on: self-hosted
-    if: github.event_name == 'pull_request' || github.event_name == 'push'
-    needs:
-      - lint-api
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+            - name: Lint
+              working-directory: ./frontend
+              run: pnpm run lint
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11
+    build-api:
+        runs-on: self-hosted
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        needs:
+            - lint-api
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '23'
-          cache: 'pnpm'
-          cache-dependency-path: ./backend/pnpm-lock.yaml
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 11
 
-      - name: Install dependencies
-        working-directory: ./backend
-        run: pnpm install --frozen-lockfile
+            - name: Set up Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: '23'
+                  cache: 'pnpm'
+                  cache-dependency-path: ./backend/pnpm-lock.yaml
 
-      - name: Build
-        working-directory: ./backend
-        run: pnpm run build-test
+            - name: Install dependencies
+              working-directory: ./backend
+              run: pnpm install --frozen-lockfile
 
-  build-front:
-    runs-on: self-hosted
-    if: github.event_name == 'pull_request' || github.event_name == 'push'
-    needs:
-      - lint-front
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+            - name: Build
+              working-directory: ./backend
+              run: pnpm run build-test
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11
+    build-front:
+        runs-on: self-hosted
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        needs:
+            - lint-front
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '23'
-          cache: 'pnpm'
-          cache-dependency-path: ./frontend/pnpm-lock.yaml
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 11
 
-      - name: Install dependencies
-        working-directory: ./frontend
-        run: pnpm install --frozen-lockfile
+            - name: Set up Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: '23'
+                  cache: 'pnpm'
+                  cache-dependency-path: ./frontend/pnpm-lock.yaml
 
-      - name: Build
-        working-directory: ./frontend
-        run: pnpm run build
+            - name: Install dependencies
+              working-directory: ./frontend
+              run: pnpm install --frozen-lockfile
 
-  deploy-api:
-    runs-on: self-hosted
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || startswith(github.ref, 'refs/tags/v'))
-    environment: ${{ startswith(github.ref, 'refs/tags/') && 'production' || 'development' }}
-    needs:
-      - lint-api
-      - build-api
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+            - name: Build
+              working-directory: ./frontend
+              run: pnpm run build
 
-      - name: Login to registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ secrets.REGISTRY_URL }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_TOKEN }}
+    deploy-api:
+        runs-on: self-hosted
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || startswith(github.ref, 'refs/tags/v'))
+        environment: ${{ startswith(github.ref, 'refs/tags/') && 'production' || 'development' }}
+        needs:
+            - lint-api
+            - build-api
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
 
-      - name: Install docker
-        uses: docker/setup-buildx-action@v3
+            - name: Login to registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ secrets.REGISTRY_URL }}
+                  username: ${{ secrets.REGISTRY_USERNAME }}
+                  password: ${{ secrets.REGISTRY_TOKEN }}
 
-      - name: API - Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: ./backend
-          push: true
-          tags: |
-            ${{ secrets.REGISTRY_URL }}/integration/api:${{ startswith(github.ref, 'refs/tags/') && github.ref_name || 'dev' }}
-            ${{ startswith(github.ref, 'refs/tags/') && format('{0}/integration/api:prod', secrets.REGISTRY_URL) || '' }}
+            - name: Install docker
+              uses: docker/setup-buildx-action@v3
 
-  deploy-front:
-    runs-on: self-hosted
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || startswith(github.ref, 'refs/tags/v'))
-    environment: ${{ startswith(github.ref, 'refs/tags/') && 'production' || 'development' }}
-    needs:
-      - lint-front
-      - build-front
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+            - name: API - Build and push
+              uses: docker/build-push-action@v6
+              with:
+                  context: ./backend
+                  push: true
+                  tags: |
+                      ${{ secrets.REGISTRY_URL }}/integration/api:${{ startswith(github.ref, 'refs/tags/') && github.ref_name || 'dev' }}
+                      ${{ startswith(github.ref, 'refs/tags/') && format('{0}/integration/api:prod', secrets.REGISTRY_URL) || '' }}
 
-      - name: Login to registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ secrets.REGISTRY_URL }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_TOKEN }}
+    deploy-front:
+        runs-on: self-hosted
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || startswith(github.ref, 'refs/tags/v'))
+        environment: ${{ startswith(github.ref, 'refs/tags/') && 'production' || 'development' }}
+        needs:
+            - lint-front
+            - build-front
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
 
-      - name: Install docker
-        uses: docker/setup-buildx-action@v3
+            - name: Login to registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ secrets.REGISTRY_URL }}
+                  username: ${{ secrets.REGISTRY_USERNAME }}
+                  password: ${{ secrets.REGISTRY_TOKEN }}
 
-      - name: Front - Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: ./frontend
-          push: true
-          build-args: |
-            VITE_API_URL=${{ vars.API_URL }}
-            VITE_SERVICE_URL=${{ vars.SERVICE_URL }}
-            VITE_ANALYTICS_WEBSITE_ID=${{ secrets.ANALYTICS_WEBSITE_ID }}
-            VITE_ROADBOOK_URL_FRENCH=${{ vars.ROADBOOK_URL_FRENCH }}
-            VITE_ROADBOOK_URL_ENGLISH=${{ vars.ROADBOOK_URL_ENGLISH }}
-            VITE_CAS_LOGIN_URL=${{ vars.CAS_LOGIN_URL }}
-            VITE_ASSOCIATION_ADDRESS=${{ vars.ASSOCIATION_ADDRESS }}
-            VITE_ASSOCIATION_EMAIL=${{ vars.ASSOCIATION_EMAIL }}
-            VITE_ASSOCIATION_NAME=${{ vars.ASSOCIATION_NAME }}
-            VITE_ASSOCIATION_PHONE=${{ vars.ASSOCIATION_PHONE }}
-            VITE_ASSOCIATION_RNA=${{ vars.ASSOCIATION_RNA }}
-            VITE_ASSOCIATION_RCS=${{ vars.ASSOCIATION_RCS }}
-            VITE_BDE_ADDRESS=${{ vars.BDE_ADDRESS }}
-            VITE_BDE_EMAIL=${{ vars.BDE_EMAIL }}
-            VITE_BDE_NAME=${{ vars.BDE_NAME }}
-            VITE_BDE_PHONE=${{ vars.BDE_PHONE }}
-            VITE_BDE_RNA=${{ vars.BDE_RNA }}
-            VITE_BDE_SIRET=${{ vars.BDE_SIRET }}
-            VITE_BDE_SIREN=${{ vars.BDE_SIREN }}
-            VITE_DPO_EMAIL=${{ vars.DPO_EMAIL }}
-            VITE_DPO_NAME=${{ vars.DPO_NAME }}
-            VITE_APP_VERSION=${{ startswith(github.ref, 'refs/tags/') && github.ref_name || 'dev' }}
-            VITE_RELEASE_URL=${{ startswith(github.ref, 'refs/tags/') && format('https://github.com/{0}/releases/tag/{1}', github.repository, github.ref_name) || '' }}
-          tags: |
-            ${{ secrets.REGISTRY_URL }}/integration/front:${{ startswith(github.ref, 'refs/tags/') && github.ref_name || 'dev' }}
-            ${{ startswith(github.ref, 'refs/tags/') && format('{0}/integration/front:prod', secrets.REGISTRY_URL) || '' }}
+            - name: Install docker
+              uses: docker/setup-buildx-action@v3
+
+            - name: Front - Build and push
+              uses: docker/build-push-action@v6
+              with:
+                  context: ./frontend
+                  push: true
+                  build-args: |
+                      VITE_API_URL=${{ vars.API_URL }}
+                      VITE_SERVICE_URL=${{ vars.SERVICE_URL }}
+                      VITE_ANALYTICS_WEBSITE_ID=${{ secrets.ANALYTICS_WEBSITE_ID }}
+                      VITE_ROADBOOK_URL_FRENCH=${{ vars.ROADBOOK_URL_FRENCH }}
+                      VITE_ROADBOOK_URL_ENGLISH=${{ vars.ROADBOOK_URL_ENGLISH }}
+                      VITE_CAS_LOGIN_URL=${{ vars.CAS_LOGIN_URL }}
+                      VITE_ASSOCIATION_ADDRESS=${{ vars.ASSOCIATION_ADDRESS }}
+                      VITE_ASSOCIATION_EMAIL=${{ vars.ASSOCIATION_EMAIL }}
+                      VITE_ASSOCIATION_NAME=${{ vars.ASSOCIATION_NAME }}
+                      VITE_ASSOCIATION_PHONE=${{ vars.ASSOCIATION_PHONE }}
+                      VITE_ASSOCIATION_RNA=${{ vars.ASSOCIATION_RNA }}
+                      VITE_ASSOCIATION_RCS=${{ vars.ASSOCIATION_RCS }}
+                      VITE_BDE_ADDRESS=${{ vars.BDE_ADDRESS }}
+                      VITE_BDE_EMAIL=${{ vars.BDE_EMAIL }}
+                      VITE_BDE_NAME=${{ vars.BDE_NAME }}
+                      VITE_BDE_PHONE=${{ vars.BDE_PHONE }}
+                      VITE_BDE_RNA=${{ vars.BDE_RNA }}
+                      VITE_BDE_SIRET=${{ vars.BDE_SIRET }}
+                      VITE_BDE_SIREN=${{ vars.BDE_SIREN }}
+                      VITE_DPO_EMAIL=${{ vars.DPO_EMAIL }}
+                      VITE_DPO_NAME=${{ vars.DPO_NAME }}
+                      VITE_APP_VERSION=${{ startswith(github.ref, 'refs/tags/') && github.ref_name || 'dev' }}
+                      VITE_RELEASE_URL=${{ startswith(github.ref, 'refs/tags/') && format('https://github.com/{0}/releases/tag/{1}', github.repository, github.ref_name) || '' }}
+                  tags: |
+                      ${{ secrets.REGISTRY_URL }}/integration/front:${{ startswith(github.ref, 'refs/tags/') && github.ref_name || 'dev' }}
+                      ${{ startswith(github.ref, 'refs/tags/') && format('{0}/integration/front:prod', secrets.REGISTRY_URL) || '' }}

@@ -2,16 +2,16 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Swal from 'sweetalert2';
 
 import { type Challenge } from '../../interfaces/challenge.interface';
-import { type Faction } from '../../interfaces/faction.interface';
-import { getAllChallenges, getFactionsPoints } from '../../services/requests/challenge.service';
-import { getAllFactionsUser } from '../../services/requests/faction.service';
+//import { type Faction } from '../../interfaces/faction.interface';
+import { getAllChallenges /*getFactionsPoints*/ } from '../../services/requests/challenge.service';
+//import { getAllFactionsUser } from '../../services/requests/faction.service';
 import { checkChallengeStatus } from '../../services/requests/settings.service';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const UserChallengeList = () => {
     const [availableChallenges, setAvailableChallenges] = useState<Challenge[]>([]);
-    const [factions, setFactions] = useState<Faction[]>([]);
-    const [factionPoints, setFactionPoints] = useState<{ [key: number]: number }>({});
+    //const [factions, setFactions] = useState<Faction[]>([]);
+    //const [factionPoints, setFactionPoints] = useState<{ [key: number]: number }>({});
     const [selectedCategory, setSelectedCategory] = useState<string>('Tous');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [isChallOpen, setIsChallOpen] = useState(false);
@@ -27,36 +27,39 @@ export const UserChallengeList = () => {
         }
     }, []);
 
-    const fetchFactions = useCallback(async () => {
-        try {
-            const data = await getAllFactionsUser();
-            setFactions(data);
-        } catch (err) {
-            console.error('Erreur lors du chargement des factions', err);
-        }
-    }, []);
+    //const fetchFactions = useCallback(async () => {
+    //     try {
+    //         const data = await getAllFactionsUser();
+    //         setFactions(data);
+    //     } catch (err) {
+    //         console.error('Erreur lors du chargement des factions', err);
+    //     }
+    // }, []);
 
-    const fetchFactionPoints = useCallback(async () => {
-        try {
-            const points: { [key: number]: number } = {};
-            const fetchedFactions = await getAllFactionsUser();
-            await Promise.all(
-                fetchedFactions.map(async (faction: Faction) => {
-                    const res = await getFactionsPoints(faction.factionId);
-                    points[faction.factionId] = Number(res);
-                }),
-            );
-            setFactionPoints(points);
-        } catch (err) {
-            console.error('Erreur lors du chargement des points des factions', err);
-        }
-    }, []);
+    // const fetchFactionPoints = useCallback(async () => {
+    //     try {
+    //         const points: { [key: number]: number } = {};
+    //         const fetchedFactions = await getAllFactionsUser();
+    //         await Promise.all(
+    //             fetchedFactions.map(async (faction: Faction) => {
+    //                 const res = await getFactionsPoints(faction.factionId);
+    //                 points[faction.factionId] = Number(res);
+    //             }),
+    //         );
+    //         setFactionPoints(points);
+    //     } catch (err) {
+    //         console.error('Erreur lors du chargement des points des factions', err);
+    //     }
+    // }, []);
+
+    // const fetchInitialData = useCallback(async () => {
+    //     await Promise.all([fetchChallenges(), fetchFactions()]);
+    //     await fetchFactionPoints();
+    // }, [fetchChallenges, fetchFactions, fetchFactionPoints]);
 
     const fetchInitialData = useCallback(async () => {
-        await Promise.all([fetchChallenges(), fetchFactions()]);
-        await fetchFactionPoints();
-    }, [fetchChallenges, fetchFactions, fetchFactionPoints]);
-
+        await Promise.all([fetchChallenges()]);
+    }, [fetchChallenges]);
     useEffect(() => {
         const init = async () => {
             try {
@@ -105,12 +108,10 @@ export const UserChallengeList = () => {
                 </CardHeader>
 
                 <CardContent className="space-y-10">
-                    {!isChallOpen ? (
-                        <p className="text-red-500 font-medium text-center">
-                            🚫 Les points des factions sont actuellement cachés.
-                        </p>
-                    ) : (
-                        <div className="text-center text-gray-700">
+                    <p className="text-red-500 font-medium text-center">
+                        🚫 Les points des factions sont actuellement cachés.
+                    </p>
+                    {/* <div className="text-center text-gray-700">
                             {factions.length > 0 ? (
                                 <div className="space-y-3">
                                     {factions.map((faction) => (
@@ -122,8 +123,7 @@ export const UserChallengeList = () => {
                             ) : (
                                 <p className="text-gray-500">Chargement des points...</p>
                             )}
-                        </div>
-                    )}
+                        </div> */}
                 </CardContent>
             </Card>
 
@@ -135,9 +135,7 @@ export const UserChallengeList = () => {
                 </CardHeader>
                 <CardContent className="space-y-10">
                     {!isChallOpen ? (
-                        <p className="text-red-500 font-medium text-center">
-                            🚫 Les défis sont actuellement fermés.
-                        </p>
+                        <p className="text-red-500 font-medium text-center">🚫 Les défis sont actuellement fermés.</p>
                     ) : (
                         <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
                             <iframe
@@ -163,9 +161,7 @@ export const UserChallengeList = () => {
                     {loading ? (
                         <p className="text-gray-500 text-center">Chargement en cours...</p>
                     ) : !isChallOpen ? (
-                        <p className="text-red-500 font-medium text-center">
-                            🚫 Les défis sont actuellement fermés.
-                        </p>
+                        <p className="text-red-500 font-medium text-center">🚫 Les défis sont actuellement fermés.</p>
                     ) : availableChallenges.length === 0 ? (
                         <p className="text-gray-500 text-center">Aucun défi disponible pour le moment.</p>
                     ) : (

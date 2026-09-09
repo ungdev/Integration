@@ -16,7 +16,7 @@ env:
 
 jobs:
   lint-api:
-    runs-on: self-hosted
+    runs-on: sia-autoscale-runners
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -42,7 +42,7 @@ jobs:
         run: pnpm run lint
 
   lint-front:
-    runs-on: self-hosted
+    runs-on: sia-autoscale-runners
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -68,7 +68,7 @@ jobs:
         run: pnpm run lint
 
   build-api:
-    runs-on: self-hosted
+    runs-on: sia-autoscale-runners
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     needs:
       - lint-api
@@ -97,7 +97,7 @@ jobs:
         run: pnpm run build-test
 
   build-front:
-    runs-on: self-hosted
+    runs-on: sia-autoscale-runners
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     needs:
       - lint-front
@@ -126,7 +126,7 @@ jobs:
         run: pnpm run build
 
   deploy-api:
-    runs-on: self-hosted
+    runs-on: sia-autoscale-runners
     if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || startswith(github.ref, 'refs/tags/v'))
     environment: ${{ startswith(github.ref, 'refs/tags/') && 'production' || 'development' }}
     needs:
@@ -156,7 +156,7 @@ jobs:
             ${{ startswith(github.ref, 'refs/tags/') && format('{0}/integration/api:prod', secrets.REGISTRY_URL) || '' }}
 
   deploy-front:
-    runs-on: self-hosted
+    runs-on: sia-autoscale-runners
     if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || startswith(github.ref, 'refs/tags/v'))
     environment: ${{ startswith(github.ref, 'refs/tags/') && 'production' || 'development' }}
     needs:

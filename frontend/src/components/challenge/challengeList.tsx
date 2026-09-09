@@ -107,7 +107,7 @@ export const UserChallengeList = () => {
                 <CardContent className="space-y-10">
                     {!isChallOpen ? (
                         <p className="text-red-500 font-medium text-center">
-                            🚫 Les points des factions ne sont pas encore disponibles.
+                            🚫 Les points des factions sont actuellement cachés.
                         </p>
                     ) : (
                         <div className="text-center text-gray-700">
@@ -136,7 +136,7 @@ export const UserChallengeList = () => {
                 <CardContent className="space-y-10">
                     {!isChallOpen ? (
                         <p className="text-red-500 font-medium text-center">
-                            🚫 Ce formulaire n'est pas encore disponible.
+                            🚫 Les challenges sont actuellement fermés.
                         </p>
                     ) : (
                         <div className="relative pb-[56.25%] rounded-xl shadow-lg overflow-hidden">
@@ -156,7 +156,7 @@ export const UserChallengeList = () => {
             <Card className="w-full max-w-3xl mx-auto">
                 <CardHeader>
                     <CardTitle className="text-2xl font-semibold text-gray-800 text-center">
-                        🏆 Défis disponibles
+                        🏆 Challenges disponibles
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-10">
@@ -164,10 +164,10 @@ export const UserChallengeList = () => {
                         <p className="text-gray-500 text-center">Chargement en cours...</p>
                     ) : !isChallOpen ? (
                         <p className="text-red-500 font-medium text-center">
-                            🚫 Les challenges ne sont pas encore ouverts.
+                            🚫 Les challenges sont actuellement fermés.
                         </p>
                     ) : availableChallenges.length === 0 ? (
-                        <p className="text-gray-500 text-center">Aucun défi disponible pour le moment.</p>
+                        <p className="text-gray-500 text-center">Aucun challenge disponible pour le moment.</p>
                     ) : (
                         <>
                             {/* Filtres */}
